@@ -22,17 +22,22 @@
   url; for example a query string. 'sub' mode substitutes strings, while 'rem' removes them.
 
     *rem mode:*
-          inputting: 'rem -\d+x\d+'
-          https://website.com/uploads/image_01-300x300.jpg
-          becomes
-	  https://website.com/uploads/image_01.jpg
+    inputting: 'rem -\d+x\d+'
+    
+    https://website.com/uploads/image_01-300x300.jpg
+    
+    becomes
+    
+    https://website.com/uploads/image_01.jpg
 
     *sub mode:*
-          inputting: 'sub \?=\w ?=large'
-          (?=large will be subbed in for anything matching the regex pattern \?=\w)
-          https://website.com/uploads/image_01.jpg?=cropped
-          becomes
-	  https://website.com/uploads/image_01.jpg?=large
+    inputting: 'sub \?=\w ?=large' (?=large will be subbed in for anything matching the regex pattern \?=\w)
+      
+    https://website.com/uploads/image_01.jpg?=cropped
+      
+    becomes
+      
+    https://website.com/uploads/image_01.jpg?=large
 
 + *mode 2:*
 	when provided a url to a single file (instead of entire page), the program will try to download that file and all other files with the same url structure that are on the server (but not necessarily displayed on the website).
@@ -45,16 +50,14 @@
 
 	the program will then iterate through and download all images it can find with that url structure on the server.
 
-	e.g. 
+	*example* 
 	* https://website.com/uploads/image_01.jpg
 	* https://website.com/uploads/image_02.jpg
 	* https://website.com/uploads/image_03.jpg
 	* https://website.com/uploads/image_04.jpg
 	* https://website.com/uploads/image_05.jpg
-         .
-         .
-         .
         * https://website.com/uploads/image_100.jpg
+	
 	etc...
 		     
   + *mode 3 (instagram):*
