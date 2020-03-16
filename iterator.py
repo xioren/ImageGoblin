@@ -1,3 +1,4 @@
+import os
 from time import sleep
 from goblin import MetaGoblin
 from parsing import *
@@ -5,13 +6,13 @@ from parsing import *
 
 class IterGoblin(MetaGoblin):
 
-    def __init__(self, url, timeout, save_loc, overwrite, increment):
-        super().__init__(url=url, save_loc=save_loc, overwrite=overwrite)
+    def __init__(self, url, timeout, overwrite, increment, tickrate, verbose, nodl):
+        super().__init__(url, tickrate, overwrite, verbose, nodl)
         self.timeout = timeout
         self.idle = 0
         self.increment = increment
 
-    def timeout_check(self, n):
+    def timed_out(self, n):
         '''
         program idle tracking
         '''
@@ -20,35 +21,30 @@ class IterGoblin(MetaGoblin):
         else:
             return False
 
-    def iter_mod(self, iter):
-        '''
-        increment the iterable containing arbitray leading zeros
-        '''
-        return str(int(iter.lstrip('0')) + self.increment).zfill(len(iter))
-
     def iterate(self):
         '''
         re-forms url and iterates (mode 3)
         '''
-        base, iter, end = iter_finder(url=self.url)
-        self.create_folders(self.dl_folder)
+        base, iter, end = extract_iterable(self.url)
         iteration = 1
         print(f'[iterating] {self.url}')
         while True:
-            if self.timeout_check(self.timeout):
-                self.cleanup(self.dl_folder)
+            url = f'{base}{iter}{end}'
+            if self.timed_out(self.timeout):
+                self.cleanup(self.main_path)
                 print(f'[timeout] after {self.timeout} attempts')
-                return
+                return None
             if iteration % 25 == 0:
-                print(f'[iteration] {iteration}')
-            url, filename = dl_prep(url=f'{base}{iter}{end}')
-            if not self.overwrite and self.exists(f'{self.dl_folder}{filename}'):
+                print(f'[iteration] # {iteration}')
+            filename = extract_filename(url)
+            filepath = os.path.join(self.main_path, f'{filename}.{filetype(self.url)}')
+            if not self.overwrite and os.path.exists(filepath):
                 continue
-            success = self.retrieve(url=url, path=f'{self.dl_folder}{filename}', silent=True)
-            if success:
+            attempt = self.retrieve(url, filepath)
+            if attempt:
                 self.idle = 0
             else:
                 self.idle += 1
-            iter = self.iter_mod(iter)
+            iter = str(int(iter.lstrip('0')) + self.increment).zfill(len(iter))
             iteration += 1
-            sleep(1)
+            sleep(self.tickrate)

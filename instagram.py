@@ -1,3 +1,4 @@
+import os
 from time import sleep
 from goblin import MetaGoblin
 from parsing import *
@@ -5,15 +6,11 @@ from parsing import *
 
 class InstaGoblin(MetaGoblin):
 
-    def __init__(self, url, save_loc, overwrite):
-        super().__init__(url=url, save_loc=save_loc, overwrite=overwrite)
-        self.url = url
-        self.username = instagram(self.url)
-        self.html_txt = f'{self.save_loc}/html.txt'
-        if self.username:
-            self.sub_dir = f'{self.main_path}{self.username}/'
-        else:
-            self.sub_dir = f'{self.main_path}no_username_found/'
+    def __init__(self, url, tickrate, overwrite, verbose, nodl):
+        super().__init__(url, tickrate, overwrite, verbose, nodl)
+        self.username = insta_username(self.url)
+        self.html_txt = os.path.join(self.main_path.replace('web_goblin', ''), 'html.txt')
+        self.sub_dir = os.path.join(self.main_path, self.username)
         self.create_folders(self.sub_dir)
 
     def find_posts(self):
@@ -22,33 +19,36 @@ class InstaGoblin(MetaGoblin):
         '''
         print(f'[parsing] {self.url}')
         html = self.read_file(self.html_txt)
-        self.posts = parse_html(html)
+        assert html
+        return parse_posts(html)
 
-    def find_media(self):
+    def find_media(self, posts):
         '''
         opens links from iterable and parses for media
         '''
-        self.links = []
-        for post in self.posts:
-            print(f'[parsing] post {self.posts.index(post) + 1} of {len(self.posts)}')
+        links = []
+        for post in posts:
+            print(f'[parsing] post {posts.index(post) + 1} of {len(posts)}')
             html = self.get_html(post)
             content = parse_content(html)
             for link in content:
-                self.links.append(link)
-            sleep(1)
-        print(f'[parse complete] {len(self.links)} links found')
+                links.append(link)
+            sleep(self.tickrate)
+        print(f'[parse complete] {len(links)} links found')
+        return links
 
-    def down_media(self):
+    def down_media(self, media):
         '''
         retrieves media from web
         '''
-        for link in self.links:
-            print(f'[downloading] link {self.links.index(link) + 1} of {len(self.links)}')
-            filepath = f'{self.sub_dir}{self.username}_{insta_prep(link)}'
-            if self.exists(filepath):
+        for link in media:
+            print(f'[downloading] link {media.index(link) + 1} of {len(media)}')
+            filename = extract_filename(link)
+            filepath = os.path.join(self.sub_dir, f'{self.username}_{filename}.{filetype(link)}')
+            if os.path.exists(filepath):
                 continue
-            self.retrieve(url=link, path=filepath)
+            self.retrieve(link, filepath)
             sleep(1)
         self.cleanup(self.sub_dir)
         self.move_vid(self.sub_dir)
-        print(f'[parse complete] {len(self.links)} links found')
+        print(f'[parse complete] {len(media)} links found')

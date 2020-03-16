@@ -3,7 +3,8 @@
 regex_patterns = {
     'filename': r'(/*[^/]+(\.\w+)*)$',
     'link_pattern': r'https*[^"\n =]+\.(jpe*g|png|tiff*|gif|mp4|mov|flv)(\?[^"\n, ]+)*',
-    'query': r'(\?.+)$',
+    'querry': r'((\?|&).+)$',
+    'filetype': r'\.[A-Za-z]+',
     'tags': r'<[:\.\t\n /"=\w\?]+>|<.+>',
     'filter': r'\.(js|css|pdf)',
     'insta_link': r'/p/[\w\-]+',

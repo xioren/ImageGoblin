@@ -3,35 +3,47 @@ from urllib.parse import urlparse
 from strings import *
 
 
-def instagram(url):
+def insta_username(url):
     '''
-    return instagram username
+    extract instagram username
     '''
     return re.search(regex_patterns['insta_username'], url).group().strip('/')
 
 
-def dl_prep(url):
+def extract_filename(url):
     '''
-    prepares url and filename for download
+    extracts filename from url
     '''
-    filename = re.search(regex_patterns['filename'], url)
-    if filename:
-        return add_scheme(url), add_jpeg(strip_query(filename.group()))
-    else:
-        return add_scheme(url), 'image.jpeg'
+    return re.sub(regex_patterns['filetype'], '', re.search(regex_patterns['filename'], dequerry(url)).group().strip('/'))
 
 
-def remove_format(url, name):
+def decrop(url):
     '''
-    removes common formatting
+    removes common cropping from url
     '''
     for pat in format_patterns:
         url = re.sub(pat, '', url)
-        name = re.sub(pat, '', name)
-    return url, name
+    return url
 
 
-def custom_format(url, name, format):
+def dequerry(url):
+    '''
+    remove querry string from url
+    '''
+    return re.sub(regex_patterns['querry'], '', url)
+
+
+def filetype(url):
+    '''
+    extract file type
+    '''
+    type = re.search(r'\.(jpe*g|png|gif|mp4|web(p|m)|tiff*)', url, re.IGNORECASE)
+    if not type:
+        return 'jpeg'
+    return type.group().lstrip('.')
+
+
+def custom_format(url, format):
     '''
     add, substitute, or remove elements from a filename/url pair
     '''
@@ -42,25 +54,16 @@ def custom_format(url, name, format):
     elif parts[0] == 'sub':
         assert len(parts) == 3
         url = re.sub(parts[1], parts[2], url)
-        name = re.sub(parts[1], parts[2], name)
-    elif parts[0] == 'rem': # remove
+    elif parts[0] == 'rem':
         assert len(parts) == 2
         url = re.sub(parts[1], '', url)
-        name = re.sub(parts[1], '', name)
     elif format == 'auto':
-        url, name = remove_format(url, name)
+        url = decrop(dequerry(url))
         if 'squarespace' in url:
-            url = url + '?format=original'
+            url += '?format=original'
     else:
         pass
-    return url, name
-
-
-def remove_slashes(string):
-    '''
-    remove redundent forward slashes
-    '''
-    return re.sub('//', '/', string)
+    return url
 
 
 def add_scheme(url):
@@ -72,20 +75,13 @@ def add_scheme(url):
     return url
 
 
-def add_jpeg(name):
+def add_jpeg(filename):
     '''
     add .jpeg to filename
     '''
-    if not re.search(r'\.\w+$', name):
-        name += '.jpeg'
-    return name
-
-
-def make_unique(name, n=0):
-    '''
-    makes filename unique
-    '''
-    return f'({n}).'.join(re.split(r'\.', name))
+    if not re.search(regex_patterns['filetype'], filename):
+        filename += '.jpeg'
+    return filename
 
 
 def get_netloc(url):
@@ -95,12 +91,12 @@ def get_netloc(url):
     return urlparse(url)[1]
 
 
-def link_finder(data, url):
+def link_finder(url, html):
     '''
     method for extracting image urls from html
     '''
     link_table = []
-    links = re.finditer(regex_patterns['link_pattern'], data, re.IGNORECASE)
+    links = re.finditer(regex_patterns['link_pattern'], html, re.IGNORECASE)
     for link in links:
         link = unescape(link.group().strip('"').lstrip('/'))
         if re.search(regex_patterns['filter'], link):
@@ -112,16 +108,16 @@ def link_finder(data, url):
     return link_table
 
 
-def iter_finder(url):
+def extract_iterable(url):
     '''
     seperate iterable from a url (mode 3)
     '''
     return re.split('%%%', url)
 
 
-def parse_html(html):
+def parse_posts(html):
     '''
-    parses page links from html (instagram)
+    parses posts from html (instagram)
     '''
     link_table = []
     tags = re.finditer(f'<a href.+?>', html)
@@ -149,23 +145,6 @@ def parse_content(html):
     return link_table
 
 
-def insta_prep(url):
-    '''
-    parse filename from url
-    '''
-    return strip_query(re.search(regex_patterns['filename'], url).group().strip('/'))
-
-
-def insta_check(url):
-    '''
-    verify instagram link
-    '''
-    if re.search('instagram', url):
-        return True
-    else:
-        return False
-
-
 def is_relative(url):
     '''
     check if url is relative
@@ -176,13 +155,6 @@ def is_relative(url):
         return False
 
 
-def strip_query(string):
-    '''
-    remove query string
-    '''
-    return re.sub(regex_patterns['query'], '', string)
-
-
 def make_absolute(url, relative):
     '''
     convert relative url to absolute
@@ -190,16 +162,10 @@ def make_absolute(url, relative):
     return get_netloc(url) + relative
 
 
-def add_slash(path):
-    '''
-    add forward slash to end of filepath
-    '''
-    if not path[-1] == '/':
-        path += '/'
-    return path
-
-
 def unescape(url):
+    '''
+    substitute escape characters for ascii counterparts
+    '''
     for key in escape_to_ascii:
         if key in url:
             url = url.replace(key, escape_to_ascii[key])
