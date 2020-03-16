@@ -9,11 +9,10 @@ regex_patterns = {
     'filter': r'\.(js|css|pdf)',
     'insta_link': r'/p/[\w\-]+',
     'insta_crop': r'/(s|p)\d{3}x\d{3}/',
-    'insta_username': r'/[\w\._-]+((/+)*)$'
+    'insta_username': r'(/*[^/]+/*)$'
 }
 
 format_patterns = [
-    r'\?([\w\-@=%&\$]+)$',
     r'\?([\w\-@=%&\$]+)$',
     r'\-*large(\-|/)*',
     r'(\-|_)\d+x\d+',
@@ -22,7 +21,8 @@ format_patterns = [
     r'expanded_[a-z]+'
     r'\-e\d{13}',
     # NOTE: this is the same as above? can be combined?
-    r'((w|h)_\d+,)+c_limit'
+    r'((w|h)_\d+,)+c_limit',
+    r'/v/\d/.+\.webp$'
 ]
 
 escape_to_ascii = {
