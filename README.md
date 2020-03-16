@@ -22,7 +22,7 @@
 
 ### operation:
 
-+ *mode 1:*
++ *mode 1 (default):*
   parses and downloads media from a supplied url.
   strings can be added, substituted, or removed from urls as well. input the string you want modified in the format box. 'add' mode will append the element to the end of the
   url; for example a query string. 'sub' mode substitutes strings, while 'rem' removes them.
@@ -62,7 +62,7 @@
 
   + *mode 3 (instagram):*
       this is an instagram specific mode with partial support.
-      for now, the program will only parse the html of an instagram page that is saved to a txt file. the file should be named 'html.txt' and placed on the desktop. this mode will take a while to complete. the url to the instagram page needs to be input when ran.
+      for now, the program will only parse the html of an instagram page that is saved to a txt file. the file should be named 'html.txt' and placed in the download folder. this mode will take a while to complete. the url to the instagram page needs to be input when ran.
 
 *misc:*
   + for mode 1, inputting 'auto' as format argument will try to remove some common cropping from image urls.
@@ -73,7 +73,3 @@
   + failed to open url could mean the scheme is not present. i.e. https://
   + failed to parse url usually means the format of the image url does not match any regex pattern in the program.
   + if little or no (relevant) images are found then the page is probably generated dynamically with javascript which the program can not handle.
-
-**the logging output file also contains useful debugging information**
-
-*goblin art from final fantasy 1 art assets. all rights to original creator.*
