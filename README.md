@@ -56,7 +56,9 @@
 	* https://website.com/uploads/image_03.jpg
 	* https://website.com/uploads/image_04.jpg
 	* https://website.com/uploads/image_05.jpg
-	* ...
+	
+	...
+	
 	* https://website.com/uploads/image_100.jpg
 	
 	etc...
