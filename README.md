@@ -1,11 +1,5 @@
 
-**by:     .__                              
-  ___  __|__| ___________   ____   ____    
-  \  \/  /  |/  _ \_  __ \_/ __ \ /    \   
-   >    <|  (  <_> )  | \/\  ___/|   |  \  
-  /__/\_ \__|\____/|__|    \___  >___|  /  
-        \/                     \/     \/   
-              <web goblin>        v1.1**
+***web goblin by xioren v1.1***
 
 
 
@@ -28,38 +22,41 @@
   url; for example a query string. 'sub' mode substitutes strings, while 'rem' removes them.
 
     *rem mode:*
-        inputting: 'rem -\d+x\d+'
+          inputting: 'rem -\d+x\d+'
           https://website.com/uploads/image_01-300x300.jpg
-          becomes https://website.com/uploads/image_01.jpg
+          becomes
+	  https://website.com/uploads/image_01.jpg
 
     *sub mode:*
-        inputting: 'sub \?=\w ?=large'
+          inputting: 'sub \?=\w ?=large'
           (?=large will be subbed in for anything matching the regex pattern \?=\w)
           https://website.com/uploads/image_01.jpg?=cropped
-          becomes https://website.com/uploads/image_01.jpg?=large
+          becomes
+	  https://website.com/uploads/image_01.jpg?=large
 
 + *mode 2:*
 	when provided a url to a single file (instead of entire page), the program will try to download that file and all other files with the same url structure that are on the server (but not necessarily displayed on the website).
 	the iterable needs to be surrounded by '%%%' on either side when input to indicate the portion of the url to be iterated.
 
 	*example:*
-		image url: https://website.com/uploads/image_01.jpg
+	image url: https://website.com/uploads/image_01.jpg
 
-		url to submit: https://website.com/uploads/image_%%%01%%%.jpg
+	url to submit: https://website.com/uploads/image_%%%01%%%.jpg
 
-		the program will then iterate through and download all images it can find with that url structure on the server.
+	the program will then iterate through and download all images it can find with that url structure on the server.
 
-		e.g. https://website.com/uploads/image_01.jpg
-		     https://website.com/uploads/image_02.jpg
-  		   https://website.com/uploads/image_03.jpg
-		     https://website.com/uploads/image_04.jpg
-		     https://website.com/uploads/image_05.jpg
+	e.g. 
+	* https://website.com/uploads/image_01.jpg
+	* https://website.com/uploads/image_02.jpg
+	* https://website.com/uploads/image_03.jpg
+	* https://website.com/uploads/image_04.jpg
+	* https://website.com/uploads/image_05.jpg
          .
          .
          .
-         https://website.com/uploads/image_100.jpg
-		     etc...
-
+        * https://website.com/uploads/image_100.jpg
+	etc...
+		     
   + *mode 3 (instagram):*
       this is an instagram specific mode with partial support.
       for now, the program will only parse the html of an instagram page that is saved to a txt file. the file should be named 'html.txt' and placed in the download folder. this mode will take a while to complete. the url to the instagram page needs to be input when ran.
