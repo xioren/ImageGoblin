@@ -17,9 +17,7 @@
 ### operation:
 
 + *mode 1 (default):*
-  parses and downloads media from a supplied url.
-  strings can be added, substituted, or removed from urls as well. input the string you want modified in the format box. 'add' mode will append the element to the end of the
-  url; for example a query string. 'sub' mode substitutes strings, while 'rem' removes them.
+  parses and downloads media from a supplied url. strings can be added, substituted, or removed from urls as well. input the string you want modified in the format box. 'add' mode will append the element to the end of the url; for example a query string. 'sub' mode substitutes strings, while 'rem' removes them.
 
     *rem mode:*
     inputting: 'rem -\d+x\d+'
@@ -40,8 +38,7 @@
     https://website.com/uploads/image_01.jpg?=large
 
 + *mode 2:*
-	when provided a url to a single file (instead of entire page), the program will try to download that file and all other files with the same url structure that are on the server (but not necessarily displayed on the website).
-	the iterable needs to be surrounded by '%%%' on either side when input to indicate the portion of the url to be iterated.
+	when provided a url to a single file (instead of entire page), the program will try to download that file and all other files with the same url structure that are on the server (but not necessarily displayed on the website). the iterable needs to be surrounded by '%%%' on either side when input to indicate the portion of the url to be iterated.
 
 	*example:*
 	
@@ -63,9 +60,8 @@
 	
 	  etc...
 		     
-  + *mode 3 (instagram):*
-      this is an instagram specific mode with partial support.
-      for now, the program will only parse the html of an instagram page that is saved to a txt file. the file should be named 'html.txt' and placed in the download folder. this mode will take a while to complete. the url to the instagram page needs to be input when ran.
++ *mode 3 (instagram):*
+	this is an instagram specific mode with partial support. for now, the program will only parse the html of an instagram page that is saved to a txt file. the file should be named 'html.txt' and placed in the download folder. this mode will take a while to complete. the url to the instagram page needs to be input when ran.
 
 *misc:*
   + for mode 1, inputting 'auto' as format argument will try to remove some common cropping from image urls.
