@@ -1,3 +1,4 @@
+import os
 from time import sleep
 from goblin import MetaGoblin
 from parsing import *
@@ -5,13 +6,9 @@ from parsing import *
 
 class GrabberGoblin(MetaGoblin):
 
-    def __init__(self, url, save_loc, format, overwrite, nodl, print=False, export=False):
-        super().__init__(url=url, save_loc=save_loc, overwrite=overwrite)
+    def __init__(self, url, format, nodl, tickrate, overwrite, verbose):
+        super().__init__(url, tickrate, overwrite, verbose, nodl)
         self.format = format
-        self.export = export
-        self.nodl = nodl
-        if not url:
-            raise ValueError('no url supplied')
 
     def link_grab(self):
         '''
@@ -20,34 +17,34 @@ class GrabberGoblin(MetaGoblin):
         print(f'[parsing] {self.url}')
         html = self.get_html(self.url)
         if html:
-            self.links = link_finder(url=self.url, data=html)
-            print(f'[parse complete] {len(self.links)} links found')
+            links = link_finder(self.url, html)
+            print(f'[parse complete] {len(links)} links found')
             if self.nodl == 1:
-                for link in self.links:
+                for link in links:
                     print(link)
             elif self.nodl == 2:
-                self.write_iter(self.links, self.txt_loc)
+                self.write_file(links, os.path.join(self.main_path.replace('web_goblin', ''), 'goblin_links.txt'), iter=True)
                 print(f'[goblin] links written to file')
         else:
             print('[ERROR] no html recieved')
             return None
+        return links
 
-    def link_dl(self):
+    def link_dl(self, links):
         '''
-        download media
+        retrieve media
         '''
         downloaded = []
-        self.create_folders(self.dl_folder)
-        for link in self.links:
-            print(f'[downloading] link {self.links.index(link) + 1} of {len(self.links)}')
-            url, filename = dl_prep(url=link)
+        for link in links:
+            print(f'[downloading] link {links.index(link) + 1} of {len(links)}')
             if self.format:
-                url, filename = custom_format(url=url, name=filename, format=self.format)
-            filepath = f'{self.dl_folder}{filename}'
-            if not self.overwrite and self.exists(filepath):
+                link = custom_format(link, self.format)
+            filename = extract_filename(link)
+            filepath = os.path.join(self.main_path, f'{filename}.{filetype(link)}')
+            if not self.overwrite and os.path.exists(filepath):
                 continue
-            if url not in downloaded:
-                downloaded.append(url)
-                self.retrieve(url=url, path=filepath)
-            sleep(1)
-        self.cleanup(self.dl_folder)
+            if link not in downloaded:
+                downloaded.append(link)
+                self.retrieve(link, filepath)
+            sleep(self.tickrate)
+        self.cleanup(self.main_path)

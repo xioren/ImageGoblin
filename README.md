@@ -1,14 +1,10 @@
-
 # web goblin by xioren v1.1
 
 
 
-### changelog v1.1:
+### changelog v1.2:
   + significant reworking and optimizing of all modules
-  + combined modes 1 and 2
-  + exporting links to file is now optional instead of default
-    - can be sent to std out or text file
-  + verbosity rework
+  + code cleanup
 
 ### this program:
   + is designed to automate the discovery and retrieval of media on a web server.
@@ -23,20 +19,20 @@
 
     *rem mode:*
     inputting: 'rem -\d+x\d+'
-    
+
     https://website.com/uploads/image_01-300x300.jpg
-    
+
     becomes
-    
+
     https://website.com/uploads/image_01.jpg
 
     *sub mode:*
     inputting: 'sub \?=\w ?=large' (?=large will be subbed in for anything matching the regex pattern \?=\w)
-      
+
     https://website.com/uploads/image_01.jpg?=cropped
-      
+
     becomes
-      
+
     https://website.com/uploads/image_01.jpg?=large
 
 + *mode 2:*
@@ -44,7 +40,7 @@
 	the iterable needs to be surrounded by '%%%' on either side when input to indicate the portion of the url to be iterated.
 
 	*example:*
-	
+
 	image url: https://website.com/uploads/image_01.jpg
 
 	url to submit: https://website.com/uploads/image_%%%01%%%.jpg
@@ -57,9 +53,9 @@
 	* https://website.com/uploads/image_04.jpg
 	* https://website.com/uploads/image_05.jpg
         * https://website.com/uploads/image_100.jpg
-	
+
 	etc...
-		     
+
   + *mode 3 (instagram):*
       this is an instagram specific mode with partial support.
       for now, the program will only parse the html of an instagram page that is saved to a txt file. the file should be named 'html.txt' and placed in the download folder. this mode will take a while to complete. the url to the instagram page needs to be input when ran.
