@@ -56,9 +56,12 @@
 	* https://website.com/uploads/image_03.jpg
 	* https://website.com/uploads/image_04.jpg
 	* https://website.com/uploads/image_05.jpg
-        * https://website.com/uploads/image_100.jpg
 	
-	etc...
+	  ...
+	
+	* https://website.com/uploads/image_100.jpg
+	
+	  etc...
 		     
   + *mode 3 (instagram):*
       this is an instagram specific mode with partial support.
