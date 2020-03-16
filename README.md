@@ -1,5 +1,5 @@
 
-***web goblin by xioren v1.1***
+# web goblin by xioren v1.1
 
 
 
@@ -10,7 +10,7 @@
     - can be sent to std out or text file
   + verbosity rework
 
-# this program:
+### this program:
   + is designed to automate the discovery and retrieval of media on a web server.
   + is a work in progress.
 
@@ -44,13 +44,13 @@
 	the iterable needs to be surrounded by '%%%' on either side when input to indicate the portion of the url to be iterated.
 
 	*example:*
+	
 	image url: https://website.com/uploads/image_01.jpg
 
 	url to submit: https://website.com/uploads/image_%%%01%%%.jpg
 
 	the program will then iterate through and download all images it can find with that url structure on the server.
 
-	*example* 
 	* https://website.com/uploads/image_01.jpg
 	* https://website.com/uploads/image_02.jpg
 	* https://website.com/uploads/image_03.jpg
