@@ -1,7 +1,6 @@
 # web goblin by xioren v1.1
 
 
-
 ### changelog v1.2:
   + significant reworking and optimizing of all modules
   + code cleanup
@@ -12,10 +11,12 @@
 
 ### operation:
 
-+ *mode 1 (default):* parses and downloads media from a supplied url. strings can be added, substituted, or removed from urls as well. input the string you want modified in the format box. 'add' mode will append the element to the end of the url; for example a query string. 'sub' mode substitutes strings, while 'rem' removes them.
++ *mode 1 (default):* parses and downloads media from a web server using a supplied url. strings can be added, substituted, or removed using a _modifier_. input the _modifier_ as the format argument. 'add _modifier_' will append the modifier to the end of the url; for example a query string. 'sub _modifier_' substitutes, while 'rem _modifier_' removes.
 
-    *rem mode:*
-    inputting: 'rem -\d+x\d+'
+    *examples*
+
+    *rem _modifier_:*
+    inputting: '-f rem -\d+x\d+'
 
     https://website.com/uploads/image_01-300x300.jpg
 
@@ -23,8 +24,8 @@
 
     https://website.com/uploads/image_01.jpg
 
-    *sub mode:*
-    inputting: 'sub \?=\w ?=large' (?=large will be subbed in for anything matching the regex pattern \?=\w)
+    *sub _modifier_ _replacement_:*
+    inputting: '--format sub \?=\w ?=large'
 
     https://website.com/uploads/image_01.jpg?=cropped
 
@@ -52,10 +53,10 @@
 
     etc...
 
-+ *mode 3 (instagram):* this is an instagram specific mode with partial support. for now, the program will only parse the html of an instagram page that is saved to a txt file. the file should be named 'html.txt' and placed in the download folder. this mode will take a while to complete. the url to the instagram page needs to be input when ran.
++ *mode 3 (instagram):* this is an instagram specific mode with partial support. for now, the program will only parse the html of an instagram page that is saved to a txt file. the file should be named 'html.txt' and placed in the directory that this program was run from. this mode will take a while to complete. the url to the instagram page or username need to be input when ran.
 
 *misc:*
-  + for mode 1, inputting 'auto' as format argument will try to remove some common cropping from image urls.
+  + for mode 1, inputting '-f auto' as option will try to remove some common cropping from image urls.
 
 *troubleshooting:*
   + the format input needs to be exact so make sure elements/spaces/commas have not been erroneously added or left out.
