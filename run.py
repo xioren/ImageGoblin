@@ -5,19 +5,19 @@ from argparse import ArgumentParser
 def main(url, mode, timeout, format, increment, nodl, verbose, tickrate):
     if mode == 2:
         from iterator import IterGoblin
-        goblin = IterGoblin(url=url, timeout=timeout, nodl=nodl, increment=increment,
+        goblin = IterGoblin(url, timeout=timeout, nodl=nodl, increment=increment,
                             verbose=verbose, tickrate=tickrate)
         goblin.iterate()
     elif mode == 3:
         from instagram import InstaGoblin
-        goblin = InstaGoblin(url=url, verbose=verbose,
+        goblin = InstaGoblin(url, verbose=verbose,
                              tickrate=tickrate, nodl=nodl)
         posts = goblin.find_posts()
         media = goblin.find_media(posts)
         goblin.down_media(media)
     else:
         from grabber import GrabberGoblin
-        goblin = GrabberGoblin(url=url, format=format, nodl=nodl,
+        goblin = GrabberGoblin(url, format=format, nodl=nodl,
                                verbose=verbose, tickrate=tickrate)
         links = goblin.link_grab()
         if not nodl:
@@ -38,13 +38,12 @@ parser.add_argument('-f', '--format', nargs='+', help='formatting modifier (acti
 parser.add_argument('-i', '--increment', help='iteration step size (n)',
                     type=int, default=1)
 parser.add_argument('-n', '--nodl', help='skip downloading and print (1) or write (2) links',
-                    type=int, default=0)
+                    action='store_true')
 parser.add_argument('-r', '--rate', help='program tickrate (n)',
                     type=int, default=1)
 args = parser.parse_args()
 
 
 if __name__ == '__main__':
-    main(url=args.url, mode=args.mode, timeout=args.timeout,
-         verbose=args.verbose, format=args.format,
-         increment=args.increment, nodl=args.nodl, tickrate=args.rate)
+    main(args.url, args.mode, args.timeout, args.format,
+         args.increment, args.nodl, args.verbose, args.rate)

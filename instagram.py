@@ -17,7 +17,7 @@ class InstaGoblin(MetaGoblin):
         '''
         parse html for instagram posts
         '''
-        print(f'[parsing] {self.url}')
+        print(f'[parsing] {self.username}')
         html = self.read_file(self.html_txt)
         assert html
         return parse_posts(html)
@@ -41,6 +41,7 @@ class InstaGoblin(MetaGoblin):
         '''
         retrieves media from web
         '''
+        assert media
         for link in media:
             print(f'[downloading] link {media.index(link) + 1} of {len(media)}')
             filename = extract_filename(link)
@@ -52,4 +53,4 @@ class InstaGoblin(MetaGoblin):
             sleep(self.tickrate)
         self.cleanup(self.sub_dir)
         self.move_vid(self.sub_dir)
-        print(f'[parse complete] {len(media)} links found')
+        print(f'[parse complete] {len(media)} links downloaded')

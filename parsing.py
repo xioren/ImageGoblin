@@ -136,11 +136,9 @@ def parse_content(html):
     link_table = []
     tags = re.finditer(f'<.+>', html)
     for tag in tags:
-        matches = re.finditer(regex_patterns['link_pattern'], tag.group())
+        matches = re.finditer(regex_patterns['insta_media'], tag.group())
         for link in matches:
             link = unescape(link.group())
-            if not re.search(regex_patterns['link_filter'], link):
-                continue
             if re.search(regex_patterns['insta_crop'], link):
                 continue
             if link not in link_table:

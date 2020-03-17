@@ -22,9 +22,6 @@ class GrabberGoblin(MetaGoblin):
             if self.nodl == 1:
                 for link in links:
                     print(link)
-            elif self.nodl == 2:
-                self.write_file(links, os.path.join(self.main_path.replace('web_goblin', ''), 'goblin_links.txt'), iter=True)
-                print(f'[goblin] links written to file')
         else:
             print('[ERROR] no html recieved')
             return None

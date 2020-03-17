@@ -2,10 +2,11 @@
 
 regex_patterns = {
     'filename': r'(/*[^/]+(\.\w+)*)$',
-    'link_pattern': r'https*[^"\n =\']+',
+    'link_pattern': r'https://*[^"\n \']+',
+    'insta_media': r'https*://[^?]+\.(jpg|mp4)[^ "]+',
     'link_filter': r'(\.(jpe*g|png|tiff*|gif|mp4|mov|flv))|images*|photos*|uploads*',
     'querry': r'((\?|&).+)$',
-    'filetype': r'\.[A-Za-z]+',
+    'filetype': r'\.[A-Za-z0-9]+',
     'type_id': r'\.(jpe*g|png|gif|mp4|web(p|m)|tiff*)',
     'tags': r'<[^>]+>',
     'filter': r'\.(js|css|pdf)',

@@ -15,7 +15,7 @@ class MetaGoblin:
         self.verbose = verbose
         self.nodl = nodl
         self.main_path = os.path.join(os.getcwd(), 'web_goblin')
-        self.headers = {'User-Agent': 'Firefox/72',
+        self.headers = {'User-Agent': 'GoblinTeam/1.2',
                         'Accept-Encoding': 'gzip'}
         if not self.nodl:
             self.create_folders(self.main_path)
@@ -29,12 +29,14 @@ class MetaGoblin:
 
     def cleanup(self, path):
         '''
-        cleanup unwanted files (icons, erroneous, etc...)
-        default 50kb threshhold
+        cleanup small unwanted files (icons, erroneous, etc...)
+        default 50kb threshold
         '''
         # TODO: dangerous, consider recieving file manifest instead?
         for file in os.listdir(path):
             filepath = os.path.join(path, file)
+            if os.path.isdir(filepath):
+                continue
             if os.path.getsize(filepath) < 50000:
                 try:
                     os.remove(filepath)
@@ -59,6 +61,8 @@ class MetaGoblin:
                                 data = decompress(data)
                             except OSError:
                                 pass
+                            except EOFError:
+                                return None
                         file.write(data)
         except HTTPError as e:
             if self.verbose:
@@ -81,6 +85,8 @@ class MetaGoblin:
                         html = decompress(html)
                     except OSError:
                         pass
+                    except EOFError:
+                        return None
         except HTTPError as e:
             if self.verbose:
                 print(f'[{e}] {url}')
@@ -107,6 +113,7 @@ class MetaGoblin:
         '''
         write to disk
         '''
+        # TODO: remove
         try:
             with open(path, mode) as file:
                 if iter:
