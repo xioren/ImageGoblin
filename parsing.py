@@ -37,7 +37,7 @@ def filetype(url):
     '''
     extract file type
     '''
-    type = re.search(r'\.(jpe*g|png|gif|mp4|web(p|m)|tiff*)', url, re.IGNORECASE)
+    type = re.search(regex_patterns['type_id'], url, re.IGNORECASE)
     if not type:
         return 'jpeg'
     return type.group().lstrip('.')

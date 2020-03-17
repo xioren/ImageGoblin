@@ -34,6 +34,7 @@ class GrabberGoblin(MetaGoblin):
         '''
         retrieve media
         '''
+        assert links
         downloaded = []
         for link in links:
             print(f'[downloading] link {links.index(link) + 1} of {len(links)}')

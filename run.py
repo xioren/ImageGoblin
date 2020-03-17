@@ -27,19 +27,19 @@ def main(url, mode, timeout, format, increment, nodl, verbose, tickrate):
 parser = ArgumentParser()
 parser.add_argument('url', help='webpage or media url',
                     default=None)
-parser.add_argument('-m', '--mode', help='mode of operation',
+parser.add_argument('-m', '--mode', help='mode of operation (1, 2, 3)',
                     type=int, default=1)
-parser.add_argument('-v', '--verbose', help='verbosity',
-                    type=bool, default=True)
-parser.add_argument('-t', '--timeout', help='iteration timeout',
+parser.add_argument('-v', '--verbose', help='verbose output',
+                    action='store_true')
+parser.add_argument('-t', '--timeout', help='iteration timeout threshold (n)',
                     type=int, default=5)
-parser.add_argument('-f', '--format', nargs='+', help='custom formating',
+parser.add_argument('-f', '--format', nargs='+', help='formatting modifier (action modifier[ modifier])',
                     default=None)
-parser.add_argument('-i', '--increment', help='iteration step size',
+parser.add_argument('-i', '--increment', help='iteration step size (n)',
                     type=int, default=1)
-parser.add_argument('-n', '--nodl', help='skip downloading and print or write links',
+parser.add_argument('-n', '--nodl', help='skip downloading and print (1) or write (2) links',
                     type=int, default=0)
-parser.add_argument('-r', '--rate', help='program tickrate',
+parser.add_argument('-r', '--rate', help='program tickrate (n)',
                     type=int, default=1)
 args = parser.parse_args()
 

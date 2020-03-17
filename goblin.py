@@ -64,6 +64,10 @@ class MetaGoblin:
             if self.verbose:
                 print(f'[{e}] {url}')
             return None
+        except URLError as e:
+            if self.verbose:
+                print(f'[{e}] {url}')
+            return None
         print(f'[success] {url}')
         return True
 
@@ -78,6 +82,10 @@ class MetaGoblin:
                     except OSError:
                         pass
         except HTTPError as e:
+            if self.verbose:
+                print(f'[{e}] {url}')
+            return None
+        except URLError as e:
             if self.verbose:
                 print(f'[{e}] {url}')
             return None

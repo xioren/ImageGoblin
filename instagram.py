@@ -49,7 +49,7 @@ class InstaGoblin(MetaGoblin):
                 print(f'[file exists] {self.username}_{filename}')
                 continue
             self.retrieve(link, filepath)
-            sleep(1)
+            sleep(self.tickrate)
         self.cleanup(self.sub_dir)
         self.move_vid(self.sub_dir)
         print(f'[parse complete] {len(media)} links found')

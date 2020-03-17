@@ -40,12 +40,12 @@ class IterGoblin(MetaGoblin):
             filepath = os.path.join(self.main_path, f'{filename}.{filetype(self.url)}')
             if os.path.exists(filepath):
                 print(f'[file exists] {filename}')
-                continue
-            attempt = self.retrieve(url, filepath)
-            if attempt:
-                self.idle = 0
             else:
-                self.idle += 1
-            iter = str(int(iter.lstrip('0')) + self.increment).zfill(len(iter))
+                attempt = self.retrieve(url, filepath)
+                if attempt:
+                    self.idle = 0
+                else:
+                    self.idle += 1
+            iter = str(int(n.lstrip('0')) + self.increment).zfill(len(n))
             iteration += 1
             sleep(self.tickrate)

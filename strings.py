@@ -1,4 +1,4 @@
-# re strings
+# regex patterms amd misc
 
 regex_patterns = {
     'filename': r'(/*[^/]+(\.\w+)*)$',
@@ -6,6 +6,7 @@ regex_patterns = {
     'link_filter': r'(\.(jpe*g|png|tiff*|gif|mp4|mov|flv))|images*|photos*|uploads*',
     'querry': r'((\?|&).+)$',
     'filetype': r'\.[A-Za-z]+',
+    'type_id': r'\.(jpe*g|png|gif|mp4|web(p|m)|tiff*)',
     'tags': r'<[^>]+>',
     'filter': r'\.(js|css|pdf)',
     'insta_link': r'/p/[\w\-]+',
@@ -14,6 +15,7 @@ regex_patterns = {
 }
 
 format_patterns = [
+    # TODO: add more
     r'\-*large(\-|/)*',
     r'(\-|_)\d+x\d+',
     r'([a-z]_[a-z0-9]+,*)+|((w|h)_\d+,*)+|(:best,w_\d+/v1/)',
