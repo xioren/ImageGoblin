@@ -2,10 +2,11 @@
 
 regex_patterns = {
     'filename': r'(/*[^/]+(\.\w+)*)$',
-    'link_pattern': r'https*[^"\n =]+\.(jpe*g|png|tiff*|gif|mp4|mov|flv)(\?[^"\n, ]+)*',
+    'link_pattern': r'https*[^"\n =\']+',
+    'link_filter': r'(\.(jpe*g|png|tiff*|gif|mp4|mov|flv))|images*|photos*|uploads*',
     'querry': r'((\?|&).+)$',
     'filetype': r'\.[A-Za-z]+',
-    'tags': r'<[:\.\t\n /"=\w\?]+>|<.+>',
+    'tags': r'<[^>]+>',
     'filter': r'\.(js|css|pdf)',
     'insta_link': r'/p/[\w\-]+',
     'insta_crop': r'/(s|p)\d{3}x\d{3}/',
@@ -13,15 +14,12 @@ regex_patterns = {
 }
 
 format_patterns = [
-    r'\?([\w\-@=%&\$]+)$',
     r'\-*large(\-|/)*',
     r'(\-|_)\d+x\d+',
-    r'c_fill,f_auto,g_north,h_\d+,q_auto:best,w_\d+/v1/',
+    r'([a-z]_[a-z0-9]+,*)+|((w|h)_\d+,*)+|(:best,w_\d+/v1/)',
     r'(_|\-)*thumb', r'(_|\-)*big',
     r'expanded_[a-z]+'
     r'\-e\d{13}',
-    # NOTE: this is the same as above? can be combined?
-    r'((w|h)_\d+,)+c_limit',
     r'/v/\d/.+\.webp$'
 ]
 

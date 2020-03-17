@@ -99,6 +99,8 @@ def link_finder(url, html):
     links = re.finditer(regex_patterns['link_pattern'], html, re.IGNORECASE)
     for link in links:
         link = unescape(link.group().strip('"').lstrip('/'))
+        if not re.search(regex_patterns['link_filter'], link):
+            continue
         if re.search(regex_patterns['filter'], link):
             continue
         if is_relative(link):
@@ -138,6 +140,8 @@ def parse_content(html):
         matches = re.finditer(regex_patterns['link_pattern'], tag.group())
         for link in matches:
             link = unescape(link.group())
+            if not re.search(regex_patterns['link_filter'], link):
+                continue
             if re.search(regex_patterns['insta_crop'], link):
                 continue
             if link not in link_table:
@@ -159,7 +163,7 @@ def make_absolute(url, relative):
     '''
     convert relative url to absolute
     '''
-    return get_netloc(url) + relative
+    return get_netloc(url) + f'/{relative}'
 
 
 def unescape(url):
