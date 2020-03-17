@@ -25,11 +25,11 @@ class IterGoblin(MetaGoblin):
         '''
         re-forms url and iterates (mode 3)
         '''
-        base, iter, end = extract_iterable(self.url)
+        base, iterable, end = extract_iterable(self.url)
         iteration = 1
         print(f'[iterating] {self.url}')
         while True:
-            url = f'{base}{iter}{end}'
+            url = f'{base}{iterable}{end}'
             if self.timed_out(self.timeout):
                 self.cleanup(self.main_path)
                 print(f'[timeout] after {self.timeout} attempts')
@@ -46,6 +46,6 @@ class IterGoblin(MetaGoblin):
                     self.idle = 0
                 else:
                     self.idle += 1
-            iter = str(int(n.lstrip('0')) + self.increment).zfill(len(n))
+            iterable = str(int(iterable.lstrip('0')) + self.increment).zfill(len(iterable))
             iteration += 1
             sleep(self.tickrate)
