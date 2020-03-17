@@ -9,10 +9,9 @@ from parsing import *
 
 class MetaGoblin:
 
-    def __init__(self, url, tickrate, overwrite, verbose, nodl):
+    def __init__(self, url, tickrate, verbose, nodl):
         self.url = url
         self.tickrate = tickrate
-        self.overwrite = overwrite
         self.verbose = verbose
         self.nodl = nodl
         self.main_path = os.path.join(os.getcwd(), 'web_goblin')

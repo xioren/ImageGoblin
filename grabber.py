@@ -6,8 +6,8 @@ from parsing import *
 
 class GrabberGoblin(MetaGoblin):
 
-    def __init__(self, url, format, nodl, tickrate, overwrite, verbose):
-        super().__init__(url, tickrate, overwrite, verbose, nodl)
+    def __init__(self, url, format, nodl, tickrate, verbose):
+        super().__init__(url, tickrate, verbose, nodl)
         self.format = format
 
     def link_grab(self):
@@ -41,7 +41,8 @@ class GrabberGoblin(MetaGoblin):
                 link = custom_format(link, self.format)
             filename = extract_filename(link)
             filepath = os.path.join(self.main_path, f'{filename}.{filetype(link)}')
-            if not self.overwrite and os.path.exists(filepath):
+            if os.path.exists(filepath):
+                print(f'[file exists] {filename}')
                 continue
             if link not in downloaded:
                 downloaded.append(link)

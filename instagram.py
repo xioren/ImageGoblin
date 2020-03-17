@@ -6,8 +6,8 @@ from parsing import *
 
 class InstaGoblin(MetaGoblin):
 
-    def __init__(self, url, tickrate, overwrite, verbose, nodl):
-        super().__init__(url, tickrate, overwrite, verbose, nodl)
+    def __init__(self, url, tickrate, verbose, nodl):
+        super().__init__(url, tickrate, verbose, nodl)
         self.username = insta_username(self.url)
         self.html_txt = os.path.join(self.main_path.replace('web_goblin', ''), 'html.txt')
         self.sub_dir = os.path.join(self.main_path, self.username)
@@ -46,6 +46,7 @@ class InstaGoblin(MetaGoblin):
             filename = extract_filename(link)
             filepath = os.path.join(self.sub_dir, f'{self.username}_{filename}.{filetype(link)}')
             if os.path.exists(filepath):
+                print(f'[file exists] {self.username}_{filename}')
                 continue
             self.retrieve(link, filepath)
             sleep(1)

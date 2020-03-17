@@ -47,16 +47,15 @@ def custom_format(url, format):
     '''
     add, substitute, or remove elements from a filename/url pair
     '''
-    parts = format.split(' ')
-    if parts[0] == 'add':
-        assert len(parts) == 2
-        url = url.strip('\n') + parts[1]
-    elif parts[0] == 'sub':
-        assert len(parts) == 3
-        url = re.sub(parts[1], parts[2], url)
-    elif parts[0] == 'rem':
-        assert len(parts) == 2
-        url = re.sub(parts[1], '', url)
+    if format[0] == 'add':
+        assert len(format) == 2
+        url = url.strip('\n') + format[1]
+    elif format[0] == 'sub':
+        assert len(format) == 3
+        url = re.sub(format[1], format[2], url)
+    elif format[0] == 'rem':
+        assert len(format) == 2
+        url = re.sub(format[1], '', url)
     elif format == 'auto':
         url = decrop(dequerry(url))
         if 'squarespace' in url:

@@ -6,8 +6,8 @@ from parsing import *
 
 class IterGoblin(MetaGoblin):
 
-    def __init__(self, url, timeout, overwrite, increment, tickrate, verbose, nodl):
-        super().__init__(url, tickrate, overwrite, verbose, nodl)
+    def __init__(self, url, timeout, increment, tickrate, verbose, nodl):
+        super().__init__(url, tickrate, verbose, nodl)
         self.timeout = timeout
         self.idle = 0
         self.increment = increment
@@ -38,7 +38,8 @@ class IterGoblin(MetaGoblin):
                 print(f'[iteration] # {iteration}')
             filename = extract_filename(url)
             filepath = os.path.join(self.main_path, f'{filename}.{filetype(self.url)}')
-            if not self.overwrite and os.path.exists(filepath):
+            if os.path.exists(filepath):
+                print(f'[file exists] {filename}')
                 continue
             attempt = self.retrieve(url, filepath)
             if attempt:
