@@ -1,4 +1,4 @@
-# web goblin by xioren v1.1
+# web goblin by xioren v1.2
 
 
 ### changelog v1.2:
