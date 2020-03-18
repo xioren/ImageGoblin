@@ -1,8 +1,9 @@
-# web goblin by xioren v1.2
+# web goblin by xioren v1.3
 
 
-### changelog v1.2:
+### changelog v1.3:
   + significant reworking and optimizing of all modules
+  + added site specific handlers (similar to youtube-dl)
   + code cleanup
 
 ### this program:
@@ -11,7 +12,9 @@
 
 ### operation:
 
-+ *mode 1 (default):* parses and downloads media from a web server using a supplied url. strings can be added, substituted, or removed using a _modifier_. input the _modifier_ as the format argument. 'add _modifier_' will append the modifier to the end of the url; for example a query string. 'sub _modifier_' substitutes, while 'rem _modifier_' removes.
++ *default:* inputting either a url or a text file with links will try to match the link(s) to a specific handler. the handler with download what images is can accord to its rule set. if no handler is matched a generic handler is used.
+
++ *generic:* for any site without a specific handler. parses and downloads media from a web server using a supplied url. strings can be added, substituted, or removed using a _modifier_. input the _modifier_ as the format argument. 'add _modifier_' will append the modifier to the end of the url; for example a query string. 'sub _modifier_' substitutes, while 'rem _modifier_' removes.
 
     *examples*
 
@@ -33,7 +36,7 @@
 
     https://website.com/uploads/image_01.jpg?=large
 
-+ *mode 2:* when provided a url to a single file (instead of entire page), the program will try to download that file and all other files with the same url structure that are on the server (but not necessarily displayed on the website). the iterable needs to be surrounded by '%%%' on either side when input to indicate the portion of the url to be iterated.
++ *iterate:* when provided a url to a single file (instead of entire page), the program will try to download that file and all other files with the same url structure that are on the server (but not necessarily displayed on the website). the iterable needs to be surrounded by '%%%' on either side when input to indicate the portion of the url to be iterated.
 
     *example:*
 
@@ -53,10 +56,10 @@
 
     etc...
 
-+ *mode 3 (instagram):* this is an instagram specific mode with partial support. for now, the program will only parse the html of an instagram page that is saved to a txt file. the file should be named 'html.txt' and placed in the directory that this program was run from. this mode will take a while to complete. the url to the instagram page or username need to be input when ran.
++ *instagram:* this is an instagram specific mode with partial support. for now, the program will only parse the html of an instagram page that is saved to a txt file. the file should be named 'html.txt' and placed in the directory that this program was run from. this mode will take a while to complete. the url to the instagram page or username need to be input when ran.
 
 *misc:*
-  + for mode 1, inputting '-f auto' as option will try to remove some common cropping from image urls.
+  + for the generic handler, inputting '-f auto' as option will try to remove some common cropping from image urls.
 
 *troubleshooting:*
   + the format input needs to be exact so make sure elements/spaces/commas have not been erroneously added or left out.
