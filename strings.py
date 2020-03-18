@@ -3,9 +3,9 @@
 regex_patterns = {
     'filename': r'(/*[^/]+(\.\w+)*)$',
     'link_pattern': r'https://*[^"\n \']+',
-    'insta_media': r'https*://[^?]+\.(jpg|mp4)[^ "]+',
+    'insta_media': r'https*://[^\?]+\.(jpg|mp4)[^ "]+',
     'link_filter': r'(\.(jpe*g|png|tiff*|gif|mp4|mov|flv))|images*|photos*|uploads*',
-    'querry': r'((\?|&).+)$',
+    'query': r'((\?|&).+)$',
     'filetype': r'\.[A-Za-z0-9]+',
     'type_id': r'\.(jpe*g|png|gif|mp4|web(p|m)|tiff*)',
     'tags': r'<[^>]+>',
@@ -16,13 +16,15 @@ regex_patterns = {
 }
 
 format_patterns = [
-    # TODO: add more
-    r'\-*large(\-|/)*',
-    r'(\-|_)\d+x\d+',
-    r'([a-z]_[a-z0-9]+,*)+|((w|h)_\d+,*)+|(:best,w_\d+/v1/)',
-    r'(_|\-)*thumb', r'(_|\-)*big',
-    r'expanded_[a-z]+'
-    r'\-e\d{13}',
+    r'(-|_)+(\d+x(\d+)*|(\d+)*x\d+)',
+    r'(\d+x(\d+)*|(\d+)*x\d+)(-|_)+',
+    r'\d+x\d+/',
+    r'(-|_)*(large|big|thumb)(-|_)*',
+    r'c_fill,f_auto,g_north,h_\d+,q_auto:best,w_\d+/v1/',
+    r'expanded_[a-z]+/',
+    r'w/\d+/',
+    # NOTE: \-e\d+ catches some dashed filenames by mistake, consider changing
+    # r'\-e\d+'
     r'/v/\d/.+\.webp$'
 ]
 

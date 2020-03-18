@@ -5,6 +5,7 @@ from io import DEFAULT_BUFFER_SIZE
 from urllib.request import urlopen, Request
 from urllib.error import HTTPError, URLError
 from parsing import *
+from meta_sources import *
 
 
 class MetaGoblin:
@@ -14,18 +15,20 @@ class MetaGoblin:
         self.tickrate = tickrate
         self.verbose = verbose
         self.nodl = nodl
-        self.main_path = os.path.join(os.getcwd(), 'web_goblin')
+        self.path_main = os.path.join(os.getcwd(), 'web_goblin')
+        self.external_links = os.path.join(os.getcwd(), 'links.txt')
         self.headers = {'User-Agent': 'GoblinTeam/1.2',
                         'Accept-Encoding': 'gzip'}
         if not self.nodl:
-            self.create_folders(self.main_path)
+            self.make_dirs(self.path_main)
 
-    def create_folders(self, path):
+    def make_dirs(self, *paths):
         '''
         creates directories
         '''
-        if os.path.exists(path) is False:
-            os.makedirs(path)
+        for path in paths:
+            if not os.path.exists(path):
+                os.mkdir(path)
 
     def cleanup(self, path):
         '''
@@ -41,16 +44,16 @@ class MetaGoblin:
                 try:
                     os.remove(filepath)
                 except PermissionError as e:
-                    print(f'[cleanup error] {e}')
+                    print(f'[{self.__str__()}] <cleanup error> {e}')
                     continue
 
-    def retrieve(self, url, path, mode='wb'):
+    def retrieve(self, url, path, mode, wait):
         '''
         retrieve web content
         '''
         request = Request(url, None, self.headers)
         try:
-            with urlopen(request, timeout=10) as response:
+            with urlopen(request, timeout=wait) as response:
                 with open(path, mode) as file:
                     while True:
                         data = response.read(DEFAULT_BUFFER_SIZE)
@@ -66,16 +69,18 @@ class MetaGoblin:
                         file.write(data)
         except HTTPError as e:
             if self.verbose:
-                print(f'[{e}] {url}')
+                print(f'[{self.__str__()}] <{e}> {url}')
             return None
         except URLError as e:
             if self.verbose:
-                print(f'[{e}] {url}')
+                print(f'[{self.__str__()}] <{e}> {url}')
             return None
-        print(f'[success] {url}')
         return True
 
     def get_html(self, url):
+        '''
+        retrieve web page html
+        '''
         request = Request(url, None, self.headers)
         try:
             with urlopen(request, timeout=10) as response:
@@ -89,13 +94,13 @@ class MetaGoblin:
                         return None
         except HTTPError as e:
             if self.verbose:
-                print(f'[{e}] {url}')
+                print(f'[{self.__str__()}] <{e}> {url}')
             return None
         except URLError as e:
             if self.verbose:
-                print(f'[{e}] {url}')
+                print(f'[{self.__str__()}] <{e}]> {url}')
             return None
-        return html.decode()
+        return html.decode('utf-8', 'ignore')
 
     def make_unique(self, filename):
         '''
@@ -113,7 +118,6 @@ class MetaGoblin:
         '''
         write to disk
         '''
-        # TODO: remove
         try:
             with open(path, mode) as file:
                 if iter:
@@ -122,20 +126,21 @@ class MetaGoblin:
                 else:
                     file.write(data)
         except OSError as e:
-            print(f'[write error] {e}')
+            print(f'[{self.__str__()}] <write error> {e}')
 
-    def read_file(self, path, mode=None):
+    def read_file(self, path, iter=False):
         '''
         read txt file
         '''
+        # NOTE: unused
         try:
             with open(path, 'r') as file:
-                if mode == 'iter':
-                    return file.readlines()
+                if iter:
+                    return file.read().splitlines()
                 else:
                     return file.read()
         except OSError as e:
-            print(f'[read error] {e}')
+            print(f'[{self.__str__()}] <read error> {e}')
 
     def move_vid(self, path):
         '''
@@ -147,3 +152,37 @@ class MetaGoblin:
         for file in os.listdir(path):
             if '.mp4' in file:
                 os.rename(os.path.join(path, file), os.path.join(dirpath, file))
+
+    def is_duplicate(self, path, url):
+        '''
+        check for filename duplicates
+        '''
+        local_files = set()
+        for root, dirs, files in os.walk(path):
+            for file in files:
+                local_files.add(extract_filename(file))
+        if extract_filename(url) in local_files:
+            return True
+        else:
+            return False
+
+    def loot(self, url, save_loc=None, filename=None, clean=False, mode='wb', wait=10):
+        '''
+        pre-processor for retrieve
+        '''
+        if clean:
+            url = sanitize(url)
+        if not filename:
+            filename = extract_filename(url)
+        if not save_loc:
+            save_loc = self.path_main
+        filepath = os.path.join(save_loc, f'{filename}.{filetype(url)}')
+        if os.path.exists(filepath):
+            if self.verbose:
+                print(f'[{self.__str__()}] <file exists> {filename}')
+            return False
+        attempt = self.retrieve(url, filepath, mode, wait)
+        if attempt:
+            print(f'[{self.__str__()}] <success> {filename}')
+            return True
+        return False

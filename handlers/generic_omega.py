@@ -1,29 +1,33 @@
 import os
 from time import sleep
-from goblin import MetaGoblin
+from handlers.meta_goblin import MetaGoblin
 from parsing import *
 
 
-class GrabberGoblin(MetaGoblin):
+class OmegaGoblin(MetaGoblin):
 
-    def __init__(self, url, format, nodl, tickrate, verbose):
+    def __init__(self, url, mode, timeout, format, increment, nodl, verbose, tickrate):
         super().__init__(url, tickrate, verbose, nodl)
         self.format = format
+        print(f'[{self.__str__()}] <running>')
+
+    def __str__(self):
+        return 'omega goblin'
 
     def link_grab(self):
         '''
         parse html for media links
         '''
-        print(f'[parsing] {self.url}')
+        print(f'[{self.__str__()}] <parsing> {self.url}')
         html = self.get_html(self.url)
         if html:
             links = link_finder(self.url, html)
-            print(f'[parse complete] {len(links)} links found')
+            print(f'[{self.__str__()}] <parse complete> {len(links)} links found')
             if self.nodl == 1:
                 for link in links:
                     print(link)
         else:
-            print('[ERROR] no html recieved')
+            print('[{self.__str__()}] <ERROR> no html recieved')
             return None
         return links
 
@@ -34,16 +38,16 @@ class GrabberGoblin(MetaGoblin):
         assert links
         downloaded = []
         for link in links:
-            print(f'[downloading] link {links.index(link) + 1} of {len(links)}')
+            print(f'[{self.__str__()}] <downloading> link {links.index(link) + 1} of {len(links)}')
             if self.format:
                 link = custom_format(link, self.format)
-            filename = extract_filename(link)
-            filepath = os.path.join(self.main_path, f'{filename}.{filetype(link)}')
-            if os.path.exists(filepath):
-                print(f'[file exists] {filename}')
-                continue
             if link not in downloaded:
                 downloaded.append(link)
-                self.retrieve(link, filepath)
+                self.loot(link)
             sleep(self.tickrate)
-        self.cleanup(self.main_path)
+        self.cleanup(self.path_main)
+
+    def run(self):
+        links = self.link_grab()
+        if not self.nodl:
+            self.link_dl(links)

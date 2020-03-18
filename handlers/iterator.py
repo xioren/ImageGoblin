@@ -1,16 +1,20 @@
 import os
 from time import sleep
-from goblin import MetaGoblin
+from handlers.meta_goblin import MetaGoblin
 from parsing import *
 
 
-class IterGoblin(MetaGoblin):
+class IteratorGoblin(MetaGoblin):
 
-    def __init__(self, url, timeout, increment, tickrate, verbose, nodl):
+    def __init__(self, url, mode, timeout, format, increment, nodl, verbose, tickrate):
         super().__init__(url, tickrate, verbose, nodl)
+        self.increment = increment
         self.timeout = timeout
         self.idle = 0
-        self.increment = increment
+        print(f'[{self.__str__()}] <running>')
+
+    def __str__(self):
+        return 'iterator goblin'
 
     def timed_out(self, n):
         '''
@@ -27,25 +31,23 @@ class IterGoblin(MetaGoblin):
         '''
         base, iterable, end = extract_iterable(self.url)
         iteration = 1
-        print(f'[iterating] {self.url}')
+        print(f'[{self.__str__()}] <iterating> {self.url}')
         while True:
             url = f'{base}{iterable}{end}'
             if self.timed_out(self.timeout):
-                self.cleanup(self.main_path)
-                print(f'[timeout] after {self.timeout} attempts')
+                self.cleanup(self.path_main)
+                print(f'[{self.__str__()}] <timeout> after {self.timeout} attempts')
                 return None
             if iteration % 25 == 0:
-                print(f'[iteration] # {iteration}')
-            filename = extract_filename(url)
-            filepath = os.path.join(self.main_path, f'{filename}.{filetype(self.url)}')
-            if os.path.exists(filepath):
-                print(f'[file exists] {filename}')
+                print(f'[{self.__str__()}] <iteration> # {iteration}')
+            attempt = self.loot(url, filepath)
+            if attempt:
+                self.idle = 0
             else:
-                attempt = self.retrieve(url, filepath)
-                if attempt:
-                    self.idle = 0
-                else:
-                    self.idle += 1
+                self.idle += 1
             iterable = str(int(iterable.lstrip('0')) + self.increment).zfill(len(iterable))
             iteration += 1
             sleep(self.tickrate)
+
+    def run(self):
+        self.iterate()

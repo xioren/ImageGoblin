@@ -14,7 +14,7 @@ def extract_filename(url):
     '''
     extracts filename from url
     '''
-    return re.sub(regex_patterns['filetype'], '', re.search(regex_patterns['filename'], dequerry(url)).group().strip('/'))
+    return re.sub(regex_patterns['filetype'], '', re.search(regex_patterns['filename'], dequery(url)).group().strip('/'))
 
 
 def decrop(url):
@@ -26,11 +26,18 @@ def decrop(url):
     return url
 
 
-def dequerry(url):
+def dequery(url):
     '''
-    remove querry string from url
+    remove query string from url
     '''
-    return re.sub(regex_patterns['querry'], '', url)
+    return re.sub(regex_patterns['query'], '', url)
+
+
+def sanitize(url):
+    '''
+    combines dequery and decrop
+    '''
+    return decrop(dequery(url))
 
 
 def filetype(url):
