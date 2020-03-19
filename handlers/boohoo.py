@@ -15,7 +15,7 @@ class BoohooGoblin(MetaGoblin):
     def __init__(self, url, mode, timeout, format, increment, nodl, verbose, tickrate):
         super().__init__(url, tickrate, verbose, nodl)
         self.mode = mode
-        print(f'[{self.__str__()}] <running>')
+        print(f'[{self.__str__()}] <deployed>')
 
     def __str__(self):
         return 'boohoo goblin'
@@ -24,14 +24,9 @@ class BoohooGoblin(MetaGoblin):
         return re.search(r'\w+_\w+_xl', url).group()
 
     def run(self):
-        if self.mode == 'iter':
-            links = self.read_file(self.external_links, True)
-        else:
-            links = [self.url]
-        for link in links:
-            id = self.extract_id(link)
-            self.loot(f'https://i1.adis.ws/i/boohooamplience/{id}', self.path_main)
+        id = self.extract_id(self.url)
+        self.loot(f'https://i1.adis.ws/i/boohooamplience/{id}')
+        sleep(self.tickrate)
+        for n in range(1, 6):
+            self.loot(f'https://i1.adis.ws/i/boohooamplience/{id}_{n}')
             sleep(self.tickrate)
-            for n in range(1, 6):
-                self.retrieve(f'https://i1.adis.ws/i/boohooamplience/{id}_{n}', self.path_main)
-                sleep(self.tickrate)

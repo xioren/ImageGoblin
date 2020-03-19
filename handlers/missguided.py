@@ -15,7 +15,7 @@ class MissguidedGoblin(MetaGoblin):
     def __init__(self, url, mode, timeout, format, increment, nodl, verbose, tickrate):
         super().__init__(url, tickrate, verbose, nodl)
         self.mode = mode
-        print(f'[{self.__str__()}] <running>')
+        print(f'[{self.__str__()}] <deployed>')
 
     def __str__(self):
         return 'missguided goblin'
@@ -24,12 +24,7 @@ class MissguidedGoblin(MetaGoblin):
         return re.search(r'[A-Z\d]+', url).group().upper()
 
     def run(self):
-        if self.mode == 'iter':
-            links = self.read_file(self.external_links, True)
-        else:
-            links = [self.url]
-        for link in links:
-            id = self.extract(link)
-            for n in range(1, 6):
-                self.loot(f'https://media.missguided.com/i/missguided/{id}_0{n}')
-                sleep(self.tickrate)
+        id = self.extract(self.url)
+        for n in range(1, 6):
+            self.loot(f'https://media.missguided.com/i/missguided/{id}_0{n}')
+            sleep(self.tickrate)

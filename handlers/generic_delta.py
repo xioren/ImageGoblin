@@ -29,12 +29,7 @@ class DeltaGoblin(MetaGoblin):
         return re.sub(r'&imwidth=\d+', '', url)
 
     def run(url: 'image url', override=None):
-        if self.mode == 'iter':
-            links = self.read_file(self.external_links, True)
-        else:
-            links = [self.url]
-        for link in links:
-            base, end = re.split(r'_\d_\d_\d+', link)
-            for id in ids:
-                self.loot(f'{base}{id}{self.size}{self.clean(end)}')
-                sleep(self.tickrate)
+        base, end = re.split(r'_\d_\d_\d+', self.url)
+        for id in ids:
+            self.loot(f'{base}{id}{self.size}{self.clean(end)}')
+            sleep(self.tickrate)

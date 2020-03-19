@@ -7,11 +7,14 @@ from handlers.meta_goblin import MetaGoblin
 class BetaGoblin(MetaGoblin):
 
     '''
+    for scen7 variants
     mode options:
         - iter: for multiple links (using external links file)
     url types:
         - image
+        - webpage
     generic backend for:
+        - anthropologie
         - calvin klein
         - free people
         - hot topic
@@ -27,13 +30,12 @@ class BetaGoblin(MetaGoblin):
         return re.search(r'\w+_\d+', url).group()
 
     def run(self):
-        if self.mode == 'iter':
-            links = self.read_file(self.external_links, True)
+        if 'scene7' in self.url:
+            pass
         else:
-            links = [self.url]
-        for link in links:
-            base, query = self.identify(link)
-            id = self.extract_id(link)
-            for char in self.chars:
-                self.loot(f'{base}{id}_{char}{query}')
-                sleep(self.tickrate)
+            self.url = re.search(r'\w+\.scene7[^" \n]+', self.get_html(self.url)).group()
+        base, query = self.identify(self.url)
+        id = self.extract_id(self.url)
+        for char in self.chars:
+            self.loot(f'{base}{id}_{char}{query}')
+            sleep(self.tickrate)

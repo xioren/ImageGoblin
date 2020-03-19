@@ -12,7 +12,7 @@ class StockholmsgruppenGoblin(MetaGoblin):
 
     def __init__(self, url, mode, timeout, format, increment, nodl, verbose, tickrate):
         super().__init__(url, tickrate, verbose, nodl)
-        print(f'[{self.__str__()}] <running>')
+        print(f'[{self.__str__()}] <deployed>')
 
     def __str__(self):
         return 'stockholmsgruppen goblin'
@@ -23,5 +23,5 @@ class StockholmsgruppenGoblin(MetaGoblin):
                               self.get_html(self.url))
         for match in matches:
             link = re.sub(r'<img data-url-h\d+="//', '', match.group()[:-1])
-            self.loot(f'https://{link}')
+            self.loot(link)
             sleep(self.tickrate)

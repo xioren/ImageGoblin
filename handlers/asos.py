@@ -4,6 +4,7 @@ from time import sleep
 from handlers.meta_goblin import MetaGoblin
 from parsing import *
 
+# TODO: add single use
 
 class ASOSGoblin(MetaGoblin):
 
@@ -15,7 +16,7 @@ class ASOSGoblin(MetaGoblin):
         self.path_backup = os.path.join(self.path_main, 'backup')
         self.query = '?wid=2239&hei=2857&size=2239,2857'
         self.make_dirs(self.path_dl, self.path_scanned, self.path_backup)
-        print(f'[{self.__str__()}] <running>')
+        print(f'[{self.__str__()}] <deployed>')
 
     def __str__(self):
         return 'asos goblin'
@@ -61,15 +62,15 @@ class ASOSGoblin(MetaGoblin):
         '''
         download hi-res version of downloaded images
         '''
-        print('[asos goblin] grabbing hi-res')
         for file in os.listdir(self.path_scanned):
             if '.jpeg' not in file:
                 continue
             id = self.extract_id(file)
             if os.path.exists(os.path.join(self.path_dl, f'{id}-2.jpeg')):
-                print(f'[asos goblin] <file exists> {id}')
+                print(f'[{self.__str__()}] <file exists> {id}')
                 self.move_file(self.path_scanned, self.path_backup, file)
                 continue
+            print(f'[{self.__str__()}] <upgrading> {id}')
             colors = self.read_file(os.path.join(self.path_main, 'colors.txt'), True)
             for color in colors:
                 attempt = self.loot(self.form_url(f'{id}-1-{color}', True), self.path_dl)
@@ -80,7 +81,6 @@ class ASOSGoblin(MetaGoblin):
                 self.loot(self.form_url(f'{id}-{n}', True), self.path_dl)
                 sleep(self.tickrate)
             self.move_file(self.path_scanned, self.path_backup, file)
-        print('[asos goblin] upgrade complete')
 
     def scan(self, location='dir'):
         '''
@@ -110,16 +110,16 @@ class ASOSGoblin(MetaGoblin):
             id = self.extract_id(file)
             colors.add(self.get_color(file))
             if os.path.exists(os.path.join(self.path_scanned, f'{id}-2.jpeg')):
-                print(f'[asos goblin] <file exists> {id}')
+                print(f'[{self.__str__()}] <file exists> {id}')
                 self.move_file(self.path_main, self.path_backup, file)
                 continue
-            print(f'[asos goblin] <scanning> {id}')
+            print(f'[{self.__str__()}] <scanning> {id}')
             step(int(id), 1)
             step(int(id) - 1, -1)
             self.move_file(self.path_main, self.path_backup, file)
-        print('[asos goblin] exporting colors')
+        print(f'[{self.__str__()}] <exporting colors>')
         self.write_file(colors, os.path.join(self.path_main, 'colors.txt'), iter=True)
-        print('[asos goblin] scanning complete')
+        print(f'[{self.__str__()}] <scanning complete>')
 
     def duplicate_check():
         '''
@@ -138,7 +138,7 @@ class ASOSGoblin(MetaGoblin):
             if re.search(self.extract_id(file)) in ids:
                 self.move_file(self.path_main, self.path_backup, file)
                 duplicates += 1
-        print(f'[asos goblin] {duplicates} duplicates removed')
+        print(f'[{self.__str__()}] <{duplicates} duplicates removed>')
 
     def sort_colors(self):
         '''
@@ -156,15 +156,15 @@ class ASOSGoblin(MetaGoblin):
         try to identify correct color for missing files
         '''
         files = set()
-        print('[asos goblin] attempting to match correct color')
+        print(f'[{self.__str__()}] <attempting to match correct color>')
         # QUESTION: does jpg or jpeg make a difference with the slicing? consider \d+ re.
         for file in os.listdir(path):
             if '-2' in file:
                 files.add(file[:-7])
-        colors = self.read_file(os.path.join(path_main, 'colors.txt'), True)
+        colors = self.read_file(os.path.join(self.path_main, 'colors.txt'), True)
         for file in files:
             for color in colors:
-                attempt = loot(f'{url}{item}-1-{color[:-1]}{query}', self.path_main)
+                attempt = loot(f'{url}{item}-1-{color[:-1]}{query}')
                 if attempt:
                     break
                 sleep(self.tickrate)

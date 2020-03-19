@@ -7,7 +7,7 @@ class WomensSecretGoblin(GammaGoblin):
         super().__init__(url, mode, timeout, format, increment, nodl, verbose, tickrate)
         self.modifiers = ('FM', 'TM', 'D1', 'D2', 'D3', 'D4', 'D5', 'D6', 'D7', 'D8')
         self.pattern = r'P_\d+'
-        print(f'[{self.__str__()}] <running>')
+        print(f'[{self.__str__()}] <deployed>')
 
     def __str__(self):
         return 'womens secret goblin'

@@ -12,7 +12,7 @@ class InstagramGoblin(MetaGoblin):
         self.html_txt = os.path.join(os.getcwd(), 'html.txt')
         self.sub_dir = os.path.join(self.path_main, self.username)
         self.make_dirs(self.sub_dir)
-        print(f'[{self.__str__()}] <running>')
+        print(f'[{self.__str__()}] <deployed>')
 
     def __str__(self):
         return 'instagram goblin'

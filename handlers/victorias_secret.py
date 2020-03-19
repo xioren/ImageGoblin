@@ -15,7 +15,7 @@ class VictoriasSecretGoblin(MetaGoblin):
     def __init__(self, url, mode, timeout, format, increment, nodl, verbose, tickrate):
         super().__init__(url, tickrate, verbose, nodl)
         self.mode = mode
-        print(f'[{self.__str__()}] <running>')
+        print(f'[{self.__str__()}] <deployed>')
 
     def __str__(self):
         return 'victorias secret goblin'
@@ -24,10 +24,5 @@ class VictoriasSecretGoblin(MetaGoblin):
         return re.search(r'\w+.jpg', link).group()
 
     def run(self):
-        if self.mode == 'iter':
-            links = self.read_file(self.external_links, True)
-        else:
-            links = [self.url]
-        for link in links:
-            self.loot(re.sub(r'\d+x\d+', '4040x5390', link))
-            sleep(self.tickrate)
+        self.loot(re.sub(r'\d+x\d+', '4040x5390', self.url))
+        sleep(self.tickrate)

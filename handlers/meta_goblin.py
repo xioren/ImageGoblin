@@ -15,7 +15,7 @@ class MetaGoblin:
         self.tickrate = tickrate
         self.verbose = verbose
         self.nodl = nodl
-        self.path_main = os.path.join(os.getcwd(), 'web_goblin')
+        self.path_main = os.path.join(os.getcwd(), 'goblin_loot')
         self.external_links = os.path.join(os.getcwd(), 'links.txt')
         self.headers = {'User-Agent': 'GoblinTeam/1.2',
                         'Accept-Encoding': 'gzip'}
@@ -47,14 +47,14 @@ class MetaGoblin:
                     print(f'[{self.__str__()}] <cleanup error> {e}')
                     continue
 
-    def retrieve(self, url, path, mode, wait):
+    def retrieve(self, url, path, wait):
         '''
         retrieve web content
         '''
         request = Request(url, None, self.headers)
         try:
             with urlopen(request, timeout=wait) as response:
-                with open(path, mode) as file:
+                with open(path, 'wb') as file:
                     while True:
                         data = response.read(DEFAULT_BUFFER_SIZE)
                         if not data:
@@ -77,13 +77,13 @@ class MetaGoblin:
             return None
         return True
 
-    def get_html(self, url):
+    def get_html(self, url, wait=10):
         '''
         retrieve web page html
         '''
         request = Request(url, None, self.headers)
         try:
-            with urlopen(request, timeout=10) as response:
+            with urlopen(request, timeout=wait) as response:
                 html = response.read()
                 if response.info().get('Content-Encoding') == 'gzip':
                     try:
@@ -98,7 +98,7 @@ class MetaGoblin:
             return None
         except URLError as e:
             if self.verbose:
-                print(f'[{self.__str__()}] <{e}]> {url}')
+                print(f'[{self.__str__()}] <{e}> {url}')
             return None
         return html.decode('utf-8', 'ignore')
 
@@ -166,9 +166,9 @@ class MetaGoblin:
         else:
             return False
 
-    def loot(self, url, save_loc=None, filename=None, clean=False, mode='wb', wait=10):
+    def loot(self, url, save_loc=None, filename=None, clean=False, wait=10):
         '''
-        pre-processor for retrieve
+        front-end for retrieve
         '''
         if clean:
             url = sanitize(url)
@@ -181,8 +181,8 @@ class MetaGoblin:
             if self.verbose:
                 print(f'[{self.__str__()}] <file exists> {filename}')
             return False
-        attempt = self.retrieve(url, filepath, mode, wait)
+        attempt = self.retrieve(add_scheme(url), filepath, wait)
         if attempt:
-            print(f'[{self.__str__()}] <success> {filename}')
+            print(f'[{self.__str__()}] <looted> {filename}')
             return True
         return False

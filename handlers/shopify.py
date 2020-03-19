@@ -13,16 +13,19 @@ class ShopifyGoblin(MetaGoblin):
         - clean: decrop image
     url types:
         - webpage
-    back end for:
+    back-end for:
+        - caro swim
         - fashion nova
         - five dancewear
+        - triangl
+        - vitamin a
     '''
 
     def __init__(self, url, mode, timeout, format, increment, nodl, verbose, tickrate):
         super().__init__(url, tickrate, verbose, nodl)
         self.mode = mode
         self.format = format
-        self.image_pat = r'//cdn.shopify.com/[^" \n]+\d+x[^" \n]+'
+        self.image_pat = r'cdn.shopify.com/[^" \n]+((\w+-)+)*\d+x(\d+)*[^" \n]+'
 
     # TODO: add shopify __str__ for non matched inputs?
 
@@ -31,16 +34,11 @@ class ShopifyGoblin(MetaGoblin):
         return re.sub(r'_[a-z\d]+(\-[a-z\d]+){4}', '', url)
 
     def run(self):
-        if self.mode == 'iter':
-            links = self.read_file(self.external_links, True)
-        else:
-            links = [self.url]
-        for link in links:
-            parsed_links = re.finditer(self.image_pat, self.get_html(link))
-            for parsed in {p.group() for p in parsed_links}:
-                if format == 'clean':
-                    self.loot(self.clean(sanitize('https:' + parsed)))
-                else:
-                    self.loot(sanitize('https:' + parsed))
-                sleep(self.tickrate)
+        parsed_links = re.finditer(self.image_pat, self.get_html(self.url))
+        for parsed in {p.group() for p in parsed_links}:
+            if format == 'clean':
+                self.loot(self.clean(parsed), clean=True)
+            else:
+                self.loot(parsed, clean=True)
+            sleep(self.tickrate)
         self.cleanup(self.path_main)

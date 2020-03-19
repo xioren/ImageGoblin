@@ -23,7 +23,7 @@ class LemanagementGoblin(MetaGoblin):
         super().__init__(url, tickrate, verbose, nodl)
         self.mode = mode
         self.format = format
-        print(f'[{self.__str__()}] <running>')
+        print(f'[{self.__str__()}] <deployed>')
 
     def __str__(self):
         return 'lemanagement goblin'

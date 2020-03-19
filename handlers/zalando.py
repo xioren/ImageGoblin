@@ -14,7 +14,7 @@ class ZalandoGoblin(MetaGoblin):
     def __init__(self, url, mode, timeout, format, increment, nodl, verbose, tickrate):
         self.mode = mode
         super().__init__(url, tickrate, verbose, nodl)
-        print(f'[{self.__str__()}] <running>')
+        print(f'[{self.__str__()}] <deployed>')
 
     def __str__(self):
         return 'zalando goblin'

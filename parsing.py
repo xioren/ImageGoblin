@@ -14,8 +14,10 @@ def extract_filename(url):
     '''
     extracts filename from url
     '''
-    return re.sub(regex_patterns['filetype'], '', re.search(regex_patterns['filename'], dequery(url)).group().strip('/'))
-
+    try:
+        return re.sub(regex_patterns['filetype'], '', re.search(regex_patterns['filename'], dequery(url)).group().strip('/'))
+    except AttributeError:
+        return 'image'
 
 def decrop(url):
     '''
@@ -77,7 +79,7 @@ def add_scheme(url):
     checks for and adds scheme
     '''
     if not urlparse(url)[0]:
-        url = 'https://' + url
+        url = 'https://' + url.lstrip('/')
     return url
 
 

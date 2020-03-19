@@ -14,18 +14,13 @@ class TopshopGoblin(MetaGoblin):
     def __init__(self, url, mode, timeout, format, increment, nodl, verbose, tickrate):
         super().__init__(url, tickrate, verbose, nodl)
         self.mode = mode
-        print(f'[{self.__str__()}] <running>')
+        print(f'[{self.__str__()}] <deployed>')
 
     def __str__(self):
         return 'topshop goblin'
 
     def run(self):
-        if self.mode == 'iter':
-            links = self.read_file(self.external_links, True)
-        else:
-            links = [self.url]
-        for link in links:
-            link = dequerry(link)[:-5]
-            for n in range(1, 6):
-                self.loot(f'{url}{n}.jpg')
-                sleep(self.tickrate)
+        link = dequerry(self.url)[:-5]
+        for n in range(1, 6):
+            self.loot(f'{url}{n}.jpg')
+            sleep(self.tickrate)

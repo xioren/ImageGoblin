@@ -1,15 +1,15 @@
 from handlers.generic_beta import BetaGoblin
 
 
-class FreePeopleGoblin(BetaGoblin):
+class AnthropologieGoblin(BetaGoblin):
 
     def __init__(self, url, mode, timeout, format, increment, nodl, verbose, tickrate):
         super().__init__(url, mode, timeout, format, increment, nodl, verbose, tickrate)
         print(f'[{self.__str__()}] <deployed>')
 
     def __str__(self):
-        return 'free people goblin'
+        return 'anthropologie goblin'
 
     def identify(self, link):
-        self.chars = ('a', 'b', 'c', 'd', 'e')
-        return 'https://s7d5.scene7.com/is/image/FreePeople/', '?wid=2640'
+        self.chars = ('b', 'b2', 'b3', 'b4', 'b4', 'c', 'c2', 'c3', 'c4', 'c5')
+        return 'https://s7d5.scene7.com/is/image/Anthropologie/', '?hei=2474'

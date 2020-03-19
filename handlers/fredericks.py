@@ -2,16 +2,15 @@ import re
 from time import sleep
 from handlers.meta_goblin import MetaGoblin
 
-# NOTE: can also use generic gamma, but might be lesser resolution
 
-class HunkemollerGoblin(MetaGoblin):
+class FredericksGoblin(MetaGoblin):
 
     '''
     mode options:
         - iter: for multiple links (using external links file)
-    url types:
+    link types:
         - image
-        - web page
+    # BUG: does not get all imaged ---> javascript
     '''
 
     def __init__(self, url, mode, timeout, format, increment, nodl, verbose, tickrate):
@@ -20,10 +19,10 @@ class HunkemollerGoblin(MetaGoblin):
         print(f'[{self.__str__()}] <deployed>')
 
     def __str__(self):
-        return 'hunkemoller goblin'
+        return 'fredericks goblin'
 
     def run(self):
-        id = re.search(r'(/|-)\d+', self.url).group().replace('/', '').replace('-', '')
-        for num in range(1, 6):
-            self.loot(f'https://images-hunkemoller.akamaized.net/original/{id}_{num}.jpg')
+        html = self.get_html(self.url)
+        for parsed in {p.group() for p in re.finditer(r'//[^" \n]+\.jpe*g', html)}:
+            self.loot(re.sub(r'\.\d+w.jpg', r'\.jpg', parsed))
             sleep(self.tickrate)

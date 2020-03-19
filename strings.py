@@ -16,13 +16,12 @@ regex_patterns = {
 }
 
 format_patterns = [
-    r'(-|_)+(\d+x(\d+)*|(\d+)*x\d+)',
-    r'(\d+x(\d+)*|(\d+)*x\d+)(-|_)+',
-    r'\d+x\d+/',
+    r'(-|_)*((\d+x(\d+)*|(\d+)*x\d+))',
     r'(-|_)*(large|big|thumb)(-|_)*',
     r'c_fill,f_auto,g_north,h_\d+,q_auto:best,w_\d+/v1/',
     r'expanded_[a-z]+/',
     r'w/\d+/',
+    # r'(\.|-)\d+w',
     # NOTE: \-e\d+ catches some dashed filenames by mistake, consider changing
     # r'\-e\d+'
     r'/v/\d/.+\.webp$'

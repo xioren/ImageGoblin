@@ -11,7 +11,7 @@ class IteratorGoblin(MetaGoblin):
         self.increment = increment
         self.timeout = timeout
         self.idle = 0
-        print(f'[{self.__str__()}] <running>')
+        print(f'[{self.__str__()}] <deployed>')
 
     def __str__(self):
         return 'iterator goblin'
@@ -39,8 +39,8 @@ class IteratorGoblin(MetaGoblin):
                 print(f'[{self.__str__()}] <timeout> after {self.timeout} attempts')
                 return None
             if iteration % 25 == 0:
-                print(f'[{self.__str__()}] <iteration> # {iteration}')
-            attempt = self.loot(url, filepath)
+                print(f'[{self.__str__()}] <iteration> #{iteration}')
+            attempt = self.loot(url)
             if attempt:
                 self.idle = 0
             else:

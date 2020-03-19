@@ -18,22 +18,17 @@ class BehanceGoblin(MetaGoblin):
         self.img_pat = r'https://mir-s3-cdn-cf.behance.net/project_modules/[\w/\.]+\.[A-Za-z]+'
         self.size_pat = r'1400(_opt_1)*|max_1200|disp'
         self.sizes = ('max_3840', 'fs', '1400', 'max_1200', 'disp')
-        print(f'[{self.__str__()}] <running>')
+        print(f'[{self.__str__()}] <deployed>')
 
     def __str__(self):
         return 'behance goblin'
 
-    def crop(self, url, size):
+    def fit(self, url, size):
         return re.sub(self.size_pat, size, self.url)
 
     def run(self):
-        if self.mode == 'iter':
-            links = self.read_file(self.external_links, True)
-        else:
-            links = [self.url]
-        for link in links:
-            for size in self.sizes:
-                attempt = self.loot(self.crop(link, size), self.path_main)
-                if attempt:
-                    break
-                sleep(self.tickrate)
+        for size in self.sizes:
+            attempt = self.loot(self.fit(self.url, size))
+            if attempt:
+                break
+            sleep(self.tickrate)
