@@ -7,7 +7,7 @@ from parsing import *
 class OmegaGoblin(MetaGoblin):
 
     def __init__(self, url, mode, timeout, format, increment, nodl, verbose, tickrate):
-        super().__init__(url, tickrate, verbose, nodl)
+        super().__init__(url, mode, timeout, format, increment, nodl, verbose, tickrate)
         self.format = format
         print(f'[{self.__str__()}] <deployed>')
 
@@ -23,9 +23,6 @@ class OmegaGoblin(MetaGoblin):
         if html:
             links = link_finder(self.url, html)
             print(f'[{self.__str__()}] <parse complete> {len(links)} links found')
-            if self.nodl == 1:
-                for link in links:
-                    print(link)
         else:
             print('[{self.__str__()}] <ERROR> no html recieved')
             return None
@@ -49,5 +46,4 @@ class OmegaGoblin(MetaGoblin):
 
     def run(self):
         links = self.link_grab()
-        if not self.nodl:
-            self.link_dl(links)
+        self.link_dl(links)

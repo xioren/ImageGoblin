@@ -13,7 +13,7 @@ class BehanceGoblin(MetaGoblin):
     '''
 
     def __init__(self, url, mode, timeout, format, increment, nodl, verbose, tickrate):
-        super().__init__(url, tickrate, verbose, nodl)
+        super().__init__(url, mode, timeout, format, increment, nodl, verbose, tickrate)
         self.mode = mode
         self.img_pat = r'https://mir-s3-cdn-cf.behance.net/project_modules/[\w/\.]+\.[A-Za-z]+'
         self.size_pat = r'1400(_opt_1)*|max_1200|disp'

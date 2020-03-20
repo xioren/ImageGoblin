@@ -13,7 +13,7 @@ class ShopbopGoblin(MetaGoblin):
     '''
 
     def __init__(self, url, mode, timeout, format, increment, nodl, verbose, tickrate):
-        super().__init__(url, tickrate, verbose, nodl)
+        super().__init__(url, mode, timeout, format, increment, nodl, verbose, tickrate)
         self.mode = mode
         print(f'[{self.__str__()}] <deployed>')
 

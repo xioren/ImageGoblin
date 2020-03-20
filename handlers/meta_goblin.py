@@ -1,6 +1,7 @@
 import os
 from time import sleep
 from gzip import decompress
+from socket import timeout
 from io import DEFAULT_BUFFER_SIZE
 from urllib.request import urlopen, Request
 from urllib.error import HTTPError, URLError
@@ -10,12 +11,12 @@ from meta_sources import *
 
 class MetaGoblin:
 
-    def __init__(self, url, tickrate, verbose, nodl):
+    def __init__(self,url, mode, timeout, format, increment, nodl, verbose, tickrate):
         self.url = url
         self.tickrate = tickrate
         self.verbose = verbose
         self.nodl = nodl
-        self.path_main = os.path.join(os.getcwd(), 'goblin_loot')
+        self.path_main = os.path.join(os.getcwd(), 'goblin_loot', self.__str__().replace(' ', '_'))
         self.external_links = os.path.join(os.getcwd(), 'links.txt')
         self.headers = {'User-Agent': 'GoblinTeam/1.2',
                         'Accept-Encoding': 'gzip'}
@@ -28,11 +29,11 @@ class MetaGoblin:
         '''
         for path in paths:
             if not os.path.exists(path):
-                os.mkdir(path)
+                os.makedirs(path)
 
     def cleanup(self, path):
         '''
-        cleanup small unwanted files (icons, erroneous, etc...)
+        cleanup small unwanted files (icons, thumbnails, etc...)
         default 50kb threshold
         '''
         # TODO: dangerous, consider recieving file manifest instead?
@@ -47,13 +48,13 @@ class MetaGoblin:
                     print(f'[{self.__str__()}] <cleanup error> {e}')
                     continue
 
-    def retrieve(self, url, path, wait):
+    def retrieve(self, url, path, n=0):
         '''
         retrieve web content
         '''
         request = Request(url, None, self.headers)
         try:
-            with urlopen(request, timeout=wait) as response:
+            with urlopen(request, timeout=10) as response:
                 with open(path, 'wb') as file:
                     while True:
                         data = response.read(DEFAULT_BUFFER_SIZE)
@@ -75,15 +76,30 @@ class MetaGoblin:
             if self.verbose:
                 print(f'[{self.__str__()}] <{e}> {url}')
             return None
+        except timeout:
+            return self.retry(url, wait, n+1, path)
         return True
 
-    def get_html(self, url, wait=10):
+    def retry(self, url, n, path=None):
+        '''
+        retry connection after a socket timeout
+        '''
+        print(f'[{self.__str__()}] <timed out> retry attempt {n}')
+        if n > 5:
+            print(f'[{self.__str__()}] <timed out> aborting after {n} retries')
+        else:
+            if path:
+                return self.retrieve(url, path, n)
+            else:
+                return self.get_html(url, n)
+
+    def get_html(self, url, n=0):
         '''
         retrieve web page html
         '''
         request = Request(url, None, self.headers)
         try:
-            with urlopen(request, timeout=wait) as response:
+            with urlopen(request, timeout=10) as response:
                 html = response.read()
                 if response.info().get('Content-Encoding') == 'gzip':
                     try:
@@ -100,6 +116,8 @@ class MetaGoblin:
             if self.verbose:
                 print(f'[{self.__str__()}] <{e}> {url}')
             return None
+        except timeout:
+            return self.retry(url, n+1)
         return html.decode('utf-8', 'ignore')
 
     def make_unique(self, filename):
@@ -166,7 +184,7 @@ class MetaGoblin:
         else:
             return False
 
-    def loot(self, url, save_loc=None, filename=None, clean=False, wait=10):
+    def loot(self, url, save_loc=None, filename=None, clean=False):
         '''
         front-end for retrieve
         '''
@@ -181,8 +199,11 @@ class MetaGoblin:
             if self.verbose:
                 print(f'[{self.__str__()}] <file exists> {filename}')
             return False
-        attempt = self.retrieve(add_scheme(url), filepath, wait)
-        if attempt:
-            print(f'[{self.__str__()}] <looted> {filename}')
-            return True
+        if self.nodl:
+            print(url)
+        else:
+            attempt = self.retrieve(unescape(add_scheme(url)), filepath)
+            if attempt:
+                print(f'[{self.__str__()}] <looted> {filename}')
+                return True
         return False

@@ -13,6 +13,7 @@ class EtamGoblin(GammaGoblin):
         super().__init__(url, mode, timeout, format, increment, nodl, verbose, tickrate)
         self.modifiers = ('x', 'a', 'b', 'c', 'd', '6')
         self.pattern = r'\d+_'
+        self.base = 'https://www.etam.com/on/demandware.static/-/Sites-ELIN-master/default/'
         print(f'[{self.__str__()}] <deployed>')
 
     def __str__(self):

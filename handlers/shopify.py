@@ -22,9 +22,10 @@ class ShopifyGoblin(MetaGoblin):
     '''
 
     def __init__(self, url, mode, timeout, format, increment, nodl, verbose, tickrate):
-        super().__init__(url, tickrate, verbose, nodl)
+        super().__init__(url, mode, timeout, format, increment, nodl, verbose, tickrate)
         self.mode = mode
         self.format = format
+        self.clean = True
         self.image_pat = r'cdn.shopify.com/[^" \n]+((\w+-)+)*\d+x(\d+)*[^" \n]+'
 
     # TODO: add shopify __str__ for non matched inputs?
@@ -41,4 +42,5 @@ class ShopifyGoblin(MetaGoblin):
             else:
                 self.loot(parsed, clean=True)
             sleep(self.tickrate)
-        self.cleanup(self.path_main)
+        if self.clean:
+            self.cleanup(self.path_main)

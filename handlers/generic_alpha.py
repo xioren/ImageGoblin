@@ -14,17 +14,19 @@ class AlphaGoblin(MetaGoblin):
         - clean: decrop image
     url types:
         - webpage
-    back-end for:
+    generic back-end for:
         - agent provocateur
         - blush
         - maison close
         - only hearts
+        - simone perele
     '''
 
     def __init__(self, url, mode, timeout, format, increment, nodl, verbose, tickrate):
-        super().__init__(url, tickrate, verbose, nodl)
+        super().__init__(url, mode, timeout, format, increment, nodl, verbose, tickrate)
         self.mode = mode
-        self.image_pat = r'https*\:[^" \n]+media(\\)*/catalog[^" \n]+\.jpe*g'
+        self.clean=True
+        self.image_pat = r'https*\:[^" \n]+media[^" \n]+\.jpe*g'
 
     def upgrade(self, path, base):
         '''
@@ -44,5 +46,5 @@ class AlphaGoblin(MetaGoblin):
         else:
             parsed_links = re.finditer(self.image_pat, self.get_html(self.url))
             for parsed in {p.group() for p in parsed_links}:
-                self.loot(re.sub(r'cache/(\d/\w+/(\d+x(\d+)*/)*)*\w+/', '', parsed.replace('\\', '')), clean=True)
+                self.loot(re.sub(r'cache/(\d/\w+/(\d+x(\d+)*/)*)*\w+/', '', parsed.replace('\\', '')), clean=self.clean)
                 sleep(self.tickrate)

@@ -9,13 +9,12 @@ from parsing import *
 class ASOSGoblin(MetaGoblin):
 
     def __init__(self, url, mode, timeout, format, increment, nodl, verbose, tickrate):
-        super().__init__(url, tickrate, verbose, nodl)
+        super().__init__(url, mode, timeout, format, increment, nodl, verbose, tickrate)
         self.mode = mode
         self.path_dl = os.path.join(self.path_main, 'fullsize')
         self.path_scanned = os.path.join(self.path_main, 'scanned')
         self.path_backup = os.path.join(self.path_main, 'backup')
         self.query = '?wid=2239&hei=2857&size=2239,2857'
-        self.make_dirs(self.path_dl, self.path_scanned, self.path_backup)
         print(f'[{self.__str__()}] <deployed>')
 
     def __str__(self):
@@ -30,17 +29,15 @@ class ASOSGoblin(MetaGoblin):
         else:
             os.rename(os.path.join(from_path, file), os.path.join(to_path, file))
 
-    def get_color(self, file):
+    def extract_color(self, file):
         '''
         extract color from filename
         '''
         # NOTE: returning none is not ideal, or at least not handled properly, writes
-        # none to text file. also matches image number when no color present.
-        color = re.search(r'\w+\.', file)
+        # none to text file.
+        color = re.search(r'\d+\-\d\-\w+', file)
         if color:
-            return color.group()[:-1]
-        else:
-            return None
+            return re.sub(r'\d+-\d-', '', color.group())
 
     def form_url(self, id, large=False):
         '''
@@ -57,6 +54,20 @@ class ASOSGoblin(MetaGoblin):
         pull image id from url
         '''
         return re.search(r'\d+', url).group()
+
+    def grab(self):
+        '''
+        grab a single url in high res
+        '''
+        color = self.extract_color(self.url)
+        id = self.extract_id(self.url)
+        if color:
+            self.loot(self.form_url(f'{id}-1-{color}', True))
+        sleep(self.tickrate)
+        for n in range(2, 5):
+            self.loot(self.form_url(f'{id}-{n}', True))
+            sleep(self.tickrate)
+
 
     def upgrade(self):
         '''
@@ -108,7 +119,7 @@ class ASOSGoblin(MetaGoblin):
             if '.jpeg' not in file:
                 continue
             id = self.extract_id(file)
-            colors.add(self.get_color(file))
+            colors.add(self.extract_color(file))
             if os.path.exists(os.path.join(self.path_scanned, f'{id}-2.jpeg')):
                 print(f'[{self.__str__()}] <file exists> {id}')
                 self.move_file(self.path_main, self.path_backup, file)
@@ -171,7 +182,11 @@ class ASOSGoblin(MetaGoblin):
 
     def run(self):
         # TODO: expand
-        if self.mode == 'scan':
-            self.scan()
-        elif self.mode == 'upgrade':
+        if self.mode == 'upgrade':
+            self.make_dirs(self.path_dl, self.path_scanned, self.path_backup)
             self.upgrade()
+        elif self.mode == 'scan':
+            self.make_dirs(self.path_dl, self.path_scanned, self.path_backup)
+            self.scan()
+        else:
+            self.grab()

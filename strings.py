@@ -9,7 +9,7 @@ regex_patterns = {
     'filetype': r'\.[A-Za-z0-9]+',
     'type_id': r'\.(jpe*g|png|gif|mp4|web(p|m)|tiff*)',
     'tags': r'<[^>]+>',
-    'filter': r'\.(js|css|pdf)',
+    'filter': r'\.(js|css|pdf)|favicon',
     'insta_link': r'/p/[\w\-]+',
     'insta_crop': r'/(s|p)\d{3}x\d{3}/',
     'insta_username': r'(/*[^/]+/*)$'
@@ -28,7 +28,7 @@ format_patterns = [
 ]
 
 escape_to_ascii = {
-    '%20': ' ',
+    ' ': '%20',
     '%21': '!',
     '%22': '"',
     '%23': '#',

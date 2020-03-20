@@ -7,7 +7,7 @@ from parsing import *
 class IteratorGoblin(MetaGoblin):
 
     def __init__(self, url, mode, timeout, format, increment, nodl, verbose, tickrate):
-        super().__init__(url, tickrate, verbose, nodl)
+        super().__init__(url, mode, timeout, format, increment, nodl, verbose, tickrate)
         self.increment = increment
         self.timeout = timeout
         self.idle = 0

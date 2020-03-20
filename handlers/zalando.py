@@ -12,8 +12,8 @@ from handlers.meta_goblin import MetaGoblin
 class ZalandoGoblin(MetaGoblin):
 
     def __init__(self, url, mode, timeout, format, increment, nodl, verbose, tickrate):
+        super().__init__(url, mode, timeout, format, increment, nodl, verbose, tickrate)
         self.mode = mode
-        super().__init__(url, tickrate, verbose, nodl)
         print(f'[{self.__str__()}] <deployed>')
 
     def __str__(self):
@@ -49,15 +49,15 @@ class ZalandoGoblin(MetaGoblin):
         '''
         extract image id
         '''
-        # # WARNING: will trhwo exception if non zalando images are input
-        # QUESTION: can this handle digit.digit formats
+        # # WARNING: will throw exception if non zalando images are input
+        # QUESTION: can this handle digit.digit formats?
         return re.sub(r'@\d+|\.(jpe*g|html|\d)', '', re.search(r'(\w+\-\w+(@\d+(\.\d)*)*(\.(jpe*g|html))*)$', dequery(url)).group())
 
-    def scan(self, url: 'any url'):
+    def scan(self):
         '''
         scan for images
         '''
-        id = self.extract_id(url)
+        id = self.extract_id(self.url)
         success, timeout, n = 0, 0, 1
         print(f'[zalando goblin] <scanning> {id}')
         while timeout <= 8:
@@ -74,45 +74,36 @@ class ZalandoGoblin(MetaGoblin):
         else:
             print(f'[zalando goblin] <complete> {id} --> {success} images found')
 
-    def find_more(self, id, dir='/home/xioren/Desktop/temp/'):
+    def find_more(self):
         '''
         search for other images
         '''
-        # TODO: fix default location
-        self.make_dirs(dir)
         alpha = digits + upper
+        id = self.url
         if self.identify(id) != 'id':
-            id = extract_id(id)
+            id = extract_id(self.url)
         ref = id
-        id = id.split('-')
+        id = id.self('-')
         for k in alpha:
             image = f'{id[0][:-1]}{k}-{id[1]}'
             if image == ref:
                 continue
             for n in range(4, 25, 4):
                 if os.path.exists(os.path.join(dir, f'{image}@{n}.jpeg')):
-                    print(f'[zalando goblin] {image} exists skipping')
+                    print(f'[zalando goblin] <skipping> {image}')
                     return None
-                self.loot(self.form_url(f'{image}@{n}', 'small'), dir)
+                self.loot(self.form_url(f'{image}@{n}', 'small'))
                 sleep(self.tickrate)
 
     def create_links(self):
         '''
         create text file of full links of found ids (from find_more)
         '''
-        files = os.listdir('/home/xioren/Desktop/temp/')
+        files = os.listdir(self.path_main)
         self.write_file([self.form_url(file) for file in links], self.external_links, iter=True)
 
-
-    def filter(self):
-        '''
-        filter out duplicates from download links
-        '''
-        ids = set()
-        for link in self.links:
-            ids.add(self.extract(link).upper())
-        return ids
-
     def run(self):
-        if self.mode == 'scan':
-            self.scan(self.url)
+        if self.mode == 'find':
+            self.find_more()
+        else:
+            self.scan()

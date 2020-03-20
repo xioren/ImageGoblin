@@ -66,7 +66,7 @@ def custom_format(url, format):
         assert len(format) == 2
         url = re.sub(format[1], '', url)
     elif format == 'auto':
-        url = decrop(dequerry(url))
+        url = sanitize(url)
         if 'squarespace' in url:
             url += '?format=original'
     else:
@@ -104,17 +104,16 @@ def link_finder(url, html):
     method for extracting image urls from html
     '''
     link_table = []
-    links = re.finditer(regex_patterns['link_pattern'], html, re.IGNORECASE)
+    links = {l.group() for l in re.finditer(regex_patterns['link_pattern'], html, re.IGNORECASE)}
     for link in links:
-        link = unescape(link.group().strip('"').lstrip('/'))
+        link = unescape(quote(link.strip('"').lstrip('/')))
         if not re.search(regex_patterns['link_filter'], link):
             continue
         if re.search(regex_patterns['filter'], link):
             continue
         if is_relative(link):
             link = make_absolute(url, link)
-        if link not in link_table:
-            link_table.append(link)
+        link_table.append(link)
     return link_table
 
 

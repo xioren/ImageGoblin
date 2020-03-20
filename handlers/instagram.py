@@ -7,7 +7,7 @@ from parsing import *
 class InstagramGoblin(MetaGoblin):
 
     def __init__(self, url, mode, timeout, format, increment, nodl, verbose, tickrate):
-        super().__init__(url, tickrate, verbose, nodl)
+        super().__init__(url, mode, timeout, format, increment, nodl, verbose, tickrate)
         self.username = insta_username(self.url)
         self.html_txt = os.path.join(os.getcwd(), 'html.txt')
         self.sub_dir = os.path.join(self.path_main, self.username)

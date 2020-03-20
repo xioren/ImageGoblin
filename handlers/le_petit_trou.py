@@ -1,27 +1,22 @@
+import re
 from time import sleep
-from parsing import *
 from handlers.meta_goblin import MetaGoblin
 
 
-class TopshopGoblin(MetaGoblin):
-
-    '''
-    mode options:
-        - iter: for multiple links (using external links file)
-    url types:
-        - image
-    '''
+class LePetitTrouGoblin(MetaGoblin):
 
     def __init__(self, url, mode, timeout, format, increment, nodl, verbose, tickrate):
         super().__init__(url, mode, timeout, format, increment, nodl, verbose, tickrate)
-        self.mode = mode
         print(f'[{self.__str__()}] <deployed>')
 
     def __str__(self):
-        return 'topshop goblin'
+        return 'le-petit-trou goblin'
 
     def run(self):
-        link = dequery(self.url)[:-5]
-        for n in range(1, 6):
-            self.loot(f'{url}{n}.jpg')
+        if 'shoplo' in self.url:
+            links = [self.url]
+        else:
+            links = {l.group() for l in re.finditer(r'https://cdn.shoplo[^"]+\.jpg', self.get_html(self.url))}
+        for link in links:
+            self.loot(re.sub(r'th\d+', 'orig', link))
             sleep(self.tickrate)
