@@ -5,12 +5,9 @@ from handlers.meta_goblin import MetaGoblin
 
 class IteratorGoblin(MetaGoblin):
 
-    def __init__(self, url, mode, timeout, format, increment, nodl, verbose, tickrate):
-        super().__init__(url, mode, timeout, format, increment, nodl, verbose, tickrate)
-        self.increment = increment
-        self.timeout = timeout
+    def __init__(self, args):
+        super().__init__(args)
         self.idle = 0
-        print(f'[{self.__str__()}] <deployed>')
 
     def __str__(self):
         return 'iterator goblin'
@@ -34,14 +31,14 @@ class IteratorGoblin(MetaGoblin):
         '''
         re-forms url and iterates (mode 3)
         '''
-        base, iterable, end = self.extract_iterable(self.url)
+        base, iterable, end = self.extract_iterable(self.args['url'])
         iteration = 1
-        print(f'[{self.__str__()}] <iterating> {self.url}')
+        print(f'[{self.__str__()}] <iterating> {self.args["url"]}')
         while True:
             url = f'{base}{iterable}{end}'
-            if self.timed_out(self.timeout):
+            if self.timed_out(self.args['timeout']):
                 self.cleanup(self.path_main)
-                print(f'[{self.__str__()}] <timeout> after {self.timeout} attempts')
+                print(f'[{self.__str__()}] <timeout> after {self.args["timeout"]} attempts')
                 return None
             if iteration % 25 == 0:
                 print(f'[{self.__str__()}] <iteration> #{iteration}')
@@ -50,9 +47,10 @@ class IteratorGoblin(MetaGoblin):
                 self.idle = 0
             else:
                 self.idle += 1
-            iterable = str(int(iterable.lstrip('0')) + self.increment).zfill(len(iterable))
+            iterable = str(int(iterable.lstrip('0')) + self.args['increment']).zfill(len(iterable))
             iteration += 1
-            sleep(self.tickrate)
+            sleep(self.args['tickrate'])
 
     def run(self):
         self.iterate()
+        print(f'[{self.__str__()}] <looted> {self.loot_tally} files')

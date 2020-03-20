@@ -6,14 +6,12 @@ from handlers.meta_goblin import MetaGoblin
 
 class ASOSGoblin(MetaGoblin):
 
-    def __init__(self, url, mode, timeout, format, increment, nodl, verbose, tickrate):
-        super().__init__(url, mode, timeout, format, increment, nodl, verbose, tickrate)
-        self.mode = mode
+    def __init__(self, args):
+        super().__init__(args)
         self.path_dl = os.path.join(self.path_main, 'fullsize')
         self.path_scanned = os.path.join(self.path_main, 'scanned')
         self.path_backup = os.path.join(self.path_main, 'backup')
         self.query = '?wid=2239&hei=2857&size=2239,2857'
-        print(f'[{self.__str__()}] <deployed>')
 
     def __str__(self):
         return 'asos goblin'
@@ -57,14 +55,14 @@ class ASOSGoblin(MetaGoblin):
         '''
         grab a single url in high res
         '''
-        color = self.extract_color(self.url)
-        id = self.extract_id(self.url)
+        color = self.extract_color(self.args['url'])
+        id = self.extract_id(self.args['url'])
         if color:
             self.loot(self.form_url(f'{id}-1-{color}', True))
-        sleep(self.tickrate)
+        sleep(self.args['tickrate'])
         for n in range(2, 5):
             self.loot(self.form_url(f'{id}-{n}', True))
-            sleep(self.tickrate)
+            sleep(self.args['tickrate'])
 
 
     def upgrade(self):
@@ -85,10 +83,10 @@ class ASOSGoblin(MetaGoblin):
                 attempt = self.loot(self.form_url(f'{id}-1-{color}', True), self.path_dl)
                 if attempt:
                     break
-                sleep(self.tickrate)
+                sleep(self.args['tickrate'])
             for n in range(2, 5):
                 self.loot(self.form_url(f'{id}-{n}', True), self.path_dl)
-                sleep(self.tickrate)
+                sleep(self.args['tickrate'])
             self.move_file(self.path_scanned, self.path_backup, file)
 
     def scan(self, location='dir'):
@@ -105,9 +103,9 @@ class ASOSGoblin(MetaGoblin):
                 else:
                     idle += 1
                 id += increment
-                sleep(self.tickrate)
-        if not self.url == 'asos':
-            files = [self.url]
+                sleep(self.args['tickrate'])
+        if not self.args['url'] == 'asos':
+            files = [self.args['url']]
         else:
             if location == 'file':
                 files = self.read_file(os.path.join(self.path_main, 'ids.txt'), True)
@@ -176,15 +174,16 @@ class ASOSGoblin(MetaGoblin):
                 attempt = loot(f'{url}{item}-1-{color[:-1]}{query}')
                 if attempt:
                     break
-                sleep(self.tickrate)
+                sleep(self.args['tickrate'])
 
     def run(self):
         # TODO: expand
-        if self.mode == 'upgrade':
+        if self.args['mode'] == 'upgrade':
             self.make_dirs(self.path_dl, self.path_scanned, self.path_backup)
             self.upgrade()
-        elif self.mode == 'scan':
+        elif self.args['mode'] == 'scan':
             self.make_dirs(self.path_dl, self.path_scanned, self.path_backup)
             self.scan()
         else:
             self.grab()
+        print(f'[{self.__str__()}] <looted> {self.loot_tally} files')

@@ -6,40 +6,46 @@ from handlers.meta_goblin import MetaGoblin
 class ShopifyGoblin(MetaGoblin):
 
     '''
-    mode options:
-        - iter: for multiple links (using external links file)
-    format option:
-        - clean: decrop image
     accepts:
         - webpage
     generic back-end for:
+        - bluebella
+        - bordelle
         - caro swim
+        - cecilie copenhagen
+        - dora larsen
+        - else
         - fashion nova
         - five dancewear
+        - for love and lemons
+        - fortnight
+        - skin
+        - the great eros
         - triangl
+        - underprotection
         - vitamin a
     '''
 
-    def __init__(self, url, mode, timeout, format, increment, nodl, verbose, tickrate):
-        super().__init__(url, mode, timeout, format, increment, nodl, verbose, tickrate)
-        self.mode = mode
-        self.format = format
+    def __init__(self, args):
+        super().__init__(args)
         self.clean = True
         self.image_pat = r'cdn.shopify.com/[^" \n]+((\w+-)+)*\d+x(\d+)*[^" \n]+'
 
     # TODO: add shopify __str__ for non matched inputs?
 
-    def clean(self, url):
+    def trim(self, url):
         # NOTE: changed to 4 instead of +...check if always 4 with different urls
         return re.sub(r'_[a-z\d]+(\-[a-z\d]+){4}', '', url)
 
     def run(self):
-        parsed_links = re.finditer(self.image_pat, self.get_html(self.url))
-        for parsed in {p.group() for p in parsed_links}:
-            if format == 'clean':
-                self.loot(self.clean(parsed), clean=True)
+        links = {p.group() for p in re.finditer(self.image_pat, self.get_html(self.args['url']))}
+        for link in links:
+            # TODO: fix this to be specific to trim (or whatevr arguemnt is passed)
+            if self.args['format']:
+                self.loot(self.trim(link), clean=True)
             else:
-                self.loot(parsed, clean=True)
-            sleep(self.tickrate)
-        if self.clean and not self.nodl:
-            self.cleanup(self.path_main)
+                self.loot(link, clean=True)
+            sleep(self.args['tickrate'])
+        # if self.clean and not self.args['nodl']:
+        #     self.cleanup(self.path_main)
+        print(f'[{self.__str__()}] <looted> {self.loot_tally} files')

@@ -6,22 +6,19 @@ from handlers.meta_goblin import MetaGoblin
 class TopshopGoblin(MetaGoblin):
 
     '''
-    mode options:
-        - iter: for multiple links (using external links file)
-    url types:
+    accepts:
         - image
     '''
 
-    def __init__(self, url, mode, timeout, format, increment, nodl, verbose, tickrate):
-        super().__init__(url, mode, timeout, format, increment, nodl, verbose, tickrate)
-        self.mode = mode
-        print(f'[{self.__str__()}] <deployed>')
+    def __init__(self, args):
+        super().__init__(args)
 
     def __str__(self):
         return 'topshop goblin'
 
     def run(self):
-        link = dequery(self.url)[:-5]
+        link = self.dequery(self.args['url'])[:-5]
         for n in range(1, 6):
             self.loot(f'{url}{n}.jpg')
-            sleep(self.tickrate)
+            sleep(self.args['tickrate'])
+        print(f'[{self.__str__()}] <looted> {self.loot_tally} files')

@@ -7,8 +7,6 @@ class BetaGoblin(MetaGoblin):
 
     '''
     for scen7 variants
-    mode options:
-        - iter: for multiple links (using external links file)
     accepts:
         - image
         - webpage
@@ -21,9 +19,8 @@ class BetaGoblin(MetaGoblin):
         - urban outfitters
     '''
 
-    def __init__(self, url, mode, timeout, format, increment, nodl, verbose, tickrate):
-        super().__init__(url, mode, timeout, format, increment, nodl, verbose, tickrate)
-        self.mode = mode
+    def __init__(self, args):
+        super().__init__(args)
 
     def extract_id(self, url):
         return re.search(r'[a-z0-9]+_([a-z0-9]+)*', url).group()
@@ -35,10 +32,10 @@ class BetaGoblin(MetaGoblin):
             return False
 
     def run(self):
-        if 'scene7' in self.url:
-            links = [self.url]
+        if 'scene7' in self.args['url']:
+            links = [self.args['url']]
         else:
-            links = {l.group() for l in re.finditer(r'\w+\.scene7[^" \n]+', self.get_html(self.url))}
+            links = {l.group() for l in re.finditer(r'\w+\.scene7[^" \n]+', self.get_html(self.args['url']))}
         for link in links:
             if not self.correct_format(link):
                 continue
@@ -46,4 +43,5 @@ class BetaGoblin(MetaGoblin):
             id = self.extract_id(link)
             for char in self.chars:
                 self.loot(f'{base}{id}{char}{query}')
-                sleep(self.tickrate)
+                sleep(self.args['tickrate'])
+        print(f'[{self.__str__()}] <looted> {self.loot_tally} files')

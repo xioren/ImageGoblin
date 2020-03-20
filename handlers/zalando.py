@@ -10,10 +10,8 @@ from handlers.meta_goblin import MetaGoblin
 
 class ZalandoGoblin(MetaGoblin):
 
-    def __init__(self, url, mode, timeout, format, increment, nodl, verbose, tickrate):
-        super().__init__(url, mode, timeout, format, increment, nodl, verbose, tickrate)
-        self.mode = mode
-        print(f'[{self.__str__()}] <deployed>')
+    def __init__(self, args):
+        super().__init__(args)
 
     def __str__(self):
         return 'zalando goblin'
@@ -56,7 +54,7 @@ class ZalandoGoblin(MetaGoblin):
         '''
         scan for images
         '''
-        id = self.extract_id(self.url)
+        id = self.extract_id(self.args['url'])
         success, timeout, n = 0, 0, 1
         print(f'[zalando goblin] <scanning> {id}')
         while timeout <= 8:
@@ -67,7 +65,7 @@ class ZalandoGoblin(MetaGoblin):
             else:
                 timeout += 1
             n += 1
-            sleep(self.tickrate)
+            sleep(self.args['tickrate'])
         if success == 0:
             print(f'[zalando goblin] <NULL WARNING> {id} ')
         else:
@@ -78,9 +76,9 @@ class ZalandoGoblin(MetaGoblin):
         search for other images
         '''
         alpha = digits + upper
-        id = self.url
+        id = self.args['url']
         if self.identify(id) != 'id':
-            id = self.extract_id(self.url)
+            id = self.extract_id(self.args['url'])
         ref = id
         id = id.self('-')
         for k in alpha:
@@ -92,7 +90,7 @@ class ZalandoGoblin(MetaGoblin):
                     print(f'[zalando goblin] <skipping> {image}')
                     return None
                 self.loot(self.form_url(f'{image}@{n}', 'small'))
-                sleep(self.tickrate)
+                sleep(self.args['tickrate'])
 
     def create_links(self):
         '''
@@ -102,7 +100,8 @@ class ZalandoGoblin(MetaGoblin):
         self.write_file([self.form_url(file) for file in links], self.external_links, iter=True)
 
     def run(self):
-        if self.mode == 'find':
+        if self.args['mode'] == 'find':
             self.find_more()
         else:
             self.scan()
+        print(f'[{self.__str__()}] <looted> {self.loot_tally} files')

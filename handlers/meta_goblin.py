@@ -1,5 +1,4 @@
 import os
-from time import sleep
 from gzip import decompress
 from socket import timeout
 from io import DEFAULT_BUFFER_SIZE
@@ -11,17 +10,16 @@ from meta_sources import *
 
 class MetaGoblin(Parser):
 
-    def __init__(self,url, mode, timeout, format, increment, nodl, verbose, tickrate):
-        self.url = url
-        self.tickrate = tickrate
-        self.verbose = verbose
-        self.nodl = nodl
+    def __init__(self, args):
+        self.args = args
         self.path_main = os.path.join(os.getcwd(), 'goblin_loot', self.__str__().replace(' ', '_'))
         self.external_links = os.path.join(os.getcwd(), 'links.txt')
         self.headers = {'User-Agent': 'GoblinTeam/1.2',
                         'Accept-Encoding': 'gzip'}
-        if not self.nodl:
+        self.loot_tally = 0
+        if not self.args['nodl']:
             self.make_dirs(self.path_main)
+        print(f'[{self.__str__()}] <deployed> {self.args["url"]}')
 
     def make_dirs(self, *paths):
         '''
@@ -45,7 +43,8 @@ class MetaGoblin(Parser):
                 try:
                     os.remove(filepath)
                 except PermissionError as e:
-                    print(f'[{self.__str__()}] <cleanup error> {e}')
+                    if not self.args['silent']:
+                        print(f'[{self.__str__()}] <cleanup error> {e}')
                     continue
 
     def retrieve(self, url, path, n=0):
@@ -69,11 +68,11 @@ class MetaGoblin(Parser):
                                 return None
                         file.write(data)
         except HTTPError as e:
-            if self.verbose:
+            if not self.args['silent']:
                 print(f'[{self.__str__()}] <{e}> {url}')
             return None
         except URLError as e:
-            if self.verbose:
+            if not self.args['silent']:
                 print(f'[{self.__str__()}] <{e}> {url}')
             return None
         except timeout:
@@ -84,9 +83,11 @@ class MetaGoblin(Parser):
         '''
         retry connection after a socket timeout
         '''
-        print(f'[{self.__str__()}] <timed out> retry attempt {n}')
+        if not self.args['silent']:
+            print(f'[{self.__str__()}] <timed out> retry attempt {n}')
         if n > 5:
-            print(f'[{self.__str__()}] <timed out> aborting after {n} retries')
+            if not self.args['silent']:
+                print(f'[{self.__str__()}] <timed out> aborting after {n} retries')
         else:
             if path:
                 return self.retrieve(url, path, n)
@@ -109,11 +110,11 @@ class MetaGoblin(Parser):
                     except EOFError:
                         return None
         except HTTPError as e:
-            if self.verbose:
+            if not self.args['silent']:
                 print(f'[{self.__str__()}] <{e}> {url}')
             return None
         except URLError as e:
-            if self.verbose:
+            if not self.args['silent']:
                 print(f'[{self.__str__()}] <{e}> {url}')
             return None
         except timeout:
@@ -145,7 +146,8 @@ class MetaGoblin(Parser):
                 else:
                     file.write(data)
         except OSError as e:
-            print(f'[{self.__str__()}] <write error> {e}')
+            if not self.args['silent']:
+                print(f'[{self.__str__()}] <write error> {e}')
 
     def read_file(self, path, iter=False):
         '''
@@ -158,7 +160,8 @@ class MetaGoblin(Parser):
                 else:
                     return file.read()
         except OSError as e:
-            print(f'[{self.__str__()}] <read error> {e}')
+            if not self.args['silent']:
+                print(f'[{self.__str__()}] <read error> {e}')
 
     def move_vid(self, path):
         '''
@@ -178,7 +181,7 @@ class MetaGoblin(Parser):
         local_files = set()
         for root, dirs, files in os.walk(path):
             for file in files:
-                local_files.add(extract_filename(file))
+                local_files.add(self.extract_filename(file))
         if self.extract_filename(url) in local_files:
             return True
         else:
@@ -196,14 +199,16 @@ class MetaGoblin(Parser):
             save_loc = self.path_main
         filepath = os.path.join(save_loc, f'{filename}.{self.filetype(url)}')
         if os.path.exists(filepath):
-            if self.verbose:
+            if not self.args['silent']:
                 print(f'[{self.__str__()}] <file exists> {filename}')
             return False
-        if self.nodl:
-            print(url)
+        if self.args['nodl']:
+            print(url, end='\n\n')
         else:
             attempt = self.retrieve(self.finalize(url), filepath)
             if attempt:
-                print(f'[{self.__str__()}] <looted> {filename}')
+                if not self.args['silent']:
+                    print(f'[{self.__str__()}] <looted> {filename}')
+                self.loot_tally += 1
                 return True
         return False

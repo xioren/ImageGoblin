@@ -7,10 +7,12 @@ from handlers.meta_goblin import MetaGoblin
 
 class OmegaGoblin(MetaGoblin):
 
-    def __init__(self, url, mode, timeout, format, increment, nodl, verbose, tickrate):
-        super().__init__(url, mode, timeout, format, increment, nodl, verbose, tickrate)
-        self.format = format
-        print(f'[{self.__str__()}] <deployed>')
+    '''
+    generic goblin for links that did not trigger a handler match
+    '''
+
+    def __init__(self, args):
+        super().__init__(args)
 
     def __str__(self):
         return 'omega goblin'
@@ -19,13 +21,12 @@ class OmegaGoblin(MetaGoblin):
         '''
         add, substitute, or remove elements from a filename/url pair
         '''
-        self.format = self.format.split(' ')
-        if self.format[0] == 'add':
-            return url + self.format[1]
-        elif self.format[0] == 'sub':
-            return re.sub(self.format[1], self.format[2], url)
-        elif self.format[0] == 'rem':
-            return re.sub(self.format[1], '', url)
+        if self.args['format'][0] == 'add':
+            return url + self.args['format'][1]
+        elif self.args['format'][0] == 'sub':
+            return re.sub(self.args['format'][1], self.args['format'][2], url)
+        elif self.args['format'][0] == 'rem':
+            return re.sub(self.args['format'][1], '', url)
         elif format == 'auto':
             url = self.sanitize(url)
             if 'squarespace' in url:
@@ -38,7 +39,7 @@ class OmegaGoblin(MetaGoblin):
         '''
         extract media urls from html
         '''
-        links = {l.group() for l in re.finditer(regex_patterns['link_pattern'], self.get_html(self.url), re.IGNORECASE)}
+        links = {l.group() for l in re.finditer(regex_patterns['link_pattern'], self.get_html(self.args['url']), re.IGNORECASE)}
         return [re.sub(r'<img.+src="', '', l) for l in links]
 
     def download_media(self, links):
@@ -47,13 +48,14 @@ class OmegaGoblin(MetaGoblin):
         '''
         for link in links:
             print(f'[{self.__str__()}] <downloading> link {links.index(link) + 1} of {len(links)}')
-            if self.format:
+            if self.args['format']:
                 link = self.custom_format(link)
             self.loot(link)
-            sleep(self.tickrate)
-        if not self.nodl:
+            sleep(self.args['tickrate'])
+        if not self.args['nodl']:
             self.cleanup(self.path_main)
 
     def run(self):
         links = self.find_links()
         self.download_media(links)
+        print(f'[{self.__str__()}] <looted> {self.loot_tally} files')

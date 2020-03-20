@@ -6,16 +6,12 @@ from handlers.meta_goblin import MetaGoblin
 class BoohooGoblin(MetaGoblin):
 
     '''
-    mode options:
-        - iter: for multiple links (using external links file)
-    url types:
+    accepts:
         - image
     '''
 
-    def __init__(self, url, mode, timeout, format, increment, nodl, verbose, tickrate):
-        super().__init__(url, mode, timeout, format, increment, nodl, verbose, tickrate)
-        self.mode = mode
-        print(f'[{self.__str__()}] <deployed>')
+    def __init__(self, args):
+        super().__init__(args)
 
     def __str__(self):
         return 'boohoo goblin'
@@ -24,9 +20,10 @@ class BoohooGoblin(MetaGoblin):
         return re.search(r'\w+_\w+_xl', url).group()
 
     def run(self):
-        id = self.extract_id(self.url)
+        id = self.extract_id(self.args['url'])
         self.loot(f'https://i1.adis.ws/i/boohooamplience/{id}')
-        sleep(self.tickrate)
+        sleep(self.args['tickrate'])
         for n in range(1, 6):
             self.loot(f'https://i1.adis.ws/i/boohooamplience/{id}_{n}')
-            sleep(self.tickrate)
+            sleep(self.args['tickrate'])
+        print(f'[{self.__str__()}] <looted> {self.loot_tally} files')

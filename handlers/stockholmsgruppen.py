@@ -6,13 +6,12 @@ from handlers.meta_goblin import MetaGoblin
 class StockholmsgruppenGoblin(MetaGoblin):
 
     '''
-    url types:
+    accepts:
         - webpage
     '''
 
-    def __init__(self, url, mode, timeout, format, increment, nodl, verbose, tickrate):
-        super().__init__(url, mode, timeout, format, increment, nodl, verbose, tickrate)
-        print(f'[{self.__str__()}] <deployed>')
+    def __init__(self, args):
+        super().__init__(args)
 
     def __str__(self):
         return 'stockholmsgruppen goblin'
@@ -20,8 +19,9 @@ class StockholmsgruppenGoblin(MetaGoblin):
     def run(self):
         # NOTE: the h#### varies from profile to profile
         matches = re.finditer(r'<img data-url-h\d+="//stockholmsgruppen.s3.amazonaws.com/images/[\w-]+"',
-                              self.get_html(self.url))
+                              self.get_html(self.args['url']))
         for match in matches:
             link = re.sub(r'<img data-url-h\d+="//', '', match.group()[:-1])
             self.loot(link)
-            sleep(self.tickrate)
+            sleep(self.args['tickrate'])
+        print(f'[{self.__str__()}] <looted> {self.loot_tally} files')

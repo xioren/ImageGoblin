@@ -6,17 +6,13 @@ from handlers.meta_goblin import MetaGoblin
 class GettyGoblin(MetaGoblin):
 
     '''
-    mode options:
-        - iter: for multiple links (using external links file)
-    link types:
+    accepts:
         - image
         - webpage
     '''
 
-    def __init__(self, url, mode, timeout, format, increment, nodl, verbose, tickrate):
-        super().__init__(url, mode, timeout, format, increment, nodl, verbose, tickrate)
-        self.mode = mode
-        print(f'[{self.__str__()}] <deployed>')
+    def __init__(self, args):
+        super().__init__(args)
 
     def __str__(self):
         return 'getty goblin'
@@ -26,10 +22,11 @@ class GettyGoblin(MetaGoblin):
         return f'https://media.gettyimages.com/photos/picture-{id}?s=2048x2048'
 
     def run(self):
-        if 'media' in self.url:
-            self.loot(self.upgrade(self.url))
+        if 'media' in self.args['url']:
+            self.loot(self.upgrade(self.args['url']))
         else:
-            links = {l.group() for l in re.finditer(r'https*[^"]+id\d+', self.get_html(self.url))}
+            links = {l.group() for l in re.finditer(r'https*[^"]+id\d+', self.get_html(self.args['url']))}
             for link in links:
                 self.loot(self.upgrade(link))
-                sleep(self.tickrate)
+                sleep(self.args['tickrate'])
+        print(f'[{self.__str__()}] <looted> {self.loot_tally} files')

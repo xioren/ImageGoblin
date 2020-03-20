@@ -6,21 +6,17 @@ from handlers.meta_goblin import MetaGoblin
 class WixGoblin(MetaGoblin):
 
     '''
-    mode options:
-        - iter: for multiple links (using external links file)
-    url types:
+    accepts:
         - image
-    # TODO: add web page?
+    # TODO: add webpage?
     '''
 
-    def __init__(self, url, mode, timeout, format, increment, nodl, verbose, tickrate):
-        super().__init__(url, mode, timeout, format, increment, nodl, verbose, tickrate)
-        self.mode = mode
-        print(f'[{self.__str__()}] <deployed>')
+    def __init__(self, args):
+        super().__init__(args)
 
     def __str__(self):
         return 'wix goblin'
 
     def run(self):
-        self.loot(re.sub(r'\.jpg.+$', '', self.url) + '.jpg')
-        sleep(self.tickrate)
+        self.loot(re.sub(r'\.jpg.+$', '', self.args['url']) + '.jpg')
+        print(f'[{self.__str__()}] <looted> {self.loot_tally} files')

@@ -6,22 +6,19 @@ from handlers.meta_goblin import MetaGoblin
 class DollsKillGoblin(MetaGoblin):
 
     '''
-    mode options:
-        - iter: for multiple links (using external links file)
-    link types:
-        - web pag
+    accepts:
+        - webpage
     '''
 
-    def __init__(self, url, mode, timeout, format, increment, nodl, verbose, tickrate):
-        super().__init__(url, mode, timeout, format, increment, nodl, verbose, tickrate)
-        self.mode = mode
-        print(f'[{self.__str__()}] <deployed>')
+    def __init__(self, args):
+        super().__init__(args)
 
     def __str__(self):
         return 'dolls kill goblin'
 
     def run(self):
-        html = self.get_html(self.url)
+        html = self.get_html(self.args['url'])
         for link in {l.group() for l in re.finditer(r'img src="https://media.dollskill.com[^"]+\-\d+.jpg', html)}:
             self.loot(re.sub(r'\d+.jpg', '1.jpeg', link).replace('img src="', ''))
-            sleep(self.tickrate)
+            sleep(self.args['tickrate'])
+        print(f'[{self.__str__()}] <looted> {self.loot_tally} files')

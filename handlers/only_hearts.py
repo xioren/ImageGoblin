@@ -3,9 +3,8 @@ from handlers.generic_alpha import AlphaGoblin
 
 class OnlyHeartsGoblin(AlphaGoblin):
 
-    def __init__(self, url, mode, timeout, format, increment, nodl, verbose, tickrate):
-        super().__init__(url, mode, timeout, format, increment, nodl, verbose, tickrate)
-        print(f'[{self.__str__()}] <deployed>')
+    def __init__(self, args):
+        super().__init__(args)
 
     def __str__(self):
         return 'only hearts goblin'
