@@ -1,6 +1,5 @@
 import re
 from time import sleep
-from parsing import *
 from handlers.meta_goblin import MetaGoblin
 
 # removing /dw/image/v2/AAYL_PRD give original image, while leaving it in allow resizing

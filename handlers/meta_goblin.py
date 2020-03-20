@@ -5,11 +5,11 @@ from socket import timeout
 from io import DEFAULT_BUFFER_SIZE
 from urllib.request import urlopen, Request
 from urllib.error import HTTPError, URLError
-from parsing import *
+from parsing import Parser
 from meta_sources import *
 
 
-class MetaGoblin:
+class MetaGoblin(Parser):
 
     def __init__(self,url, mode, timeout, format, increment, nodl, verbose, tickrate):
         self.url = url
@@ -136,6 +136,7 @@ class MetaGoblin:
         '''
         write to disk
         '''
+        # QUESTION: is this used?
         try:
             with open(path, mode) as file:
                 if iter:
@@ -150,7 +151,6 @@ class MetaGoblin:
         '''
         read txt file
         '''
-        # NOTE: unused
         try:
             with open(path, 'r') as file:
                 if iter:
@@ -179,7 +179,7 @@ class MetaGoblin:
         for root, dirs, files in os.walk(path):
             for file in files:
                 local_files.add(extract_filename(file))
-        if extract_filename(url) in local_files:
+        if self.extract_filename(url) in local_files:
             return True
         else:
             return False
@@ -189,12 +189,12 @@ class MetaGoblin:
         front-end for retrieve
         '''
         if clean:
-            url = sanitize(url)
+            url = self.sanitize(url)
         if not filename:
-            filename = extract_filename(url)
+            filename = self.extract_filename(url)
         if not save_loc:
             save_loc = self.path_main
-        filepath = os.path.join(save_loc, f'{filename}.{filetype(url)}')
+        filepath = os.path.join(save_loc, f'{filename}.{self.filetype(url)}')
         if os.path.exists(filepath):
             if self.verbose:
                 print(f'[{self.__str__()}] <file exists> {filename}')
@@ -202,7 +202,7 @@ class MetaGoblin:
         if self.nodl:
             print(url)
         else:
-            attempt = self.retrieve(unescape(add_scheme(url)), filepath)
+            attempt = self.retrieve(self.finalize(url), filepath)
             if attempt:
                 print(f'[{self.__str__()}] <looted> {filename}')
                 return True

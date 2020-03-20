@@ -2,7 +2,6 @@ import re
 import os
 from time import sleep
 from string import ascii_uppercase as upper, digits
-from parsing import *
 from handlers.meta_goblin import MetaGoblin
 
 
@@ -81,7 +80,7 @@ class ZalandoGoblin(MetaGoblin):
         alpha = digits + upper
         id = self.url
         if self.identify(id) != 'id':
-            id = extract_id(self.url)
+            id = self.extract_id(self.url)
         ref = id
         id = id.self('-')
         for k in alpha:

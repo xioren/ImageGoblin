@@ -1,7 +1,6 @@
 import os
 from time import sleep
 from handlers.meta_goblin import MetaGoblin
-from parsing import *
 
 
 class IteratorGoblin(MetaGoblin):
@@ -16,6 +15,12 @@ class IteratorGoblin(MetaGoblin):
     def __str__(self):
         return 'iterator goblin'
 
+    def extract_iterable(self, url):
+        '''
+        seperate iterable from a url (mode 3)
+        '''
+        return re.split('%%%', url)
+
     def timed_out(self, n):
         '''
         program idle tracking
@@ -29,7 +34,7 @@ class IteratorGoblin(MetaGoblin):
         '''
         re-forms url and iterates (mode 3)
         '''
-        base, iterable, end = extract_iterable(self.url)
+        base, iterable, end = self.extract_iterable(self.url)
         iteration = 1
         print(f'[{self.__str__()}] <iterating> {self.url}')
         while True:

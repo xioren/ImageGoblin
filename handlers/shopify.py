@@ -1,6 +1,5 @@
 import re
 from time import sleep
-from parsing import *
 from handlers.meta_goblin import MetaGoblin
 
 
@@ -11,9 +10,9 @@ class ShopifyGoblin(MetaGoblin):
         - iter: for multiple links (using external links file)
     format option:
         - clean: decrop image
-    url types:
+    accepts:
         - webpage
-    back-end for:
+    generic back-end for:
         - caro swim
         - fashion nova
         - five dancewear
@@ -42,5 +41,5 @@ class ShopifyGoblin(MetaGoblin):
             else:
                 self.loot(parsed, clean=True)
             sleep(self.tickrate)
-        if self.clean:
+        if self.clean and not self.nodl:
             self.cleanup(self.path_main)

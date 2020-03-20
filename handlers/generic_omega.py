@@ -1,7 +1,8 @@
+import re
 import os
 from time import sleep
+from strings import *
 from handlers.meta_goblin import MetaGoblin
-from parsing import *
 
 
 class OmegaGoblin(MetaGoblin):
@@ -14,36 +15,45 @@ class OmegaGoblin(MetaGoblin):
     def __str__(self):
         return 'omega goblin'
 
-    def link_grab(self):
+    def custom_format(self, url):
         '''
-        parse html for media links
+        add, substitute, or remove elements from a filename/url pair
         '''
-        print(f'[{self.__str__()}] <parsing> {self.url}')
-        html = self.get_html(self.url)
-        if html:
-            links = link_finder(self.url, html)
-            print(f'[{self.__str__()}] <parse complete> {len(links)} links found')
+        self.format = self.format.split(' ')
+        if self.format[0] == 'add':
+            return url + self.format[1]
+        elif self.format[0] == 'sub':
+            return re.sub(self.format[1], self.format[2], url)
+        elif self.format[0] == 'rem':
+            return re.sub(self.format[1], '', url)
+        elif format == 'auto':
+            url = self.sanitize(url)
+            if 'squarespace' in url:
+                url += '?format=original'
         else:
-            print('[{self.__str__()}] <ERROR> no html recieved')
-            return None
-        return links
+            pass
+        return url
 
-    def link_dl(self, links):
+    def find_links(self):
+        '''
+        extract media urls from html
+        '''
+        links = {l.group() for l in re.finditer(regex_patterns['link_pattern'], self.get_html(self.url), re.IGNORECASE)}
+        return [re.sub(r'<img.+src="', '', l) for l in links]
+
+    def download_media(self, links):
         '''
         retrieve media
         '''
-        assert links
-        downloaded = []
         for link in links:
             print(f'[{self.__str__()}] <downloading> link {links.index(link) + 1} of {len(links)}')
             if self.format:
-                link = custom_format(link, self.format)
-            if link not in downloaded:
-                downloaded.append(link)
-                self.loot(link)
+                link = self.custom_format(link)
+            self.loot(link)
             sleep(self.tickrate)
-        self.cleanup(self.path_main)
+        if not self.nodl:
+            self.cleanup(self.path_main)
 
     def run(self):
-        links = self.link_grab()
-        self.link_dl(links)
+        links = self.find_links()
+        self.download_media(links)

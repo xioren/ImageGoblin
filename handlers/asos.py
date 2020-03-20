@@ -2,9 +2,7 @@ import re
 import os
 from time import sleep
 from handlers.meta_goblin import MetaGoblin
-from parsing import *
 
-# TODO: add single use
 
 class ASOSGoblin(MetaGoblin):
 

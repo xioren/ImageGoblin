@@ -1,6 +1,5 @@
 import re
 from time import sleep
-from parsing import *
 from handlers.meta_goblin import MetaGoblin
 
 
