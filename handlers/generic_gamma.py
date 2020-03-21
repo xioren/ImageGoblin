@@ -37,7 +37,7 @@ class GammaGoblin(MetaGoblin):
         if '.jpg' in self.args['url']:
             links = [self.args['url']]
         else:
-            links = {l.group() for l in re.finditer(fr'{self.pattern}\w+\.jpe*g', self.get_html(self.args['url']))}
+            links = self.extract_links(fr'{self.pattern}\w+\.jpe*g', self.args['url'])
         for link in links:
             id = self.extract_id(link)
             # link = dequery(re.sub(fr'{id}(\w+)*.jpg', '', link))

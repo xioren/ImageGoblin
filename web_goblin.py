@@ -4,7 +4,7 @@ from coordinator import Coordinator
 
 
 parser = ArgumentParser()
-parser.add_argument('url', nargs='?', default='links.txt', help='webpage or media url')
+parser.add_argument('url', nargs='?', help='webpage or media url')
 parser.add_argument('-m', '--mode', help='mode of operation')
 parser.add_argument('-s', '--silent', help='suppress output', action='store_true')
 parser.add_argument('-t', '--timeout', help='iteration timeout threshold (n)',

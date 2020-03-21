@@ -16,11 +16,11 @@ class MissguidedGoblin(MetaGoblin):
     def __str__(self):
         return 'missguided goblin'
 
-    def extract(self, url):
+    def extract_id(self, url):
         return re.search(r'[A-Z\d]+', url).group().upper()
 
     def run(self):
-        id = self.extract(self.args['url'])
+        id = self.extract_id(self.args['url'])
         for n in range(1, 6):
             self.loot(f'https://media.missguided.com/i/missguided/{id}_0{n}')
             sleep(self.args['tickrate'])

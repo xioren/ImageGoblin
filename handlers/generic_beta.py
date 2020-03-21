@@ -35,7 +35,7 @@ class BetaGoblin(MetaGoblin):
         if 'scene7' in self.args['url']:
             links = [self.args['url']]
         else:
-            links = {l.group() for l in re.finditer(r'\w+\.scene7[^" \n]+', self.get_html(self.args['url']))}
+            links = self.extract_links(r'\w+\.scene7[^" \n]+', self.args['url'])
         for link in links:
             if not self.correct_format(link):
                 continue

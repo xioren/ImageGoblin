@@ -17,8 +17,7 @@ class YandyGoblin(MetaGoblin):
         return 'yandy goblin'
 
     def run(self):
-        html = self.get_html(self.args['url'])
-        for link in {l.group() for l in re.finditer(r'https://assets.yandycdn.com/Products/[^-]+-\d+.jpg', html)}:
+        for link in self.extract_links(r'https://assets.yandycdn.com/Products/[^-]+-\d+.jpg', self.args['url']):
             self.loot(link.replace('Products', 'HiRez'))
             sleep(self.args['tickrate'])
         print(f'[{self.__str__()}] <looted> {self.loot_tally} files')

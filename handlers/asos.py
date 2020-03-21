@@ -11,6 +11,7 @@ class ASOSGoblin(MetaGoblin):
         self.path_dl = os.path.join(self.path_main, 'fullsize')
         self.path_scanned = os.path.join(self.path_main, 'scanned')
         self.path_backup = os.path.join(self.path_main, 'backup')
+        self.path_external = os.path.join(os.getcwd(), 'asos')
         self.query = '?wid=2239&hei=2857&size=2239,2857'
 
     def __str__(self):
@@ -70,8 +71,6 @@ class ASOSGoblin(MetaGoblin):
         download hi-res version of downloaded images
         '''
         for file in os.listdir(self.path_scanned):
-            if '.jpeg' not in file:
-                continue
             id = self.extract_id(file)
             if os.path.exists(os.path.join(self.path_dl, f'{id}-2.jpeg')):
                 print(f'[{self.__str__()}] <file exists> {id}')
@@ -89,7 +88,7 @@ class ASOSGoblin(MetaGoblin):
                 sleep(self.args['tickrate'])
             self.move_file(self.path_scanned, self.path_backup, file)
 
-    def scan(self, location='dir'):
+    def scan(self):
         '''
         find other images using supplied images or urls
         '''
@@ -104,13 +103,13 @@ class ASOSGoblin(MetaGoblin):
                     idle += 1
                 id += increment
                 sleep(self.args['tickrate'])
-        if not self.args['url'] == 'asos':
+        if self.args['url']:
             files = [self.args['url']]
         else:
-            if location == 'file':
-                files = self.read_file(os.path.join(self.path_main, 'ids.txt'), True)
-            else:
-                files = os.listdir(self.path_main)
+            for file in os.listdir(self.path_external):
+                self.move_file(self.path_external, self.path_main, file)
+            os.rmdir(self.path_external)
+            files = os.listdir(self.path_main)
         for file in files:
             if '.jpeg' not in file:
                 continue

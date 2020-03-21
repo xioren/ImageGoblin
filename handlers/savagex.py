@@ -18,9 +18,8 @@ class SavageXGoblin(MetaGoblin):
         return 'savagex goblin'
 
     def run(self):
-        parsed_links = re.finditer(self.image_pat, self.get_html(self.args['url']))
-        for parsed in {p.group() for p in parsed_links}:
-            self.loot(parsed.replace('800x800', '1600x1600'))
+        for link in self.extract_links(self.image_pat, self.args['url']):
+            self.loot(link.replace('800x800', '1600x1600'))
             sleep(self.args['tickrate'])
         self.cleanup(self.path_main)
         print(f'[{self.__str__()}] <looted> {self.loot_tally} files')

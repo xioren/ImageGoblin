@@ -19,7 +19,7 @@ class Coordinator:
             for key in handlers:
                 print(key)
             return
-        if self.args['local']:
+        elif self.args['local']:
             with open(os.path.join(os.getcwd(), self.args['local'])) as file:
                 links = set(file.read().splitlines())
         else:

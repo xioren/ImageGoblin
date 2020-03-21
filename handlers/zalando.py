@@ -6,6 +6,7 @@ from handlers.meta_goblin import MetaGoblin
 
 
 # NOTE: video format: https://mosaic04.ztat.net.vgs.content/08/12/1C/0I/6Q/11/VIDEO/HIGH_QUALITY/1572009797216.mp4
+# TODO: make conform to verbose rules
 
 
 class ZalandoGoblin(MetaGoblin):
@@ -48,19 +49,18 @@ class ZalandoGoblin(MetaGoblin):
         '''
         # # WARNING: will throw exception if non zalando images are input
         # QUESTION: can this handle digit.digit formats?
-        return re.sub(r'@\d+|\.(jpe*g|html|\d)', '', re.search(r'(\w+\-\w+(@\d+(\.\d)*)*(\.(jpe*g|html))*)$', dequery(url)).group())
+        return re.sub(r'@\d+|\.(jpe*g|html|\d)', '', re.search(r'(\w+\-\w+(@\d+(\.\d)*)*(\.(jpe*g|html))*)$', self.dequery(url)).group())
 
     def scan(self):
         '''
         scan for images
         '''
         id = self.extract_id(self.args['url'])
-        success, timeout, n = 0, 0, 1
+        timeout, n = 0, 1
         print(f'[zalando goblin] <scanning> {id}')
         while timeout <= 8:
             attempt = self.loot(self.form_url(f'{id}@{n}'))
             if attempt:
-                success += 1
                 timeout = 0
             else:
                 timeout += 1
@@ -68,8 +68,6 @@ class ZalandoGoblin(MetaGoblin):
             sleep(self.args['tickrate'])
         if success == 0:
             print(f'[zalando goblin] <NULL WARNING> {id} ')
-        else:
-            print(f'[zalando goblin] <complete> {id} --> {success} images found')
 
     def find_more(self):
         '''

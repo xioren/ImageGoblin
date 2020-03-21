@@ -37,8 +37,7 @@ class InstagramGoblin(MetaGoblin):
         links = set()
         for post in posts:
             # print(f'[{self.__str__()}] <parsing> post {posts.index(post) + 1} of {len(posts)}')
-            html = self.get_html(f'https://www.instagram.com{post}')
-            content = {l.group() for l in re.finditer(r'https://scontent[^"\n \']+1080x1080[^"\n \']+', html)}
+            content = self.extract_links(r'https://scontent[^"\n \']+1080x1080[^"\n \']+', f'https://www.instagram.com{post}')
             for link in content:
                 links.add(link.replace(r'\u0026', '&'))
             sleep(self.args['tickrate'])

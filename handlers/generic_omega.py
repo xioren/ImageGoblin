@@ -39,7 +39,7 @@ class OmegaGoblin(MetaGoblin):
         '''
         extract media urls from html
         '''
-        links = {l.group() for l in re.finditer(regex_patterns['link_pattern'], self.get_html(self.args['url']), re.IGNORECASE)}
+        links = self.extract_links(regex_patterns['link_pattern'], self.args['url'])
         return [re.sub(r'<img.+src="', '', l) for l in links]
 
     def download_media(self, links):

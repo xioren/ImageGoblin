@@ -17,8 +17,7 @@ class BurberryGoblin(MetaGoblin):
         return 'burberry goblin'
 
     def run(self):
-        links = {l.group() for l in re.finditer(r'https*://assets.burberry[^"]+\.jpe*g', self.get_html(self.url))}
-        for link in links:
+        for link in self.extract_links(r'https*://assets.burberry[^"]+\.jpe*g', self.url):
             self.loot(f'{link}?wid=3072&hei=3072')
             sleep(self.args['tickrate'])
         print(f'[{self.__str__()}] <looted> {self.loot_tally} files')

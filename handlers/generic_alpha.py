@@ -39,8 +39,8 @@ class AlphaGoblin(MetaGoblin):
             # QUESTION: possible?
             pass
         else:
-            parsed_links = re.finditer(self.image_pat, self.get_html(self.args['url']))
-            for parsed in {p.group() for p in parsed_links}:
-                self.loot(re.sub(r'cache/(\d/\w+/(\d+x(\d+)*/)*)*\w+/', '', parsed.replace('\\', '')), clean=self.clean)
+            links = self.extract_links(self.image_pat, self.args['url'])
+            for link in links:
+                self.loot(re.sub(r'cache/(\d/\w+/(\d+x(\d+)*/)*)*\w+/', '', link.replace('\\', '')), clean=self.clean)
                 sleep(self.args['tickrate'])
         print(f'[{self.__str__()}] <looted> {self.loot_tally} files')

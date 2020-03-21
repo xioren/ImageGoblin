@@ -19,7 +19,7 @@ class MaisonLejabyGoblin(MetaGoblin):
 
     def run(self):
         if '.html' in self.args['url']:
-            links = {l.group() for l in re.finditer(r'https://www\.maisonlejaby\.com.+\.jpg', self.get_html(self.args['url']))}
+            links = self.extract_links(r'https://www\.maisonlejaby\.com.+\.jpg', self.args['url'])
         else:
             links = [self.args['url']]
         for link in links:

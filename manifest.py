@@ -20,6 +20,7 @@ from handlers.else_lingerie import ElseGoblin
 from handlers.etam import EtamGoblin
 from handlers.fashion_nova import FashionNovaGoblin
 from handlers.five_dancewear import FiveDancewearGoblin
+from handlers.fleur_du_mal import FleurDuMalGoblin
 from handlers.for_love_and_lemons import ForLoveAndLemonsGoblin
 from handlers.format import FormatGoblin
 from handlers.fortnight import FortnightGoblin
@@ -27,6 +28,7 @@ from handlers.fredericks import FredericksGoblin
 from handlers.free_people import FreePeopleGoblin
 from handlers.generic_omega import OmegaGoblin
 from handlers.getty import GettyGoblin
+from handlers.h_and_m import HMGoblin
 from handlers.hunkemoller import HunkemollerGoblin
 from handlers.hot_topic import HotTopicGoblin
 from handlers.instagram import InstagramGoblin
@@ -38,6 +40,7 @@ from handlers.maison_close import MaisonCloseGoblin
 from handlers.mango import MangoGoblin
 from handlers.massimodutti import MassimoDuttiGoblin
 from handlers.missguided import MissguidedGoblin
+from handlers.nasty_gal import NastyGalGoblin
 from handlers.only_hearts import OnlyHeartsGoblin
 from handlers.oysho import OyshoGoblin
 from handlers.prettylittlething import PrettyLittleThingGoblin
@@ -49,9 +52,11 @@ from handlers.shopify import ShopifyGoblin
 from handlers.simone_perele import SimonePereleGoblin
 from handlers.skin import SkinGoblin
 from handlers.springfield import SpringfieldGoblin
+from handlers.ssense import SsenseGoblin
 from handlers.stockholmsgruppen import StockholmsgruppenGoblin
 from handlers.stradivarius import StradivariusGoblin
 from handlers.the_great_eros import TheGreatErosGoblin
+from handlers.the_iconic import TheIconicGoblin
 from handlers.tommy_hilfiger import TommyHilfigerGoblin
 from handlers.topshop import TopshopGoblin
 from handlers.triangl import TrianglGoblin
@@ -88,6 +93,7 @@ handlers = {
             'etam': (r'etam', EtamGoblin),
             'fashionnova': (r'fashionnova', FashionNovaGoblin),
             'fivedancewear': (r'fivedancewear', FiveDancewearGoblin),
+            'fleurdumal': (r'fleurdumal', FleurDuMalGoblin),
             'fredericks': (r'fredericks', FredericksGoblin),
             'forloveandlemons': (r'forloveandlemons', ForLoveAndLemonsGoblin),
             'format': (r'format', FormatGoblin),
@@ -95,6 +101,7 @@ handlers = {
             'freepeople': (r'freepeople', FreePeopleGoblin),
             'generic': ('#####', OmegaGoblin),
             'getty': (r'gettyimages', GettyGoblin),
+            'h&m': (r'hm\.com', HMGoblin),
             'hunkemoller': (r'hunkemoller', HunkemollerGoblin),
             'hottopic': (r'hottopic', HotTopicGoblin),
             'instagram': (r'instagram', InstagramGoblin),
@@ -106,6 +113,7 @@ handlers = {
             'mango': (r'mango|mngbcn', MangoGoblin),
             'massimodutti': (r'massimodutti', MassimoDuttiGoblin),
             'missguided': (r'missguided', MissguidedGoblin),
+            'nastygal': (r'nastygal|i\d.adis.ws', NastyGalGoblin),
             'onlyhearts': (r'onlyhearts', OnlyHeartsGoblin),
             'oysho': (r'oysho', OyshoGoblin),
             'prettylittlething': (r'prettylittlething', PrettyLittleThingGoblin),
@@ -117,9 +125,11 @@ handlers = {
             'simoneperele': (r'simoneperele', SimonePereleGoblin),
             'skin': (r'skinworldwide', SkinGoblin),
             'spring': (r'myspringfield', SpringfieldGoblin),
+            'ssense': (r'ssense(media)*', SsenseGoblin),
             'stockholmsgruppen': (r'stockholmsgruppen', StockholmsgruppenGoblin),
             'stradivarius': (r'stradivarius', StradivariusGoblin),
             'thegreateros': (r'thegreateros', TheGreatErosGoblin),
+            'theiconic': (r'theiconic', TheIconicGoblin),
             'tommyhilfiger':(r'tommy-europe|shoptommy', TommyHilfigerGoblin),
             'topshop': (r'topshop.com', TopshopGoblin),
             'triangl': (r'triangl', TrianglGoblin),

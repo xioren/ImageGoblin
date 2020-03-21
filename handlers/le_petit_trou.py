@@ -15,7 +15,7 @@ class LePetitTrouGoblin(MetaGoblin):
         if 'shoplo' in self.args['url']:
             links = [self.args['url']]
         else:
-            links = {l.group() for l in re.finditer(r'https://cdn.shoplo[^"]+\.jpg', self.get_html(self.args['url']))}
+            links = self.extract_links(r'https://cdn.shoplo[^"]+\.jpg', self.args['url'])
         for link in links:
             self.loot(re.sub(r'th\d+', 'orig', link))
             sleep(self.args['tickrate'])

@@ -8,4 +8,4 @@ class PullandBearGoblin(DeltaGoblin):
         self.size = 8
 
     def __str__(self):
-        return 'pull and bear goblin'
+        return 'pull&bear goblin'

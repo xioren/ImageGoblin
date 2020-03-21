@@ -44,7 +44,7 @@ class Parser:
         '''
         type = re.search(regex_patterns['filetypes'], url, re.IGNORECASE)
         if not type:
-            return ''
+            return 'jpeg'
         return type.group().lstrip('.')
 
     def add_scheme(self, url):
@@ -98,3 +98,15 @@ class Parser:
         prepare a url for downloading
         '''
         return self.add_scheme(self.unescape(url.strip('/')))
+
+    def make_unique(self, filename):
+        '''
+        make filename unique
+        '''
+        n = 1
+        while True:
+            unique = f'({n}).'.join(filename.split('.'))
+            if os.path.exists(unique):
+                n += 1
+            else:
+                return unique

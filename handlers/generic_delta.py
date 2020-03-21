@@ -14,7 +14,7 @@ class DeltaGoblin(MetaGoblin):
         - bershka
         - massimodutti
         - oysho
-        - pull and bear
+        - pull&bear
         - stradivarius
     '''
 
@@ -31,7 +31,7 @@ class DeltaGoblin(MetaGoblin):
         if '.jpg' in self.args['url']:
             links = [self.args['url']]
         else:
-            links = {l.group() for l in re.finditer(r'https*://static[^"]+\.jpe*g', self.get_html(self.args['url']))}
+            links = self.extract_links(r'https*://static[^"]+\.jpe*g', self.args['url'])
         for link in links:
             base, end = re.split(r'_\d_\d_\d+', link)
             for id in self.ids:

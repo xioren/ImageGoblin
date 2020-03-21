@@ -25,7 +25,7 @@ class GettyGoblin(MetaGoblin):
         if 'media' in self.args['url']:
             self.loot(self.upgrade(self.args['url']))
         else:
-            links = {l.group() for l in re.finditer(r'https*[^"]+id\d+', self.get_html(self.args['url']))}
+            links = self.extract_links(r'https*[^"]+id\d+', self.args['url'])
             for link in links:
                 self.loot(self.upgrade(link))
                 sleep(self.args['tickrate'])

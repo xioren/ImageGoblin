@@ -1,4 +1,5 @@
 import os
+import re
 from gzip import decompress
 from socket import timeout
 from io import DEFAULT_BUFFER_SIZE
@@ -19,7 +20,10 @@ class MetaGoblin(Parser):
         self.loot_tally = 0
         if not self.args['nodl']:
             self.make_dirs(self.path_main)
-        print(f'[{self.__str__()}] <deployed> {self.args["url"]}')
+        if self.args['url']:
+            print(f'[{self.__str__()}] <deployed> {self.args["url"]}')
+        else:
+            print(f'[{self.__str__()}] <deployed>')
 
     def make_dirs(self, *paths):
         '''
@@ -76,7 +80,7 @@ class MetaGoblin(Parser):
                 print(f'[{self.__str__()}] <{e}> {url}')
             return None
         except timeout:
-            return self.retry(url, wait, n+1, path)
+            return self.retry(url, n+1, path)
         return True
 
     def retry(self, url, n, path=None):
@@ -121,18 +125,6 @@ class MetaGoblin(Parser):
             return self.retry(url, n+1)
         return html.decode('utf-8', 'ignore')
 
-    def make_unique(self, filename):
-        '''
-        make filename unique
-        '''
-        n = 1
-        while True:
-            unique = f'({n}).'.join(filename.split('.'))
-            if os.path.exists(unique):
-                n += 1
-            else:
-                return unique
-
     def write_file(self, data, path, mode='w', iter=False):
         '''
         write to disk
@@ -167,6 +159,7 @@ class MetaGoblin(Parser):
         '''
         move videos into seperate directory
         '''
+        # QUESTION: move to instagram?
         dirpath = os.path.join(path, 'vid')
         if os.path.exists(dirpath) is False:
             os.mkdir(dirpath)
@@ -187,10 +180,19 @@ class MetaGoblin(Parser):
         else:
             return False
 
+    def extract_links(self, pattern, url):
+        '''
+        extact links from html based on regex pattern
+        '''
+        return {link.group() for link in re.finditer(pattern, self.get_html(url))}
+
     def loot(self, url, save_loc=None, filename=None, clean=False):
         '''
         front-end for retrieve
         '''
+        if self.args['nodl']:
+            print(url, end='\n\n')
+            return
         if clean:
             url = self.sanitize(url)
         if not filename:
@@ -202,13 +204,10 @@ class MetaGoblin(Parser):
             if not self.args['silent']:
                 print(f'[{self.__str__()}] <file exists> {filename}')
             return False
-        if self.args['nodl']:
-            print(url, end='\n\n')
-        else:
-            attempt = self.retrieve(self.finalize(url), filepath)
-            if attempt:
-                if not self.args['silent']:
-                    print(f'[{self.__str__()}] <looted> {filename}')
-                self.loot_tally += 1
-                return True
+        attempt = self.retrieve(self.finalize(url), filepath)
+        if attempt:
+            if not self.args['silent']:
+                print(f'[{self.__str__()}] <looted> {filename}')
+            self.loot_tally += 1
+            return True
         return False

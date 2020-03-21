@@ -17,8 +17,7 @@ class PrettyLittleThingGoblin(MetaGoblin):
         return 'prettylittlething goblin'
 
     def run(self):
-        html = self.get_html(self.args['url'])
-        for parsed in {p.group() for p in re.finditer(r'https://cdn\-img\.prettylittlething\.com[^" \n]+', html)}:
-            self.loot(parsed, clean=True)
+        for link in self.extract_links(r'https://cdn\-img\.prettylittlething\.com[^" \n]+', self.args['url']):
+            self.loot(link, clean=True)
             sleep(self.args['tickrate'])
         print(f'[{self.__str__()}] <looted> {self.loot_tally} files')

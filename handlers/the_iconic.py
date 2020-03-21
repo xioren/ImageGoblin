@@ -3,9 +3,11 @@ from time import sleep
 from handlers.meta_goblin import MetaGoblin
 
 
-class BoohooGoblin(MetaGoblin):
+class TheIconicGoblin(MetaGoblin):
 
     '''
+    mode options:
+        -
     accepts:
         - image
         - webpage
@@ -15,19 +17,19 @@ class BoohooGoblin(MetaGoblin):
         super().__init__(args)
 
     def __str__(self):
-        return 'boohoo goblin'
+        return 'the iconic goblin'
 
     def extract_id(self, url):
-        return re.search(r'[a-z\d]+_[a-z\d]+_xl', url).group()
+        return re.search(r'\d+\-\d+\-', url).group()
 
     def run(self):
-        if 'adis.ws' in self.args['url']:
+        if 'img1' in self.args['url'] or 'static' in self.args['url']:
             links = [self.args['url']]
         else:
-            links = self.extract_links(r'i\d\.adis\.ws/i/boohooamplience/[^" \?]+', self.args['url'])
+            links = self.extract_links(r'(\d+\-){2}\d\.jpg', self.args['url'])
         for link in links:
             id = self.extract_id(link)
-            for n in ('', '_1', '_2', '_3', '_4'):
-                self.loot(f'https://i1.adis.ws/i/boohooamplience/{id}{n}')
+            for n in range(1, 6):
+                self.loot(f'https://static.theiconic.com.au/p/{id}{n}.jpg')
                 sleep(self.args['tickrate'])
         print(f'[{self.__str__()}] <looted> {self.loot_tally} files')
