@@ -17,7 +17,13 @@ class YandyGoblin(MetaGoblin):
         return 'yandy goblin'
 
     def run(self):
-        for link in self.extract_links(r'https://assets.yandycdn.com/Products/[^-]+-\d+.jpg', self.args['url']):
+        if 'assets.yandycdn' in self.args['url']:
+            links = []
+            if not self.args['silent']:
+                print(f'[{self.__str__()}] <WARNING> url type not supported')
+        else:
+            links = self.extract_links(r'https://assets.yandycdn.com/Products/[^-]+-\d+.jpg', self.args['url'])
+        for link in links:
             self.loot(link.replace('Products', 'HiRez'))
             sleep(self.args['tickrate'])
         print(f'[{self.__str__()}] <looted> {self.loot_tally} files')

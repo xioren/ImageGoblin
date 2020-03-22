@@ -1,26 +1,16 @@
 import re
 from time import sleep
-from handlers.meta_goblin import MetaGoblin
+from handlers.generic_gamma import GammaGoblin
 
-# NOTE: can also use generic gamma, but might be lesser resolution
+# NOTE: https://images-hunkemoller.akamaized.net/original/
 
-class HunkemollerGoblin(MetaGoblin):
-
-    '''
-    accepts:
-        - image
-        - web page
-    '''
+class HunkemollerGoblin(GammaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
+        self.modifiers = ('1', '2', '3', '4', '5')
+        self.pattern = r'\d+_'
+        self.base = 'https://www.hunkemoller.co.uk/on/demandware.static/-/Sites-hkm-master/default/images/large/'
 
     def __str__(self):
         return 'hunkemoller goblin'
-
-    def run(self):
-        id = re.search(r'(/|-)\d+', self.args['url']).group().replace('/', '').replace('-', '')
-        for num in range(1, 6):
-            self.loot(f'https://images-hunkemoller.akamaized.net/original/{id}_{num}.jpg')
-            sleep(self.args['tickrate'])
-        print(f'[{self.__str__()}] <looted> {self.loot_tally} files')

@@ -2,6 +2,7 @@ import re
 from time import sleep
 from handlers.meta_goblin import MetaGoblin
 
+# TODO: add site specific iteration
 
 class ShopifyGoblin(MetaGoblin):
 
@@ -39,7 +40,13 @@ class ShopifyGoblin(MetaGoblin):
         return re.sub(r'_[a-z\d]+(\-[a-z\d]+){4}', '', url)
 
     def run(self):
-        for link in self.extract_links(self.image_pat, self.args['url']):
+        if 'cdn.shopify' in self.args['url']:
+            links = []
+            if not self.args['silent']:
+                print(f'[{self.__str__()}] <WARNING> url type not supported')
+        else:
+            links = self.extract_links(self.image_pat, self.args['url'])
+        for link in links:
             # TODO: fix this to be specific to trim (or whatevr arguemnt is passed)
             if self.args['format']:
                 self.loot(self.trim(link), clean=True)

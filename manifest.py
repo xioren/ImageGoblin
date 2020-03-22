@@ -22,7 +22,6 @@ from handlers.fashion_nova import FashionNovaGoblin
 from handlers.five_dancewear import FiveDancewearGoblin
 from handlers.fleur_du_mal import FleurDuMalGoblin
 from handlers.for_love_and_lemons import ForLoveAndLemonsGoblin
-from handlers.format import FormatGoblin
 from handlers.fortnight import FortnightGoblin
 from handlers.fredericks import FredericksGoblin
 from handlers.free_people import FreePeopleGoblin
@@ -66,6 +65,7 @@ from handlers.victorias_secret import VictoriasSecretGoblin
 from handlers.vitamin_a import VitaminAGoblin
 from handlers.wix import WixGoblin
 from handlers.womens_secret import WomensSecretGoblin
+from handlers.wood_wood import WoodWoodGoblin
 from handlers.yandy import YandyGoblin
 from handlers.zalando import ZalandoGoblin
 
@@ -75,9 +75,9 @@ handlers = {
             'amiclubwear': (r'amiclubwear', AMIGoblin),
             'anthropologie': (r'anthropologie', AnthropologieGoblin),
             'asos': (r'asos|(\d+\-\d(\-\[a-z-9]+)*)$', ASOSGoblin),
-            'behance': (r'behance', BehanceGoblin),
+            'behance': (r'behance|mir\-s3\-cdn', BehanceGoblin),
             'bershka': (r'bershka', BershkaGoblin),
-            'bluebella': (r'bluebella', BlueBellaGoblin),
+            'bluebella': (r'bluebella.com', BlueBellaGoblin),
             'blushlingerie': (r'blushlingerie', BlushGoblin),
             'boohoo': (r'boohoo|adis\.ws', BoohooGoblin),
             'bordelle': (r'bordelle', BordelleGoblin),
@@ -96,7 +96,6 @@ handlers = {
             'fleurdumal': (r'fleurdumal', FleurDuMalGoblin),
             'fredericks': (r'fredericks', FredericksGoblin),
             'forloveandlemons': (r'forloveandlemons', ForLoveAndLemonsGoblin),
-            'format': (r'format', FormatGoblin),
             'fortnight': (r'fortnightlingerie', FortnightGoblin),
             'freepeople': (r'freepeople', FreePeopleGoblin),
             'generic': ('#####', OmegaGoblin),
@@ -139,6 +138,7 @@ handlers = {
             'vitaminaswim': (r'vitaminaswim', VitaminAGoblin),
             'wix': (r'wix', WixGoblin),
             'womenssecret': (r'womenssecret', WomensSecretGoblin),
+            'woodwood': (r'woodwood', WoodWoodGoblin),
             'yandy': (r'yandy(cdn)*', YandyGoblin),
             'zalando': (r'zalando|ztat\.net|[A-Z0-9]+-[A-Z]\d{2}(@\d)*', ZalandoGoblin)
             }

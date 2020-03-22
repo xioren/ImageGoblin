@@ -17,7 +17,13 @@ class PrettyLittleThingGoblin(MetaGoblin):
         return 'prettylittlething goblin'
 
     def run(self):
-        for link in self.extract_links(r'https://cdn\-img\.prettylittlething\.com[^" \n]+', self.args['url']):
+        if 'cdn-img.prettylittlething' in self.args['url']:
+            links = []
+            if not self.args['silent']:
+                print(f'[{self.__str__()}] <WARNING> url type not supported')
+        else:
+            links = self.extract_links(r'https://cdn\-img\.prettylittlething\.com[^" \n]+', self.args['url'])
+        for link in links:
             self.loot(link, clean=True)
             sleep(self.args['tickrate'])
         print(f'[{self.__str__()}] <looted> {self.loot_tally} files')

@@ -18,8 +18,11 @@ class StockholmsgruppenGoblin(MetaGoblin):
 
     def run(self):
         # NOTE: the h#### varies from profile to profile
-        for link in self.extract_links(r'<img data-url-h\d+="//stockholmsgruppen.s3.amazonaws.com/images/[\w-]+"', self.args['url']):
-            link = re.sub(r'<img data-url-h\d+="//', '', link.group()[:-1])
-            self.loot(link)
+        if 'amazonaws' in self.args['url']:
+            links = [self.args['url']]
+        else:
+            links = self.extract_links(r'<img data-url-h\d+="//stockholmsgruppen.s3.amazonaws.com/images/[\w-]+"', self.args['url'])
+        for link in links:
+            self.loot(re.sub(r'<img data-url-h\d+="//', '', link.group()[:-1]))
             sleep(self.args['tickrate'])
         print(f'[{self.__str__()}] <looted> {self.loot_tally} files')

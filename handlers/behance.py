@@ -23,9 +23,16 @@ class BehanceGoblin(MetaGoblin):
         return re.sub(self.size_pat, size, self.args['url'])
 
     def run(self):
-        for size in self.sizes:
-            attempt = self.loot(self.fit(self.args['url'], size))
-            if attempt:
-                break
-            sleep(self.args['tickrate'])
+        if 'mir-s3-cdn' in self.args['url']:
+            links = self.args['url']
+        else:
+            links = []
+            if not self.args['silent']:
+                print(f'[{self.__str__()}] <WARNING> url type not supported')
+        for link in links:
+            for size in self.sizes:
+                attempt = self.loot(self.fit(link, size))
+                if attempt:
+                    break
+                sleep(self.args['tickrate'])
         print(f'[{self.__str__()}] <looted> {self.loot_tally} files')

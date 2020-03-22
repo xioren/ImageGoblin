@@ -20,8 +20,14 @@ class MissguidedGoblin(MetaGoblin):
         return re.search(r'[A-Z\d]+', url).group().upper()
 
     def run(self):
-        id = self.extract_id(self.args['url'])
-        for n in range(1, 6):
-            self.loot(f'https://media.missguided.com/i/missguided/{id}_0{n}')
-            sleep(self.args['tickrate'])
+        if 'media.missguided' in self.args['url']:
+            links = [self.args['url']]
+        else:
+            # NOTE: currently throws 405 error
+            links = self.extract_links(r'https://media\.missguided\.com[^" ]+_\d{2}\.jpg', self.args['url'])
+        for link in links:
+            id = self.extract_id(self.args['url'])
+            for n in range(1, 6):
+                self.loot(f'https://media.missguided.com/i/missguided/{id}_0{n}')
+                sleep(self.args['tickrate'])
         print(f'[{self.__str__()}] <looted> {self.loot_tally} files')

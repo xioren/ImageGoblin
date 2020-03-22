@@ -17,7 +17,13 @@ class BurberryGoblin(MetaGoblin):
         return 'burberry goblin'
 
     def run(self):
-        for link in self.extract_links(r'https*://assets.burberry[^"]+\.jpe*g', self.url):
+        if 'assets.burberry' in self.args['url']:
+            links = []
+            if not self.args['silent']:
+                print(f'[{self.__str__()}] <WARNING> url type not supported')
+        else:
+            links = self.extract_links(r'https*://assets.burberry[^"]+\.jpe*g', self.args['url'])
+        for link in link:
             self.loot(f'{link}?wid=3072&hei=3072')
             sleep(self.args['tickrate'])
         print(f'[{self.__str__()}] <looted> {self.loot_tally} files')

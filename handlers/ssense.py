@@ -22,11 +22,13 @@ class SsenseGoblin(MetaGoblin):
         return re.search(r'[A-Z\d]+_\d', url).group()[:-2]
 
     def run(self):
-        if '' in self.args['url']:
+        if 'img.ssensemedia' in self.args['url']:
             links = [self.args['url']]
         else:
-            # NOTE: does not work ----> javascript
-            links = self.extract_links(r'https*://img\.ssensemedia\.com/images*/[^" ]', self.args['url'])
+            # links = self.extract_links(r'https*://img\.ssensemedia\.com/images*/[^" ]', self.args['url'])
+            links = []
+            if not self.args['silent']:
+                print(f'[{self.__str__()}] <WARNING> url type not supported')
         for link in links:
             id = self.extract_id(link)
             for n in range(6):

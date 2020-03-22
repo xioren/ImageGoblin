@@ -36,8 +36,9 @@ class AlphaGoblin(MetaGoblin):
 
     def run(self):
         if '.jpg' in self.args['url']:
-            # QUESTION: possible?
-            pass
+            links = []
+            if not self.args['silent']:
+                print(f'[{self.__str__()}] <WARNING> url type not supported')
         else:
             links = self.extract_links(self.image_pat, self.args['url'])
             for link in links:

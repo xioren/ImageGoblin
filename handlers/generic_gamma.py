@@ -15,6 +15,7 @@ class GammaGoblin(MetaGoblin):
     generic backend for:
         - boux avenue
         - etam
+        - hunkemoller
         - sandro
         - springfield
         - womens secret

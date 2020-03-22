@@ -8,7 +8,6 @@ class FredericksGoblin(MetaGoblin):
     '''
     accepts:
         - image
-    # BUG: does not get all images ---> javascript
     '''
 
     def __init__(self, args):
@@ -18,7 +17,16 @@ class FredericksGoblin(MetaGoblin):
         return 'fredericks goblin'
 
     def run(self):
-        for link in self.extract_links(r'//[^" \n]+\.jpe*g', self.args['url']):
-            self.loot(re.sub(r'\.\d+w.jpg', r'\.jpg', link))
+        if 'cloudfront' in self.args['url']:
+            links = [self.args['url']]
+            if not self.args['silent']:
+                print(f'[{self.__str__()}] <WARNING> partial support')
+        else:
+            # links = self.extract_links(r'//[^" \n]+\.jpe*g', self.args['url'])
+            links = []
+            if not self.args['silent']:
+                print(f'[{self.__str__()}] <WARNING> url type not supported')
+        for link in links:
+            self.loot(re.sub(r'\.\d+w', '', link))
             sleep(self.args['tickrate'])
         print(f'[{self.__str__()}] <looted> {self.loot_tally} files')

@@ -20,6 +20,14 @@ class VictoriasSecretGoblin(MetaGoblin):
         return re.search(r'\w+.jpg', link).group()
 
     def run(self):
-        # TODO: add link dragnet
-        self.loot(re.sub(r'\d+x\d+', '4040x5390', self.args['url']))
+        if 'victoriassecret.com/p/' in self.args['url']:
+            links = [self.args['url']]
+        else:
+            # links = self.extract_links(r'https*://www\.victoriassecret\.com/p/[^" ]+\.jpg', self.args['url'])
+            links = []
+            if not self.args['silent']:
+                print(f'[{self.__str__()}] <WARNING> url type not supported')
+        for link in links:
+            self.loot(re.sub(r'\d+x\d+', '4040x5390', self.args['url']))
+            sleep(self.args['timeout'])
         print(f'[{self.__str__()}] <looted> {self.loot_tally} files')

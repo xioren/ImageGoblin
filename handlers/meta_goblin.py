@@ -15,7 +15,7 @@ class MetaGoblin(Parser):
         self.args = args
         self.path_main = os.path.join(os.getcwd(), 'goblin_loot', self.__str__().replace(' ', '_'))
         self.external_links = os.path.join(os.getcwd(), 'links.txt')
-        self.headers = {'User-Agent': 'GoblinTeam/1.2',
+        self.headers = {'User-Agent': 'GoblinTeam/1.3',
                         'Accept-Encoding': 'gzip'}
         self.loot_tally = 0
         if not self.args['nodl']:
@@ -184,7 +184,16 @@ class MetaGoblin(Parser):
         '''
         extact links from html based on regex pattern
         '''
-        return {link.group() for link in re.finditer(pattern, self.get_html(url))}
+        try:
+            return {link.group() for link in re.finditer(pattern, self.get_html(url))}
+        except TypeError:
+            return ''
+
+    def filter(self, iterable):
+        '''
+        remove duplicates from a list
+        '''
+        return set(iterable)
 
     def loot(self, url, save_loc=None, filename=None, clean=False):
         '''

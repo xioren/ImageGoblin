@@ -18,5 +18,13 @@ class WixGoblin(MetaGoblin):
         return 'wix goblin'
 
     def run(self):
-        self.loot(re.sub(r'\.jpg.+$', '', self.args['url']) + '.jpg')
+        if '' in self.args['url']:
+            links = self.args['url']
+        else:
+            links = []
+            if not self.args['silent']:
+                print(f'[{self.__str__()}] <WARNING> url type not supported')
+        for link in links:
+            self.loot(re.sub(r'\.jpg.+$', '', self.args['url']) + '.jpg')
+            sleep(self.args['tickrate'])
         print(f'[{self.__str__()}] <looted> {self.loot_tally} files')

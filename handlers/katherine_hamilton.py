@@ -9,7 +9,7 @@ class KatherineHamiltonGoblin(MetaGoblin):
     mode options:
         - iter: for multiple links (using external links file)
     accepts:
-        - image
+        - webpage
     '''
 
     def __init__(self, args):
@@ -20,12 +20,13 @@ class KatherineHamiltonGoblin(MetaGoblin):
 
     def run(self):
         if '.jpg' in self.args['url']:
-            pass
+            links = []
+            print(f'[{self.__str__()}] <WARNING> url type not supported')
         else:
-            # QUESTION: should thi be iterative? with finditer?
-            self.args['url'] = re.search(r'https*[^" \n]+\.jpg', self.get_html(self.url)).group()
-        self.args['url'] = (re.sub(r'(-front|-back)*(\d+x\d+)*\.jpg', '', self.args['url'])).strip('-')
-        for view in ('', '-front', '-back', '-side', '-set', '-fton', '-open', '-fron-1'):
-            self.loot(f'{self.args["url"]}{view}.jpg')
-            sleep(self.args['tickrate'])
+            links = self.extract_links(r'https*[^" \n]+\.jpg', self.args['url'])
+        for link in links:
+            link = re.sub(r'(-front|-back)*(\d+x\d+)*\.jpg', '', link).strip('-')
+            for view in ('', '-front', '-back', '-side', '-set', '-fton', '-open', '-fron-1'):
+                self.loot(f'{link}{view}.jpg')
+                sleep(self.args['tickrate'])
         print(f'[{self.__str__()}] <looted> {self.loot_tally} files')
