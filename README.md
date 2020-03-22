@@ -59,13 +59,8 @@
 + *instagram:* this is an instagram specific mode with partial support. for now, the program will only parse the html of an instagram page that is saved to a txt file. the file should be named 'html.txt' and placed in the directory that this program is ran from. this mode will take a while to complete. the url to the instagram page or username need to be input when ran.
 
 *misc:*
-  + for the generic handler, inputting '-f auto' as an option will try to remove some common cropping from image urls.
+  + for the generic handler, inputting '-f auto' as an option will try to remove some common cropping patterns from image urls.
   + a specific handler can be forced using '--force _handler_'.
   + all available handlers can be listed using '-l or --list'.
-
-*troubleshooting:*
   + the format input needs to be exact so make sure elements/spaces/commas have not been erroneously added or left out.
-  + error while parsing usually* happens when the server returns a 403 error or is improperly configured.
-  + failed to open url could mean the scheme is not present. i.e. https://
-  + failed to parse url usually means the format of the image url does not match any regex pattern in the program.
   + if little or no (relevant) images are found then the page is probably generated dynamically with javascript which the program can not handle.
