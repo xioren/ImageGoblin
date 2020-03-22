@@ -28,7 +28,7 @@
     https://website.com/uploads/image_01.jpg
 
     *sub _modifier_ _replacement_:*
-    inputting: '--format sub \?=\w ?=large'
+    inputting: '--format sub \?=\w+ ?=large'
 
     https://website.com/uploads/image_01.jpg?=cropped
 
