@@ -139,7 +139,7 @@ class ASOSGoblin(MetaGoblin):
                     continue
                 ids.add(self.extract_id(file))
         for file in os.listdir(self.path_main):
-            if file == 'backup' or file == 'fullsize' or file == 'scanned':
+            if os.path.isdir(os.path.join(self.path_main, file)):
                 continue
             if re.search(self.extract_id(file)) in ids:
                 self.move_file(self.path_main, self.path_backup, file)

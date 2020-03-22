@@ -21,6 +21,7 @@ class VictoriasSecretGoblin(MetaGoblin):
 
     def run(self):
         if 'victoriassecret.com/p/' in self.args['url']:
+            # NOTE: does not scan
             links = [self.args['url']]
         else:
             # links = self.extract_links(r'https*://www\.victoriassecret\.com/p/[^" ]+\.jpg', self.args['url'])

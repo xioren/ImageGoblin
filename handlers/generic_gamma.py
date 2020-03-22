@@ -35,7 +35,7 @@ class GammaGoblin(MetaGoblin):
             return re.sub(r'dw/image/v\d/[A-Z]+_[A-Z]+/', '', re.sub(r'default/\w+/', 'default/', url))
 
     def run(self):
-        if '.jpg' in self.args['url']:
+        if 'demandware' in self.args['url']:
             links = [self.args['url']]
         else:
             links = self.extract_links(fr'{self.pattern}\w+\.jpe*g', self.args['url'])

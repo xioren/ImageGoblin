@@ -9,6 +9,7 @@ class AlphaGoblin(MetaGoblin):
     '''
     for: media/catalog variants
     accepts:
+        - image
         - webpage
     generic back-end for:
         - agent provocateur
@@ -37,6 +38,7 @@ class AlphaGoblin(MetaGoblin):
 
     def run(self):
         if '.jpg' in self.args['url']:
+            # NOTE: does not scan
             links = []
             if not self.args['silent']:
                 print(f'[{self.__str__()}] <WARNING> url type not supported')

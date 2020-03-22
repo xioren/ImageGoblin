@@ -24,7 +24,8 @@ class BehanceGoblin(MetaGoblin):
 
     def run(self):
         if 'mir-s3-cdn' in self.args['url']:
-            links = self.args['url']
+            # NOTE: does not scan
+            links = [self.args['url']]
         else:
             links = []
             if not self.args['silent']:

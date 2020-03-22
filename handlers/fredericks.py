@@ -18,9 +18,8 @@ class FredericksGoblin(MetaGoblin):
 
     def run(self):
         if 'cloudfront' in self.args['url']:
+            # NOTE: does not scan
             links = [self.args['url']]
-            if not self.args['silent']:
-                print(f'[{self.__str__()}] <WARNING> partial support')
         else:
             # links = self.extract_links(r'//[^" \n]+\.jpe*g', self.args['url'])
             links = []

@@ -1,5 +1,6 @@
 import os
 import re
+from time import sleep
 from gzip import decompress
 from socket import timeout
 from io import DEFAULT_BUFFER_SIZE
@@ -13,10 +14,13 @@ class MetaGoblin(Parser):
 
     def __init__(self, args):
         self.args = args
-        self.path_main = os.path.join(os.getcwd(), 'goblin_loot', self.__str__().replace(' ', '_'))
-        self.external_links = os.path.join(os.getcwd(), 'links.txt')
+        if self.args['raw']:
+            self.path_main = os.getcwd()
+        else:
+            self.path_main = os.path.join(os.getcwd(), 'goblin_loot', self.__str__().replace(' ', '_'))
+        # self.external_links = os.path.join(os.getcwd(), 'links.txt')
         self.headers = {True: {'User-Agent': 'GoblinTeam/1.3',
-                        'Accept-Encoding': 'gzip'},
+                               'Accept-Encoding': 'gzip'},
                         False: {'User-Agent': 'GoblinTeam/1.3'}}
         self.loot_tally = 0
         if not self.args['nodl']:
@@ -39,7 +43,7 @@ class MetaGoblin(Parser):
         cleanup small unwanted files (icons, thumbnails, etc...)
         default 50kb threshold
         '''
-        # TODO: dangerous, consider recieving file manifest instead?
+        # NOTE:  dangerous, consider recieving file manifest instead?
         for file in os.listdir(path):
             filepath = os.path.join(path, file)
             if os.path.isdir(filepath):
@@ -95,6 +99,7 @@ class MetaGoblin(Parser):
             if not self.args['silent']:
                 print(f'[{self.__str__()}] <timed out> aborting after {n} retries')
         else:
+            sleep(self.args['tickrate'])
             if path:
                 return self.retrieve(url, path, n)
             else:
@@ -131,7 +136,6 @@ class MetaGoblin(Parser):
         '''
         write to disk
         '''
-        # QUESTION: is this used?
         try:
             with open(path, mode) as file:
                 if iter:
@@ -203,7 +207,6 @@ class MetaGoblin(Parser):
             if not self.args['silent']:
                 print(f'[{self.__str__()}] <file exists> {filename}')
             return False
-        print(url)
         attempt = self.retrieve(self.finalize(url), filepath)
         if attempt:
             if not self.args['silent']:

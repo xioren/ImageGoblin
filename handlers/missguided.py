@@ -24,7 +24,10 @@ class MissguidedGoblin(MetaGoblin):
             links = [self.args['url']]
         else:
             # NOTE: currently throws 405 error
-            links = self.extract_links(r'https://media\.missguided\.com[^" ]+_\d{2}\.jpg', self.args['url'])
+            # links = self.extract_links(r'https://media\.missguided\.com[^" ]+_\d{2}\.jpg', self.args['url'])
+            links = []
+            if not self.args['silent']:
+                print(f'[{self.__str__()}] <WARNING> url type not supported')
         for link in links:
             id = self.extract_id(self.args['url'])
             for n in range(1, 6):

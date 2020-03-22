@@ -19,6 +19,7 @@ class WixGoblin(MetaGoblin):
 
     def run(self):
         if '' in self.args['url']:
+            # NOTE: does not scan
             links = self.args['url']
         else:
             links = []

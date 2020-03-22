@@ -66,8 +66,6 @@ class ZalandoGoblin(MetaGoblin):
                 timeout += 1
             n += 1
             sleep(self.args['tickrate'])
-        if success == 0:
-            print(f'[zalando goblin] <NULL WARNING> {id} ')
 
     def find_more(self):
         '''
