@@ -56,7 +56,7 @@
 
     etc...
 
-+ *instagram:* this is an instagram specific mode with partial support. for now, the program will only parse the html of an instagram page that is saved to a txt file. the file should be named 'html.txt' and placed in the directory that this program was run from. this mode will take a while to complete. the url to the instagram page or username need to be input when ran.
++ *instagram:* this is an instagram specific mode with partial support. for now, the program will only parse the html of an instagram page that is saved to a txt file. the file should be named 'html.txt' and placed in the directory that this program is ran from. this mode will take a while to complete. the url to the instagram page or username need to be input when ran.
 
 *misc:*
   + for the generic handler, inputting '-f auto' as an option will try to remove some common cropping from image urls.
