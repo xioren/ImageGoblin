@@ -9,7 +9,7 @@ class InstagramGoblin(MetaGoblin):
     def __init__(self, args):
         super().__init__(args)
         self.username = self.extract_username(self.args['url'])
-        self.html_loc = os.path.join(os.getcwd(), 'html.txt')
+        self.html_local = os.path.join(os.getcwd(), 'html.txt')
         self.sub_dir = os.path.join(self.path_main, self.username)
         self.make_dirs(self.sub_dir)
 
@@ -22,13 +22,23 @@ class InstagramGoblin(MetaGoblin):
         '''
         return re.search(r'(/*[^/]+/*)$', url).group().strip('/')
 
+    def move_vid(self, path):
+        '''
+        move videos into seperate directory
+        '''
+        dirpath = os.path.join(path, 'vid')
+        if os.path.exists(dirpath) is False:
+            os.mkdir(dirpath)
+        for file in os.listdir(path):
+            if '.mp4' in file:
+                os.rename(os.path.join(path, file), os.path.join(dirpath, file))
+
     def find_posts(self):
         '''
         parse html for instagram posts
         '''
         print(f'[{self.__str__()}] <parsing> {self.username}')
-        html = self.read_file(self.html_loc)
-        return {l.group() for l in re.finditer(r'/p/[^"]+', html)}
+        return {post.group() for post in re.finditer(r'/p/[^"]+', self.read_file(self.html_local))}
 
     def find_media(self, posts):
         '''

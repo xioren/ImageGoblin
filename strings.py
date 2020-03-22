@@ -15,7 +15,6 @@ regex_patterns = {
 
 format_patterns = [
     r'(@|-|_)*((\d+x(\d+)*|(\d+)*x\d+))',
-    # r'\d+x\d+',
     r'(-|_)*(large|big|thumb)(-|_)*',
     r'c_fill,f_auto,g_north,h_\d+,q_auto:best,w_\d+/v1/',
     r'expanded_[a-z]+/',

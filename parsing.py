@@ -45,7 +45,7 @@ class Parser:
         type = re.search(regex_patterns['filetypes'], url, re.IGNORECASE)
         if not type:
             return 'jpeg'
-        return type.group().lstrip('.')
+        return type.group().lstrip('.').replace('jpg', 'jpeg')
 
     def add_scheme(self, url):
         '''

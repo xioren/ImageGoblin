@@ -15,8 +15,9 @@ class MetaGoblin(Parser):
         self.args = args
         self.path_main = os.path.join(os.getcwd(), 'goblin_loot', self.__str__().replace(' ', '_'))
         self.external_links = os.path.join(os.getcwd(), 'links.txt')
-        self.headers = {'User-Agent': 'GoblinTeam/1.3',
-                        'Accept-Encoding': 'gzip'}
+        self.headers = {True: {'User-Agent': 'GoblinTeam/1.3',
+                        'Accept-Encoding': 'gzip'},
+                        False: {'User-Agent': 'GoblinTeam/1.3'}}
         self.loot_tally = 0
         if not self.args['nodl']:
             self.make_dirs(self.path_main)
@@ -51,11 +52,12 @@ class MetaGoblin(Parser):
                         print(f'[{self.__str__()}] <cleanup error> {e}')
                     continue
 
-    def retrieve(self, url, path, n=0):
+    def retrieve(self, url, path, n=0, gzip=True):
         '''
         retrieve web content
         '''
-        request = Request(url, None, self.headers)
+        # TODO: combime this and get html into single method
+        request = Request(url, None, self.headers[gzip])
         try:
             with urlopen(request, timeout=10) as response:
                 with open(path, 'wb') as file:
@@ -69,7 +71,7 @@ class MetaGoblin(Parser):
                             except OSError:
                                 pass
                             except EOFError:
-                                return None
+                                return self.retrieve(url, path, gzip=False)
                         file.write(data)
         except HTTPError as e:
             if not self.args['silent']:
@@ -98,11 +100,11 @@ class MetaGoblin(Parser):
             else:
                 return self.get_html(url, n)
 
-    def get_html(self, url, n=0):
+    def get_html(self, url, n=0, gzip=True):
         '''
         retrieve web page html
         '''
-        request = Request(url, None, self.headers)
+        request = Request(url, None, self.headers[gzip])
         try:
             with urlopen(request, timeout=10) as response:
                 html = response.read()
@@ -112,7 +114,7 @@ class MetaGoblin(Parser):
                     except OSError:
                         pass
                     except EOFError:
-                        return None
+                        return self.get_html(url, gzip=False)
         except HTTPError as e:
             if not self.args['silent']:
                 print(f'[{self.__str__()}] <{e}> {url}')
@@ -154,18 +156,6 @@ class MetaGoblin(Parser):
         except OSError as e:
             if not self.args['silent']:
                 print(f'[{self.__str__()}] <read error> {e}')
-
-    def move_vid(self, path):
-        '''
-        move videos into seperate directory
-        '''
-        # QUESTION: move to instagram?
-        dirpath = os.path.join(path, 'vid')
-        if os.path.exists(dirpath) is False:
-            os.mkdir(dirpath)
-        for file in os.listdir(path):
-            if '.mp4' in file:
-                os.rename(os.path.join(path, file), os.path.join(dirpath, file))
 
     def is_duplicate(self, path, url):
         '''
@@ -213,6 +203,7 @@ class MetaGoblin(Parser):
             if not self.args['silent']:
                 print(f'[{self.__str__()}] <file exists> {filename}')
             return False
+        print(url)
         attempt = self.retrieve(self.finalize(url), filepath)
         if attempt:
             if not self.args['silent']:

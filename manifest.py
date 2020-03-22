@@ -63,6 +63,7 @@ from handlers.the_great_eros import TheGreatErosGoblin
 from handlers.the_iconic import TheIconicGoblin
 from handlers.tommy_hilfiger import TommyHilfigerGoblin
 from handlers.topshop import TopshopGoblin
+from handlers.trendyol import TrendyolGoblin
 from handlers.triangl import TrianglGoblin
 from handlers.underprotection import UnderprotectionGoblin
 from handlers.urban_outfitters import UrbanOutfittersGoblin
@@ -141,6 +142,7 @@ handlers = {
             'theiconic': (r'theiconic', TheIconicGoblin),
             'tommyhilfiger':(r'tommy-europe|shoptommy', TommyHilfigerGoblin),
             'topshop': (r'topshop.com', TopshopGoblin),
+            'trendyol': (r'trendyol', TrendyolGoblin),
             'triangl': (r'triangl', TrianglGoblin),
             'underprotection': (r'underprotection', UnderprotectionGoblin),
             'urbanoutfitters':(r'urbanoutfitters(eu)*', UrbanOutfittersGoblin),
