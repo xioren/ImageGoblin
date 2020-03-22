@@ -15,7 +15,7 @@ class OmegaGoblin(MetaGoblin):
         super().__init__(args)
 
     def __str__(self):
-        return 'omega goblin'
+        return 'generic goblin'
 
     def custom_format(self, url):
         '''
@@ -27,7 +27,7 @@ class OmegaGoblin(MetaGoblin):
             return re.sub(self.args['format'][1], self.args['format'][2], url)
         elif self.args['format'][0] == 'rem':
             return re.sub(self.args['format'][1], '', url)
-        elif format == 'auto':
+        elif self.args['format'][0] == 'auto':
             url = self.sanitize(url)
             if 'squarespace' in url:
                 url += '?format=original'
@@ -47,7 +47,7 @@ class OmegaGoblin(MetaGoblin):
         retrieve media
         '''
         for link in links:
-            print(f'[{self.__str__()}] <downloading> link {links.index(link) + 1} of {len(links)}')
+            # print(f'[{self.__str__()}] <looting> link {links.index(link) + 1} of {len(links)}')
             if self.args['format']:
                 link = self.custom_format(link)
             self.loot(link)

@@ -10,12 +10,15 @@ class ShopifyGoblin(MetaGoblin):
     accepts:
         - webpage
     generic back-end for:
+        - bamba swim
         - bluebella
         - bordelle
         - caro swim
         - cecilie copenhagen
         - dora larsen
         - else
+        - fae
+        - faithful the brand
         - fashion nova
         - five dancewear
         - fleur du mal

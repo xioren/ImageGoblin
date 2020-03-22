@@ -2,8 +2,10 @@ from handlers.agent_provocateur import AgentProvocateurGoblin
 from handlers.ami_clubwear import AMIGoblin
 from handlers.anthropologie import AnthropologieGoblin
 from handlers.asos import ASOSGoblin
+from handlers.bamba_swim import BambaSwimGoblin
 from handlers.behance import BehanceGoblin
 from handlers.bershka import BershkaGoblin
+from handlers.bikini_lovers import BikiniLoversGoblin
 from handlers.bluebella import BlueBellaGoblin
 from handlers.blush import BlushGoblin
 from handlers.boohoo import BoohooGoblin
@@ -18,6 +20,8 @@ from handlers.dora_larsen import DoraLarsenGoblin
 from handlers.elcorte import ElcorteGoblin
 from handlers.else_lingerie import ElseGoblin
 from handlers.etam import EtamGoblin
+from handlers.fae import FaeGoblin
+from handlers.faithfull_the_brand import FaithfullTheBrandGoblin
 from handlers.fashion_nova import FashionNovaGoblin
 from handlers.five_dancewear import FiveDancewearGoblin
 from handlers.fleur_du_mal import FleurDuMalGoblin
@@ -34,6 +38,7 @@ from handlers.instagram import InstagramGoblin
 from handlers.iterator import IteratorGoblin
 from handlers.katherine_hamilton import KatherineHamiltonGoblin
 from handlers.le_petit_trou import LePetitTrouGoblin
+from handlers.lounge import LoungeGoblin
 from handlers.maison_lejaby import MaisonLejabyGoblin
 from handlers.maison_close import MaisonCloseGoblin
 from handlers.mango import MangoGoblin
@@ -75,8 +80,10 @@ handlers = {
             'amiclubwear': (r'amiclubwear', AMIGoblin),
             'anthropologie': (r'anthropologie', AnthropologieGoblin),
             'asos': (r'asos|(\d+\-\d(\-\[a-z-9]+)*)$', ASOSGoblin),
+            'bambaswim': (r'bambaswim', BambaSwimGoblin),
             'behance': (r'behance|mir\-s3\-cdn', BehanceGoblin),
             'bershka': (r'bershka', BershkaGoblin),
+            'bikinilovers': (r'bikinilovers', BikiniLoversGoblin),
             'bluebella': (r'bluebella.com', BlueBellaGoblin),
             'blushlingerie': (r'blushlingerie', BlushGoblin),
             'boohoo': (r'boohoo|adis\.ws', BoohooGoblin),
@@ -91,7 +98,9 @@ handlers = {
             'elcorteingles': (r'elcorteingles', ElcorteGoblin),
             'else': (r'elselingerie', ElseGoblin),
             'etam': (r'etam', EtamGoblin),
+            'fae': (r'fae\.house', FaeGoblin),
             'fashionnova': (r'fashionnova', FashionNovaGoblin),
+            'faithfullthebrand': (r'faithfullthebrand', FaithfullTheBrandGoblin),
             'fivedancewear': (r'fivedancewear', FiveDancewearGoblin),
             'fleurdumal': (r'fleurdumal', FleurDuMalGoblin),
             'fredericks': (r'fredericks', FredericksGoblin),
@@ -107,6 +116,7 @@ handlers = {
             'iterator': (r'%%%\d+%%%', IteratorGoblin),
             'katherinehamilton': (r'katherinehamilton', KatherineHamiltonGoblin),
             'lepetittrou': (r'le-petit-trou', LePetitTrouGoblin),
+            'lounge': (r'loungeunderwear', LoungeGoblin),
             'maisonclose': (r'maison-close', MaisonCloseGoblin),
             'maisonlejaby': (r'maisonlejaby', MaisonLejabyGoblin),
             'mango': (r'mango|mngbcn', MangoGoblin),

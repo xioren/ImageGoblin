@@ -12,6 +12,7 @@ class AlphaGoblin(MetaGoblin):
         - webpage
     generic back-end for:
         - agent provocateur
+        - bikini lovers
         - blush
         - maison close
         - only hearts
