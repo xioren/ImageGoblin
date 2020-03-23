@@ -8,7 +8,7 @@ parser.add_argument('url', nargs='?', help='webpage or media url')
 parser.add_argument('-m', '--mode', help='mode of operation')
 parser.add_argument('-s', '--silent', help='suppress output', action='store_true')
 parser.add_argument('-t', '--timeout', help='iteration timeout threshold (n)',
-                    type=int, default=1)
+                    type=int, default=5)
 parser.add_argument('-f', '--format', nargs='+', help='formatting modifier (action modifier[ modifier])')
 parser.add_argument('-i', '--increment', help='iteration step size (n)',
                     type=int, default=1)

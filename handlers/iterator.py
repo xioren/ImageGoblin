@@ -1,4 +1,5 @@
 import os
+import re
 from time import sleep
 from handlers.meta_goblin import MetaGoblin
 
@@ -46,7 +47,7 @@ class IteratorGoblin(MetaGoblin):
                 print(f'[{self.__str__()}] <timeout> after {self.args["timeout"]} attempts')
                 return None
             if iteration % 25 == 0:
-                print(f'[{self.__str__()}] <iteration> #{iteration}')
+                print(f'[{self.__str__()}] <iteration> {iteration}')
             attempt = self.loot(url)
             if attempt:
                 self.idle = 0

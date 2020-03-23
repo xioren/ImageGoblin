@@ -63,7 +63,6 @@ class ZalandoGoblin(MetaGoblin):
         '''
         id = self.extract_id(self.args['url'])
         timeout, n = 0, 1
-        print(f'[zalando goblin] <scanning> {id}')
         while timeout <= 8:
             attempt = self.loot(self.form_url(f'{id}@{n}'))
             if attempt:
