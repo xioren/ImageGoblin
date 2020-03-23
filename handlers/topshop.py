@@ -8,6 +8,7 @@ class TopshopGoblin(MetaGoblin):
     '''
     accepts:
         - image
+        - webpage
     '''
 
     def __init__(self, args):

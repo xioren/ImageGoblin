@@ -5,6 +5,11 @@ from handlers.meta_goblin import MetaGoblin
 
 class IteratorGoblin(MetaGoblin):
 
+    '''
+    accepts:
+        - image
+    '''
+
     def __init__(self, args):
         super().__init__(args)
         self.idle = 0

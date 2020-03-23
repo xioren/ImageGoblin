@@ -7,6 +7,7 @@ class SavageXGoblin(MetaGoblin):
 
     '''
     accepts:
+        - image
         - webpage
     '''
 

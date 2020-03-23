@@ -4,6 +4,11 @@ from handlers.meta_goblin import MetaGoblin
 
 
 class LePetitTrouGoblin(MetaGoblin):
+    '''
+    accepts:
+        - image
+        - webpage
+    '''
 
     def __init__(self, args):
         super().__init__(args)

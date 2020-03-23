@@ -27,13 +27,6 @@ class GammaGoblin(MetaGoblin):
     def extract_id(self, url):
         return re.search(self.pattern, url).group()
 
-    def prep(self, url):
-        # NOTE: unused
-        if 'images' in url:
-            return re.sub(r'dw/image/v\d/[A-Z]+_[A-Z]+/', '', re.sub(r'default/\w+/', 'default/images/', url))
-        else:
-            return re.sub(r'dw/image/v\d/[A-Z]+_[A-Z]+/', '', re.sub(r'default/\w+/', 'default/', url))
-
     def run(self):
         if 'demandware' in self.args['url']:
             links = [self.args['url']]

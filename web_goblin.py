@@ -18,7 +18,7 @@ parser.add_argument('-r', '--rate', help='program tickrate (n)', type=float, def
 parser.add_argument('-l', '--local', help='filename of local text file containing links')
 parser.add_argument('--force', help='force a specific handler')
 parser.add_argument('--list', help='list available handlers', action='store_true')
-parser.add_argument('--raw', help='download directly to current directory, without creating a sub folder',
+parser.add_argument('--nosort', help='download directly to current directory, without creating a sub dirs',
                     action='store_true')
 args = parser.parse_args()
 
@@ -26,7 +26,7 @@ args = parser.parse_args()
 args_dict = {'url': args.url, 'mode': args.mode, 'timeout': args.timeout,
              'format': args.format, 'increment': args.increment, 'nodl': args.nodl,
              'silent': args.silent, 'tickrate': args.rate, 'local': args.local,
-             'handler': args.force, 'list': args.list, 'raw': args.raw}
+             'handler': args.force, 'list': args.list, 'nosort': args.nosort}
 
 
 if __name__ == '__main__':

@@ -7,6 +7,7 @@ class StockholmsgruppenGoblin(MetaGoblin):
 
     '''
     accepts:
+    - image
         - webpage
     '''
 
@@ -19,6 +20,7 @@ class StockholmsgruppenGoblin(MetaGoblin):
     def run(self):
         # NOTE: the h#### varies from profile to profile
         if 'amazonaws' in self.args['url']:
+            # NOTE: does not scan
             links = [self.args['url']]
         else:
             links = self.extract_links(r'<img data-url-h\d+="//stockholmsgruppen.s3.amazonaws.com/images/[\w-]+"', self.args['url'])

@@ -5,6 +5,10 @@ from handlers.meta_goblin import MetaGoblin
 
 
 class ASOSGoblin(MetaGoblin):
+    '''
+    accepts:
+        - image
+    '''
 
     def __init__(self, args):
         super().__init__(args)

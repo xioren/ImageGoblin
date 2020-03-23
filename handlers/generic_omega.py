@@ -9,6 +9,8 @@ class OmegaGoblin(MetaGoblin):
 
     '''
     generic goblin for links that did not trigger a handler match
+    accepts:
+        - image
     '''
 
     def __init__(self, args):

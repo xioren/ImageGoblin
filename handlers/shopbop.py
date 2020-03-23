@@ -21,10 +21,10 @@ class ShopbopGoblin(MetaGoblin):
         return 'shopbop goblin'
 
     def run(self):
-        if 'm.media-amazon' in self.args['url']:
+        if 'amazon' in self.args['url']:
             links = [self.args['url']]
         else:
-            links = self.extract_links(r'https://m\.media\-amazon\.com[^" ]+\.jpg', self.args['url'])
+            links = self.extract_links(r'https://[a-z\-\.]+amazon\.com[^" ]+\.jpg', self.args['url'])
         for link in links:
             link = re.sub(r'._\w+(_\w+)*_\w+_', '', link).replace('m.media', 'images-na.ssl-images').replace('2-1', '2-0')
             for n in range(1, 7):

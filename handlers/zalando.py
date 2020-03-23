@@ -11,6 +11,12 @@ from handlers.meta_goblin import MetaGoblin
 
 class ZalandoGoblin(MetaGoblin):
 
+    '''
+    accepts:
+        - image
+        - webpage
+    '''
+
     def __init__(self, args):
         super().__init__(args)
 

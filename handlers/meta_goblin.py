@@ -14,7 +14,7 @@ class MetaGoblin(Parser):
 
     def __init__(self, args):
         self.args = args
-        if self.args['raw']:
+        if self.args['nosort']:
             self.path_main = os.getcwd()
         else:
             self.path_main = os.path.join(os.getcwd(), 'goblin_loot', self.__str__().replace(' ', '_'))
@@ -55,6 +55,13 @@ class MetaGoblin(Parser):
                     if not self.args['silent']:
                         print(f'[{self.__str__()}] <cleanup error> {e}')
                     continue
+
+    def grab_vid(self, url):
+        '''
+        download a video in best quality, primarily for vimeo
+        '''
+        filename = self.extract_filename(url)
+        os.system(f'youtube-dl --output {self.path_main}/{filename} {url}')
 
     def retrieve(self, url, path, n=0, gzip=True):
         '''

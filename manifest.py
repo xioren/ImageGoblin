@@ -70,6 +70,7 @@ from handlers.urban_outfitters import UrbanOutfittersGoblin
 from handlers.victorias_secret import VictoriasSecretGoblin
 from handlers.vitamin_a import VitaminAGoblin
 from handlers.wix import WixGoblin
+from handlers.wolford import WolfordGoblin
 from handlers.womens_secret import WomensSecretGoblin
 from handlers.wood_wood import WoodWoodGoblin
 from handlers.yandy import YandyGoblin
@@ -149,6 +150,7 @@ handlers = {
             'victoriassecret': (r'victoriassecret', VictoriasSecretGoblin),
             'vitaminaswim': (r'vitaminaswim', VitaminAGoblin),
             'wix': (r'wix', WixGoblin),
+            'wolford': (r'wolfordshop', WolfordGoblin),
             'womenssecret': (r'womenssecret', WomensSecretGoblin),
             'woodwood': (r'woodwood', WoodWoodGoblin),
             'yandy': (r'yandy(cdn)*', YandyGoblin),

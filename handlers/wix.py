@@ -8,7 +8,6 @@ class WixGoblin(MetaGoblin):
     '''
     accepts:
         - image
-    # TODO: add webpage?
     '''
 
     def __init__(self, args):
@@ -20,7 +19,7 @@ class WixGoblin(MetaGoblin):
     def run(self):
         if '' in self.args['url']:
             # NOTE: does not scan
-            links = self.args['url']
+            links = [self.args['url']]
         else:
             links = []
             if not self.args['silent']:
