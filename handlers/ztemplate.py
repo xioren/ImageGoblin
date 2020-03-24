@@ -6,8 +6,6 @@ from handlers.meta_goblin import MetaGoblin
 class Goblin(MetaGoblin):
 
     '''
-    mode options:
-        -
     accepts:
         -
     '''

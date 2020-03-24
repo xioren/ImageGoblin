@@ -59,6 +59,7 @@ from handlers.springfield import SpringfieldGoblin
 from handlers.ssense import SsenseGoblin
 from handlers.stockholmsgruppen import StockholmsgruppenGoblin
 from handlers.stradivarius import StradivariusGoblin
+from handlers.tally_weijl import TallyWeijlGoblin
 from handlers.the_great_eros import TheGreatErosGoblin
 from handlers.the_iconic import TheIconicGoblin
 from handlers.tommy_hilfiger import TommyHilfigerGoblin
@@ -139,6 +140,7 @@ handlers = {
             'ssense': (r'ssense(media)*', SsenseGoblin),
             'stockholmsgruppen': (r'stockholmsgruppen', StockholmsgruppenGoblin),
             'stradivarius': (r'stradivarius', StradivariusGoblin),
+            'tallyweijl': (r'tally-weijl', TallyWeijlGoblin),
             'thegreateros': (r'thegreateros', TheGreatErosGoblin),
             'theiconic': (r'theiconic', TheIconicGoblin),
             'tommyhilfiger':(r'tommy-europe|shoptommy', TommyHilfigerGoblin),
