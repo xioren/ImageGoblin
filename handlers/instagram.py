@@ -60,7 +60,7 @@ class InstagramGoblin(MetaGoblin):
         '''
         for link in media:
             # print(f'[{self.__str__()}] <downloading> link {media.index(link) + 1} of {len(media)}')
-            self.loot(link, self.sub_dir, f'{self.username}_{self.extract_filename(link)}.{self.filetype(link)}')
+            self.loot(link, self.sub_dir, f'{self.username}_{self.extract_filename(link)}')
             sleep(self.args['tickrate'])
         self.cleanup(self.sub_dir)
         self.move_vid(self.sub_dir)

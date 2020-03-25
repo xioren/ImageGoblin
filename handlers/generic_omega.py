@@ -42,7 +42,7 @@ class OmegaGoblin(MetaGoblin):
         extract media urls from html
         '''
         links = self.extract_links(regex_patterns['link_pattern'], self.args['url'])
-        return [re.sub(r'<img.+src="', '', l) for l in links]
+        return [re.sub(r'<img.+src="', '', link) for link in links]
 
     def download_media(self, links):
         '''
@@ -54,7 +54,7 @@ class OmegaGoblin(MetaGoblin):
                 link = self.custom_format(link)
             self.loot(link)
             sleep(self.args['tickrate'])
-        if not self.args['nodl']:
+        if not self.args['nodl'] and not self.args['noclean']:
             self.cleanup(self.path_main)
 
     def run(self):

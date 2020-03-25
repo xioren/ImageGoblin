@@ -73,16 +73,16 @@ class Parser:
         '''
         check if url is relative
         '''
-        if not self.get_netloc(url):
+        if self.get_netloc(url) == '':
             return True
         else:
             return False
 
-    def make_absolute(self, url, relative):
+    def make_absolute(self, relative):
         '''
         convert relative url to absolute
         '''
-        return self.get_netloc(url) + f'/{relative}'
+        return self.get_netloc(self.args['url']) + relative
 
     def unescape(self, url):
         '''
@@ -97,6 +97,8 @@ class Parser:
         '''
         prepare a url for downloading
         '''
+        if self.is_relative(url):
+            url = self.make_absolute(url)
         return self.add_scheme(self.unescape(url.strip('/')))
 
     def make_unique(self, filename):

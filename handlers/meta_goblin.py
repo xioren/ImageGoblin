@@ -201,7 +201,7 @@ class MetaGoblin(Parser):
         front-end for retrieve
         '''
         if self.args['nodl']:
-            print(url, end='\n\n')
+            print(self.finalize(url), end='\n\n')
             return
         if clean:
             url = self.sanitize(url)

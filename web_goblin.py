@@ -20,6 +20,8 @@ parser.add_argument('--force', help='force a specific handler')
 parser.add_argument('--list', help='list available handlers', action='store_true')
 parser.add_argument('--nosort', help='download directly to current directory, without creating a sub dirs',
                     action='store_true')
+parser.add_argument('--noclean', help='do not remove small files',
+                    action='store_true')
 args = parser.parse_args()
 
 

@@ -33,7 +33,6 @@ class ShopifyGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.clean = True
         self.image_pat = r'cdn.shopify.com/[^" \n]+((\w+-)+)*\d+x(\d+)*[^" \n]+'
 
     # TODO: add shopify __str__ for non matched inputs?
@@ -56,6 +55,6 @@ class ShopifyGoblin(MetaGoblin):
             else:
                 self.loot(link, clean=True)
             sleep(self.args['tickrate'])
-        if self.clean and not self.args['nodl']:
+        if not self.args['nodl'] and not self.args['noclean']:
             self.cleanup(self.path_main)
         print(f'[{self.__str__()}] <looted> {self.loot_tally} files')
