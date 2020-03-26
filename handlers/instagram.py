@@ -37,7 +37,7 @@ class InstagramGoblin(MetaGoblin):
         '''
         parse html for instagram posts
         '''
-        print(f'[{self.__str__()}] <parsing> {self.username}')
+        print(f'[{self.__str__()}] <parsing>')
         return {post.group() for post in re.finditer(r'/p/[^"]+', self.read_file(self.html_local))}
 
     def find_media(self, posts):
@@ -45,15 +45,17 @@ class InstagramGoblin(MetaGoblin):
         opens links from iterable and parses for media
         '''
         for post in posts:
-            content = self.extract_links(r'https://scontent[^"\n \']+1080x1080[^"\n \']+', f'https://www.instagram.com{post}')
+            content = self.extract_links(r'https*://scontent[^"\n \']+', f'https://www.instagram.com{post}')
             for link in content:
+                if re.search(r'\d{3}x\d{3}', link):
+                    continue
                 self.collect(link.replace(r'\u0026', '&'), f'{self.username}_{self.extract_filename(link)}')
             sleep(self.args['tickrate'])
 
     def run(self):
         posts = self.find_posts()
         media = self.find_media(posts)
-        self.loot(self.sub_dir)
+        self.loot(save_loc=self.sub_dir)
         self.move_vid(self.sub_dir)
         if not self.args['nodl'] and not self.args['noclean']:
             self.cleanup(self.sub_dir)
