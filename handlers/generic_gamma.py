@@ -23,17 +23,22 @@ class GammaGoblin(MetaGoblin):
     def __init__(self, args):
         super().__init__(args)
 
-    def extract_id(self, url):
-        return re.search(self.pattern, url).group()
+    def extract(self, url):
+        iter = re.search(self.iter, url).group()
+        id, end = url.split(iter)
+        return id, iter, end
+
+    def isolate(self, url):
+        return re.search(r'/*[^/]+\.jpe*g', url).group().lstrip('/')
 
     def run(self):
         if 'demandware' in self.args['url']:
             links = [self.args['url']]
         else:
-            links = self.extract_links(fr'{self.pattern}\w+\.jpe*g', self.args['url'])
+            links = self.extract_links(fr'[^" ]+demandware[^" ]+{self.pattern}', self.args['url'])
         for link in links:
-            id = self.extract_id(link)
-            # link = dequery(re.sub(fr'{id}(\w+)*.jpg', '', link))
+            id, iter, end = self.extract(self.isolate(link))
+            self.generate_modifiers(iter)
             for mod in self.modifiers:
-                self.collect(f'{self.base}{id}{mod}.jpg')
+                self.collect(f'{self.base}{id}{mod}{end}')
         self.loot()

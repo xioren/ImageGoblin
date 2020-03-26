@@ -1,10 +1,12 @@
-# web goblin by xioren v1.3
+# web goblin by xioren v1.4
 
 
-### changelog v1.3:
-  + significant reworking and optimizing of all modules
-  + added site specific handlers (similar to youtube-dl)
+### changelog v1.4:
+  + significant reworking and optimizations
+  + added collect method to prevent duplicate links, greatly improving program completion time
+  + rework of gamma goblin to be accommodate a greater variety of url formats
   + code cleanup
+  + bug fixes
 
 ### this program:
   + is designed to automate the discovery and retrieval of media on a web server.

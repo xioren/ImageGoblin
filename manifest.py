@@ -36,6 +36,7 @@ from handlers.hunkemoller import HunkemollerGoblin
 from handlers.hot_topic import HotTopicGoblin
 from handlers.instagram import InstagramGoblin
 from handlers.iterator import IteratorGoblin
+from handlers.jennyfer import JennyferGoblin
 from handlers.katherine_hamilton import KatherineHamiltonGoblin
 from handlers.le_petit_trou import LePetitTrouGoblin
 from handlers.lounge import LoungeGoblin
@@ -117,6 +118,7 @@ handlers = {
             'hottopic': (r'hottopic', HotTopicGoblin),
             'instagram': (r'instagram', InstagramGoblin),
             'iterator': (r'%%%\d+%%%', IteratorGoblin),
+            'jennyfer': (r'jennyfer', JennyferGoblin),
             'katherinehamilton': (r'katherinehamilton', KatherineHamiltonGoblin),
             'lepetittrou': (r'le-petit-trou', LePetitTrouGoblin),
             'lounge': (r'loungeunderwear', LoungeGoblin),
@@ -136,7 +138,7 @@ handlers = {
             'shopify': (r'shopify', ShopifyGoblin),
             'simoneperele': (r'simoneperele', SimonePereleGoblin),
             'skin': (r'skinworldwide', SkinGoblin),
-            'spring': (r'myspringfield', SpringfieldGoblin),
+            'springfield': (r'myspringfield', SpringfieldGoblin),
             'ssense': (r'ssense(media)*', SsenseGoblin),
             'stockholmsgruppen': (r'stockholmsgruppen', StockholmsgruppenGoblin),
             'stradivarius': (r'stradivarius', StradivariusGoblin),
@@ -153,7 +155,7 @@ handlers = {
             'vitaminaswim': (r'vitaminaswim', VitaminAGoblin),
             'wix': (r'wix', WixGoblin),
             'wolford': (r'wolfordshop', WolfordGoblin),
-            'womenssecret': (r'womenssecret', WomensSecretGoblin),
+            'womensecret': (r'womensecret', WomensSecretGoblin),
             'woodwood': (r'woodwood', WoodWoodGoblin),
             'yandy': (r'yandy(cdn)*', YandyGoblin),
             'zalando': (r'zalando|ztat\.net|[A-Z0-9]+-[A-Z]\d{2}(@\d)*', ZalandoGoblin)

@@ -41,6 +41,6 @@ class AlphaGoblin(MetaGoblin):
                 print(f'[{self.__str__()}] <WARNING> url type not supported')
         else:
             links = self.extract_links(self.image_pat, self.args['url'])
-            for link in links:
-                self.collect(re.sub(r'cache/(\d/\w+/(\d+x(\d+)*/)*)*\w+/', '', link.replace('\\', '')), clean=self.clean)
+        for link in links:
+            self.collect(re.sub(r'cache/(\d/\w+/(\d+x(\d+)*/)*)*\w+/', '', link.replace('\\', '')), clean=self.clean)
         self.loot()

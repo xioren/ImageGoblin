@@ -1,7 +1,6 @@
 import re
 from handlers.meta_goblin import MetaGoblin
 
-# TODO: finds lots of duplicates...improve.
 
 class ShopbopGoblin(MetaGoblin):
 

@@ -53,7 +53,7 @@ class MetaGoblin(Parser):
                     os.remove(filepath)
                 except PermissionError as e:
                     if not self.args['silent']:
-                        print(f'[{self.__str__()}] <cleanup error> {e}')
+                        print(f'[{self.__str__()}] <{e}> {filepath}')
                     continue
 
     def grab_vid(self, url):
@@ -152,7 +152,7 @@ class MetaGoblin(Parser):
                     file.write(data)
         except OSError as e:
             if not self.args['silent']:
-                print(f'[{self.__str__()}] <write error> {e}')
+                print(f'[{self.__str__()}] <{e}> {path}')
 
     def read_file(self, path, iter=False):
         '''
@@ -166,7 +166,7 @@ class MetaGoblin(Parser):
                     return file.read()
         except OSError as e:
             if not self.args['silent']:
-                print(f'[{self.__str__()}] <read error> {e}')
+                print(f'[{self.__str__()}] <{e}> {path}')
 
     def is_duplicate(self, path, url):
         '''
@@ -206,22 +206,22 @@ class MetaGoblin(Parser):
             filename = self.extract_filename(url)
         self.collection.add(f'{self.finalize(url)}-break-{filename}')
 
-    def loot(self, this=None, save_loc=None):
+    def loot(self, url=None, save_loc=None):
         '''
         front end for retrieve
         '''
         # TODO: improve this
-        if this:
+        if url:
             if self.args['nodl']:
-                print(this, end='\n\n')
+                print(url, end='\n\n')
                 return None
-            filename = self.extract_filename(this)
-            filepath = os.path.join(save_loc, f'{filename}.{self.filetype(this)}')
+            filename = self.extract_filename(url)
+            filepath = os.path.join(save_loc, f'{filename}.{self.filetype(url)}')
             if os.path.exists(filepath):
                 if not self.args['silent']:
                     print(f'[{self.__str__()}] <file exists> {filename}')
                 return None
-            attempt = self.retrieve(this, filepath)
+            attempt = self.retrieve(url, filepath)
             if attempt:
                 if not self.args['silent']:
                     print(f'[{self.__str__()}] <looted> {filename}')
