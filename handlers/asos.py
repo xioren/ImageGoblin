@@ -84,8 +84,9 @@ class ASOSGoblin(MetaGoblin):
                 attempt = self.loot(self.form_url(f'{id}-1-{color}', True), self.path_dl)
                 if attempt:
                     break
+                sleep(self.args['tickrate'])
             for n in range(2, 5):
-                self.collect(self.form_url(f'{id}-{n}', True), self.path_dl)
+                self.collect(self.form_url(f'{id}-{n}', True))
             self.move_file(self.path_scanned, self.path_backup, file)
 
     def scan(self):
@@ -180,6 +181,7 @@ class ASOSGoblin(MetaGoblin):
         if self.args['mode'] == 'upgrade':
             self.make_dirs(self.path_dl, self.path_scanned, self.path_backup)
             self.upgrade()
+            self.loot(save_loc=self.path_dl)
         elif self.args['mode'] == 'scan':
             self.make_dirs(self.path_dl, self.path_scanned, self.path_backup)
             self.scan()
