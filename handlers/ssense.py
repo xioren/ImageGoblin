@@ -1,5 +1,4 @@
 import re
-from time import sleep
 from handlers.meta_goblin import MetaGoblin
 
 
@@ -32,6 +31,5 @@ class SsenseGoblin(MetaGoblin):
         for link in links:
             id = self.extract_id(link)
             for n in range(6):
-                self.loot(f'https://img.ssensemedia.com/images/{id}_{n}/{id}_{n}.jpg')
-            sleep(self.args['tickrate'])
-        print(f'[{self.__str__()}] <looted> {self.loot_tally} files')
+                self.collect(f'https://img.ssensemedia.com/images/{id}_{n}/{id}_{n}.jpg')
+        self.loot()

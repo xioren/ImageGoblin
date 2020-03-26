@@ -35,6 +35,5 @@ class DeltaGoblin(MetaGoblin):
         for link in links:
             base, end = re.split(r'_\d_\d_\d+', link)
             for id in self.ids:
-                self.loot(f'{base}{id}{self.size}{self.clean(end)}')
-                sleep(self.args['tickrate'])
-        print(f'[{self.__str__()}] <looted> {self.loot_tally} files')
+                self.collect(f'{base}{id}{self.size}{self.clean(end)}')
+        self.loot()

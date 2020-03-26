@@ -18,11 +18,11 @@ class MetaGoblin(Parser):
             self.path_main = os.getcwd()
         else:
             self.path_main = os.path.join(os.getcwd(), 'goblin_loot', self.__str__().replace(' ', '_'))
-        # self.external_links = os.path.join(os.getcwd(), 'links.txt')
         self.headers = {True: {'User-Agent': 'GoblinTeam/1.3',
                                'Accept-Encoding': 'gzip'},
                         False: {'User-Agent': 'GoblinTeam/1.3'}}
         self.loot_tally = 0
+        self.collection = set()
         if not self.args['nodl']:
             self.make_dirs(self.path_main)
         if self.args['url']:
@@ -196,28 +196,54 @@ class MetaGoblin(Parser):
         '''
         return set(iterable)
 
-    def loot(self, url, save_loc=None, filename=None, clean=False):
+    def collect(self, url, filename='', clean=False):
         '''
-        front-end for retrieve
+        finalize and add links to collection
         '''
-        if self.args['nodl']:
-            print(self.finalize(url), end='\n\n')
-            return
         if clean:
             url = self.sanitize(url)
         if not filename:
             filename = self.extract_filename(url)
-        if not save_loc:
-            save_loc = self.path_main
-        filepath = os.path.join(save_loc, f'{filename}.{self.filetype(url)}')
-        if os.path.exists(filepath):
-            if not self.args['silent']:
-                print(f'[{self.__str__()}] <file exists> {filename}')
-            return False
-        attempt = self.retrieve(self.finalize(url), filepath)
-        if attempt:
-            if not self.args['silent']:
-                print(f'[{self.__str__()}] <looted> {filename}')
-            self.loot_tally += 1
-            return True
-        return False
+        self.collection.add(f'{self.finalize(url)}-break-{filename}')
+
+    def loot(self, this=None, save_loc=None):
+        '''
+        front end for retrieve
+        '''
+        # TODO: improve this
+        if this:
+            if self.args['nodl']:
+                print(this, end='\n\n')
+                return None
+            filename = self.extract_filename(this)
+            filepath = os.path.join(save_loc, f'{filename}.{self.filetype(this)}')
+            if os.path.exists(filepath):
+                if not self.args['silent']:
+                    print(f'[{self.__str__()}] <file exists> {filename}')
+                return None
+            attempt = self.retrieve(this, filepath)
+            if attempt:
+                if not self.args['silent']:
+                    print(f'[{self.__str__()}] <looted> {filename}')
+                self.loot_tally += 1
+                return True
+        else:
+            for link in self.collection:
+                link, filename = link.split('-break-')
+                if self.args['nodl']:
+                    print(link, end='\n\n')
+                    continue
+                if not save_loc:
+                    save_loc = self.path_main
+                filepath = os.path.join(save_loc, f'{filename}.{self.filetype(link)}')
+                if os.path.exists(filepath):
+                    if not self.args['silent']:
+                        print(f'[{self.__str__()}] <file exists> {filename}')
+                    continue
+                attempt = self.retrieve(link, filepath)
+                if attempt:
+                    if not self.args['silent']:
+                        print(f'[{self.__str__()}] <looted> {filename}')
+                    self.loot_tally += 1
+                sleep(self.args['tickrate'])
+            print(f'[{self.__str__()}] <looted> {self.loot_tally} files')

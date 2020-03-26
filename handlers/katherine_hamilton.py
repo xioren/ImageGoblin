@@ -1,5 +1,4 @@
 import re
-from time import sleep
 from handlers.meta_goblin import MetaGoblin
 
 
@@ -27,6 +26,5 @@ class KatherineHamiltonGoblin(MetaGoblin):
         for link in links:
             link = re.sub(r'(-front|-back)*(\d+x\d+)*\.jpg', '', link).strip('-')
             for view in ('', '-front', '-back', '-side', '-set', '-fton', '-open', '-fron-1'):
-                self.loot(f'{link}{view}.jpg')
-                sleep(self.args['tickrate'])
-        print(f'[{self.__str__()}] <looted> {self.loot_tally} files')
+                self.collect(f'{link}{view}.jpg')
+        self.loot()

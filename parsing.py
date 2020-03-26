@@ -67,7 +67,7 @@ class Parser:
         '''
         return netloc of a url
         '''
-        return urlparse(url)[1]
+        return urlparse(self.add_scheme(url))[1]
 
     def is_relative(self, url):
         '''

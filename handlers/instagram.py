@@ -44,30 +44,16 @@ class InstagramGoblin(MetaGoblin):
         '''
         opens links from iterable and parses for media
         '''
-        links = set()
         for post in posts:
-            # print(f'[{self.__str__()}] <parsing> post {posts.index(post) + 1} of {len(posts)}')
             content = self.extract_links(r'https://scontent[^"\n \']+1080x1080[^"\n \']+', f'https://www.instagram.com{post}')
             for link in content:
-                links.add(link.replace(r'\u0026', '&'))
+                self.collect(link.replace(r'\u0026', '&'), f'{self.username}_{self.extract_filename(link)}')
             sleep(self.args['tickrate'])
-        # print(f'[{self.__str__()}] <parse complete> {len(links)} links found')
-        return links
-
-    def down_media(self, media):
-        '''
-        retrieves media from web
-        '''
-        for link in media:
-            # print(f'[{self.__str__()}] <downloading> link {media.index(link) + 1} of {len(media)}')
-            self.loot(link, self.sub_dir, f'{self.username}_{self.extract_filename(link)}')
-            sleep(self.args['tickrate'])
-        self.cleanup(self.sub_dir)
-        self.move_vid(self.sub_dir)
-        # print(f'[{self.__str__()}] <parse complete> {len(media)} links downloaded')
 
     def run(self):
         posts = self.find_posts()
         media = self.find_media(posts)
-        self.down_media(media)
-        print(f'[{self.__str__()}] <looted> {self.loot_tally} files')
+        self.loot(self.sub_dir)
+        self.move_vid(self.sub_dir)
+        if not self.args['nodl'] and not self.args['noclean']:
+            self.cleanup(self.sub_dir)

@@ -1,5 +1,4 @@
 import re
-from time import sleep
 from handlers.meta_goblin import MetaGoblin
 
 
@@ -27,7 +26,7 @@ class SavageXGoblin(MetaGoblin):
             links = self.extract_links(r'https*://[^" \n]+\d\-800x800.jpg', self.args['url'])
         for link in links:
             for n in range(1, 5):
-                self.loot(self.strip(link) + f'{n}-1600x1600.jpg')
-                sleep(self.args['tickrate'])
-        self.cleanup(self.path_main)
-        print(f'[{self.__str__()}] <looted> {self.loot_tally} files')
+                self.collect(self.strip(link) + f'{n}-1600x1600.jpg')
+        self.loot()
+        if not self.args['nodl'] and not self.args['noclean']:
+            self.cleanup(self.path_main)

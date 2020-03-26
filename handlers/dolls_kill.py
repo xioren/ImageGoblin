@@ -1,5 +1,4 @@
 import re
-from time import sleep
 from handlers.meta_goblin import MetaGoblin
 
 
@@ -24,6 +23,5 @@ class DollsKillGoblin(MetaGoblin):
         else:
             links = self.extract_links(r'img src="https://media.dollskill.com[^"]+\-\d+.jpg', self.args['url'])
         for link in links:
-            self.loot(re.sub(r'\d+.jpg', '1.jpeg', link).replace('img src="', ''))
-            sleep(self.args['tickrate'])
-        print(f'[{self.__str__()}] <looted> {self.loot_tally} files')
+            self.collect(re.sub(r'\d+.jpg', '1.jpeg', link).replace('img src="', ''))
+        self.loot()

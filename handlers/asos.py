@@ -63,11 +63,9 @@ class ASOSGoblin(MetaGoblin):
         color = self.extract_color(self.args['url'])
         id = self.extract_id(self.args['url'])
         if color:
-            self.loot(self.form_url(f'{id}-1-{color}', True))
-        sleep(self.args['tickrate'])
+            self.collect(self.form_url(f'{id}-1-{color}', True))
         for n in range(2, 5):
-            self.loot(self.form_url(f'{id}-{n}', True))
-            sleep(self.args['tickrate'])
+            self.collect(self.form_url(f'{id}-{n}', True))
 
 
     def upgrade(self):
@@ -86,10 +84,8 @@ class ASOSGoblin(MetaGoblin):
                 attempt = self.loot(self.form_url(f'{id}-1-{color}', True), self.path_dl)
                 if attempt:
                     break
-                sleep(self.args['tickrate'])
             for n in range(2, 5):
-                self.loot(self.form_url(f'{id}-{n}', True), self.path_dl)
-                sleep(self.args['tickrate'])
+                self.collect(self.form_url(f'{id}-{n}', True), self.path_dl)
             self.move_file(self.path_scanned, self.path_backup, file)
 
     def scan(self):
@@ -174,7 +170,7 @@ class ASOSGoblin(MetaGoblin):
         colors = self.read_file(os.path.join(self.path_main, 'colors.txt'), True)
         for file in files:
             for color in colors:
-                attempt = loot(f'{url}{item}-1-{color[:-1]}{query}')
+                attempt = loot(f'{url}{item}-1-{color[:-1]}{query}', self.path_main)
                 if attempt:
                     break
                 sleep(self.args['tickrate'])

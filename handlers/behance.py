@@ -32,7 +32,7 @@ class BehanceGoblin(MetaGoblin):
                 print(f'[{self.__str__()}] <WARNING> url type not supported')
         for link in links:
             for size in self.sizes:
-                attempt = self.loot(self.fit(link, size))
+                attempt = self.loot(self.fit(link, size), self.path_main)
                 if attempt:
                     break
                 sleep(self.args['tickrate'])

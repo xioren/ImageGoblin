@@ -1,5 +1,4 @@
 import re
-from time import sleep
 from handlers.meta_goblin import MetaGoblin
 
 
@@ -24,6 +23,5 @@ class PrettyLittleThingGoblin(MetaGoblin):
         else:
             links = self.extract_links(r'https://cdn\-img\.prettylittlething\.com[^" \n]+', self.args['url'])
         for link in links:
-            self.loot(link, clean=True)
-            sleep(self.args['tickrate'])
-        print(f'[{self.__str__()}] <looted> {self.loot_tally} files')
+            self.collect(link, clean=True)
+        self.loot()

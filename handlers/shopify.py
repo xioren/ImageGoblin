@@ -1,5 +1,4 @@
 import re
-from time import sleep
 from handlers.meta_goblin import MetaGoblin
 
 # TODO: add site specific iteration
@@ -51,10 +50,9 @@ class ShopifyGoblin(MetaGoblin):
         for link in links:
             # TODO: fix this to be specific to trim (or whatevr arguemnt is passed)
             if self.args['format']:
-                self.loot(self.trim(link), clean=True)
+                self.collect(self.trim(link), clean=True)
             else:
-                self.loot(link, clean=True)
-            sleep(self.args['tickrate'])
+                self.collect(link, clean=True)
+        self.loot()
         if not self.args['nodl'] and not self.args['noclean']:
             self.cleanup(self.path_main)
-        print(f'[{self.__str__()}] <looted> {self.loot_tally} files')

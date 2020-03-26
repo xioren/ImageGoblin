@@ -1,5 +1,4 @@
 import re
-from time import sleep
 from handlers.generic_gamma import GammaGoblin
 
 # NOTE: https://images-hunkemoller.akamaized.net/original/

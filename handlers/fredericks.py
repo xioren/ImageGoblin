@@ -1,5 +1,4 @@
 import re
-from time import sleep
 from handlers.meta_goblin import MetaGoblin
 
 
@@ -26,6 +25,5 @@ class FredericksGoblin(MetaGoblin):
             if not self.args['silent']:
                 print(f'[{self.__str__()}] <WARNING> url type not supported')
         for link in links:
-            self.loot(re.sub(r'\.\d+w', '', link))
-            sleep(self.args['tickrate'])
-        print(f'[{self.__str__()}] <looted> {self.loot_tally} files')
+            self.collect(re.sub(r'\.\d+w', '', link))
+        self.loot()

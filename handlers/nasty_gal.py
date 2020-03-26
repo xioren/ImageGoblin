@@ -1,5 +1,4 @@
 import re
-from time import sleep
 from handlers.meta_goblin import MetaGoblin
 
 
@@ -30,6 +29,5 @@ class NastyGalGoblin(MetaGoblin):
         for link in links:
             id = self.extract_id(link)
             for n in ('', '_1', '_2', '_3', '_4'):
-                self.loot(f'https://i1.adis.ws/i/boohooamplience/{id}{n}')
-                sleep(self.args['tickrate'])
-        print(f'[{self.__str__()}] <looted> {self.loot_tally} files')
+                self.collect(f'https://i1.adis.ws/i/boohooamplience/{id}{n}')
+        self.loot()

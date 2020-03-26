@@ -28,7 +28,8 @@ args = parser.parse_args()
 args_dict = {'url': args.url, 'mode': args.mode, 'timeout': args.timeout,
              'format': args.format, 'increment': args.increment, 'nodl': args.nodl,
              'silent': args.silent, 'tickrate': args.rate, 'local': args.local,
-             'handler': args.force, 'list': args.list, 'nosort': args.nosort}
+             'handler': args.force, 'list': args.list, 'nosort': args.nosort,
+             'noclean': args.noclean}
 
 
 if __name__ == '__main__':

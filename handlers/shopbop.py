@@ -1,5 +1,4 @@
 import re
-from time import sleep
 from handlers.meta_goblin import MetaGoblin
 
 # TODO: finds lots of duplicates...improve.
@@ -28,6 +27,5 @@ class ShopbopGoblin(MetaGoblin):
         for link in links:
             link = re.sub(r'._\w+(_\w+)*_\w+_', '', link).replace('m.media', 'images-na.ssl-images').replace('2-1', '2-0')
             for n in range(1, 7):
-                self.loot(re.sub(r'q\d', fr'q{n}', link))
-                sleep(self.args['tickrate'])
-        print(f'[{self.__str__()}] <looted> {self.loot_tally} files')
+                self.collect(re.sub(r'q\d', fr'q{n}', link))
+        self.loot()

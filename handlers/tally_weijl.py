@@ -1,5 +1,4 @@
 import re
-from time import sleep
 from handlers.meta_goblin import MetaGoblin
 
 
@@ -24,6 +23,5 @@ class TallyWeijlGoblin(MetaGoblin):
         else:
             links = self.extract_links(r'https*://www\.tally\-weijl\.com/img/[^" ]+\.jpg', self.args['url'])
         for link in links:
-            self.loot(re.sub(r'img/\d+/\d+', 'img/1800/1800', link))
-            sleep(self.args['tickrate'])
-        print(f'[{self.__str__()}] <looted> {self.loot_tally} files')
+            self.collect(re.sub(r'img/\d+/\d+', 'img/1800/1800', link))
+        self.loot()

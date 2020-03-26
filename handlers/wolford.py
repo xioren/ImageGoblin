@@ -1,5 +1,4 @@
 import re
-from time import sleep
 from handlers.generic_omega import MetaGoblin
 
 # NOTE: can use gamma goblin but has no real conistancy with filenames or urls formats
@@ -39,13 +38,11 @@ class WolfordGoblin(MetaGoblin):
             if 'Additional-Picture' in link:
                 link = re.sub(r'\d\.JPG', '', link)
                 for n in range(1, 4):
-                    self.loot(f'{link}{n}.JPG')
-                    sleep(self.args['tickrate'])
+                    self.collect(f'{link}{n}.JPG')
             else:
-                self.loot(link)
-                sleep(self.args['tickrate'])
+                self.collect(link)
             # if not self.args['nodl']:
             #     for video in videos:
             #         self.grab_vid(video)
                     # sleep(self.args['tickrate'])
-        print(f'[{self.__str__()}] <looted> {self.loot_tally} files')
+        self.loot()

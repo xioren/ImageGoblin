@@ -1,5 +1,4 @@
 import re
-from time import sleep
 from handlers.meta_goblin import MetaGoblin
 
 
@@ -27,6 +26,5 @@ class GettyGoblin(MetaGoblin):
         else:
             links = self.extract_links(r'https*[^"]+id\d+', self.args['url'])
             for link in links:
-                self.loot(self.upgrade(link))
-                sleep(self.args['tickrate'])
-        print(f'[{self.__str__()}] <looted> {self.loot_tally} files')
+                self.collect(self.upgrade(link))
+        self.loot()

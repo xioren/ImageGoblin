@@ -1,5 +1,4 @@
 import re
-from time import sleep
 from handlers.meta_goblin import MetaGoblin
 
 
@@ -29,6 +28,5 @@ class VictoriasSecretGoblin(MetaGoblin):
             if not self.args['silent']:
                 print(f'[{self.__str__()}] <WARNING> url type not supported')
         for link in links:
-            self.loot(re.sub(r'\d+x\d+', '4040x5390', self.args['url']))
-            sleep(self.args['timeout'])
-        print(f'[{self.__str__()}] <looted> {self.loot_tally} files')
+            self.collect(re.sub(r'\d+x\d+', '4040x5390', self.args['url']))
+        self.loot()

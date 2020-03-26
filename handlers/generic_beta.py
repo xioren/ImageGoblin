@@ -1,5 +1,4 @@
 import re
-from time import sleep
 from handlers.meta_goblin import MetaGoblin
 
 
@@ -42,6 +41,5 @@ class BetaGoblin(MetaGoblin):
             base, query = self.identify(link)
             id = self.extract_id(link)
             for char in self.chars:
-                self.loot(f'{base}{id}{char}{query}')
-                sleep(self.args['tickrate'])
-        print(f'[{self.__str__()}] <looted> {self.loot_tally} files')
+                self.collect(f'{base}{id}_{char}{query}')
+        self.loot()

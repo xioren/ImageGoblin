@@ -1,5 +1,4 @@
 import re
-from time import sleep
 from handlers.meta_goblin import MetaGoblin
 
 
@@ -24,6 +23,5 @@ class BurberryGoblin(MetaGoblin):
         else:
             links = self.extract_links(r'https*://assets.burberry[^"]+\.jpe*g', self.args['url'])
         for link in link:
-            self.loot(f'{link}?wid=3072&hei=3072')
-            sleep(self.args['tickrate'])
-        print(f'[{self.__str__()}] <looted> {self.loot_tally} files')
+            self.collect(f'{link}?wid=3072&hei=3072')
+        self.loot()

@@ -48,7 +48,7 @@ class IteratorGoblin(MetaGoblin):
                 return None
             if iteration % 25 == 0:
                 print(f'[{self.__str__()}] <iteration> {iteration}')
-            attempt = self.loot(url)
+            attempt = self.loot(url, self.path_main)
             if attempt:
                 self.idle = 0
             else:

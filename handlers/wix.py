@@ -1,5 +1,4 @@
 import re
-from time import sleep
 from handlers.meta_goblin import MetaGoblin
 
 
@@ -25,6 +24,5 @@ class WixGoblin(MetaGoblin):
             if not self.args['silent']:
                 print(f'[{self.__str__()}] <WARNING> url type not supported')
         for link in links:
-            self.loot(re.sub(r'\.jpg.+$', '', self.args['url']) + '.jpg')
-            sleep(self.args['tickrate'])
-        print(f'[{self.__str__()}] <looted> {self.loot_tally} files')
+            self.collect(re.sub(r'\.jpg.+$', '', self.args['url']) + '.jpg')
+        self.loot()

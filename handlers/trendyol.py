@@ -1,5 +1,4 @@
 import re
-from time import sleep
 from handlers.meta_goblin import MetaGoblin
 
 
@@ -28,6 +27,5 @@ class TrendyolGoblin(MetaGoblin):
         for link in links:
             base = self.extract_base(link)
             for n in range(1, 16):
-                self.loot(f'{base}{n}_org_zoom.jpg')
-                sleep(self.args['tickrate'])
-        print(f'[{self.__str__()}] <looted> {self.loot_tally} files')
+                self.collect(f'{base}{n}_org_zoom.jpg')
+        self.loot()

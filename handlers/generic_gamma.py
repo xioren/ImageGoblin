@@ -1,5 +1,4 @@
 import re
-from time import sleep
 from handlers.meta_goblin import MetaGoblin
 
 # removing /dw/image/v2/AAYL_PRD give original image, while leaving it in allow resizing
@@ -36,6 +35,5 @@ class GammaGoblin(MetaGoblin):
             id = self.extract_id(link)
             # link = dequery(re.sub(fr'{id}(\w+)*.jpg', '', link))
             for mod in self.modifiers:
-                self.loot(f'{self.base}{id}{mod}.jpg')
-                sleep(self.args['tickrate'])
-        print(f'[{self.__str__()}] <looted> {self.loot_tally} files')
+                self.collect(f'{self.base}{id}{mod}.jpg')
+        self.loot()

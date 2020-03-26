@@ -1,5 +1,4 @@
 import re
-from time import sleep
 from handlers.meta_goblin import MetaGoblin
 
 
@@ -25,6 +24,5 @@ class MaisonLejabyGoblin(MetaGoblin):
         for link in links:
             link = re.sub(r'[A-Z]\.jpg', '', link).replace('medium', 'large')
             for char in ('A', 'B', 'C', 'D', 'E', 'F'):
-                self.loot(f'{link}{char}.jpg')
-                sleep(self.args['tickrate'])
-        print(f'[{self.__str__()}] <looted> {self.loot_tally} files')
+                self.collect(f'{link}{char}.jpg')
+        self.loot()

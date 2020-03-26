@@ -64,7 +64,7 @@ class ZalandoGoblin(MetaGoblin):
         id = self.extract_id(self.args['url'])
         timeout, n = 0, 1
         while timeout <= 8:
-            attempt = self.loot(self.form_url(f'{id}@{n}'))
+            attempt = self.loot(self.form_url(f'{id}@{n}'), self.path_main)
             if attempt:
                 timeout = 0
             else:
@@ -90,7 +90,7 @@ class ZalandoGoblin(MetaGoblin):
                 if os.path.exists(os.path.join(dir, f'{image}@{n}.jpeg')):
                     print(f'[zalando goblin] <skipping> {image}')
                     return None
-                self.loot(self.form_url(f'{image}@{n}', 'small'))
+                self.loot(self.form_url(f'{image}@{n}', 'small'), self.path_main)
                 sleep(self.args['tickrate'])
 
     def create_links(self):

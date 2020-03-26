@@ -1,5 +1,4 @@
 import re
-from time import sleep
 from handlers.meta_goblin import MetaGoblin
 
 # NOTE: removing origin works in some cases, are there different origins?
@@ -30,7 +29,6 @@ class HMGoblin(MetaGoblin):
             links = self.extract_links(r'source\[[\w\./]+\]', self.args['url'])
         for link in links:
             source = self.extract_source(link)
-            self.loot(f'https://lp2.hm.com/hmgoepprod?set=quality[100],source[{source}],origin[dam]&call=url[file:/product/zoom]',
-                      filename=self.extract_filename(source))
-            sleep(self.args['tickrate'])
-        print(f'[{self.__str__()}] <looted> {self.loot_tally} files')
+            self.collect(f'https://lp2.hm.com/hmgoepprod?set=quality[100],source[{source}],origin[dam]&call=url[file:/product/zoom]',
+                         self.extract_filename(source))
+        self.loot()

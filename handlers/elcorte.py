@@ -1,5 +1,4 @@
 import re
-from time import sleep
 from handlers.meta_goblin import MetaGoblin
 
 # BUG: does not work ---> different (new) url formats to consider
@@ -34,8 +33,7 @@ class ElcorteGoblin(MetaGoblin):
             for n in range(6):
                 if len(id) == 1:
                     # NOTE: this might be unecessary as their format may have changed perm.
-                    self.loot(self.prep(id) + f'{n}__967x1200.jpg')
+                    self.collect(self.prep(id) + f'{n}__967x1200.jpg')
                 else:
-                    self.loot(self.prep(id) + f'0{n}_967x1200.jpg')
-                sleep(self.args['tickrate'])
-        print(f'[{self.__str__()}] <looted> {self.loot_tally} files')
+                    self.collect(self.prep(id) + f'0{n}_967x1200.jpg')
+        self.loot()

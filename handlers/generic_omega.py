@@ -1,6 +1,5 @@
 import re
 import os
-from time import sleep
 from strings import *
 from handlers.meta_goblin import MetaGoblin
 
@@ -42,22 +41,14 @@ class OmegaGoblin(MetaGoblin):
         extract media urls from html
         '''
         links = self.extract_links(regex_patterns['link_pattern'], self.args['url'])
-        return [re.sub(r'<img.+src="', '', link) for link in links]
-
-    def download_media(self, links):
-        '''
-        retrieve media
-        '''
-        for link in links:
-            # print(f'[{self.__str__()}] <looting> link {links.index(link) + 1} of {len(links)}')
+        cleaned_links = [re.sub(r'<img.+src="', '', link) for link in links]
+        for link in cleaned_links:
             if self.args['format']:
                 link = self.custom_format(link)
-            self.loot(link)
-            sleep(self.args['tickrate'])
-        if not self.args['nodl'] and not self.args['noclean']:
-            self.cleanup(self.path_main)
+            self.collect(link)
 
     def run(self):
         links = self.find_links()
-        self.download_media(links)
-        print(f'[{self.__str__()}] <looted> {self.loot_tally} files')
+        self.loot()
+        if not self.args['nodl'] and not self.args['noclean']:
+            self.cleanup(self.path_main)
