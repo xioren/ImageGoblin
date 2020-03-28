@@ -62,36 +62,23 @@ class ZalandoGoblin(MetaGoblin):
         scan for images
         '''
         id = self.extract_id(self.args['url'])
-        timeout, n = 0, 1
-        while timeout <= 8:
-            attempt = self.loot(self.form_url(f'{id}@{n}'), self.path_main)
-            if attempt:
-                timeout = 0
-            else:
-                timeout += 1
-            n += 1
-            sleep(self.args['tickrate'])
+        for n in range(1, 50):
+            self.collect(self.form_url(f'{id}@{n}'), sorted=True)
 
     def find_more(self):
         '''
         search for other images
         '''
         alpha = digits + upper
-        id = self.args['url']
-        if self.identify(id) != 'id':
-            id = self.extract_id(self.args['url'])
+        id = self.extract_id(self.args['url'])
         ref = id
-        id = id.self('-')
+        id = id.split('-')
         for k in alpha:
-            image = f'{id[0][:-1]}{k}-{id[1]}'
-            if image == ref:
+            new_id = f'{id[0][:-1]}{k}-{id[1]}'
+            if new_id == ref:
                 continue
             for n in range(4, 25, 4):
-                if os.path.exists(os.path.join(dir, f'{image}@{n}.jpeg')):
-                    print(f'[zalando goblin] <skipping> {image}')
-                    return None
-                self.loot(self.form_url(f'{image}@{n}', 'small'), self.path_main)
-                sleep(self.args['tickrate'])
+                self.collect(self.form_url(f'{new_id}@{n}', 'small'))
 
     def create_links(self):
         '''
@@ -103,6 +90,8 @@ class ZalandoGoblin(MetaGoblin):
     def run(self):
         if self.args['mode'] == 'find':
             self.find_more()
+            self.loot()
         else:
             self.scan()
+            self.loot(timeout=8)
         print(f'[{self.__str__()}] <looted> {self.loot_tally} files')

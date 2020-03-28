@@ -23,6 +23,7 @@ class MetaGoblin(Parser):
                         False: {'User-Agent': 'GoblinTeam/1.3'}}
         self.loot_tally = 0
         self.collection = set()
+        self.sorted_collection = []
         if not self.args['nodl']:
             self.make_dirs(self.path_main)
         if self.args['url']:
@@ -196,7 +197,7 @@ class MetaGoblin(Parser):
         '''
         return set(iterable)
 
-    def collect(self, url, filename='', clean=False):
+    def collect(self, url, filename='', clean=False, sorted=False):
         '''
         finalize and add links to collection
         '''
@@ -204,46 +205,41 @@ class MetaGoblin(Parser):
             url = self.sanitize(url)
         if not filename:
             filename = self.extract_filename(url)
-        self.collection.add(f'{self.finalize(url)}-break-{filename}')
+        if sorted:
+            self.sorted_collection.append(f'{self.finalize(url)}-break-{filename}')
+        else:
+            self.collection.add(f'{self.finalize(url)}-break-{filename}')
 
-    def loot(self, url=None, save_loc=None):
+    def loot(self, url=None, save_loc=None, timeout=False):
         '''
         front end for retrieve
         '''
-        # TODO: improve this
-        if url:
-            if self.args['nodl']:
-                print(url, end='\n\n')
+        track = 0
+        if self.sorted_collection:
+            self.collection = self.sorted_collection
+        for link in self.collection:
+            if timeout and track >= timeout:
                 return None
-            filename = self.extract_filename(url)
-            filepath = os.path.join(save_loc, f'{filename}.{self.filetype(url)}')
+            link, filename = link.split('-break-')
+            if self.args['nodl']:
+                print(link, end='\n\n')
+                continue
+            if not save_loc:
+                save_loc = self.path_main
+            filepath = os.path.join(save_loc, f'{filename}.{self.filetype(link)}')
             if os.path.exists(filepath):
                 if not self.args['silent']:
                     print(f'[{self.__str__()}] <file exists> {filename}')
-                return None
-            attempt = self.retrieve(url, filepath)
+                track += 1
+                continue
+            attempt = self.retrieve(link, filepath)
             if attempt:
                 if not self.args['silent']:
                     print(f'[{self.__str__()}] <looted> {filename}')
                 self.loot_tally += 1
-                return True
-        else:
-            for link in self.collection:
-                link, filename = link.split('-break-')
-                if self.args['nodl']:
-                    print(link, end='\n\n')
-                    continue
-                if not save_loc:
-                    save_loc = self.path_main
-                filepath = os.path.join(save_loc, f'{filename}.{self.filetype(link)}')
-                if os.path.exists(filepath):
-                    if not self.args['silent']:
-                        print(f'[{self.__str__()}] <file exists> {filename}')
-                    continue
-                attempt = self.retrieve(link, filepath)
-                if attempt:
-                    if not self.args['silent']:
-                        print(f'[{self.__str__()}] <looted> {filename}')
-                    self.loot_tally += 1
-                sleep(self.args['tickrate'])
-            print(f'[{self.__str__()}] <looted> {self.loot_tally} files')
+                track = 0
+            else:
+                track += 1
+            sleep(self.args['tickrate'])
+        print(f'[{self.__str__()}] <looted> {self.loot_tally} files')
+        return True
