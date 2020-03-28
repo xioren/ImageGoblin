@@ -6,7 +6,7 @@ from handlers.meta_goblin import MetaGoblin
 class DeltaGoblin(MetaGoblin):
 
     '''
-    for _n_n_n variants
+    handles: Inditex Group (_n_n_n)
     accepts:
         - image
         - webpage

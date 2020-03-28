@@ -23,7 +23,6 @@ class MetaGoblin(Parser):
                         False: {'User-Agent': 'GoblinTeam/1.3'}}
         self.loot_tally = 0
         self.collection = set()
-        self.sorted_collection = []
         if not self.args['nodl']:
             self.make_dirs(self.path_main)
         if self.args['url']:
@@ -57,6 +56,18 @@ class MetaGoblin(Parser):
                         print(f'[{self.__str__()}] <{e}> {filepath}')
                     continue
 
+    def toggle_collecton_type(self, reverse=False):
+        '''
+        toggle collection type between sorted list and set
+        '''
+        if type(self.collection) == set:
+            if reverse:
+                self.collection = reversed(sorted(list(self.collection)))
+            else:
+                self.collection = sorted(list(self.collection))
+        else:
+            self.collection = set(self.collection)
+
     def grab_vid(self, url):
         '''
         download a video in best quality, primarily for vimeo
@@ -64,27 +75,29 @@ class MetaGoblin(Parser):
         filename = self.extract_filename(url)
         os.system(f'youtube-dl --output {self.path_main}/{filename} {url}')
 
-    def retrieve(self, url, path, n=0, gzip=True):
+    def retrieve(self, url, path='', n=0, gzip=True, save=True):
         '''
         retrieve web content
         '''
-        # TODO: combime this and get html into single method
         request = Request(url, None, self.headers[gzip])
         try:
             with urlopen(request, timeout=10) as response:
-                with open(path, 'wb') as file:
-                    while True:
-                        data = response.read(DEFAULT_BUFFER_SIZE)
-                        if not data:
-                            break
-                        if response.info().get('Content-Encoding') == 'gzip':
-                            try:
-                                data = decompress(data)
-                            except OSError:
-                                pass
-                            except EOFError:
-                                return self.retrieve(url, path, gzip=False)
-                        file.write(data)
+                if not save:
+                    return response.read()
+                else:
+                    with open(path, 'wb') as file:
+                        while True:
+                            data = response.read(DEFAULT_BUFFER_SIZE)
+                            if not data:
+                                break
+                            if response.info().get('Content-Encoding') == 'gzip':
+                                try:
+                                    data = decompress(data)
+                                except OSError:
+                                    pass
+                                except EOFError:
+                                    return self.retrieve(url, path, gzip=False)
+                            file.write(data)
         except HTTPError as e:
             if not self.args['silent']:
                 print(f'[{self.__str__()}] <{e}> {url}')
@@ -94,10 +107,10 @@ class MetaGoblin(Parser):
                 print(f'[{self.__str__()}] <{e}> {url}')
             return None
         except timeout:
-            return self.retry(url, n+1, path)
+            return self.retry(url, n+1, path, save)
         return True
 
-    def retry(self, url, n, path=None):
+    def retry(self, url, n, path, save):
         '''
         retry connection after a socket timeout
         '''
@@ -108,37 +121,13 @@ class MetaGoblin(Parser):
                 print(f'[{self.__str__()}] <timed out> aborting after {n} retries')
         else:
             sleep(self.args['tickrate'])
-            if path:
-                return self.retrieve(url, path, n)
-            else:
-                return self.get_html(url, n)
+        return self.retrieve(url, path, n, save)
 
     def get_html(self, url, n=0, gzip=True):
         '''
         retrieve web page html
         '''
-        request = Request(url, None, self.headers[gzip])
-        try:
-            with urlopen(request, timeout=10) as response:
-                html = response.read()
-                if response.info().get('Content-Encoding') == 'gzip':
-                    try:
-                        html = decompress(html)
-                    except OSError:
-                        pass
-                    except EOFError:
-                        return self.get_html(url, gzip=False)
-        except HTTPError as e:
-            if not self.args['silent']:
-                print(f'[{self.__str__()}] <{e}> {url}')
-            return None
-        except URLError as e:
-            if not self.args['silent']:
-                print(f'[{self.__str__()}] <{e}> {url}')
-            return None
-        except timeout:
-            return self.retry(url, n+1)
-        return html.decode('utf-8', 'ignore')
+        return self.retrieve(url, save=False)
 
     def write_file(self, data, path, mode='w', iter=False):
         '''
@@ -197,7 +186,13 @@ class MetaGoblin(Parser):
         '''
         return set(iterable)
 
-    def collect(self, url, filename='', clean=False, sorted=False):
+    def new_collection(self):
+        '''
+        initialize a new collection
+        '''
+        self.collection = set()
+
+    def collect(self, url, filename='', clean=False):
         '''
         finalize and add links to collection
         '''
@@ -205,18 +200,13 @@ class MetaGoblin(Parser):
             url = self.sanitize(url)
         if not filename:
             filename = self.extract_filename(url)
-        if sorted:
-            self.sorted_collection.append(f'{self.finalize(url)}-break-{filename}')
-        else:
-            self.collection.add(f'{self.finalize(url)}-break-{filename}')
+        self.collection.add(f'{self.finalize(url)}-break-{filename}')
 
-    def loot(self, url=None, save_loc=None, timeout=False):
+    def loot(self, save_loc=None, timeout=False):
         '''
         front end for retrieve
         '''
         track = 0
-        if self.sorted_collection:
-            self.collection = self.sorted_collection
         for link in self.collection:
             if timeout and track >= timeout:
                 return None

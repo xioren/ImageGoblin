@@ -67,6 +67,18 @@ class ASOSGoblin(MetaGoblin):
         for n in range(2, 5):
             self.collect(self.form_url(f'{id}-{n}', True))
 
+    def generate_links(self, id, dir):
+        '''
+        generate a group of links for scanning
+        '''
+        id = int(id)
+        if dir == '+':
+            for n in range(id, id + 100):
+                self.collect(self.form_url(n))
+        else:
+            for n in range(id - 100, id):
+                self.collect(self.form_url(n))
+
 
     def upgrade(self):
         '''
@@ -94,22 +106,13 @@ class ASOSGoblin(MetaGoblin):
         find other images using supplied images or urls
         '''
         colors = set()
-        def step(id, increment):
-            idle = 0
-            while idle < 20:
-                attempt = self.loot(self.form_url(id), self.path_scanned)
-                if attempt:
-                    idle = 0
-                else:
-                    idle += 1
-                id += increment
-                sleep(self.args['tickrate'])
         if self.args['url']:
             files = [self.args['url']]
         else:
-            for file in os.listdir(self.path_external):
-                self.move_file(self.path_external, self.path_main, file)
-            os.rmdir(self.path_external)
+            if os.path.exists(self.path_external):
+                for file in os.listdir(self.path_external):
+                    self.move_file(self.path_external, self.path_main, file)
+                os.rmdir(self.path_external)
             files = os.listdir(self.path_main)
         for file in files:
             if '.jpeg' not in file:
@@ -121,8 +124,13 @@ class ASOSGoblin(MetaGoblin):
                 self.move_file(self.path_main, self.path_backup, file)
                 continue
             print(f'[{self.__str__()}] <scanning> {id}')
-            step(int(id), 1)
-            step(int(id) - 1, -1)
+            self.generate_links(id, '+')
+            self.toggle_collecton_type()
+            self.loot(save_loc=self.path_scanned, timeout=15)
+            self.new_collection()
+            self.generate_links(id, '-')
+            self.toggle_collecton_type(reverse=True)
+            self.loot(save_loc=self.path_scanned, timeout=15)
             self.move_file(self.path_main, self.path_backup, file)
         print(f'[{self.__str__()}] <exporting colors>')
         self.write_file(colors, os.path.join(self.path_main, 'colors.txt'), iter=True)
@@ -187,4 +195,5 @@ class ASOSGoblin(MetaGoblin):
             self.scan()
         else:
             self.grab()
+            self.loot()
         print(f'[{self.__str__()}] <looted> {self.loot_tally} files')

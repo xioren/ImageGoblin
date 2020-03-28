@@ -5,7 +5,7 @@ from handlers.meta_goblin import MetaGoblin
 class BetaGoblin(MetaGoblin):
 
     '''
-    handles: Dynamic Media Image Serving and Image Rendering API (scene7)
+    handles: Adobe Dynamic Media Image Serving and Image Rendering API (scene7)
     docs: https://docs.adobe.com/content/help/en/dynamic-media-developer-resources/image-serving-api/image-serving-api/http-protocol-reference/command-reference/c-command-reference.html
     accepts:
         - image
@@ -21,8 +21,8 @@ class BetaGoblin(MetaGoblin):
     '''
 
     def __init__(self, args):
-        self.query = '?fmt=jpeg&qlt=100&scl=1'
         super().__init__(args)
+        self.query = '?fmt=jpeg&qlt=100&scl=1'
 
     def extract_id(self, url):
         return re.search(r'[A-Za-z0-9]+_([A-Za-z0-9]+)*', url).group()

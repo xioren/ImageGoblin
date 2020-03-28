@@ -7,9 +7,9 @@ from handlers.meta_goblin import MetaGoblin
 class OmegaGoblin(MetaGoblin):
 
     '''
-    generic goblin for links that did not trigger a handler match
+    generic goblin for links that did not match a handler
     accepts:
-        - image
+        - webpage
     '''
 
     def __init__(self, args):

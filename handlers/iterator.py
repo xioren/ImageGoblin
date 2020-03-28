@@ -24,15 +24,14 @@ class IteratorGoblin(MetaGoblin):
         return re.split('%%%', url)
 
     # IDEA: instead of hard coding 100, maybe use double timeout value.
-    def extend_iterable(self, iterable):
-        extended = []
-        for _ in range(100):
-            extended.append(iterable)
-            iterable = str(int(iterable.lstrip('0')) + self.args['increment']).zfill(len(iterable))
-        return extended
+    # TODO: add reverse?
+    def generate_links(self, base, iterable, end):
+        stripped_iter = int(iterable.lstrip('0'))
+        for n in range(stripped_iter, stripped_iter + 20, self.args['increment']):
+            self.collect(f'{base}{str(n).zfill(len(iterable))}{end}')
 
     def increment_iterable(self, iterable):
-        return str(int(iterable.lstrip('0')) + 100).zfill(len(iterable))
+        return str(int(iterable.lstrip('0')) + 20).zfill(len(iterable))
 
     def iterate(self):
         '''
@@ -41,15 +40,14 @@ class IteratorGoblin(MetaGoblin):
         round = 1
         base, iterable, end = self.extract_iterable(self.args['url'])
         while True:
-            # OPTIMIZE: make such that re-instatiation is not needed
-            self.sorted_collection = []
             print(f'[{self.__str__()}] <iterating> round {round}')
-            for iter in self.extend_iterable(iterable):
-                self.collect(f'{base}{iter}{end}', sorted=True)
+            self.generate_links(base, iterable, end)
+            self.toggle_collecton_type()
             attempt = self.loot(timeout=self.args['timeout'])
             if attempt:
                 round += 1
                 iterable = self.increment_iterable(iterable)
+                self.new_collection()
             else:
                 print(f'[{self.__str__()}] <timeout> after {self.args["timeout"]} attempts')
                 return None

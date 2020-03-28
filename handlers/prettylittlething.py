@@ -24,4 +24,4 @@ class PrettyLittleThingGoblin(MetaGoblin):
             links = self.extract_links(r'https://cdn\-img\.prettylittlething\.com[^" \n]+', self.args['url'])
         for link in links:
             self.collect(link, clean=True)
-        self.loot()
+        self.loot(self.collection)

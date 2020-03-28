@@ -1,13 +1,14 @@
 import re
 from handlers.meta_goblin import MetaGoblin
 
-# removing /dw/image/v2/AAYL_PRD give original image, while leaving it in allow resizing
-# TODO: handle both image and webpage urls
+# NOTE: scaling with q=100 gives higher quality; investigate.
 
 class GammaGoblin(MetaGoblin):
 
     '''
-    for on.demandware variants
+    handles: Demandware
+    docs: https://documentation.b2c.commercecloud.salesforce.com/DOC1/index.jsp
+    --> dw.content --> MediaFile
     accepts:
         - image
         - webpage

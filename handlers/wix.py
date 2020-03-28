@@ -1,6 +1,7 @@
 import re
 from handlers.meta_goblin import MetaGoblin
 
+# QUESTION: keep handler?
 
 class WixGoblin(MetaGoblin):
 

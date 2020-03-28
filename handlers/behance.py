@@ -2,6 +2,8 @@ import re
 from time import sleep
 from handlers.meta_goblin import MetaGoblin
 
+# TODO: fix
+# QUESTION: keep this handler?
 
 class BehanceGoblin(MetaGoblin):
 
