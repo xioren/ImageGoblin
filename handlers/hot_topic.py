@@ -11,4 +11,4 @@ class HotTopicGoblin(BetaGoblin):
 
     def identify(self, link):
         self.chars = ('hi', 'av1', 'av2', 'av3')
-        return 'https://hottopic.scene7.com/is/image/HotTopic/', '?hei=1836'
+        return 'https://hottopic.scene7.com/is/image/HotTopic/'

@@ -12,7 +12,7 @@ class TommyHilfigerGoblin(BetaGoblin):
     def identify(self, link):
         if 'tommy-europe' in link:
             self.chars = ('main', 'alternate1', 'alternate2', 'alternate3', 'alternate4')
-            return 'https://tommy-europe.scene7.com/is/image/TommyEurope/', '?wid=2300'
+            return 'https://tommy-europe.scene7.com/is/image/TommyEurope/'
         else:
             self.chars = ('FNT', 'BCK', 'DE1', 'DE2', 'DE3')
-            return 'https://shoptommy.scene7.com/is/image/ShopTommy/', '?wid=2300'
+            return 'https://shoptommy.scene7.com/is/image/ShopTommy/'

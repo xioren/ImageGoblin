@@ -38,7 +38,7 @@ class GammaGoblin(MetaGoblin):
             links = self.extract_links(fr'[^" ]+demandware[^" ]+{self.pattern}', self.args['url'])
         for link in links:
             id, iter, end = self.extract(self.isolate(link))
-            self.generate_modifiers(iter)
+            # self.generate_modifiers(iter)
             for mod in self.modifiers:
                 self.collect(f'{self.base}{id}{mod}{end}')
         self.loot()

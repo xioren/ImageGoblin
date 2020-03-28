@@ -2,7 +2,7 @@
 
 regex_patterns = {
     'filename': r'(/*[^/]+(\.\w+)*)$',
-    'link_pattern': r'<img.+src="[^" ;\']+|(https*://)*[^"\n \';]+\.(jpe*g|png|tiff*|gif|mp4|mov|flv)([^"\n \';]+)*|[^"\n \';\(\)]+images*[^"\n \';]+',
+    'link_pattern': r'<img.+src="[^" ;\']+|(https*://)*[^"\n \';]+\.(jpe*g|png|tiff*|gif|mp4|mov|flv)([^"\n \';]+)*',
     # 'insta_media': r'https*://[^\?]+\.(jpg|mp4)[^ "]+',
     # 'link_filter': r'(\.(jpe*g|png|tiff*|gif|mp4|mov|flv))|images*|photos*|uploads*',
     'query': r'((\?|&).+)$',

@@ -19,6 +19,7 @@ from handlers.dolls_kill import DollsKillGoblin
 from handlers.dora_larsen import DoraLarsenGoblin
 from handlers.elcorte import ElcorteGoblin
 from handlers.else_lingerie import ElseGoblin
+from handlers.esprit import EspritGoblin
 from handlers.etam import EtamGoblin
 from handlers.fae import FaeGoblin
 from handlers.faithfull_the_brand import FaithfullTheBrandGoblin
@@ -101,6 +102,7 @@ handlers = {
             'doralarsen': (r'doralarsen', DoraLarsenGoblin),
             'elcorteingles': (r'elcorteingles', ElcorteGoblin),
             'else': (r'elselingerie', ElseGoblin),
+            'esprit': (r'esprit', EspritGoblin),
             'etam': (r'etam', EtamGoblin),
             'fae': (r'fae\.house', FaeGoblin),
             'fashionnova': (r'fashionnova', FashionNovaGoblin),

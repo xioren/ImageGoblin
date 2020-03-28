@@ -5,13 +5,15 @@ from handlers.meta_goblin import MetaGoblin
 class BetaGoblin(MetaGoblin):
 
     '''
-    for scen7 variants
+    handles: Dynamic Media Image Serving and Image Rendering API (scene7)
+    docs: https://docs.adobe.com/content/help/en/dynamic-media-developer-resources/image-serving-api/image-serving-api/http-protocol-reference/command-reference/c-command-reference.html
     accepts:
         - image
         - webpage
     generic backend for:
         - anthropologie
         - calvin klein
+        - esprit
         - free people
         - hot topic
         - tommy hilfiger
@@ -19,10 +21,11 @@ class BetaGoblin(MetaGoblin):
     '''
 
     def __init__(self, args):
+        self.query = '?fmt=jpeg&qlt=100&scl=1'
         super().__init__(args)
 
     def extract_id(self, url):
-        return re.search(r'[a-z0-9]+_([a-z0-9]+)*', url).group()
+        return re.search(r'[A-Za-z0-9]+_([A-Za-z0-9]+)*', url).group()
 
     def correct_format(self, url):
         if re.search(r'[a-z0-9]+_([a-z0-9]+)*', url):
@@ -38,8 +41,10 @@ class BetaGoblin(MetaGoblin):
         for link in links:
             if not self.correct_format(link):
                 continue
-            base, query = self.identify(link)
+            base = self.identify(link)
             id = self.extract_id(link)
             for char in self.chars:
-                self.collect(f'{base}{id}_{char}{query}')
+                self.collect(f'{base}{id}_{char}{self.query}')
         self.loot()
+        if not self.args['nodl'] and not self.args['noclean']:
+            self.cleanup(self.path_main)

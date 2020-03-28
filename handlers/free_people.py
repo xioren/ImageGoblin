@@ -11,4 +11,4 @@ class FreePeopleGoblin(BetaGoblin):
 
     def identify(self, link):
         self.chars = ('a', 'b', 'c', 'd', 'e')
-        return 'https://s7d5.scene7.com/is/image/FreePeople/', '?wid=2640'
+        return 'https://s7d5.scene7.com/is/image/FreePeople/'

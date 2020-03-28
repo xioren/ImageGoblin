@@ -4,6 +4,7 @@ from handlers.generic_beta import BetaGoblin
 class CalvinKleinGoblin(BetaGoblin):
 
     def __init__(self, args):
+        self.query = '?fmt=jpeg&qlt=100&scl=1.3'
         super().__init__(args)
 
     def __str__(self):
@@ -12,6 +13,6 @@ class CalvinKleinGoblin(BetaGoblin):
     def identify(self, link):
         self.chars = ('main', 'alternate1', 'alternate2', 'alternate3', 'alternate4', 'alternate5')
         if 'CalvinKleinEU' in link:
-            return 'https://calvinklein-eu.scene7.com/is/image/CalvinKleinEU/',  '?&wid=2750'
+            return 'https://calvinklein-eu.scene7.com/is/image/CalvinKleinEU/'
         else:
-            return 'https://calvinklein.scene7.com/is/image/CalvinKlein/', '?&wid=1510'
+            return 'https://calvinklein.scene7.com/is/image/CalvinKlein/'
