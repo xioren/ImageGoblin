@@ -25,7 +25,7 @@ class MetaGoblin(Parser):
         self.collection = set()
         if not self.args['nodl']:
             self.make_dirs(self.path_main)
-        if self.args['url']:
+        if self.args['url'] and self.args['verbose']:
             print(f'[{self.__str__()}] <deployed> {self.args["url"]}')
         else:
             print(f'[{self.__str__()}] <deployed>')
@@ -52,7 +52,7 @@ class MetaGoblin(Parser):
                 try:
                     os.remove(filepath)
                 except PermissionError as e:
-                    if not self.args['silent']:
+                    if self.args['verbose'] and not self.args['silent']:
                         print(f'[{self.__str__()}] <{e}> {filepath}')
                     continue
 
@@ -75,6 +75,14 @@ class MetaGoblin(Parser):
         filename = self.extract_filename(url)
         os.system(f'youtube-dl --output {self.path_main}/{filename} {url}')
 
+    def unzip(self, data):
+        try:
+            return decompress(data)
+        except OSError:
+            return data
+        except EOFError:
+            return None
+
     def retrieve(self, url, path='', n=0, gzip=True, save=True):
         '''
         retrieve web content
@@ -82,28 +90,31 @@ class MetaGoblin(Parser):
         request = Request(url, None, self.headers[gzip])
         try:
             with urlopen(request, timeout=10) as response:
+                encoding = response.info().get('Content-Encoding')
                 if not save:
-                    return response.read()
+                    data = response.read()
+                    if encoding == 'gzip':
+                        data = self.unzip(data)
+                        if not data:
+                            return self.retrieve(url, gzip=False, save=False)
+                    return data.decode('utf-8', 'ignore')
                 else:
                     with open(path, 'wb') as file:
                         while True:
                             data = response.read(DEFAULT_BUFFER_SIZE)
                             if not data:
                                 break
-                            if response.info().get('Content-Encoding') == 'gzip':
-                                try:
-                                    data = decompress(data)
-                                except OSError:
-                                    pass
-                                except EOFError:
+                            if encoding == 'gzip':
+                                data = self.unzip(data)
+                                if not data:
                                     return self.retrieve(url, path, gzip=False)
                             file.write(data)
         except HTTPError as e:
-            if not self.args['silent']:
+            if self.args['verbose'] and not self.args['silent']:
                 print(f'[{self.__str__()}] <{e}> {url}')
             return None
         except URLError as e:
-            if not self.args['silent']:
+            if self.args['verbose'] and not self.args['silent']:
                 print(f'[{self.__str__()}] <{e}> {url}')
             return None
         except timeout:
@@ -141,7 +152,7 @@ class MetaGoblin(Parser):
                 else:
                     file.write(data)
         except OSError as e:
-            if not self.args['silent']:
+            if self.args['verbose'] and not self.args['silent']:
                 print(f'[{self.__str__()}] <{e}> {path}')
 
     def read_file(self, path, iter=False):
@@ -155,7 +166,7 @@ class MetaGoblin(Parser):
                 else:
                     return file.read()
         except OSError as e:
-            if not self.args['silent']:
+            if self.args['verbose'] and not self.args['silent']:
                 print(f'[{self.__str__()}] <{e}> {path}')
 
     def is_duplicate(self, path, url):
@@ -177,7 +188,9 @@ class MetaGoblin(Parser):
         '''
         try:
             return {link.group() for link in re.finditer(pattern, self.get_html(url))}
-        except TypeError:
+        except TypeError as e:
+            if self.args['verbose'] and not self.args['silent']:
+                print(f'[{self.__str__()}] <{e}>')
             return ''
 
     def filter(self, iterable):

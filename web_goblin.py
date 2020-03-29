@@ -22,6 +22,12 @@ parser.add_argument('--nosort', help='download directly to current directory, wi
                     action='store_true')
 parser.add_argument('--noclean', help='do not remove small files',
                     action='store_true')
+parser.add_argument('--all', help='consume all links at once',
+                    action='store_true')
+parser.add_argument('--feed', help='input links one at a time',
+                    action='store_true')
+parser.add_argument('-v', '--verbose', help='output error messages for debugging',
+                    action='store_true')
 args = parser.parse_args()
 
 
@@ -29,7 +35,8 @@ args_dict = {'url': args.url, 'mode': args.mode, 'timeout': args.timeout,
              'format': args.format, 'increment': args.increment, 'nodl': args.nodl,
              'silent': args.silent, 'tickrate': args.rate, 'local': args.local,
              'handler': args.force, 'list': args.list, 'nosort': args.nosort,
-             'noclean': args.noclean}
+             'noclean': args.noclean, 'all': args.all, 'feed': args.feed,
+             'verbose': args.verbose}
 
 
 if __name__ == '__main__':

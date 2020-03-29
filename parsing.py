@@ -67,7 +67,7 @@ class Parser:
         '''
         return netloc of a url
         '''
-        return urlparse(self.add_scheme(url))[1]
+        return urlparse(url)[1]
 
     def is_relative(self, url):
         '''
@@ -112,3 +112,21 @@ class Parser:
                 n += 1
             else:
                 return unique
+
+    def user_format(self, url):
+        '''
+        add, substitute, or remove elements from a url
+        '''
+        if self.args['format'][0] == 'add':
+            return url + self.args['format'][1]
+        elif self.args['format'][0] == 'sub':
+            return re.sub(self.args['format'][1], self.args['format'][2], url)
+        elif self.args['format'][0] == 'rem':
+            return re.sub(self.args['format'][1], '', url)
+        elif self.args['format'][0] == 'auto':
+            url = self.sanitize(url)
+            if 'squarespace' in url:
+                url += '?format=original'
+        else:
+            pass
+        return url

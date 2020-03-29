@@ -1,6 +1,7 @@
 import re
 from handlers.meta_goblin import MetaGoblin
 
+# NOTE: may have switched to new cdn; investigate.
 
 class TrendyolGoblin(MetaGoblin):
 

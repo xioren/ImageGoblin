@@ -16,6 +16,7 @@ class DeltaGoblin(MetaGoblin):
         - oysho
         - pull&bear
         - stradivarius
+        - zara
     '''
 
     def __init__(self, args):
@@ -35,5 +36,5 @@ class DeltaGoblin(MetaGoblin):
         for link in links:
             base, end = re.split(r'_\d_\d_\d+', link)
             for id in self.ids:
-                self.collect(f'{base}{id}{self.size}{self.clean(end)}')
+                self.collect(self.decrop(f'{base}{id}{self.size}{self.clean(end)}'))
         self.loot()

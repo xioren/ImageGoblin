@@ -32,3 +32,5 @@ class MissguidedGoblin(MetaGoblin):
             for n in range(1, 6):
                 self.collect(f'https://media.missguided.com/i/missguided/{id}_0{n}')
         self.loot()
+        if not self.args['nodl'] and not self.args['noclean']:
+            self.cleanup(self.path_main)

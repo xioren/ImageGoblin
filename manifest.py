@@ -33,12 +33,14 @@ from handlers.free_people import FreePeopleGoblin
 from handlers.generic_omega import OmegaGoblin
 from handlers.getty import GettyGoblin
 from handlers.h_and_m import HMGoblin
+from handlers.hungry import HungryGoblin
 from handlers.hunkemoller import HunkemollerGoblin
 from handlers.hot_topic import HotTopicGoblin
 from handlers.instagram import InstagramGoblin
 from handlers.iterator import IteratorGoblin
 from handlers.jennyfer import JennyferGoblin
 from handlers.katherine_hamilton import KatherineHamiltonGoblin
+from handlers.koton import KotonGoblin
 from handlers.le_petit_trou import LePetitTrouGoblin
 from handlers.lounge import LoungeGoblin
 from handlers.maison_lejaby import MaisonLejabyGoblin
@@ -78,6 +80,7 @@ from handlers.womens_secret import WomensSecretGoblin
 from handlers.wood_wood import WoodWoodGoblin
 from handlers.yandy import YandyGoblin
 from handlers.zalando import ZalandoGoblin
+from handlers.zara import ZaraGoblin
 
 
 handlers = {
@@ -116,12 +119,14 @@ handlers = {
             'generic': ('#####', OmegaGoblin),
             'getty': (r'gettyimages', GettyGoblin),
             'h&m': (r'hm\.com', HMGoblin),
+            'hungry': ('#####', HungryGoblin),
             'hunkemoller': (r'hunkemoller', HunkemollerGoblin),
             'hottopic': (r'hottopic', HotTopicGoblin),
             'instagram': (r'instagram', InstagramGoblin),
             'iterator': (r'%%%\d+%%%', IteratorGoblin),
             'jennyfer': (r'jennyfer', JennyferGoblin),
             'katherinehamilton': (r'katherinehamilton', KatherineHamiltonGoblin),
+            'koton': (r'koton|ktnimg', KotonGoblin),
             'lepetittrou': (r'le-petit-trou', LePetitTrouGoblin),
             'lounge': (r'loungeunderwear', LoungeGoblin),
             'maisonclose': (r'maison-close', MaisonCloseGoblin),
@@ -160,5 +165,6 @@ handlers = {
             'womensecret': (r'womensecret', WomensSecretGoblin),
             'woodwood': (r'woodwood', WoodWoodGoblin),
             'yandy': (r'yandy(cdn)*', YandyGoblin),
-            'zalando': (r'zalando|ztat\.net|[A-Z0-9]+-[A-Z]\d{2}(@\d)*', ZalandoGoblin)
+            'zalando': (r'zalando|ztat\.net|[A-Z0-9]+-[A-Z]\d{2}(@\d)*', ZalandoGoblin),
+            'zara': (r'zara', ZaraGoblin)
             }

@@ -1,27 +1,26 @@
 # regex patterms amd misc
 
 regex_patterns = {
-    'filename': r'(/*[^/]+(\.\w+)*)$',
-    'link_pattern': r'<img.+src="[^" ;\']+|(https*://)*[^"\n \';]+\.(jpe*g|png|tiff*|gif|mp4|mov|flv)([^"\n \';]+)*',
-    # 'insta_media': r'https*://[^\?]+\.(jpg|mp4)[^ "]+',
-    # 'link_filter': r'(\.(jpe*g|png|tiff*|gif|mp4|mov|flv))|images*|photos*|uploads*',
+    'filename': r'(/?[^/]+(\.\w+)?)$',
+    'link_pattern': r'(<img[^<>]+src="[^" ;\']+)|((https?://)?[^"\n \';]+\.(jpe?g|png|tiff?|gif|mp4|mov|flv)([^"\n \';]+)?)',
     'query': r'((\?|&).+)$',
     'filetype': r'\.[A-Za-z0-9]+',
     'filetypes': r'\.(jpe*g|png|gif|mp4|web(p|m)|tiff*)',
     'tags': r'<[^>]+>',
-    'filter': r'\.(js|css|pdf)|favicon',
+    'filter': r'\.(js|css|pdf)|(fav)?icon',
     'insta_crop': r'/(s|p)\d{3}x\d{3}/'
 }
 
 format_patterns = [
-    r'(@|-|_)*((\d+x(\d+)*|(\d+)*x\d+))',
-    r'(-|_)*(large|big|thumb)(-|_)*',
+    r'(@|-|_)?(\d{3,4}x(\d{3,4})?|(\d{3,4})?x\d{3,4})',
+    r'(-|_)?(large|big|thumb)(-|_)?',
     r'c_fill,f_auto,g_north,h_\d+,q_auto:best,w_\d+/v1/',
     r'expanded_[a-z]+/',
     r'(\.|-)\d+w',
     # NOTE: \-e\d+ catches some dashed filenames by mistake, consider changing
     # r'\-e\d+'
-    r'/v/\d/.+\.webp$'
+    r'/v/\d/.+\.webp$',
+    r'w/\d+/'
 ]
 
 escape_to_ascii = {

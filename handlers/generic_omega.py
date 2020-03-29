@@ -18,24 +18,6 @@ class OmegaGoblin(MetaGoblin):
     def __str__(self):
         return 'generic goblin'
 
-    def custom_format(self, url):
-        '''
-        add, substitute, or remove elements from a filename/url pair
-        '''
-        if self.args['format'][0] == 'add':
-            return url + self.args['format'][1]
-        elif self.args['format'][0] == 'sub':
-            return re.sub(self.args['format'][1], self.args['format'][2], url)
-        elif self.args['format'][0] == 'rem':
-            return re.sub(self.args['format'][1], '', url)
-        elif self.args['format'][0] == 'auto':
-            url = self.sanitize(url)
-            if 'squarespace' in url:
-                url += '?format=original'
-        else:
-            pass
-        return url
-
     def find_links(self):
         '''
         extract media urls from html
@@ -48,7 +30,15 @@ class OmegaGoblin(MetaGoblin):
             self.collect(link)
 
     def run(self):
-        links = self.find_links()
+        if self.args['all']:
+            with open(os.path.join(os.getcwd(), self.args['local'])) as file:
+                links = set(file.read().splitlines())
+            for link in links:
+                if self.args['format']:
+                    link = self.user_format(link)
+                self.collect(link)
+        else:
+            links = self.find_links()
         self.loot()
         if not self.args['nodl'] and not self.args['noclean']:
             self.cleanup(self.path_main)

@@ -1,5 +1,4 @@
 import re
-import os
 from handlers.meta_goblin import MetaGoblin
 
 
@@ -22,17 +21,6 @@ class AlphaGoblin(MetaGoblin):
         super().__init__(args)
         self.clean=True
         self.image_pat = r'https*\:[^" \n]+media[^" \n]+\.jpe*g'
-
-    def upgrade(self, path, base):
-        '''
-        upgrade existing files
-        '''
-        # NOTE: unused
-        base = base.rstrip('/')
-        for file in os.listdir(path):
-            file = re.sub(r'\.(jpe*g|png)', '', file)
-            self.loot(f'{base}/media/catalog/product/{file[0]}/{file[1]}/{file}.jpg')
-            sleep(self.args['tickrate'])
 
     def run(self):
         if '.jpg' in self.args['url']:
