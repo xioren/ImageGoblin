@@ -17,9 +17,9 @@ class MetaGoblin(Parser):
             self.path_main = os.getcwd()
         else:
             self.path_main = os.path.join(os.getcwd(), 'goblin_loot', self.__str__().replace(' ', '_'))
-        self.headers = {True: {'User-Agent': 'GoblinTeam/1.3',
+        self.headers = {True: {'User-Agent': 'GoblinTeam/1.4',
                                'Accept-Encoding': 'gzip'},
-                        False: {'User-Agent': 'GoblinTeam/1.3'}}
+                        False: {'User-Agent': 'GoblinTeam/1.4'}}
         self.loot_tally = 0
         self.collection = set()
         if not self.args['nodl']:
@@ -57,7 +57,7 @@ class MetaGoblin(Parser):
 
     def toggle_collecton_type(self, reverse=False):
         '''
-        toggle collection type between sorted list and set
+        toggle collection type between list and set
         '''
         if type(self.collection) == set:
             self.collection = []
@@ -219,7 +219,7 @@ class MetaGoblin(Parser):
 
     def loot(self, save_loc=None, timeout=False):
         '''
-        front end for retrieve
+        retrieve collected links
         '''
         track = 0
         for link in self.collection:

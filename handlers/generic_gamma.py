@@ -1,7 +1,7 @@
 import re
 from handlers.meta_goblin import MetaGoblin
 
-# NOTE: scaling with q=100 gives higher quality; investigate.
+# NOTE: scaling with q=100 gives higher resolution; investigate.
 
 class GammaGoblin(MetaGoblin):
 
@@ -16,6 +16,7 @@ class GammaGoblin(MetaGoblin):
         - boux avenue
         - etam
         - hunkemoller
+        - marlies dekkers
         - sandro
         - springfield
         - womens secret

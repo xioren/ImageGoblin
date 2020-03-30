@@ -47,6 +47,7 @@ from handlers.lounge import LoungeGoblin
 from handlers.maison_lejaby import MaisonLejabyGoblin
 from handlers.maison_close import MaisonCloseGoblin
 from handlers.mango import MangoGoblin
+from handlers.marlies_dekkers import MarliesDekkersGoblin
 from handlers.massimodutti import MassimoDuttiGoblin
 from handlers.missguided import MissguidedGoblin
 from handlers.nasty_gal import NastyGalGoblin
@@ -135,6 +136,7 @@ handlers = {
             'maisonclose': (r'maison-close', MaisonCloseGoblin),
             'maisonlejaby': (r'maisonlejaby', MaisonLejabyGoblin),
             'mango': (r'mango|mngbcn', MangoGoblin),
+            'marliesdekkers': (r'marliesdekkers', MarliesDekkersGoblin),
             'massimodutti': (r'massimodutti', MassimoDuttiGoblin),
             'missguided': (r'missguided', MissguidedGoblin),
             'nastygal': (r'nastygal|i\d.adis.ws', NastyGalGoblin),
