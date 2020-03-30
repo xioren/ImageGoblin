@@ -5,7 +5,8 @@ from handlers.meta_goblin import MetaGoblin
 class AlphaGoblin(MetaGoblin):
 
     '''
-    for: media/catalog variants
+    handles: Magento (media/catalog)
+    docs: https://docs.magento.com/m2/ee/user_guide/catalog/product-image-resizing.html
     accepts:
         - webpage
     generic back-end for:
@@ -23,7 +24,7 @@ class AlphaGoblin(MetaGoblin):
         self.image_pat = r'https*\:[^" \n]+media[^" \n]+\.jpe*g'
 
     def run(self):
-        if '.jpg' in self.args['url']:
+        if 'media/catalog' in self.args['url']:
             links = []
             if not self.args['silent']:
                 print(f'[{self.__str__()}] <WARNING> url type not supported')

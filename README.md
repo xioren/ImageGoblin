@@ -1,5 +1,6 @@
 # web goblin by xioren v1.4
 
+**Note: this is a personal project not intended for use**
 
 ### changelog v1.4:
   + significant reworking and optimizations
@@ -30,13 +31,13 @@
     https://website.com/uploads/image_01.jpg
 
     *sub _modifier_ _replacement_:*
-    inputting: '--format sub \\?=\w+ ?=large'
+    inputting: '--format sub \\?size=\w+ ?size=large'
 
-    https://website.com/uploads/image_01.jpg?=cropped
+    https://website.com/uploads/image_01.jpg?size=cropped
 
     becomes
 
-    https://website.com/uploads/image_01.jpg?=large
+    https://website.com/uploads/image_01.jpg?size=large
 
 + *iterate:* when provided a url to a single file (usually an image), the program will try to download that file and all other files with the same url structure that are on the server (but not necessarily displayed on the website). the iterable needs to be surrounded by '%%%' on either side when input to indicate the portion of the url to be iterated.
 
@@ -58,7 +59,7 @@
 
     etc...
 
-+ *instagram:* this is an instagram specific mode with partial support. for now, the program will only parse the html of an instagram page that is saved to a txt file. the file should be named 'html.txt' and placed in the directory that this program is ran from. this mode will take a while to complete. the url to the instagram page or username need to be input when ran.
++ *instagram:* partial support. for now, this handler will only parse the html of an instagram page that is saved to a txt file. the file should be named 'html.txt' and placed in the directory that this program is ran from. this handler will take a while to complete. the url to the instagram page or username need to be input when ran.
 
 *misc:*
   + for the generic handler, inputting '-f auto' as an option will try to remove some common cropping patterns from image urls.

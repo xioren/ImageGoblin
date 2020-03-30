@@ -32,6 +32,7 @@ from handlers.fredericks import FredericksGoblin
 from handlers.free_people import FreePeopleGoblin
 from handlers.generic_omega import OmegaGoblin
 from handlers.getty import GettyGoblin
+from handlers.guess import GuessGoblin
 from handlers.h_and_m import HMGoblin
 from handlers.hungry import HungryGoblin
 from handlers.hunkemoller import HunkemollerGoblin
@@ -119,6 +120,7 @@ handlers = {
             'freepeople': (r'freepeople', FreePeopleGoblin),
             'generic': ('#####', OmegaGoblin),
             'getty': (r'gettyimages', GettyGoblin),
+            'geuss': (r'guess(-img)?', GuessGoblin),
             'h&m': (r'hm\.com', HMGoblin),
             'hungry': ('#####', HungryGoblin),
             'hunkemoller': (r'hunkemoller', HunkemollerGoblin),

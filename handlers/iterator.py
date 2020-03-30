@@ -24,8 +24,9 @@ class IteratorGoblin(MetaGoblin):
         '''
         return re.split('%%%', url)
 
-    # IDEA: instead of hard coding 100, maybe use double timeout value.
-    # TODO: add reverse?
+    # IDEA: instead of hard coding 50, maybe use dynamic value.
+    # possibly based on timeout value.
+    # TODO: add reverse.
     def generate_links(self, base, iterable, end):
         stripped_iter = int(iterable.lstrip('0'))
         for n in range(stripped_iter, stripped_iter + 50, self.args['increment']):
