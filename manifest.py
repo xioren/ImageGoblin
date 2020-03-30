@@ -79,6 +79,7 @@ from handlers.wolford import WolfordGoblin
 from handlers.womens_secret import WomensSecretGoblin
 from handlers.wood_wood import WoodWoodGoblin
 from handlers.yandy import YandyGoblin
+from handlers.yargici import YargiciGoblin
 from handlers.zalando import ZalandoGoblin
 from handlers.zara import ZaraGoblin
 
@@ -165,6 +166,7 @@ handlers = {
             'womensecret': (r'womensecret', WomensSecretGoblin),
             'woodwood': (r'woodwood', WoodWoodGoblin),
             'yandy': (r'yandy(cdn)*', YandyGoblin),
+            'yargici': (r'yargici', YargiciGoblin),
             'zalando': (r'zalando|ztat\.net|[A-Z0-9]+-[A-Z]\d{2}(@\d)*', ZalandoGoblin),
             'zara': (r'zara', ZaraGoblin)
             }

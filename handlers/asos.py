@@ -76,7 +76,7 @@ class ASOSGoblin(MetaGoblin):
             for n in range(id, id + 100):
                 self.collect(self.form_url(n))
         else:
-            for n in range(id - 100, id):
+            for n in range(id - 1, id - 100, -1):
                 self.collect(self.form_url(n))
 
 
@@ -98,13 +98,14 @@ class ASOSGoblin(MetaGoblin):
                     break
                 sleep(self.args['tickrate'])
             for n in range(2, 5):
-                self.collect(self.form_url(f'{id}-{n}', True))
+                self.collect(self.form_url(f'{id}-{n}'))
             self.move_file(self.path_scanned, self.path_backup, file)
 
     def scan(self):
         '''
         find other images using supplied images or urls
         '''
+        self.toggle_collecton_type()
         colors = set()
         if self.args['url']:
             files = [self.args['url']]
@@ -125,11 +126,9 @@ class ASOSGoblin(MetaGoblin):
                 continue
             print(f'[{self.__str__()}] <scanning> {id}')
             self.generate_links(id, '+')
-            self.toggle_collecton_type()
             self.loot(save_loc=self.path_scanned, timeout=15)
             self.new_collection()
             self.generate_links(id, '-')
-            self.toggle_collecton_type(reverse=True)
             self.loot(save_loc=self.path_scanned, timeout=15)
             self.move_file(self.path_main, self.path_backup, file)
         print(f'[{self.__str__()}] <exporting colors>')

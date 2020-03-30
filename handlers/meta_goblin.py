@@ -61,12 +61,9 @@ class MetaGoblin(Parser):
         toggle collection type between sorted list and set
         '''
         if type(self.collection) == set:
-            if reverse:
-                self.collection = reversed(sorted(list(self.collection)))
-            else:
-                self.collection = sorted(list(self.collection))
+            self.collection = []
         else:
-            self.collection = set(self.collection)
+            self.collection = {}
 
     def grab_vid(self, url):
         '''
@@ -203,7 +200,10 @@ class MetaGoblin(Parser):
         '''
         initialize a new collection
         '''
-        self.collection = set()
+        if type(self.collection) == set:
+            self.collection = {}
+        else:
+            self.collection = []
 
     def collect(self, url, filename='', clean=False):
         '''
@@ -213,7 +213,10 @@ class MetaGoblin(Parser):
             url = self.sanitize(url)
         if not filename:
             filename = self.extract_filename(url)
-        self.collection.add(f'{self.finalize(url)}-break-{filename}')
+        if type(self.collection) == set:
+            self.collection.add(f'{self.finalize(url)}-break-{filename}')
+        else:
+            self.collection.append(f'{self.finalize(url)}-break-{filename}')
 
     def loot(self, save_loc=None, timeout=False):
         '''

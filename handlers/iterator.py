@@ -3,6 +3,7 @@ import re
 from time import sleep
 from handlers.meta_goblin import MetaGoblin
 
+# TODO: implement natural sorting
 
 class IteratorGoblin(MetaGoblin):
 
@@ -27,22 +28,22 @@ class IteratorGoblin(MetaGoblin):
     # TODO: add reverse?
     def generate_links(self, base, iterable, end):
         stripped_iter = int(iterable.lstrip('0'))
-        for n in range(stripped_iter, stripped_iter + 20, self.args['increment']):
+        for n in range(stripped_iter, stripped_iter + 50, self.args['increment']):
             self.collect(f'{base}{str(n).zfill(len(iterable))}{end}')
 
     def increment_iterable(self, iterable):
-        return str(int(iterable.lstrip('0')) + 20).zfill(len(iterable))
+        return str(int(iterable.lstrip('0')) + 50).zfill(len(iterable))
 
     def iterate(self):
         '''
         re-forms url and iterates (mode 3)
         '''
+        self.toggle_collecton_type()
         round = 1
         base, iterable, end = self.extract_iterable(self.args['url'])
         while True:
             print(f'[{self.__str__()}] <iterating> round {round}')
             self.generate_links(base, iterable, end)
-            self.toggle_collecton_type()
             attempt = self.loot(timeout=self.args['timeout'])
             if attempt:
                 round += 1

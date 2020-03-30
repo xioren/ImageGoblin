@@ -1,6 +1,7 @@
 import re
 from handlers.meta_goblin import MetaGoblin
 
+# NOTE: may work for trendyol
 
 class EpsilonGoblin(MetaGoblin):
 
@@ -12,13 +13,14 @@ class EpsilonGoblin(MetaGoblin):
         - webpage
     generic back-end for:
         - koton
+        - yargici
     '''
 
     def __init__(self, args):
         super().__init__(args)
 
     def clean(self, url):
-        return re.sub(r'mnresize/\d+/\d+', '', url)
+        return re.sub(r'mnresize/\d+/\d+', '', self.custom(url))
 
     def run(self):
         if 'mncdn' in self.args['url']:
@@ -26,7 +28,8 @@ class EpsilonGoblin(MetaGoblin):
         else:
             links = self.extract_links(self.img_pat, self.args['url'])
         for link in links:
-            base, end = re.split(self.id_pat, self.clean(link))
+            base, _ = re.split(self.id_pat, self.clean(link))
+            self.generate_ids(link)
             for id in self.ids:
-                self.collect(f'{base}{id}{end}')
+                self.collect(f'{base}{id}{self.end}')
         self.loot()

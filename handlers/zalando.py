@@ -61,10 +61,10 @@ class ZalandoGoblin(MetaGoblin):
         '''
         scan for images
         '''
+        self.toggle_collecton_type()
         id = self.extract_id(self.args['url'])
         for n in range(1, 50):
             self.collect(self.form_url(f'{id}@{n}'))
-        self.toggle_collecton_type()
 
     def find_more(self):
         '''
