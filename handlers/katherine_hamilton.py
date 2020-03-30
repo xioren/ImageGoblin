@@ -13,6 +13,7 @@ class KatherineHamiltonGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
+        self. ids = ('', '-front', '-back', '-side', '-set', '-fton', '-open', '-fron-1')
 
     def __str__(self):
         return 'katherine hamilton goblin'
@@ -25,6 +26,6 @@ class KatherineHamiltonGoblin(MetaGoblin):
             links = self.extract_links(r'https*[^" \n]+\.jpg', self.args['url'])
         for link in links:
             link = re.sub(r'(-front|-back)*(\d+x\d+)*\.jpg', '', link).strip('-')
-            for view in ('', '-front', '-back', '-side', '-set', '-fton', '-open', '-fron-1'):
-                self.collect(f'{link}{view}.jpg')
+            for id in self.ids:
+                self.collect(f'{link}{id}.jpg')
         self.loot()

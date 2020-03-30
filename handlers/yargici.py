@@ -6,7 +6,7 @@ class YargiciGoblin(EpsilonGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.id_pat = r'\d{8}'
+        self.mod_pat = r'\d{8}'
         self.end = '_0.jpeg'
         self.img_pat = r'https://img-incommerce-yargici\.mncdn[^" ]+\.jpg'
 
@@ -17,5 +17,5 @@ class YargiciGoblin(EpsilonGoblin):
         return url.replace('Thumbs', 'Originals')
 
     def generate_ids(self, url):
-        id = int(re.search(self.id_pat, url).group())
-        self.ids = [i for i in range(id - 7, id + 7)]
+        id = int(re.search(self.mod_pat, url).group())
+        self.modifiers = [i for i in range(id - 7, id + 7)]

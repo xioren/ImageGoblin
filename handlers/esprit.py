@@ -10,5 +10,5 @@ class EspritGoblin(BetaGoblin):
         return 'esprit goblin'
 
     def identify(self, link):
-        self.chars = [n for n in range(10, 20)]
+        self.modifiers = [n for n in range(10, 20)]
         return 'https://esprit.scene7.com/is/image/esprit/', '?fmt=jpeg&qlt=100&scl=1'

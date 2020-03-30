@@ -30,9 +30,6 @@ class WolfordGoblin(MetaGoblin):
             links = []
             if not self.args['silent']:
                 print(f'[{self.__str__()}] <WARNING> url type not supported')
-            # html = self.get_html(self.args['url'])
-            # links = {l.group() for l in re.finditer(r'https://www.wolfordshop.com/on/demandware.static[^" ]+\.JPG', html)}
-            # videos = {v.group() for v in re.finditer(r'https://player\.vimeo\.com/video/\d+', html)}
         for link in links:
             link = self.prep(link)
             if 'Additional-Picture' in link:
@@ -41,8 +38,4 @@ class WolfordGoblin(MetaGoblin):
                     self.collect(f'{link}{n}.JPG')
             else:
                 self.collect(link)
-            # if not self.args['nodl']:
-            #     for video in videos:
-            #         self.grab_vid(video)
-                    # sleep(self.args['tickrate'])
         self.loot()

@@ -10,7 +10,7 @@ class UrbanOutfittersGoblin(BetaGoblin):
         return 'urban outfitters goblin'
 
     def identify(self, link):
-        self.chars = ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', '0')
+        self.modifiers = ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', '0')
         if 'UrbanOutfittersEU' in link:
             return 'https://s7g10.scene7.com/is/image/UrbanOutfittersEU/'
         else:

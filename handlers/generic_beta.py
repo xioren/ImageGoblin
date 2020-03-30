@@ -43,8 +43,8 @@ class BetaGoblin(MetaGoblin):
                 continue
             base = self.identify(link)
             id = self.extract_id(link)
-            for char in self.chars:
-                self.collect(f'{base}{id}_{char}{self.query}')
+            for mod in self.modifiers:
+                self.collect(f'{base}{id}_{mod}{self.query}')
         self.loot()
         if not self.args['nodl'] and not self.args['noclean']:
             self.cleanup(self.path_main)

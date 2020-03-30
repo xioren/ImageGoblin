@@ -28,8 +28,8 @@ class EpsilonGoblin(MetaGoblin):
         else:
             links = self.extract_links(self.img_pat, self.args['url'])
         for link in links:
-            base, _ = re.split(self.id_pat, self.clean(link))
-            self.generate_ids(link)
-            for id in self.ids:
-                self.collect(f'{base}{id}{self.end}')
+            base, _ = re.split(self.mod_pat, self.clean(link))
+            self.generate_modifiers(link)
+            for mod in self.modifiers:
+                self.collect(f'{base}{mod}{self.end}')
         self.loot()

@@ -10,5 +10,5 @@ class AnthropologieGoblin(BetaGoblin):
         return 'anthropologie goblin'
 
     def identify(self, link):
-        self.chars = ('b', 'b2', 'b3', 'b4', 'b4', 'c', 'c2', 'c3', 'c4', 'c5')
+        self.modifiers = ('b', 'b2', 'b3', 'b4', 'b4', 'c', 'c2', 'c3', 'c4', 'c5')
         return 'https://s7d5.scene7.com/is/image/Anthropologie/'

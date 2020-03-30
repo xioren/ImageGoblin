@@ -26,7 +26,7 @@ class OmegaGoblin(MetaGoblin):
         cleaned_links = [re.sub(r'<img.+src="', '', link) for link in links]
         for link in cleaned_links:
             if self.args['format']:
-                link = self.custom_format(link)
+                link = self.user_format(link)
             self.collect(link)
 
     def run(self):

@@ -21,9 +21,9 @@ class DeltaGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.ids = ('_1_1_', '_2_1_', '_2_2_', '_2_3_',
-                    '_2_4_', '_2_5_', '_2_6_', '_2_7_',
-                    '_2_8_', '_2_9_', '_4_1_', '_6_1_')
+        self.modifiers = ('_1_1_', '_2_1_', '_2_2_', '_2_3_',
+                          '_2_4_', '_2_5_', '_2_6_', '_2_7_',
+                          '_2_8_', '_2_9_', '_4_1_', '_6_1_')
 
     def clean(self, url):
         return re.sub(r'&imwidth=\d+', '', url)
@@ -35,6 +35,6 @@ class DeltaGoblin(MetaGoblin):
             links = self.extract_links(r'https*://static[^"]+\.jpe*g', self.args['url'])
         for link in links:
             base, end = re.split(r'_\d_\d_\d+', link)
-            for id in self.ids:
-                self.collect(self.decrop(f'{base}{id}{self.size}{self.clean(end)}'))
+            for mod in self.modifiers:
+                self.collect(self.decrop(f'{base}{mod}{self.size}{self.clean(end)}'))
         self.loot()
