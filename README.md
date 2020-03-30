@@ -14,7 +14,7 @@
 
 ### operation:
 
-+ *default:* inputting either a url or a text file with links will try to match the link(s) to a specific handler. the handler will download what images is can accord to its rule set. if no handler is matched a generic handler is used. if a text file is used, only the filename should be input and the file shouled be placed in the directory that the program will be ran from.
++ *default:* inputting either a url or a text file with links will try to match the link(s) to a specific handler. the handler will download what images is can accord to its rule set. if no handler is matched a generic handler is used. if a text file is used, only the filename should be input, using the --local argument and the file should be placed in the directory that the program will be ran from.
 
 + *generic:* for any site without a specific handler. greedy. strings can be added, substituted, or removed using a _modifier_. input the _modifier_ as the format argument. 'add _modifier_' will append the modifier to the end of the url; for example a query string. 'sub _modifier_ _replacement_' substitutes, while 'rem _modifier_' removes.
 

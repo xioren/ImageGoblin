@@ -7,7 +7,6 @@ from io import DEFAULT_BUFFER_SIZE
 from urllib.request import urlopen, Request
 from urllib.error import HTTPError, URLError
 from parsing import Parser
-from meta_sources import *
 
 
 class MetaGoblin(Parser):

@@ -135,54 +135,6 @@ class ASOSGoblin(MetaGoblin):
         self.write_file(colors, os.path.join(self.path_main, 'colors.txt'), iter=True)
         print(f'[{self.__str__()}] <scanning complete>')
 
-    def duplicate_check():
-        '''
-        check for and remove_file duplicates
-        '''
-        duplicates = 0
-        ids = set()
-        for path in sources['asos']:
-            for file in os.listdir(path):
-                if file == 'need_color':
-                    continue
-                ids.add(self.extract_id(file))
-        for file in os.listdir(self.path_main):
-            if os.path.isdir(os.path.join(self.path_main, file)):
-                continue
-            if re.search(self.extract_id(file)) in ids:
-                self.move_file(self.path_main, self.path_backup, file)
-                duplicates += 1
-        print(f'[{self.__str__()}] <{duplicates} duplicates removed>')
-
-    def sort_colors(self):
-        '''
-        sort color text file
-        '''
-        path = '/media/veracrypt1/M/misc/brands/asos_colors.txt'
-        path_temp = '/media/veracrypt1/M/misc/brands/asos_colors_temp.txt'
-        colors = sorted(set(self.read_file(path, True)))
-        self.write_file(colors, path_temp, iter=True)
-        os.remove(path)
-        os.rename(path_temp, path)
-
-    def color_match(self, path):
-        '''
-        try to identify correct color for missing files
-        '''
-        files = set()
-        print(f'[{self.__str__()}] <attempting to match correct color>')
-        # QUESTION: does jpg or jpeg make a difference with the slicing? consider \d+ re.
-        for file in os.listdir(path):
-            if '-2' in file:
-                files.add(file[:-7])
-        colors = self.read_file(os.path.join(self.path_main, 'colors.txt'), True)
-        for file in files:
-            for color in colors:
-                attempt = loot(f'{url}{item}-1-{color[:-1]}{query}', self.path_main)
-                if attempt:
-                    break
-                sleep(self.args['tickrate'])
-
     def run(self):
         # TODO: expand
         if self.args['mode'] == 'upgrade':
