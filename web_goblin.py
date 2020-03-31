@@ -18,11 +18,9 @@ parser.add_argument('-r', '--rate', help='program tickrate (n)', type=float, def
 parser.add_argument('-l', '--local', help='filename of local text file containing links')
 parser.add_argument('--force', help='force a specific handler')
 parser.add_argument('--list', help='list available handlers', action='store_true')
-parser.add_argument('--nosort', help='download directly to current directory, without creating a sub dirs',
+parser.add_argument('--nodirs', help='download directly to current directory, without creating sub dirs',
                     action='store_true')
 parser.add_argument('--noclean', help='do not remove small files',
-                    action='store_true')
-parser.add_argument('--all', help='consume all links at once',
                     action='store_true')
 parser.add_argument('--feed', help='input links one at a time',
                     action='store_true')
@@ -34,8 +32,8 @@ args = parser.parse_args()
 args_dict = {'url': args.url, 'mode': args.mode, 'timeout': args.timeout,
              'format': args.format, 'increment': args.increment, 'nodl': args.nodl,
              'silent': args.silent, 'tickrate': args.rate, 'local': args.local,
-             'handler': args.force, 'list': args.list, 'nosort': args.nosort,
-             'noclean': args.noclean, 'all': args.all, 'feed': args.feed,
+             'handler': args.force, 'list': args.list, 'nodirs': args.nodirs,
+             'noclean': args.noclean, 'feed': args.feed,
              'verbose': args.verbose}
 
 

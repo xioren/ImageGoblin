@@ -6,7 +6,6 @@ from handlers.meta_goblin import MetaGoblin
 
 
 # NOTE: video format: https://mosaic04.ztat.net.vgs.content/08/12/1C/0I/6Q/11/VIDEO/HIGH_QUALITY/1572009797216.mp4
-# TODO: make conform to verbose rules
 
 
 class ZalandoGoblin(MetaGoblin):
@@ -95,4 +94,3 @@ class ZalandoGoblin(MetaGoblin):
         else:
             self.scan()
             self.loot(timeout=8)
-        print(f'[{self.__str__()}] <looted> {self.loot_tally} files')

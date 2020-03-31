@@ -21,6 +21,7 @@ class DeltaGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
+        self.link_pat = r'https*://static[^"]+\.jpe*g'
         self.modifiers = ('_1_1_', '_2_1_', '_2_2_', '_2_3_',
                           '_2_4_', '_2_5_', '_2_6_', '_2_7_',
                           '_2_8_', '_2_9_', '_4_1_', '_6_1_')
@@ -32,7 +33,7 @@ class DeltaGoblin(MetaGoblin):
         if '.jpg' in self.args['url']:
             links = [self.args['url']]
         else:
-            links = self.extract_links(r'https*://static[^"]+\.jpe*g', self.args['url'])
+            links = self.extract_links(self.link_pat, self.args['url'])
         for link in links:
             base, end = re.split(r'_\d_\d_\d+', link)
             for mod in self.modifiers:

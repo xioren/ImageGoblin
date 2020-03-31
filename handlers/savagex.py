@@ -12,6 +12,7 @@ class SavageXGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
+        self.link_pat = r'https*://[^" \n]+\d\-800x800.jpg'
 
     def __str__(self):
         return 'savagex goblin'
@@ -23,7 +24,7 @@ class SavageXGoblin(MetaGoblin):
         if 'cdn.savagex' in self.args['url']:
             links = [self.args['url']]
         else:
-            links = self.extract_links(r'https*://[^" \n]+\d\-800x800.jpg', self.args['url'])
+            links = self.extract_links(self.link_pat, self.args['url'])
         for link in links:
             for n in range(1, 5):
                 self.collect(self.strip(link) + f'{n}-1600x1600.jpg')

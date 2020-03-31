@@ -12,6 +12,7 @@ class GettyGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
+        self.link_pat = r'https*[^"]+id\d+'
 
     def __str__(self):
         return 'getty goblin'
@@ -22,9 +23,10 @@ class GettyGoblin(MetaGoblin):
 
     def run(self):
         if 'media' in self.args['url']:
+            # NOTE: does not scan
             self.loot(self.upgrade(self.args['url']))
         else:
-            links = self.extract_links(r'https*[^"]+id\d+', self.args['url'])
+            links = self.extract_links(self.link_pat, self.args['url'])
             for link in links:
                 self.collect(self.upgrade(link))
         self.loot()

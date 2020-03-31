@@ -1,6 +1,5 @@
 import re
-from urllib.parse import urlparse
-from strings import *
+from urllib.parse import urlparse, unquote
 
 
 class Parser:
@@ -8,13 +7,31 @@ class Parser:
     '''
     generic parsing methods
     '''
+    def __init__(self):
+        self.filename_pat = r'(/?[^/]+(\.\w+)?)$'
+        self.query_pat = r'((\?|&).+)$'
+        self.filetype_pat = r'\.[A-Za-z0-9]+'
+        self.filetypes = r'\.(jpe?g|png|gif|mp4|web(p|m)|tiff?)'
+        self.tag_pat = r'<[^>]+>'
+        self.filter_pat = r'\.(js|css|pdf)|(fav)?icon|logo|menu'
+        self.cropping_pats = [
+            r'(@|-|_)?(\d{3,4}x(\d{3,4})?|(\d{3,4})?x\d{3,4})',
+            r'(-|_)?(large|big|thumb)(-|_)?',
+            r'c_fill,f_auto,g_north,h_\d+,q_auto:best,w_\d+/v1/',
+            r'expanded_[a-z]+/',
+            r'(\.|-)\d+w',
+            # NOTE: \-e\d+ catches some dashed filenames by mistake, consider changing
+            # r'\-e\d+'
+            r'/v/\d/.+\.webp$',
+            r'w/\d+/'
+        ]
 
     def extract_filename(self, url):
         '''
         extracts filename from url
         '''
         try:
-            return re.sub(regex_patterns['filetype'], '', re.search(regex_patterns['filename'], self.dequery(url)).group().strip('/'))
+            return re.sub(self.filetype_pat, '', re.search(self.filename_pat, self.dequery(url)).group().strip('/'))
         except AttributeError:
             return 'image'
 
@@ -22,7 +39,7 @@ class Parser:
         '''
         removes common cropping from url
         '''
-        for pat in format_patterns:
+        for pat in self.cropping_pats:
             url = re.sub(pat, '', url)
         return url
 
@@ -30,7 +47,7 @@ class Parser:
         '''
         remove query string from url
         '''
-        return re.sub(regex_patterns['query'], '', url)
+        return re.sub(self.query_pat, '', url)
 
     def sanitize(self, url):
         '''
@@ -42,7 +59,7 @@ class Parser:
         '''
         extract file type
         '''
-        type = re.search(regex_patterns['filetypes'], url, re.IGNORECASE)
+        type = re.search(self.filetypes, url, re.IGNORECASE)
         if not type:
             return 'jpeg'
         return type.group().lstrip('.').replace('jpg', 'jpeg')
@@ -84,14 +101,6 @@ class Parser:
         '''
         return self.get_netloc(self.args['url']) + relative
 
-    def unescape(self, url):
-        '''
-        substitute escape characters for ascii counterparts
-        '''
-        for key in escape_to_ascii:
-            if key in url:
-                url = url.replace(key, escape_to_ascii[key])
-        return url
 
     def finalize(self, url):
         '''
@@ -99,7 +108,7 @@ class Parser:
         '''
         if self.is_relative(url):
             url = self.make_absolute(url)
-        return self.add_scheme(self.unescape(url.strip('/')))
+        return self.add_scheme(unquote(url.strip('/')))
 
     def make_unique(self, filename):
         '''
@@ -127,6 +136,9 @@ class Parser:
             url = self.sanitize(url)
             if 'squarespace' in url:
                 url += '?format=original'
+            if 'wix' in url:
+                url = re.sub(r'\.jpg.+$', '', url) + '.jpg'
         else:
-            pass
+            if not self.args['silent']:
+                print(f'[{self.__str__()}] <WARNING> unknown format')
         return url

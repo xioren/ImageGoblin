@@ -11,6 +11,7 @@ class InstagramGoblin(MetaGoblin):
         self.username = self.extract_username(self.args['url'])
         self.html_local = os.path.join(os.getcwd(), 'html.txt')
         self.sub_dir = os.path.join(self.path_main, self.username)
+        self.link_patr = r'https*://scontent[^"\n \']+'
         self.make_dirs(self.sub_dir)
 
     def __str__(self):
@@ -45,7 +46,7 @@ class InstagramGoblin(MetaGoblin):
         opens links from iterable and parses for media
         '''
         for post in posts:
-            content = self.extract_links(r'https*://scontent[^"\n \']+', f'https://www.instagram.com{post}')
+            content = self.extract_links(self.link_pat, f'https://www.instagram.com{post}')
             for link in content:
                 if re.search(r'\d{3}x\d{3}', link):
                     continue

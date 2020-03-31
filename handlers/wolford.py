@@ -1,20 +1,20 @@
 import re
 from handlers.generic_omega import MetaGoblin
 
-# NOTE: can use gamma goblin but has no real conistancy with filenames or urls formats
+# NOTE: can use gamma goblin but has no real conistancy with filenames or urls
 
 class WolfordGoblin(MetaGoblin):
 
     '''
     accepts:
-        - url
+        - image
     '''
 
     def __init__(self, args):
         super().__init__(args)
         self.modifiers = ('1', '2', '3', '4')
         self.pattern = r'\d+_\d+_'
-        # NOTE: this seems season specific, does it change?
+        # QUESTION: this appears season specific, does it change?
         self.base = 'https://www.wolfordshop.com/on/demandware.static/-/Sites-wolfordb2c-catalog/default/SS20/'
 
     def __str__(self):

@@ -1,11 +1,14 @@
-# web goblin v1.4 by xioren
+# web goblin v1.5 by xioren
 
 **Note: this is a personal project not intended for use**
 
-### changelog v1.4:
-  + significant reworking and optimizations
-  + added collect method to prevent duplicate links, greatly improving program completion time
-  + rework of gamma goblin to be accommodate a greater variety of url formats
+### changelog v1.5:
+  + homogenize variable names
+  + removed --all argument
+  + modified hungry goblin behavior
+  + removed strings module
+  + new handlers
+  + removed unused handlers
   + code cleanup
   + bug fixes
 
@@ -59,7 +62,9 @@
 
     etc...
 
-+ *instagram:* partial support. for now, this handler will only parse the html of an instagram page that is saved to a txt file. the file should be named 'html.txt' and placed in the directory that this program is ran from. this handler will take a while to complete. the url to the instagram page or username need to be input when ran.
++ *instagram:* partial support. for now, this handler will only parse the html of an instagram page that is saved to a txt file. the file should be named 'html.txt' and placed in the directory that this program is ran from. this handler will take a while to complete. the url to the instagram page or username needs to be input when ran.
+
++ *feed* using the feed argument, you can accumulate urls by inputting them one by one using the --feed mode. this is useful for accumulating urls as you find them while browsing the web, and downloading all at once.   
 
 *misc:*
   + for the generic handler, inputting '-f auto' as an option will try to remove some common cropping patterns from image urls.

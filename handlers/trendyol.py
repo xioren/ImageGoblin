@@ -14,6 +14,7 @@ class TrendyolGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
+        self.link_pat = r'https://img-trendyol\.mncdn\.com/Assets/ProductImages/\w+/\w+/[^" ,]+\.jpg'
 
     def __str__(self):
         return 'trandyol goblin'
@@ -25,7 +26,7 @@ class TrendyolGoblin(MetaGoblin):
         if 'img-trendyol' in self.args['url']:
             links = [self.args['url']]
         else:
-            links = self.extract_links(r'https://img-trendyol\.mncdn\.com/Assets/ProductImages/\w+/\w+/[^" ,]+\.jpg', self.args['url'])
+            links = self.extract_links(self.link_pat, self.args['url'])
         for link in links:
             base = self.extract_base(link)
             for n in range(1, 16):

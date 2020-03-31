@@ -12,14 +12,15 @@ from parsing import Parser
 class MetaGoblin(Parser):
 
     def __init__(self, args):
+        super().__init__()
         self.args = args
-        if self.args['nosort']:
+        if self.args['nodirs']:
             self.path_main = os.getcwd()
         else:
             self.path_main = os.path.join(os.getcwd(), 'goblin_loot', self.__str__().replace(' ', '_'))
-        self.headers = {True: {'User-Agent': 'GoblinTeam/1.4',
+        self.headers = {True: {'User-Agent': 'GoblinTeam/1.5',
                                'Accept-Encoding': 'gzip'},
-                        False: {'User-Agent': 'GoblinTeam/1.4'}}
+                        False: {'User-Agent': 'GoblinTeam/1.5'}}
         self.loot_tally = 0
         self.collection = set()
         if not self.args['nodl']:
@@ -43,17 +44,19 @@ class MetaGoblin(Parser):
         default 50kb threshold
         '''
         # NOTE:  dangerous, consider recieving file manifest instead?
-        for file in os.listdir(path):
-            filepath = os.path.join(path, file)
-            if os.path.isdir(filepath):
-                continue
-            if os.path.getsize(filepath) < 50000:
-                try:
-                    os.remove(filepath)
-                except PermissionError as e:
-                    if self.args['verbose'] and not self.args['silent']:
-                        print(f'[{self.__str__()}] <{e}> {filepath}')
+        # TEMP: restrict usage to only the directories created by this app
+        if not self.args['nodirs']:
+            for file in os.listdir(path):
+                filepath = os.path.join(path, file)
+                if os.path.isdir(filepath):
                     continue
+                if os.path.getsize(filepath) < 50000:
+                    try:
+                        os.remove(filepath)
+                    except PermissionError as e:
+                        if self.args['verbose'] and not self.args['silent']:
+                            print(f'[{self.__str__()}] <{e}> {filepath}')
+                        continue
 
     def toggle_collecton_type(self, reverse=False):
         '''
@@ -64,6 +67,15 @@ class MetaGoblin(Parser):
         else:
             self.collection = {}
 
+    def new_collection(self):
+        '''
+        initialize a new collection
+        '''
+        if type(self.collection) == set:
+            self.collection = {}
+        else:
+            self.collection = []
+
     def grab_vid(self, url):
         '''
         download a video in best quality, primarily for vimeo
@@ -71,7 +83,16 @@ class MetaGoblin(Parser):
         filename = self.extract_filename(url)
         os.system(f'youtube-dl --output {self.path_main}/{filename} {url}')
 
+    def filter(self, iterable):
+        '''
+        remove duplicates from a list
+        '''
+        return set(iterable)
+
     def unzip(self, data):
+        '''
+        gzip decompression
+        '''
         try:
             return decompress(data)
         except OSError:
@@ -189,21 +210,6 @@ class MetaGoblin(Parser):
                 print(f'[{self.__str__()}] <{e}>')
             return ''
 
-    def filter(self, iterable):
-        '''
-        remove duplicates from a list
-        '''
-        return set(iterable)
-
-    def new_collection(self):
-        '''
-        initialize a new collection
-        '''
-        if type(self.collection) == set:
-            self.collection = {}
-        else:
-            self.collection = []
-
     def collect(self, url, filename='', clean=False):
         '''
         finalize and add links to collection
@@ -246,5 +252,5 @@ class MetaGoblin(Parser):
             else:
                 track += 1
             sleep(self.args['tickrate'])
-        print(f'[{self.__str__()}] <looted> {self.loot_tally} files')
+        print(f'[{self.__str__()}] <looted> {self.loot_tally} file(s)')
         return True

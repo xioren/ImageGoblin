@@ -63,7 +63,6 @@ from handlers.simone_perele import SimonePereleGoblin
 from handlers.skin import SkinGoblin
 from handlers.springfield import SpringfieldGoblin
 from handlers.ssense import SsenseGoblin
-from handlers.stockholmsgruppen import StockholmsgruppenGoblin
 from handlers.stradivarius import StradivariusGoblin
 from handlers.tally_weijl import TallyWeijlGoblin
 from handlers.the_great_eros import TheGreatErosGoblin
@@ -76,7 +75,6 @@ from handlers.underprotection import UnderprotectionGoblin
 from handlers.urban_outfitters import UrbanOutfittersGoblin
 from handlers.victorias_secret import VictoriasSecretGoblin
 from handlers.vitamin_a import VitaminAGoblin
-from handlers.wix import WixGoblin
 from handlers.wolford import WolfordGoblin
 from handlers.womens_secret import WomensSecretGoblin
 from handlers.wood_wood import WoodWoodGoblin
@@ -131,7 +129,7 @@ handlers = {
             'jennyfer': (r'jennyfer', JennyferGoblin),
             'katherinehamilton': (r'katherinehamilton', KatherineHamiltonGoblin),
             'koton': (r'koton|ktnimg', KotonGoblin),
-            'lepetittrou': (r'le-petit-trou', LePetitTrouGoblin),
+            'lepetittrou': (r'le-petit-trou\.com', LePetitTrouGoblin),
             'lounge': (r'loungeunderwear', LoungeGoblin),
             'maisonclose': (r'maison-close', MaisonCloseGoblin),
             'maisonlejaby': (r'maisonlejaby', MaisonLejabyGoblin),
@@ -152,7 +150,6 @@ handlers = {
             'skin': (r'skinworldwide', SkinGoblin),
             'springfield': (r'myspringfield', SpringfieldGoblin),
             'ssense': (r'ssense(media)*', SsenseGoblin),
-            'stockholmsgruppen': (r'stockholmsgruppen', StockholmsgruppenGoblin),
             'stradivarius': (r'stradivarius', StradivariusGoblin),
             'tallyweijl': (r'tally-weijl', TallyWeijlGoblin),
             'thegreateros': (r'thegreateros', TheGreatErosGoblin),
@@ -165,7 +162,6 @@ handlers = {
             'urbanoutfitters':(r'urbanoutfitters(eu)*', UrbanOutfittersGoblin),
             'victoriassecret': (r'victoriassecret', VictoriasSecretGoblin),
             'vitaminaswim': (r'vitaminaswim', VitaminAGoblin),
-            'wix': (r'wix', WixGoblin),
             'wolford': (r'wolfordshop', WolfordGoblin),
             'womensecret': (r'womensecret', WomensSecretGoblin),
             'woodwood': (r'woodwood', WoodWoodGoblin),

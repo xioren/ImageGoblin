@@ -22,6 +22,7 @@ class BetaGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
+        self.link_pat = r'\w+\.scene7[^" \n]+'
         self.query = '?fmt=jpeg&qlt=100&scl=1'
 
     def extract_id(self, url):
@@ -37,7 +38,7 @@ class BetaGoblin(MetaGoblin):
         if 'scene7' in self.args['url']:
             links = [self.args['url']]
         else:
-            links = self.extract_links(r'\w+\.scene7[^" \n]+', self.args['url'])
+            links = self.extract_links(self.link_pat, self.args['url'])
         for link in links:
             if not self.correct_format(link):
                 continue

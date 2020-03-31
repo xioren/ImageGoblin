@@ -5,8 +5,6 @@ from handlers.meta_goblin import MetaGoblin
 class WoodWoodGoblin(MetaGoblin):
 
     '''
-    mode options:
-        -
     accepts:
         - image
     '''

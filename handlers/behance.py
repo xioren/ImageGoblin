@@ -1,9 +1,6 @@
 import re
-from time import sleep
 from handlers.meta_goblin import MetaGoblin
 
-# TODO: fix
-# QUESTION: keep this handler?
 
 class BehanceGoblin(MetaGoblin):
 
@@ -14,7 +11,7 @@ class BehanceGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.img_pat = r'https://mir-s3-cdn-cf.behance.net/project_modules/[\w/\.]+\.[A-Za-z]+'
+        self.link_pat = r'https://mir-s3-cdn-cf.behance.net/project_modules/[\w/\.]+\.[A-Za-z]+'
         self.size_pat = r'1400(_opt_1)*|max_1200|disp'
         self.sizes = ('max_3840', 'fs', '1400', 'max_1200', 'disp')
 
@@ -25,6 +22,7 @@ class BehanceGoblin(MetaGoblin):
         return re.sub(self.size_pat, size, self.args['url'])
 
     def run(self):
+        self.toggle_collecton_type()
         if 'mir-s3-cdn' in self.args['url']:
             # NOTE: does not scan
             links = [self.args['url']]
@@ -34,8 +32,5 @@ class BehanceGoblin(MetaGoblin):
                 print(f'[{self.__str__()}] <WARNING> url type not supported')
         for link in links:
             for size in self.sizes:
-                attempt = self.loot(self.fit(link, size), self.path_main)
-                if attempt:
-                    break
-                sleep(self.args['tickrate'])
-        print(f'[{self.__str__()}] <looted> {self.loot_tally} files')
+                self.collect(self.fit(link, size))
+        self.loot()

@@ -1,19 +1,20 @@
 import re
 import os
-from strings import *
 from handlers.meta_goblin import MetaGoblin
 
 
 class OmegaGoblin(MetaGoblin):
 
     '''
-    generic goblin for links that did not match a handler
+    handles: all links that did not match a specific handler
     accepts:
+        - image
         - webpage
     '''
 
     def __init__(self, args):
         super().__init__(args)
+        self.link_pat = r'(<img[^<>]+src="[^" ;\']+)|((https?://)?[^"\n \';]+\.(jpe?g|png|tiff?|gif|mp4|mov|flv)([^"\n \';]+)?)'
 
     def __str__(self):
         return 'generic goblin'
@@ -22,23 +23,22 @@ class OmegaGoblin(MetaGoblin):
         '''
         extract media urls from html
         '''
-        links = self.extract_links(regex_patterns['link_pattern'], self.args['url'])
+        links = self.extract_links(self.link_pat, self.args['url'])
         cleaned_links = [re.sub(r'<img.+src="', '', link) for link in links]
         for link in cleaned_links:
+            if re.search(self.filter_pat, link):
+                continue
             if self.args['format']:
                 link = self.user_format(link)
             self.collect(link)
 
     def run(self):
-        if self.args['all']:
-            with open(os.path.join(os.getcwd(), self.args['local'])) as file:
-                links = set(file.read().splitlines())
-            for link in links:
-                if self.args['format']:
-                    link = self.user_format(link)
-                self.collect(link)
+        if re.search(r'\.(jpe?g|png|gif|webp|tiff?)', self.args['url'], re.IGNORECASE):
+            if self.args['format']:
+                self.args['url'] = self.user_format(self.args['url'])
+            self.collect(self.args['url'])
         else:
-            links = self.find_links()
+            self.find_links()
         self.loot()
         if not self.args['nodl'] and not self.args['noclean']:
             self.cleanup(self.path_main)

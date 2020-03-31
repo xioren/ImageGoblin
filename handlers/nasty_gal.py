@@ -14,6 +14,7 @@ class NastyGalGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
+        self.link_pat = r'media\.nastygal\.com/i/nastygal/[^" \?]+'
 
     def __str__(self):
         return 'nasty gal goblin'
@@ -25,7 +26,7 @@ class NastyGalGoblin(MetaGoblin):
         if 'adis.ws' in self.args['url']:
             links = [self.args['url']]
         else:
-            links = self.extract_links(r'media\.nastygal\.com/i/nastygal/[^" \?]+', self.args['url'])
+            links = self.extract_links(self.link_pat, self.args['url'])
         for link in links:
             id = self.extract_id(link)
             for n in ('', '_1', '_2', '_3', '_4'):

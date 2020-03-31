@@ -32,9 +32,7 @@ class ShopifyGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.image_pat = r'cdn.shopify.com/[^" \n]+((\w+-)+)*\d+x(\d+)*[^" \n]+'
-
-    # TODO: add shopify __str__ for non matched inputs?
+        self.link_pat = r'cdn.shopify.com/[^" \n]+((\w+-)+)*\d+x(\d+)*[^" \n]+'
 
     def trim(self, url):
         # NOTE: changed to 4 instead of +...check if always 4 with different urls
@@ -46,7 +44,7 @@ class ShopifyGoblin(MetaGoblin):
             if not self.args['silent']:
                 print(f'[{self.__str__()}] <WARNING> url type not supported')
         else:
-            links = self.extract_links(self.image_pat, self.args['url'])
+            links = self.extract_links(self.link_pat, self.args['url'])
         for link in links:
             # TODO: fix this to be specific to trim (or whatevr arguemnt is passed)
             if self.args['format']:

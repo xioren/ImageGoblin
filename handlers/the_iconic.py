@@ -14,6 +14,7 @@ class TheIconicGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
+        self.link_pat = r'(\d+\-){2}\d\.jpg'
 
     def __str__(self):
         return 'the iconic goblin'
@@ -25,7 +26,7 @@ class TheIconicGoblin(MetaGoblin):
         if 'img1' in self.args['url'] or 'static' in self.args['url']:
             links = [self.args['url']]
         else:
-            links = self.extract_links(r'(\d+\-){2}\d\.jpg', self.args['url'])
+            links = self.extract_links(self.link_pat, self.args['url'])
         for link in links:
             id = self.extract_id(link)
             for n in range(1, 6):

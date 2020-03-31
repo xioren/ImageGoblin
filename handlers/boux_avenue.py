@@ -8,9 +8,9 @@ class BouxAvenueGoblin(GammaGoblin):
         super().__init__(args)
         # QUESTION: are there more than 3?
         self.modifiers = ('FR', 'BK', 'ST')
-        self.pattern = r'[A-Z_]+_[A-Z]+\.jpg'
+        self.img_pat = r'[A-Z_]+_[A-Z]+\.jpg'
         self.iter = r'\d+_[A-Z0-9]+_0_'
-        self.base = 'https://www.bouxavenue.com/on/demandware.static/-/Sites-bouxavenue-master-catalog/default/'
+        self.url_base = 'https://www.bouxavenue.com/on/demandware.static/-/Sites-bouxavenue-master-catalog/default/'
 
     def __str__(self):
         return 'boux avenue goblin'

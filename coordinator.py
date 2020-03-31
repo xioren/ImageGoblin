@@ -22,19 +22,15 @@ class Coordinator:
         elif self.args['local']:
             with open(os.path.join(os.getcwd(), self.args['local'])) as file:
                 links = set(file.read().splitlines())
-        else:
-            links = [self.args['url']]
-        if self.args['all']:
-            goblin = handlers['generic'][1]
-            goblin(self.args).run()
         elif self.args['feed']:
             goblin = handlers['hungry'][1]
-            goblin(self.args).run()
+            links = goblin().run()
         else:
-            for link in links:
-                self.args['url'] = link
-                if self.args['handler']:
-                    goblin = self.identify(self.args['handler'])
-                else:
-                    goblin = self.identify(self.args['url'])
-                goblin(self.args).run()
+            links = [self.args['url']]
+        for link in links:
+            self.args['url'] = link
+            if self.args['handler']:
+                goblin = self.identify(self.args['handler'])
+            else:
+                goblin = self.identify(self.args['url'])
+            goblin(self.args).run()
