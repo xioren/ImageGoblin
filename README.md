@@ -18,14 +18,27 @@
 
 ### operation:
 
-+ *default:* inputting either a url or a text file with links (1 per line) will try to match the link(s) to a specific handler. the handler will download what images is can according to its rule set, in the highest possible quality. if no handler is matched a generic handler is used. if a text file is used, only the filename should be input, using the --local argument and the text file should be placed in the directory that the program will be ran from.
++ *default:* inputting either a url or a text file with links (1 per line) will try to match the link(s) to a specific handler. the handler will download what images it can according to its rule set, in the highest possible quality. if no handler is matched a generic handler is used. if a text file is used, only the filename should be input, using the --local argument and the text file should be placed in the directory that the program will be ran from.
+
+  *examples*
+
+  ```
+  goblin https://www.website.com/files/image01.jpg
+
+  goblin https://www.website.com/pages/somewebpage.html --silent
+
+  goblin --local links.txt --rate 4 --verbose
+  ```
 
 + *generic:* for any site without a specific handler. greedy. strings can be added, substituted, or removed using a _modifier_. input the _modifier_ as the format argument. 'add _modifier_' will append the modifier to the end of the url; for example a query string. 'sub _modifier_ _replacement_' substitutes, while 'rem _modifier_' removes.
 
     *examples*
 
     *rem _modifier_:*
-    inputting: '-f rem -\d+x\d+'
+
+    ```
+    goblin https://website.com/uploads/image_01-300x300.jpg -f rem -\d+x\d+
+    ```
 
     https://website.com/uploads/image_01-300x300.jpg
 
@@ -34,9 +47,12 @@
     https://website.com/uploads/image_01.jpg
 
     *sub _modifier_ _replacement_:*
-    inputting: '--format sub \\?size=\w+ ?size=large'
 
-    https://website.com/uploads/image_01.jpg?size=cropped
+    ```
+    goblin https://website.com/uploads/image_01.jpg?size=small --format sub \?size=\w+ ?size=large'
+    ```
+
+    https://website.com/uploads/image_01.jpg?size=small
 
     becomes
 
@@ -46,9 +62,9 @@
 
     *example:*
 
-    image url: https://website.com/uploads/image_01.jpg
-
-    url to submit: https://website.com/uploads/image_%%%01%%%.jpg
+    ```
+    goblin https://website.com/uploads/image_%%%01%%%.jpg --timeout 10 --rate 3
+    ```
 
     the program will then iterate through and download all images it can find with that url structure on the server.
 
@@ -64,7 +80,7 @@
 
 + *instagram:* partial support. for now, this handler will only parse the html of an instagram page that is saved to a txt file. the file should be named 'html.txt' and placed in the directory that this program is ran from. this handler will take a while to complete. the url to the instagram page or username needs to be input when ran.
 
-+ *feed* using the feed argument, you can accumulate urls by inputting them one by one using the --feed mode. this is useful for accumulating urls as you find them while browsing the web, and downloading all at once.   
++ *feed:* using the feed argument, you can accumulate urls by inputting them one by one using the --feed mode. this is useful for accumulating urls as you find them while browsing the web, and downloading all at once.   
 
 *misc:*
   + for the generic handler, inputting '-f auto' as an option will try to remove some common cropping patterns from image urls.
