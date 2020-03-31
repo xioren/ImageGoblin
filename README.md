@@ -25,9 +25,9 @@
   ```
   goblin https://www.website.com/files/image01.jpg
 
-  goblin https://www.website.com/pages/somewebpage.html --silent
+  goblin https://www.website.com/pages/somewebpage.html --force handler
 
-  goblin --local links.txt --rate 4 --verbose
+  goblin --local links.txt --silent
   ```
 
 + *generic:* for any site without a specific handler. greedy. strings can be added, substituted, or removed using a _modifier_. input the _modifier_ as the format argument. 'add _modifier_' will append the modifier to the end of the url; for example a query string. 'sub _modifier_ _replacement_' substitutes, while 'rem _modifier_' removes.
@@ -49,7 +49,7 @@
     *sub _modifier_ _replacement_:*
 
     ```
-    goblin https://website.com/uploads/image_01.jpg?size=small --format sub \?size=\w+ ?size=large'
+    goblin https://website.com/uploads/image_01.jpg?size=small --format sub size=\w+ size=large'
     ```
 
     https://website.com/uploads/image_01.jpg?size=small
@@ -74,11 +74,11 @@
     * https://website.com/uploads/image_04.jpg
     * https://website.com/uploads/image_05.jpg
     * ...
-    * https://website.com/uploads/image_100.jpg
+    * https://website.com/uploads/image_107.jpg
 
     etc...
 
-+ *instagram:* partial support. for now, this handler will only parse the html of an instagram page that is saved to a txt file. the file should be named 'html.txt' and placed in the directory that this program is ran from. this handler will take a while to complete. the url to the instagram page or username needs to be input when ran.
++ *instagram:* partial support. for now, this handler will only parse the html of an instagram page that is saved to a txt file. the file should be named 'html.txt' and placed in the directory that this program is ran from. this handler will take a while to complete. the url to the instagram page or username needs to be input when ran. if only the username is passed, it is necessary to --force instagram in order to match the correct handler.
 
 + *feed:* using the feed argument, you can accumulate urls by inputting them one by one using the --feed mode. this is useful for accumulating urls as you find them while browsing the web, and downloading all at once.   
 
