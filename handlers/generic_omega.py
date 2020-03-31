@@ -14,7 +14,7 @@ class OmegaGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.link_pat = r'(<img[^<>]+src="[^" ;\']+)|((https?://)?[^"\n \';]+\.(jpe?g|png|tiff?|gif|mp4|mov|flv)([^"\n \';]+)?)'
+        self.link_pat = fr'(<img[^<>]+src="[^" ;\']+)|((https?://)?[^"\n \';]+{self.filetypes}({self.query_pat})?)'
 
     def __str__(self):
         return 'generic goblin'

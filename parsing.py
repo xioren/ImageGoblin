@@ -7,9 +7,10 @@ class Parser:
     '''
     generic parsing methods
     '''
+
     def __init__(self):
         self.filename_pat = r'(/?[^/]+(\.\w+)?)$'
-        self.query_pat = r'((\?|&).+)$'
+        self.query_pat = r'\?[^" ]+$'
         self.filetype_pat = r'\.[A-Za-z0-9]+'
         self.filetypes = r'\.(jpe?g|png|gif|mp4|web(p|m)|tiff?)'
         self.tag_pat = r'<[^>]+>'
@@ -20,7 +21,7 @@ class Parser:
             r'c_fill,f_auto,g_north,h_\d+,q_auto:best,w_\d+/v1/',
             r'expanded_[a-z]+/',
             r'(\.|-)\d+w',
-            # NOTE: \-e\d+ catches some dashed filenames by mistake, consider changing
+            # BUG: \-e\d+ catches some dashed filenames by mistake, consider changing
             # r'\-e\d+'
             r'/v/\d/.+\.webp$',
             r'w/\d+/'

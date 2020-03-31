@@ -1,7 +1,5 @@
 # web goblin v1.5 by xioren
 
-**Note: this is a personal project not intended for use**
-
 ### changelog v1.5:
   + homogenize variable names
   + removed --all argument
