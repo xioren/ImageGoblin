@@ -1,5 +1,6 @@
 from handlers.agent_provocateur import AgentProvocateurGoblin
 from handlers.ami_clubwear import AMIGoblin
+from handlers.ann_summers import AnnSummersGoblin
 from handlers.anthropologie import AnthropologieGoblin
 from handlers.asos import ASOSGoblin
 from handlers.bamba_swim import BambaSwimGoblin
@@ -87,6 +88,7 @@ from handlers.zara import ZaraGoblin
 handlers = {
             'agentprovocateur': (r'agentprovocateur', AgentProvocateurGoblin),
             'amiclubwear': (r'amiclubwear', AMIGoblin),
+            'annsummers': (r'annsummers', AnnSummersGoblin),
             'anthropologie': (r'anthropologie', AnthropologieGoblin),
             'asos': (r'asos|(\d+\-\d(\-\[a-z-9]+)*)$', ASOSGoblin),
             'bambaswim': (r'bambaswim', BambaSwimGoblin),

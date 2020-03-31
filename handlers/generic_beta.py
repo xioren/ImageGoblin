@@ -2,6 +2,9 @@ import re
 from handlers.meta_goblin import MetaGoblin
 
 
+# NOTE: fmt=png works as well
+
+
 class BetaGoblin(MetaGoblin):
 
     '''

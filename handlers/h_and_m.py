@@ -23,6 +23,7 @@ class HMGoblin(MetaGoblin):
 
     def run(self):
         if 'lp2.hm' in self.args['url']:
+            # NOTE: does not scan
             links = [self.args['url']]
         else:
             links = self.extract_links(self.link_pats, self.args['url'])

@@ -91,7 +91,7 @@ class Parser:
         '''
         check if url is relative
         '''
-        if self.get_netloc(url) == '':
+        if self.get_netloc(self.add_scheme(url)) == '':
             return True
         else:
             return False

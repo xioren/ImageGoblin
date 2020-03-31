@@ -4,6 +4,9 @@ from time import sleep
 from handlers.meta_goblin import MetaGoblin
 
 
+# alternate scaled: '?wid=2239&hei=2857&size=2239,2857&qlt=100'
+
+
 class ASOSGoblin(MetaGoblin):
     '''
     accepts:
@@ -16,7 +19,7 @@ class ASOSGoblin(MetaGoblin):
         self.path_scanned = os.path.join(self.path_main, 'scanned')
         self.path_backup = os.path.join(self.path_main, 'backup')
         self.path_external = os.path.join(os.getcwd(), 'asos')
-        self.query = '?wid=2239&hei=2857&size=2239,2857'
+        self.query = '?scl=1&qlt=100'
 
     def __str__(self):
         return 'asos goblin'
@@ -84,21 +87,18 @@ class ASOSGoblin(MetaGoblin):
         '''
         download hi-res version of downloaded images
         '''
+        print(f'[{self.__str__()}] <upgrading>')
         for file in os.listdir(self.path_scanned):
             id = self.extract_id(file)
             if os.path.exists(os.path.join(self.path_dl, f'{id}-2.jpeg')):
                 print(f'[{self.__str__()}] <file exists> {id}')
                 self.move_file(self.path_scanned, self.path_backup, file)
                 continue
-            print(f'[{self.__str__()}] <upgrading> {id}')
             colors = self.read_file(os.path.join(self.path_main, 'colors.txt'), True)
             for color in colors:
-                attempt = self.loot(self.form_url(f'{id}-1-{color}', True), self.path_dl)
-                if attempt:
-                    break
-                sleep(self.args['tickrate'])
+                self.collect(self.form_url(f'{id}-1-{color}', True))
             for n in range(2, 5):
-                self.collect(self.form_url(f'{id}-{n}'))
+                self.collect(self.form_url(f'{id}-{n}', True))
             self.move_file(self.path_scanned, self.path_backup, file)
 
     def scan(self):
@@ -116,7 +116,7 @@ class ASOSGoblin(MetaGoblin):
                 os.rmdir(self.path_external)
             files = os.listdir(self.path_main)
         for file in files:
-            if '.jpeg' not in file:
+            if not re.search('.jpe?g', file):
                 continue
             id = self.extract_id(file)
             colors.add(self.extract_color(file))
@@ -147,4 +147,3 @@ class ASOSGoblin(MetaGoblin):
         else:
             self.grab()
             self.loot()
-        print(f'[{self.__str__()}] <looted> {self.loot_tally} files')
