@@ -56,12 +56,12 @@
 
     https://website.com/uploads/image_01.jpg?size=large
 
-+ *iterate:* when provided a url to a single file (usually an image), the program will try to download that file and all other files with the same url structure that are on the server (but not necessarily displayed on the website). the iterable needs to be surrounded by '%%%' on either side when input to indicate the portion of the url to be iterated.
++ *iterate:* when provided a url to a single file (usually an image), the program will try to download that file and all other files with the same url structure that are on the server (but not necessarily displayed on the website). the iterable needs to be surrounded by '@@@' on either side when input to indicate the portion of the url to be iterated.
 
     *example:*
 
     ```
-    goblin https://website.com/uploads/image_%%%01%%%.jpg --timeout 10 --rate 3
+    goblin https://website.com/uploads/image_@@@01@@@.jpg --timeout 10 --rate 3
     ```
 
     the program will then iterate through and download all images it can find with that url structure on the server.

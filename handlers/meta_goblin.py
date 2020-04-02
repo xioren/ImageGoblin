@@ -106,7 +106,7 @@ class MetaGoblin(Parser):
         '''
         request = Request(url, None, self.headers[gzip])
         try:
-            with urlopen(request, timeout=10) as response:
+            with urlopen(request, timeout=20) as response:
                 encoding = response.info().get('Content-Encoding')
                 if not save:
                     data = response.read()

@@ -29,8 +29,8 @@ class Coordinator:
             links = [self.args['url']]
         for link in links:
             self.args['url'] = link
-            if self.args['handler']:
-                goblin = self.identify(self.args['handler'])
+            if self.args['force']:
+                goblin = handlers[self.args['force']][1]
             else:
                 goblin = self.identify(self.args['url'])
             goblin(self.args).run()

@@ -24,7 +24,7 @@ class GammaGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.link_pat = fr'[^" ]+demandware[^" ]+{self.img_pat}'
+        self.link_pat = fr'[^" ]+demandware[^" ]+\d+_\d\.jpg'
 
     def extract_parts(self, url):
         iter = re.search(self.iter, url).group()

@@ -11,7 +11,7 @@ class InstagramGoblin(MetaGoblin):
         self.username = self.extract_username(self.args['url'])
         self.html_local = os.path.join(os.getcwd(), 'html.txt')
         self.sub_dir = os.path.join(self.path_main, self.username)
-        self.link_patr = r'https*://scontent[^"\n \']+'
+        self.link_pat = r'https://scontent[^"\n \']+_n\.[^"\n \']+'
         self.make_dirs(self.sub_dir)
 
     def __str__(self):
@@ -38,7 +38,6 @@ class InstagramGoblin(MetaGoblin):
         '''
         parse html for instagram posts
         '''
-        print(f'[{self.__str__()}] <parsing>')
         return {post.group() for post in re.finditer(r'/p/[^"]+', self.read_file(self.html_local))}
 
     def find_media(self, posts):
@@ -46,9 +45,11 @@ class InstagramGoblin(MetaGoblin):
         opens links from iterable and parses for media
         '''
         for post in posts:
+            if not self.args['silent']:
+                print(f'[{self.__str__()}] <parsing> {post}')
             content = self.extract_links(self.link_pat, f'https://www.instagram.com{post}')
             for link in content:
-                if re.search(r'\d{3}x\d{3}', link):
+                if re.search(r'/[a-z]\d{3}x\d{3}/|ig_cache_key', link):
                     continue
                 self.collect(link.replace(r'\u0026', '&'), f'{self.username}_{self.extract_filename(link)}')
             sleep(self.args['tickrate'])

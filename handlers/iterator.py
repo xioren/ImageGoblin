@@ -22,7 +22,7 @@ class IteratorGoblin(MetaGoblin):
         '''
         seperate iterable from a url (mode 3)
         '''
-        return re.split('%%%', url)
+        return re.split('@@@', url)
 
     # IDEA: instead of hard coding 50, maybe use dynamic value.
     # possibly based on timeout value.

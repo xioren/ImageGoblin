@@ -32,7 +32,7 @@ args = parser.parse_args()
 args_dict = {'url': args.url, 'mode': args.mode, 'timeout': args.timeout,
              'format': args.format, 'increment': args.increment, 'nodl': args.nodl,
              'silent': args.silent, 'tickrate': args.rate, 'local': args.local,
-             'handler': args.force, 'list': args.list, 'nodirs': args.nodirs,
+             'force': args.force, 'list': args.list, 'nodirs': args.nodirs,
              'noclean': args.noclean, 'feed': args.feed,
              'verbose': args.verbose}
 

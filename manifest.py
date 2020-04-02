@@ -1,4 +1,5 @@
 from handlers.agent_provocateur import AgentProvocateurGoblin
+from handlers.american_apparel import AmericanApparelGoblin
 from handlers.ami_clubwear import AMIGoblin
 from handlers.ann_summers import AnnSummersGoblin
 from handlers.anthropologie import AnthropologieGoblin
@@ -87,6 +88,7 @@ from handlers.zara import ZaraGoblin
 
 handlers = {
             'agentprovocateur': (r'agentprovocateur', AgentProvocateurGoblin),
+            'americanapparel': (r'americanapparel', AmericanApparelGoblin),
             'amiclubwear': (r'amiclubwear', AMIGoblin),
             'annsummers': (r'annsummers', AnnSummersGoblin),
             'anthropologie': (r'anthropologie', AnthropologieGoblin),
@@ -127,7 +129,7 @@ handlers = {
             'hunkemoller': (r'hunkemoller', HunkemollerGoblin),
             'hottopic': (r'hottopic', HotTopicGoblin),
             'instagram': (r'instagram', InstagramGoblin),
-            'iterator': (r'%%%\d+%%%', IteratorGoblin),
+            'iterator': (r'@@@\d+@@@', IteratorGoblin),
             'jennyfer': (r'jennyfer', JennyferGoblin),
             'katherinehamilton': (r'katherinehamilton', KatherineHamiltonGoblin),
             'koton': (r'koton|ktnimg', KotonGoblin),

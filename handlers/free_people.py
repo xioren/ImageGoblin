@@ -10,5 +10,5 @@ class FreePeopleGoblin(BetaGoblin):
         return 'free people goblin'
 
     def identify(self, link):
-        self.modifiers = ('a', 'b', 'c', 'd', 'e')
+        self.modifiers = ('_a', '_b', '_c', '_d', '_e')
         return 'https://s7d5.scene7.com/is/image/FreePeople/'

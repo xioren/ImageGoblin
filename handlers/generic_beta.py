@@ -14,6 +14,7 @@ class BetaGoblin(MetaGoblin):
         - image
         - webpage
     generic backend for:
+        - american apparel
         - anthropologie
         - calvin klein
         - esprit
@@ -48,7 +49,7 @@ class BetaGoblin(MetaGoblin):
             base = self.identify(link)
             id = self.extract_id(link)
             for mod in self.modifiers:
-                self.collect(f'{base}{id}_{mod}{self.query}')
+                self.collect(f'{base}{id}{mod}{self.query}')
         self.loot()
         if not self.args['nodl'] and not self.args['noclean']:
             self.cleanup(self.path_main)
