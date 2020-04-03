@@ -127,6 +127,8 @@ class MetaGoblin(Parser):
                                     return self.retrieve(url, path, gzip=False)
                             file.write(data)
         except HTTPError as e:
+            if e.code == 502:
+                return self.retry(url, n+1, path, save)
             if self.args['verbose'] and not self.args['silent']:
                 print(f'[{self.__str__()}] <{e}> {url}')
             return None

@@ -14,6 +14,7 @@ from handlers.boohoo import BoohooGoblin
 from handlers.bordelle import BordelleGoblin
 from handlers.boux_avenue import BouxAvenueGoblin
 from handlers.burberry import BurberryGoblin
+from handlers.c_and_a import CAGoblin
 from handlers.calvin_klein import CalvinKleinGoblin
 from handlers.caroswim import CaroSwimGoblin
 from handlers.cecilie_copenhagen import CecilieGoblin
@@ -40,11 +41,14 @@ from handlers.hungry import HungryGoblin
 from handlers.hunkemoller import HunkemollerGoblin
 from handlers.hot_topic import HotTopicGoblin
 from handlers.instagram import InstagramGoblin
+from handlers.intimissimi import IntimissimiGoblin
 from handlers.iterator import IteratorGoblin
 from handlers.jennyfer import JennyferGoblin
 from handlers.katherine_hamilton import KatherineHamiltonGoblin
+from handlers.kiki_de_montparnasse import KikiDeMontparnasseGoblin
 from handlers.koton import KotonGoblin
 from handlers.le_petit_trou import LePetitTrouGoblin
+from handlers.livy import LivyGoblin
 from handlers.lounge import LoungeGoblin
 from handlers.maison_lejaby import MaisonLejabyGoblin
 from handlers.maison_close import MaisonCloseGoblin
@@ -67,6 +71,7 @@ from handlers.springfield import SpringfieldGoblin
 from handlers.ssense import SsenseGoblin
 from handlers.stradivarius import StradivariusGoblin
 from handlers.tally_weijl import TallyWeijlGoblin
+from handlers.tezenis import TezenisGoblin
 from handlers.the_great_eros import TheGreatErosGoblin
 from handlers.the_iconic import TheIconicGoblin
 from handlers.tommy_hilfiger import TommyHilfigerGoblin
@@ -84,6 +89,7 @@ from handlers.yandy import YandyGoblin
 from handlers.yargici import YargiciGoblin
 from handlers.zalando import ZalandoGoblin
 from handlers.zara import ZaraGoblin
+from handlers.generic_zeta import ZetaGoblin
 
 
 handlers = {
@@ -103,6 +109,7 @@ handlers = {
             'bordelle': (r'bordelle', BordelleGoblin),
             'bouxavenue': (r'bouxavenue', BouxAvenueGoblin),
             'burberry': (r'burberry', BurberryGoblin),
+            'c&a': (r'c-and-a', CAGoblin),
             'calvinklein': (r'calvinklein(eu)*', CalvinKleinGoblin),
             'caroswim': (r'caroswim', CaroSwimGoblin),
             'ceciliecopenhagen': (r'ceciliecopenhagen', CecilieGoblin),
@@ -129,11 +136,14 @@ handlers = {
             'hunkemoller': (r'hunkemoller', HunkemollerGoblin),
             'hottopic': (r'hottopic', HotTopicGoblin),
             'instagram': (r'instagram', InstagramGoblin),
+            'intimissimi': (r'intimissimi', IntimissimiGoblin),
             'iterator': (r'@@@\d+@@@', IteratorGoblin),
             'jennyfer': (r'jennyfer', JennyferGoblin),
             'katherinehamilton': (r'katherinehamilton', KatherineHamiltonGoblin),
+            'kikidemontparnasse': (r'kikidm', KikiDeMontparnasseGoblin),
             'koton': (r'koton|ktnimg', KotonGoblin),
             'lepetittrou': (r'le-petit-trou\.com', LePetitTrouGoblin),
+            'livy': (r'li-vy', LivyGoblin),
             'lounge': (r'loungeunderwear', LoungeGoblin),
             'maisonclose': (r'maison-close', MaisonCloseGoblin),
             'maisonlejaby': (r'maisonlejaby', MaisonLejabyGoblin),
@@ -156,6 +166,7 @@ handlers = {
             'ssense': (r'ssense(media)*', SsenseGoblin),
             'stradivarius': (r'stradivarius', StradivariusGoblin),
             'tallyweijl': (r'tally-weijl', TallyWeijlGoblin),
+            'tezenis': (r'tezenis', TezenisGoblin),
             'thegreateros': (r'thegreateros', TheGreatErosGoblin),
             'theiconic': (r'theiconic', TheIconicGoblin),
             'tommyhilfiger':(r'tommy-europe|shoptommy', TommyHilfigerGoblin),
@@ -172,5 +183,6 @@ handlers = {
             'yandy': (r'yandy(cdn)*', YandyGoblin),
             'yargici': (r'yargici', YargiciGoblin),
             'zalando': (r'zalando|ztat\.net|[A-Z0-9]+-[A-Z]\d{2}(@\d)*', ZalandoGoblin),
-            'zara': (r'zara', ZaraGoblin)
+            'zara': (r'zara', ZaraGoblin),
+            'zeta': (r'calzedonia', ZetaGoblin)
             }

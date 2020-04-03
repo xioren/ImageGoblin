@@ -11,6 +11,7 @@ class Goblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
+        self.link_pat = r''
 
     def __str__(self):
         return ' goblin'
@@ -19,7 +20,7 @@ class Goblin(MetaGoblin):
         if '' in self.args['url']:
             links = [self.args['url']]
         else:
-            links = self.extract_links(r'', self.args['url'])
+            links = self.extract_links(self.link_pat, self.args['url'])
         for link in links:
             self.collect(link)
         self.loot()
