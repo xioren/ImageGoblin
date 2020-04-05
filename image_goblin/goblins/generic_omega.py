@@ -22,11 +22,11 @@ class OmegaGoblin(MetaGoblin):
     def __repr__(self):
         return 'generic'
 
-    def find_urls(self):
+    def find_urls(self, url):
         '''
         extract media urls from html
         '''
-        urls = self.extract_urls(self.url_pat, self.args['url'])
+        urls = self.extract_urls(self.url_pat, url)
         cleaned_urls = [re.sub(r'<img.+src="', '', url) for url in urls]
         for url in cleaned_urls:
             if re.search(self.filter_pat, url):
@@ -42,7 +42,7 @@ class OmegaGoblin(MetaGoblin):
                     target = self.user_format(target)
                 self.collect(target)
             else:
-                self.find_urls()
+                self.find_urls(target)
             self.loot()
         if not self.args['nodl'] and not self.args['noclean']:
             self.cleanup(self.path_main)

@@ -18,7 +18,7 @@ class GettyGoblin(MetaGoblin):
         return 'getty goblin'
 
     def __repr__(self):
-        return 'annsummers'
+        return 'getty'
 
     def upgrade(self, image):
         id = re.search(r'id\d+', image).group()
@@ -28,9 +28,9 @@ class GettyGoblin(MetaGoblin):
         for target in self.args['targets'][self.__repr__()]:
             if 'media' in target:
                 # NOTE: does not scan
-                self.loot(self.upgrade(target))
+                urls = [target]
             else:
                 urls = self.extract_urls(self.url_pat, target)
-                for url in urls:
-                    self.collect(self.upgrade(url))
+            for url in urls:
+                self.collect(self.upgrade(url))
         self.loot()

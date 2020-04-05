@@ -8,3 +8,6 @@ class BordelleGoblin(ShopifyGoblin):
 
     def __str__(self):
         return 'bordelle goblin'
+
+    def __repr__(self):
+        return 'bordelle'

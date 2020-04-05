@@ -32,5 +32,5 @@ class VictoriasSecretGoblin(MetaGoblin):
                 if not self.args['silent']:
                     print(f'[{self.__str__()}] <WARNING> url type not supported')
             for url in urls:
-                self.collect(re.sub(r'p/\d+x\d+', 'p/4040x5390', self.args['url']))
+                self.collect(re.sub(r'p/\d+x\d+', 'p/4040x5390', target))
         self.loot()

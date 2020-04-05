@@ -27,7 +27,7 @@ class EpsilonGoblin(MetaGoblin):
             if 'mncdn' in target:
                 urls = [target]
             else:
-                urls = self.extract_urls(self.url_pat, self.args['url'])
+                urls = self.extract_urls(self.url_pat, target)
             for url in urls:
                 base, _ = re.split(self.mod_pat, self.clean(url))
                 self.generate_modifiers(url)

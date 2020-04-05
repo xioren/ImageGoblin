@@ -18,7 +18,7 @@ parser.add_argument('-r', '--rate', help='program tickrate (n)', type=float, def
 parser.add_argument('-l', '--local', help='filename of local text file containing urls')
 parser.add_argument('--force', help='force a specific goblin')
 parser.add_argument('--list', help='list available goblins', action='store_true')
-parser.add_argument('--nodirs', help='download directly to current directory, without creating sub dirs',
+parser.add_argument('--nosort', help='download directly to current directory, without creating sub dirs',
                     action='store_true')
 parser.add_argument('--noclean', help='do not remove small files',
                     action='store_true')
@@ -32,7 +32,7 @@ args = parser.parse_args()
 args_dict = {'targets': args.target, 'mode': args.mode, 'timeout': args.timeout,
              'format': args.format, 'increment': args.increment, 'nodl': args.nodl,
              'silent': args.silent, 'tickrate': args.rate, 'local': args.local,
-             'force': args.force, 'list': args.list, 'nodirs': args.nodirs,
+             'force': args.force, 'list': args.list, 'nosort': args.nosort,
              'noclean': args.noclean, 'feed': args.feed,
              'verbose': args.verbose}
 

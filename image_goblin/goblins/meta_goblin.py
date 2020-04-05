@@ -14,13 +14,13 @@ class MetaGoblin(Parser):
     def __init__(self, args):
         super().__init__()
         self.args = args
-        if self.args['nodirs']:
+        if self.args['nosort']:
             self.path_main = os.getcwd()
         else:
             self.path_main = os.path.join(os.getcwd(), 'goblin_loot', self.__str__().replace(' ', '_'))
-        self.headers = {True: {'User-Agent': 'GoblinTeam/1.5',
+        self.headers = {True: {'User-Agent': 'GoblinTeam/1.6',
                                'Accept-Encoding': 'gzip'},
-                        False: {'User-Agent': 'GoblinTeam/1.5'}}
+                        False: {'User-Agent': 'GoblinTeam/1.6'}}
         self.collection = set()
         if not self.args['nodl']:
             self.make_dirs(self.path_main)
@@ -41,7 +41,7 @@ class MetaGoblin(Parser):
         '''
         # NOTE:  dangerous, consider recieving file manifest instead?
         # TEMP: restrict usage to only the directories created by this app
-        if not self.args['nodirs']:
+        if not self.args['nosort']:
             for file in os.listdir(path):
                 filepath = os.path.join(path, file)
                 if os.path.isdir(filepath):

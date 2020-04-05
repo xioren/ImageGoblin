@@ -13,7 +13,7 @@ class KotonGoblin(EpsilonGoblin):
         return 'koton goblin'
 
     def __repr__(self):
-        return 'annsummers'
+        return 'koton'
 
     def custom(self, url):
         return url

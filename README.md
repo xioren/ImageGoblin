@@ -7,14 +7,14 @@
   + bug fixes
 
 ### this program:
-  + is designed to automate the discovery and retrieval of images on a web server, in the highest possible quality.
+  + is designed to automate the discovery and retrieval of images on a web server.
   + is a work in progress.
 
 ### operation:
 
 + *default:* inputting either a url or a text file with links (1 per line) will try to match the link(s) to a specific goblin. the goblin will download what images it can according to its rule set, in the highest possible quality. if no goblin is matched a generic goblin is used. if a text file is used, only the filename should be input, using the --local argument and the text file should be placed in the directory that the program will be ran from.
 
-  *examples*
+  *examples:*
 
   ```
   goblin https://www.website.com/files/image01.jpg
@@ -26,9 +26,7 @@
 
 + *generic:* for any site without a specific goblin. greedy. strings can be added, substituted, or removed using a _modifier_. input the _modifier_ as the format argument. 'add _modifier_' will append the modifier to the end of the url; for example a query string. 'sub _modifier_ _replacement_' substitutes, while 'rem _modifier_' removes.
 
-    *examples*
-
-    *rem _modifier_:*
+    *examples:*
 
     ```
     goblin https://website.com/uploads/image_01-300x300.jpg -f rem -\d+x\d+
@@ -40,7 +38,6 @@
 
     https://website.com/uploads/image_01.jpg
 
-    *sub _modifier_ _replacement_:*
 
     ```
     goblin https://website.com/uploads/image_01.jpg?size=small --format sub size=\w+ size=large'

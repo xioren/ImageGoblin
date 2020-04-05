@@ -30,7 +30,7 @@ class ElcorteGoblin(MetaGoblin):
     def run(self):
         for target in self.args['targets'][self.__repr__()]:
             if 'sgfm.elcorteingles' in target:
-                urls = [self.args['url']]
+                urls = [target]
             else:
                 urls = self.extract_urls(self.url_pat, target)
             for url in urls:

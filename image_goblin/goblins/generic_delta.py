@@ -34,7 +34,7 @@ class DeltaGoblin(MetaGoblin):
             if '.jpg' in target:
                 urls = [target]
             else:
-                urls = self.extract_urls(self.url_pat, self.args['url'])
+                urls = self.extract_urls(self.url_pat, target)
             for url in urls:
                 base, end = re.split(r'_\d_\d_\d+', url)
                 for mod in self.modifiers:

@@ -17,14 +17,14 @@ class LePetitTrouGoblin(MetaGoblin):
         return 'le-petit-trou goblin'
 
     def __repr__(self):
-        return 'annsummers'
+        return 'lepetittrou'
 
     def run(self):
         for target in self.args['targets'][self.__repr__()]:
             if 'shoplo' in target:
                 urls = [target]
             else:
-                urls = self.extract_urls(self.url_pat, self.args['url'])
+                urls = self.extract_urls(self.url_pat, target)
             for url in urls:
                 self.collect(re.sub(r'th\d+', 'orig', url))
         self.loot()
