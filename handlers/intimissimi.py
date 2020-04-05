@@ -9,3 +9,6 @@ class IntimissimiGoblin(ZetaGoblin):
 
     def __str__(self):
         return 'intimissimi goblin'
+
+    def __repr__(self):
+        return 'intimissimi'

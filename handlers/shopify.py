@@ -32,25 +32,26 @@ class ShopifyGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.link_pat = r'cdn.shopify.com/[^" \n]+((\w+-)+)*\d+x(\d+)*[^" \n]+'
+        self.url_pat = r'cdn.shopify.com/[^" \n]+((\w+-)+)*\d+x(\d+)*[^" \n]+'
 
     def trim(self, url):
         # NOTE: changed to 4 instead of +...check if always 4 with different urls
         return re.sub(r'_[a-z\d]+(\-[a-z\d]+){4}', '', url)
 
     def run(self):
-        if 'cdn.shopify' in self.args['url']:
-            links = []
-            if not self.args['silent']:
-                print(f'[{self.__str__()}] <WARNING> url type not supported')
-        else:
-            links = self.extract_links(self.link_pat, self.args['url'])
-        for link in links:
-            # TODO: fix this to be specific to trim (or whatevr arguemnt is passed)
-            if self.args['format']:
-                self.collect(self.trim(link), clean=True)
+        for target in self.args['targets'][self.__repr__()]:
+            if 'cdn.shopify' in target:
+                urls = []
+                if not self.args['silent']:
+                    print(f'[{self.__str__()}] <WARNING> url type not supported')
             else:
-                self.collect(link, clean=True)
+                urls = self.extract_urls(self.url_pat, target)
+            for url in urls:
+                # TODO: fix this to be specific to trim (or whatevr arguemnt is passed)
+                if self.args['format']:
+                    self.collect(self.trim(url), clean=True)
+                else:
+                    self.collect(url, clean=True)
         self.loot()
         if not self.args['nodl'] and not self.args['noclean']:
             self.cleanup(self.path_main)

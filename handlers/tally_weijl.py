@@ -11,18 +11,22 @@ class TallyWeijlGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.link_pat = r'https*://www\.tally\-weijl\.com/img/[^" ]+\.jpg'
+        self.url_pat = r'https*://www\.tally\-weijl\.com/img/[^" ]+\.jpg'
 
     def __str__(self):
         return 'tally weijl goblin'
 
+    def __repr__(self):
+        return 'tallyweijl'
+
     def run(self):
-        if '/img/' in self.args['url']:
-            links = []
-            if not self.args['silent']:
-                print(f'[{self.__str__()}] <WARNING> url type not supported')
-        else:
-            links = self.extract_links(self.link_pat, self.args['url'])
-        for link in links:
-            self.collect(re.sub(r'img/\d+/\d+', 'img/1800/1800', link))
+        for target in self.args['targets'][self.__repr__()]:
+            if '/img/' in target:
+                urls = []
+                if not self.args['silent']:
+                    print(f'[{self.__str__()}] <WARNING> url type not supported')
+            else:
+                urls = self.extract_urls(self.url_pat, target)
+            for url in urls:
+                self.collect(re.sub(r'img/\d+/\d+', 'img/1800/1800', url))
         self.loot()

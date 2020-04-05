@@ -11,16 +11,20 @@ class Goblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.link_pat = r''
+        self.url_pat = r''
 
     def __str__(self):
         return ' goblin'
 
+    def __repr__(self):
+        return ''
+
     def run(self):
-        if '' in self.args['url']:
-            links = [self.args['url']]
-        else:
-            links = self.extract_links(self.link_pat, self.args['url'])
-        for link in links:
-            self.collect(link)
+        for target in self.args['targets'][self.__repr__()]:
+            if '' in target:
+                urls = [target]
+            else:
+                urls = self.extract_urls(self.url_pat, target)
+            for url in urls:
+                self.collect(url)
         self.loot()

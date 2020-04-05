@@ -8,3 +8,6 @@ class UnderprotectionGoblin(ShopifyGoblin):
 
     def __str__(self):
         return 'underprotection goblin'
+
+    def __repr__(self):
+        return 'underprotection'

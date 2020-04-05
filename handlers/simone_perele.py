@@ -9,3 +9,6 @@ class SimonePereleGoblin(AlphaGoblin):
 
     def __str__(self):
         return 'simone perele goblin'
+
+    def __repr__(self):
+        return 'simoneperele'

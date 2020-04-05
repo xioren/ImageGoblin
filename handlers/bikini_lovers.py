@@ -8,3 +8,6 @@ class BikiniLoversGoblin(AlphaGoblin):
 
     def __str__(self):
         return 'bikini lovers goblin'
+
+    def __repr__(self):
+        return 'bikinilovers'

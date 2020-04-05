@@ -8,3 +8,6 @@ class ElseGoblin(ShopifyGoblin):
 
     def __str__(self):
         return 'else goblin'
+
+    def __repr__(self):
+        return 'else'

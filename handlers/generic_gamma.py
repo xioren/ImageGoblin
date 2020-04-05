@@ -24,7 +24,7 @@ class GammaGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.link_pat = fr'[^" ]+demandware[^" ]+\d+_\d\.jpg'
+        self.url_pat = fr'[^" ]+demandware[^" ]+\d+_\d\.jpg'
 
     def extract_parts(self, url):
         iter = re.search(self.iter, url).group()
@@ -35,13 +35,14 @@ class GammaGoblin(MetaGoblin):
         return re.search(r'/*[^/]+\.jpe*g', url).group().lstrip('/')
 
     def run(self):
-        if 'demandware' in self.args['url']:
-            links = [self.args['url']]
-        else:
-            links = self.extract_links(self.link_pat, self.args['url'])
-        for link in links:
-            id, iter, end = self.extract_parts(self.isolate(link))
-            # self.generate_modifiers(iter)
-            for mod in self.modifiers:
-                self.collect(f'{self.url_base}{id}{mod}{end}')
+        for target in self.args['targets'][self.__repr__()]:
+            if 'demandware' in target:
+                urls = [target]
+            else:
+                urls = self.extract_urls(self.url_pat, target)
+            for url in urls:
+                id, iter, end = self.extract_parts(self.isolate(url))
+                # self.generate_modifiers(iter)
+                for mod in self.modifiers:
+                    self.collect(f'{self.url_base}{id}{mod}{end}')
         self.loot()

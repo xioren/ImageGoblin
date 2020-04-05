@@ -12,3 +12,6 @@ class OyshoGoblin(DeltaGoblin):
 
     def __str__(self):
         return 'oysho goblin'
+
+    def __repr__(self):
+        return 'oysho'

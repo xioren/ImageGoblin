@@ -8,10 +8,13 @@ class YargiciGoblin(EpsilonGoblin):
         super().__init__(args)
         self.mod_pat = r'\d{8}'
         self.end = '_0.jpeg'
-        self.img_pat = r'https://img-incommerce-yargici\.mncdn[^" ]+\.jpg'
+        self.url_pat = r'https://img-incommerce-yargici\.mncdn[^" ]+\.jpg'
 
     def __str__(self):
         return 'yargici goblin'
+
+    def __repr__(self):
+        return 'yargici'
 
     def custom(self, url):
         return url.replace('Thumbs', 'Originals')

@@ -15,16 +15,20 @@ class GuessGoblin(MetaGoblin):
     def __str__(self):
         return 'guess goblin'
 
+    def __repr__(self):
+        return 'guess'
+
     def run(self):
-        if 'guess-img' in self.args['url']:
-            links = [self.args['url']]
-        else:
-            links = []
-            if not self.args['silent']:
-                print(f'[{self.__str__()}] <WARNING> url type not supported')
-            # links = self.extract_links(r'https://res\.cloudinary\.com/guess\-img/[^" ]+\?pgw=1', self.args['url'])
-        for link in links:
-            base = re.sub(r'c_fill[^/]+/c_fill[^/]+/', '', re.sub(r'-ALT\d', '', self.dequery(link)))
-            for id in ('', '-ALT1', '-ALT2', '-ALT3', '-ALT4'):
-                self.collect(f'{base}{id}')
+        for target in self.args['targets'][self.__repr__()]:
+            if 'guess-img' in target:
+                urls = [target]
+            else:
+                urls = []
+                if not self.args['silent']:
+                    print(f'[{self.__str__()}] <WARNING> url type not supported')
+                # urls = self.extract_urls(r'https://res\.cloudinary\.com/guess\-img/[^" ]+\?pgw=1', self.args['url'])
+            for url in urls:
+                base = re.sub(r'c_fill[^/]+/c_fill[^/]+/', '', re.sub(r'-ALT\d', '', self.dequery(url)))
+                for id in ('', '-ALT1', '-ALT2', '-ALT3', '-ALT4'):
+                    self.collect(f'{base}{id}')
         self.loot()

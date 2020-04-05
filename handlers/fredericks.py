@@ -15,15 +15,19 @@ class FredericksGoblin(MetaGoblin):
     def __str__(self):
         return 'fredericks goblin'
 
+    def __repr__(self):
+        return 'fredericks'
+
     def run(self):
-        if 'cloudfront' in self.args['url']:
-            # NOTE: does not scan
-            links = [self.args['url']]
-        else:
-            # links = self.extract_links(r'//[^" \n]+\.jpe*g', self.args['url'])
-            links = []
-            if not self.args['silent']:
-                print(f'[{self.__str__()}] <WARNING> url type not supported')
-        for link in links:
-            self.collect(re.sub(r'\.\d+w', '', link))
+        for target in self.args['targets'][self.__repr__()]:
+            if 'cloudfront' in target:
+                # NOTE: does not scan
+                urls = [target]
+            else:
+                # urls = self.extract_urls(r'//[^" \n]+\.jpe*g', self.args['url'])
+                urls = []
+                if not self.args['silent']:
+                    print(f'[{self.__str__()}] <WARNING> url type not supported')
+            for url in urls:
+                self.collect(re.sub(r'\.\d+w', '', url))
         self.loot()

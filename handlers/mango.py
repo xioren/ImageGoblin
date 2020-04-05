@@ -12,24 +12,28 @@ class MangoGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.link_pat = r'https://st\.mngbcn\.com[^"\? ]+\.jpg'
+        self.url_pat = r'https://st\.mngbcn\.com[^"\? ]+\.jpg'
         self.query = '?qlt=100'
         self.modifiers = ('', '_R', '_D1', '_D2', '_D3', '_D4', '_D5', '_D6')
 
     def __str__(self):
         return 'mango goblin'
 
+    def __repr__(self):
+        return 'mango'
+
     def extract_id(self, url):
         return re.search(r'T\d', url).group(), re.search(r'\d+_\d+', url).group()
 
     def run(self):
-        if 'mngbcn' in self.args['url']:
-            links = [self.args['url']]
-        else:
-            links = self.extract_links(self.link_pat, self.args['url'])
-        for link in links:
-            t, id = self.extract_id(link)
-            self.collect(f'https://st.mngbcn.com/rcs/pics/static/{t}/fotos/outfit/S20/{id}-99999999_01.jpg{self.query}')
-            for mod in self.modifiers:
-                self.collect(f'https://st.mngbcn.com/rcs/pics/static/{t}/fotos/S20/{id}{mod}.jpg{self.query}')
+        for target in self.args['targets'][self.__repr__()]:
+            if 'mngbcn' in target:
+                urls = [target]
+            else:
+                urls = self.extract_urls(self.url_pat, target)
+            for url in urls:
+                t, id = self.extract_id(url)
+                self.collect(f'https://st.mngbcn.com/rcs/pics/static/{t}/fotos/outfit/S20/{id}-99999999_01.jpg{self.query}')
+                for mod in self.modifiers:
+                    self.collect(f'https://st.mngbcn.com/rcs/pics/static/{t}/fotos/S20/{id}{mod}.jpg{self.query}')
         self.loot()

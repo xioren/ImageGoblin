@@ -9,3 +9,6 @@ class ZaraGoblin(DeltaGoblin):
 
     def __str__(self):
         return 'zara goblin'
+
+    def __repr__(self):
+        return 'zara'

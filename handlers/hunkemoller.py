@@ -1,7 +1,9 @@
 import re
 from handlers.generic_gamma import GammaGoblin
 
+
 # legacy: https://images-hunkemoller.akamaized.net/original/
+
 
 class HunkemollerGoblin(GammaGoblin):
 
@@ -13,6 +15,9 @@ class HunkemollerGoblin(GammaGoblin):
 
     def __str__(self):
         return 'hunkemoller goblin'
+
+    def __repr__(self):
+        return 'hunkemoller'
 
     def generate_modifiers(self, iter):
         pass

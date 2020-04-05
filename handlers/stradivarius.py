@@ -9,3 +9,6 @@ class StradivariusGoblin(DeltaGoblin):
 
     def __str__(self):
         return 'stradivarius goblin'
+
+    def __repr__(self):
+        return 'stradivarius'

@@ -10,6 +10,9 @@ class HungryGoblin(MetaGoblin):
     def __str__(self):
         return 'hungry goblin'
 
+    def __repr__(self):
+        return 'hungry'
+
     def run(self):
         while True:
             bite = (input(f'[{self.__str__()}] <feed me> '))

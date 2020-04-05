@@ -10,9 +10,12 @@ class CalvinKleinGoblin(BetaGoblin):
     def __str__(self):
         return 'calvin klein goblin'
 
-    def identify(self, link):
+    def __repr__(self):
+        return 'calvinklein'
+
+    def identify(self, url):
         self.modifiers = ('_main', '_alternate1', '_alternate2', '_alternate3', '_alternate4', 'alternate5')
-        if 'CalvinKleinEU' in link:
+        if 'CalvinKleinEU' in url:
             return 'https://calvinklein-eu.scene7.com/is/image/CalvinKleinEU/'
         else:
             return 'https://calvinklein.scene7.com/is/image/CalvinKlein/'

@@ -8,29 +8,37 @@ class Coordinator:
     def __init__(self, args):
         self.args = args
 
-    def identify(self, link):
+    def identify(self, url):
         for key in handlers:
-            if re.search(handlers[key][0], link, re.IGNORECASE):
-                return handlers[key][1]
-        return handlers['generic'][1]
+            if re.search(handlers[key][0], url, re.IGNORECASE):
+                return key
+        return 'generic'
 
     def deploy(self):
+        url_assignment = {}
         if self.args['list']:
             for key in handlers:
                 print(key)
             return
         elif self.args['local']:
             with open(os.path.join(os.getcwd(), self.args['local'])) as file:
-                links = set(file.read().splitlines())
+                urls = set(file.read().splitlines())
         elif self.args['feed']:
             goblin = handlers['hungry'][1]
-            links = goblin().run()
+            urls = goblin().run()
         else:
-            links = [self.args['url']]
-        for link in links:
-            self.args['url'] = link
-            if self.args['force']:
-                goblin = handlers[self.args['force']][1]
+            urls = [self.args['targets']]
+        for url in urls:
+            handler = self.identify(url)
+            if url_assignment.get(handler):
+                url_assignment[handler].append(url)
             else:
-                goblin = self.identify(self.args['url'])
+                url_assignment[handler] = [url]
+        self.args['targets'] = url_assignment
+        if self.args['force']:
+            goblin = handlers[self.args['force']][1]
             goblin(self.args).run()
+        else:
+            for handler in url_assignment:
+                goblin = handlers[handler][1]
+                goblin(self.args).run()

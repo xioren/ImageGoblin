@@ -9,3 +9,6 @@ class TezenisGoblin(ZetaGoblin):
 
     def __str__(self):
         return 'tezenis goblin'
+
+    def __repr__(self):
+        return 'tezenis'

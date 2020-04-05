@@ -21,14 +21,10 @@ class MetaGoblin(Parser):
         self.headers = {True: {'User-Agent': 'GoblinTeam/1.5',
                                'Accept-Encoding': 'gzip'},
                         False: {'User-Agent': 'GoblinTeam/1.5'}}
-        self.loot_tally = 0
         self.collection = set()
         if not self.args['nodl']:
             self.make_dirs(self.path_main)
-        if self.args['url'] and self.args['verbose']:
-            print(f'[{self.__str__()}] <deployed> {self.args["url"]}')
-        else:
-            print(f'[{self.__str__()}] <deployed>')
+        print(f'[{self.__str__()}] <deployed>')
 
     def make_dirs(self, *paths):
         '''
@@ -72,7 +68,7 @@ class MetaGoblin(Parser):
         initialize a new collection
         '''
         if type(self.collection) == set:
-            self.collection = {}
+            self.collection = set()
         else:
             self.collection = []
 
@@ -201,12 +197,12 @@ class MetaGoblin(Parser):
         else:
             return False
 
-    def extract_links(self, pattern, url):
+    def extract_urls(self, pattern, url):
         '''
-        extact links from html based on regex pattern
+        extact urls from html based on regex pattern
         '''
         try:
-            return {link.group() for link in re.finditer(pattern, self.get_html(url))}
+            return {url.group() for url in re.finditer(pattern, self.get_html(url))}
         except TypeError as e:
             if self.args['verbose'] and not self.args['silent']:
                 print(f'[{self.__str__()}] <{e}>')
@@ -214,7 +210,7 @@ class MetaGoblin(Parser):
 
     def collect(self, url, filename='', clean=False):
         '''
-        finalize and add links to collection
+        finalize and add urls tof.path_main) collection
         '''
         if clean:
             url = self.sanitize(url)
@@ -227,32 +223,35 @@ class MetaGoblin(Parser):
 
     def loot(self, save_loc=None, timeout=False):
         '''
-        retrieve collected links
+        retrieve collected urls
         '''
         track = 0
-        for link in self.collection:
+        loot_tally = 0
+        timeout = False
+        for url in self.collection:
             if timeout and track >= timeout:
-                return None
-            link, filename = link.split('-break-')
+                timeout = True
+                break
+            url, filename = url.split('-break-')
             if self.args['nodl']:
-                print(link, end='\n\n')
+                print(url, end='\n\n')
                 continue
             if not save_loc:
                 save_loc = self.path_main
-            filepath = os.path.join(save_loc, f'{filename}.{self.filetype(link)}')
+            filepath = os.path.join(save_loc, f'{filename}.{self.filetype(url)}')
             if os.path.exists(filepath):
                 if not self.args['silent']:
                     print(f'[{self.__str__()}] <file exists> {filename}')
                 track += 1
                 continue
-            attempt = self.retrieve(link, filepath)
+            attempt = self.retrieve(url, filepath)
             if attempt:
                 if not self.args['silent']:
                     print(f'[{self.__str__()}] <looted> {filename}')
-                self.loot_tally += 1
+                loot_tally += 1
                 track = 0
             else:
                 track += 1
             sleep(self.args['tickrate'])
-        print(f'[{self.__str__()}] <looted> {self.loot_tally} file(s)')
-        return True
+        print(f'[{self.__str__()}] <looted> {loot_tally} file(s)')
+        return True, timeout

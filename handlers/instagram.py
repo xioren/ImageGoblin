@@ -8,14 +8,17 @@ class InstagramGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.username = self.extract_username(self.args['url'])
+        self.username = self.extract_username(self.args['targets'][self.__repr__()][0])
         self.html_local = os.path.join(os.getcwd(), 'html.txt')
         self.sub_dir = os.path.join(self.path_main, self.username)
-        self.link_pat = r'https://scontent[^"\n \']+_n\.[^"\n \']+'
+        self.url_pat = r'https://scontent[^"\n \']+_n\.[^"\n \']+'
         self.make_dirs(self.sub_dir)
 
     def __str__(self):
         return 'instagram goblin'
+
+    def __repr__(self):
+        return 'instagram'
 
     def extract_username(self, url):
         '''
@@ -42,16 +45,16 @@ class InstagramGoblin(MetaGoblin):
 
     def find_media(self, posts):
         '''
-        opens links from iterable and parses for media
+        opens urls from iterable and parses for media
         '''
         for post in posts:
             if not self.args['silent']:
                 print(f'[{self.__str__()}] <parsing> {post}')
-            content = self.extract_links(self.link_pat, f'https://www.instagram.com{post}')
-            for link in content:
-                if re.search(r'/[a-z]\d{3}x\d{3}/|ig_cache_key', link):
+            content = self.extract_urls(self.url_pat, f'https://www.instagram.com{post}')
+            for url in content:
+                if re.search(r'/[a-z]\d{3}x\d{3}/|ig_cache_key', url):
                     continue
-                self.collect(link.replace(r'\u0026', '&'), f'{self.username}_{self.extract_filename(link)}')
+                self.collect(url.replace(r'\u0026', '&'), f'{self.username}_{self.extract_filename(url)}')
             sleep(self.args['tickrate'])
 
     def run(self):

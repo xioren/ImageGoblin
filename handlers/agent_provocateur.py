@@ -8,3 +8,6 @@ class AgentProvocateurGoblin(AlphaGoblin):
 
     def __str__(self):
         return 'agent provocateur goblin'
+
+    def __repr__(self):
+        return 'agentprovocateur'

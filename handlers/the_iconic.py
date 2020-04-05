@@ -14,21 +14,25 @@ class TheIconicGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.link_pat = r'(\d+\-){2}\d\.jpg'
+        self.url_pat = r'(\d+\-){2}\d\.jpg'
 
     def __str__(self):
         return 'the iconic goblin'
+
+    def __repr__(self):
+        return 'theiconic'
 
     def extract_id(self, url):
         return re.search(r'\d+\-\d+\-', url).group()
 
     def run(self):
-        if 'img1' in self.args['url'] or 'static' in self.args['url']:
-            links = [self.args['url']]
-        else:
-            links = self.extract_links(self.link_pat, self.args['url'])
-        for link in links:
-            id = self.extract_id(link)
-            for n in range(1, 6):
-                self.collect(f'https://static.theiconic.com.au/p/{id}{n}.jpg')
+        for target in self.args['targets'][self.__repr__()]:
+            if 'img1' in target or 'static' in target:
+                urls = [target]
+            else:
+                urls = self.extract_urls(self.url_pat, target)
+            for url in urls:
+                id = self.extract_id(url)
+                for n in range(1, 6):
+                    self.collect(f'https://static.theiconic.com.au/p/{id}{n}.jpg')
         self.loot()

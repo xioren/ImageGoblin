@@ -13,5 +13,8 @@ class JennyferGoblin(GammaGoblin):
     def __str__(self):
         return 'jennyfer goblin'
 
+    def __repr__(self):
+        return 'jennyfer'
+
     def generate_modifiers(self, iter):
         pass

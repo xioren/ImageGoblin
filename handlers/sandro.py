@@ -13,5 +13,8 @@ class SandroGoblin(GammaGoblin):
     def __str__(self):
         return 'sandro goblin'
 
+    def __repr__(self):
+        return 'sandro'
+
     def generate_modifiers(self, iter):
         pass

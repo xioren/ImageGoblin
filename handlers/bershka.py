@@ -9,3 +9,6 @@ class BershkaGoblin(DeltaGoblin):
 
     def __str__(self):
         return 'bershka goblin'
+
+    def __repr__(self):
+        return 'bershka'

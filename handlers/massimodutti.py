@@ -9,3 +9,6 @@ class MassimoDuttiGoblin(DeltaGoblin):
 
     def __str__(self):
         return 'massimo dutti goblin'
+
+    def __repr__(self):
+        return 'massimodutti'

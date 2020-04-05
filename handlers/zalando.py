@@ -18,9 +18,13 @@ class ZalandoGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
+        self.toggle_collecton_type()
 
     def __str__(self):
         return 'zalando goblin'
+
+    def __repr__(self):
+        return 'zalando'
 
     def form_url(self, image, size='large'):
         '''
@@ -56,41 +60,16 @@ class ZalandoGoblin(MetaGoblin):
         # QUESTION: can this handle digit.digit formats?
         return re.sub(r'@\d+|\.(jpe*g|html|\d)', '', re.search(r'(\w+\-\w+(@\d+(\.\d)*)*(\.(jpe*g|html))*)$', self.dequery(url)).group())
 
-    def scan(self):
+    def scan(self, url):
         '''
         scan for images
         '''
-        self.toggle_collecton_type()
-        id = self.extract_id(self.args['url'])
+        self.new_collection()
+        id = self.extract_id(url)
         for n in range(1, 50):
             self.collect(self.form_url(f'{id}@{n}'))
 
-    def find_more(self):
-        '''
-        search for other images
-        '''
-        alpha = digits + upper
-        id = self.extract_id(self.args['url'])
-        ref = id
-        id = id.split('-')
-        for k in alpha:
-            new_id = f'{id[0][:-1]}{k}-{id[1]}'
-            if new_id == ref:
-                continue
-            for n in range(4, 25, 4):
-                self.collect(self.form_url(f'{new_id}@{n}', 'small'))
-
-    def create_links(self):
-        '''
-        create text file of full links of found ids (from find_more)
-        '''
-        files = os.listdir(self.path_main)
-        self.write_file([self.form_url(file) for file in links], self.external_links, iter=True)
-
     def run(self):
-        if self.args['mode'] == 'find':
-            self.find_more()
-            self.loot()
-        else:
-            self.scan()
+        for target in self.args['targets'][self.__repr__()]:
+            self.scan(target)
             self.loot(timeout=8)

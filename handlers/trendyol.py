@@ -14,21 +14,25 @@ class TrendyolGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.link_pat = r'https://img-trendyol\.mncdn\.com/Assets/ProductImages/\w+/\w+/[^" ,]+\.jpg'
+        self.url_pat = r'https://img-trendyol\.mncdn\.com/Assets/ProductImages/\w+/\w+/[^" ,]+\.jpg'
 
     def __str__(self):
         return 'trandyol goblin'
+
+    def __repr__(self):
+        return 'trandyol'
 
     def extract_base(self, url):
         return re.sub(r'\d+_[a-z]+(_[a-z]+)*\.jpg', '', url)
 
     def run(self):
-        if 'img-trendyol' in self.args['url']:
-            links = [self.args['url']]
-        else:
-            links = self.extract_links(self.link_pat, self.args['url'])
-        for link in links:
-            base = self.extract_base(link)
-            for n in range(1, 16):
-                self.collect(f'{base}{n}_org_zoom.jpg')
+        for target in self.args['targets'][self.__repr__()]:
+            if 'img-trendyol' in target:
+                urls = [target]
+            else:
+                urls = self.extract_urls(self.url_pat, target)
+            for url in urls:
+                base = self.extract_base(url)
+                for n in range(1, 16):
+                    self.collect(f'{base}{n}_org_zoom.jpg')
         self.loot()

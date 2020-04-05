@@ -26,7 +26,7 @@ class BetaGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.link_pat = r'\w+\.scene7[^" \n]+'
+        self.url_pat = r'\w+\.scene7[^" \n]+'
         self.query = '?fmt=jpeg&qlt=100&scl=1'
 
     def extract_id(self, url):
@@ -39,17 +39,18 @@ class BetaGoblin(MetaGoblin):
             return False
 
     def run(self):
-        if 'scene7' in self.args['url']:
-            links = [self.args['url']]
-        else:
-            links = self.extract_links(self.link_pat, self.args['url'])
-        for link in links:
-            if not self.correct_format(link):
-                continue
-            base = self.identify(link)
-            id = self.extract_id(link)
-            for mod in self.modifiers:
-                self.collect(f'{base}{id}{mod}{self.query}')
+        for target in self.args['targets'][self.__repr__()]:
+            if 'scene7' in target:
+                urls = [target]
+            else:
+                urls = self.extract_urls(self.url_pat, target)
+            for url in urls:
+                if not self.correct_format(url):
+                    continue
+                base = self.identify(url)
+                id = self.extract_id(url)
+                for mod in self.modifiers:
+                    self.collect(f'{base}{id}{mod}{self.query}')
         self.loot()
         if not self.args['nodl'] and not self.args['noclean']:
             self.cleanup(self.path_main)

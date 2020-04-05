@@ -8,3 +8,6 @@ class BlushGoblin(AlphaGoblin):
 
     def __str__(self):
         return 'blush goblin'
+
+    def __repr__(self):
+        return 'blush'

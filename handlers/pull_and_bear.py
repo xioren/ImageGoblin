@@ -9,3 +9,6 @@ class PullandBearGoblin(DeltaGoblin):
 
     def __str__(self):
         return 'pull&bear goblin'
+
+    def __repr__(self):
+        return 'pullandbear'

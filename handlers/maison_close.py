@@ -8,3 +8,6 @@ class MaisonCloseGoblin(AlphaGoblin):
 
     def __str__(self):
         return 'maison close goblin'
+
+    def __repr__(self):
+        return 'maisonclose'

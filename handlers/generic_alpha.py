@@ -20,16 +20,17 @@ class AlphaGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.link_pat = r'https*\:[^" \n]+media[^" \n]+\.jpe*g'
+        self.url_pat = r'https*\:[^" \n]+media[^" \n]+\.jpe*g'
         self.clean=True
 
     def run(self):
-        if 'media/catalog' in self.args['url']:
-            links = []
-            if not self.args['silent']:
-                print(f'[{self.__str__()}] <WARNING> url type not supported')
-        else:
-            links = self.extract_links(self.link_pat, self.args['url'])
-        for link in links:
-            self.collect(re.sub(r'cache/(\d/\w+/(\d+x(\d+)*/)*)*\w+/', '', link.replace('\\', '')), clean=self.clean)
+        for target in self.args['targets'][self.__repr__()]:
+            if 'media/catalog' in target:
+                urls = []
+                if not self.args['silent']:
+                    print(f'[{self.__str__()}] <WARNING> url type not supported')
+            else:
+                urls = self.extract_urls(self.url_pat, target)
+            for url in urls:
+                self.collect(re.sub(r'cache/(\d/\w+/(\d+x(\d+)*/)*)*\w+/', '', url.replace('\\', '')), clean=self.clean)
         self.loot()

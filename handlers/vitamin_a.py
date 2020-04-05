@@ -8,3 +8,6 @@ class VitaminAGoblin(ShopifyGoblin):
 
     def __str__(self):
         return 'vitamin a goblin'
+
+    def __repr__(self):
+        return 'vitamina'

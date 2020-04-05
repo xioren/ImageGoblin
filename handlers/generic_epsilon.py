@@ -23,13 +23,14 @@ class EpsilonGoblin(MetaGoblin):
         return re.sub(r'mnresize/\d+/\d+', '', self.custom(url))
 
     def run(self):
-        if 'mncdn' in self.args['url']:
-            links = [self.args['url']]
-        else:
-            links = self.extract_links(self.img_pat, self.args['url'])
-        for link in links:
-            base, _ = re.split(self.mod_pat, self.clean(link))
-            self.generate_modifiers(link)
-            for mod in self.modifiers:
-                self.collect(f'{base}{mod}{self.end}')
+        for target in self.args['targets'][self.__repr__()]:
+            if 'mncdn' in target:
+                urls = [target]
+            else:
+                urls = self.extract_urls(self.url_pat, self.args['url'])
+            for url in urls:
+                base, _ = re.split(self.mod_pat, self.clean(url))
+                self.generate_modifiers(url)
+                for mod in self.modifiers:
+                    self.collect(f'{base}{mod}{self.end}')
         self.loot()

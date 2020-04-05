@@ -12,21 +12,25 @@ class GettyGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.link_pat = r'https*[^"]+id\d+'
+        self.url_pat = r'https*[^"]+id\d+'
 
     def __str__(self):
         return 'getty goblin'
+
+    def __repr__(self):
+        return 'annsummers'
 
     def upgrade(self, image):
         id = re.search(r'id\d+', image).group()
         return f'https://media.gettyimages.com/photos/picture-{id}?s=2048x2048'
 
     def run(self):
-        if 'media' in self.args['url']:
-            # NOTE: does not scan
-            self.loot(self.upgrade(self.args['url']))
-        else:
-            links = self.extract_links(self.link_pat, self.args['url'])
-            for link in links:
-                self.collect(self.upgrade(link))
+        for target in self.args['targets'][self.__repr__()]:
+            if 'media' in target:
+                # NOTE: does not scan
+                self.loot(self.upgrade(target))
+            else:
+                urls = self.extract_urls(self.url_pat, target)
+                for url in urls:
+                    self.collect(self.upgrade(url))
         self.loot()

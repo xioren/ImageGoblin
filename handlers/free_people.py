@@ -9,6 +9,9 @@ class FreePeopleGoblin(BetaGoblin):
     def __str__(self):
         return 'free people goblin'
 
-    def identify(self, link):
+    def __repr__(self):
+        return 'freepeople'
+
+    def identify(self, url):
         self.modifiers = ('_a', '_b', '_c', '_d', '_e')
         return 'https://s7d5.scene7.com/is/image/FreePeople/'

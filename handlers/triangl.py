@@ -8,3 +8,6 @@ class TrianglGoblin(ShopifyGoblin):
 
     def __str__(self):
         return 'triangl goblin'
+
+    def __repr__(self):
+        return 'triangl'

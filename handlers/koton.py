@@ -7,10 +7,13 @@ class KotonGoblin(EpsilonGoblin):
         super().__init__(args)
         self.mod_pat = r'G\d+_zoom\d'
         self.end = '_V01.jpg'
-        self.img_pat = r'https://ktnimg\.mncdn[^" ]+zoom\d_V01\.jpg'
+        self.url_pat = r'https://ktnimg\.mncdn[^" ]+zoom\d_V01\.jpg'
 
     def __str__(self):
         return 'koton goblin'
+
+    def __repr__(self):
+        return 'annsummers'
 
     def custom(self, url):
         return url
