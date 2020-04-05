@@ -1,30 +1,30 @@
-# web goblin v1.6 by xioren
+# image goblin v1.6 by xioren
 
 ### changelog v1.6:
-  + complete rework of handler dispatching
-  + added handlers
+  + complete rework of goblin dispatching
+  + added goblins
   + code cleanup
   + bug fixes
 
 ### this program:
-  + is designed to automate the discovery and retrieval of media on a web server.
+  + is designed to automate the discovery and retrieval of images on a web server, in the highest possible quality.
   + is a work in progress.
 
 ### operation:
 
-+ *default:* inputting either a url or a text file with links (1 per line) will try to match the link(s) to a specific handler. the handler will download what images it can according to its rule set, in the highest possible quality. if no handler is matched a generic handler is used. if a text file is used, only the filename should be input, using the --local argument and the text file should be placed in the directory that the program will be ran from.
++ *default:* inputting either a url or a text file with links (1 per line) will try to match the link(s) to a specific goblin. the goblin will download what images it can according to its rule set, in the highest possible quality. if no goblin is matched a generic goblin is used. if a text file is used, only the filename should be input, using the --local argument and the text file should be placed in the directory that the program will be ran from.
 
   *examples*
 
   ```
   goblin https://www.website.com/files/image01.jpg
 
-  goblin https://www.website.com/pages/somewebpage.html --force handler
+  goblin https://www.website.com/pages/somewebpage.html --force goblin
 
   goblin --local links.txt --silent
   ```
 
-+ *generic:* for any site without a specific handler. greedy. strings can be added, substituted, or removed using a _modifier_. input the _modifier_ as the format argument. 'add _modifier_' will append the modifier to the end of the url; for example a query string. 'sub _modifier_ _replacement_' substitutes, while 'rem _modifier_' removes.
++ *generic:* for any site without a specific goblin. greedy. strings can be added, substituted, or removed using a _modifier_. input the _modifier_ as the format argument. 'add _modifier_' will append the modifier to the end of the url; for example a query string. 'sub _modifier_ _replacement_' substitutes, while 'rem _modifier_' removes.
 
     *examples*
 
@@ -72,13 +72,13 @@
 
     etc...
 
-+ *instagram:* partial support. for now, this handler will only parse the html of an instagram page that is saved to a txt file. the file should be named 'html.txt' and placed in the directory that this program is ran from. this handler will take a while to complete. the url to the instagram page or username needs to be input when ran. if only the username is passed, it is necessary to --force instagram in order to match the correct handler.
++ *instagram:* partial support. for now, this goblin will only parse the html of an instagram page that is saved to a txt file. the file should be named 'html.txt' and placed in the directory that this program is ran from. this goblin will take a while to complete. the url to the instagram page or username needs to be input when ran. if only the username is passed, it is necessary to --force instagram in order to match the correct goblin.
 
 + *feed:* using the feed argument, you can accumulate urls by inputting them one by one using the --feed mode. this is useful for accumulating urls as you find them while browsing the web, and downloading all at once.   
 
 *misc:*
-  + for the generic handler, inputting '-f auto' as an option will try to remove some common cropping patterns from image urls.
-  + a specific handler can be forced using '--force _handler_'.
-  + all available handlers can be listed using '-l or --list'.
+  + for the generic goblin, inputting '-f auto' as an option will try to remove some common cropping patterns from image urls.
+  + a specific goblin can be forced using '--force _goblin_'.
+  + all available goblins can be listed using '-l or --list'.
   + the format input needs to be exact so make sure elements/spaces/commas have not been erroneously added or left out.
   + if little or no (relevant) images are found then the page is probably generated dynamically with javascript which the program can not handle.
