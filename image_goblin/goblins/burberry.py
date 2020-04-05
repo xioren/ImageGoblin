@@ -27,6 +27,6 @@ class BurberryGoblin(MetaGoblin):
                     print(f'[{self.__str__()}] <WARNING> url type not supported')
             else:
                 urls = self.extract_urls(self.url_pat, target)
-            for url in url:
+            for url in urls:
                 self.collect(f'{url}?scl=1')
         self.loot()

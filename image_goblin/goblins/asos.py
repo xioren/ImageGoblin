@@ -53,8 +53,8 @@ class ASOSGoblin(MetaGoblin):
 
     def run(self):
         for target in self.args['targets'][self.__repr__()]:
-            color = self.extract_color(url)
-            id = self.extract_id(url)
+            color = self.extract_color(target)
+            id = self.extract_id(target)
             if color:
                 self.collect(self.form_url(f'{id}-1-{color}', True))
             for n in range(2, 5):
