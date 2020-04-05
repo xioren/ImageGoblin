@@ -21,7 +21,7 @@ class CAGoblin(MetaGoblin):
         return 'c&a goblin'
 
     def __repr__(self):
-        return 'c&a'
+        return 'canda'
 
     def extract_id(self, url):
         return re.search(r'/\d+-\d+', url).group()

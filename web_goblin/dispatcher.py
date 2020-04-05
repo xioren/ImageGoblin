@@ -3,7 +3,7 @@ import os
 from manifest import handlers
 
 
-class Coordinator:
+class Dispatcher:
 
     def __init__(self, args):
         self.args = args
@@ -14,7 +14,7 @@ class Coordinator:
                 return key
         return 'generic'
 
-    def deploy(self):
+    def dispatch(self):
         url_assignment = {}
         if self.args['list']:
             for key in handlers:

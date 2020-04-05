@@ -19,7 +19,7 @@ class HMGoblin(MetaGoblin):
         return 'h&m goblin'
 
     def __repr__(self):
-        return 'h&m'
+        return 'handm'
 
     def extract_source(self, url):
         return re.search(r'source\[[\w\./]+\]', url).group().replace('source[', '').rstrip(']')

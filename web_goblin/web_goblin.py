@@ -2,7 +2,7 @@
 
 
 from argparse import ArgumentParser
-from coordinator import Coordinator
+from dispatcher import Dispatcher
 
 
 parser = ArgumentParser()
@@ -40,4 +40,4 @@ args_dict = {'targets': args.target, 'mode': args.mode, 'timeout': args.timeout,
 
 
 if __name__ == '__main__':
-    Coordinator(args_dict).deploy()
+    Dispatcher(args_dict).dispatch()
