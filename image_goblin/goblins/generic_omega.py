@@ -1,6 +1,6 @@
 import re
 import os
-from goblins.meta_goblin import MetaGoblin
+from goblins.meta import MetaGoblin
 
 
 class OmegaGoblin(MetaGoblin):

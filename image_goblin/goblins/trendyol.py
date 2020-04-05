@@ -1,5 +1,5 @@
 import re
-from goblins.meta_goblin import MetaGoblin
+from goblins.meta import MetaGoblin
 
 # NOTE: may have switched to new cdn; investigate.
 # legacy: https://www.trendyol.com/assets/product/media/images/20191021/17/449253/57309150/5/5_org_zoom.jpg

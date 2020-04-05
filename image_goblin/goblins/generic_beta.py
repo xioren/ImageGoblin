@@ -1,5 +1,5 @@
 import re
-from goblins.meta_goblin import MetaGoblin
+from goblins.meta import MetaGoblin
 
 
 # NOTE: fmt=png works as well

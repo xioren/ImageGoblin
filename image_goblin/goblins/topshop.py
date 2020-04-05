@@ -1,5 +1,5 @@
 from parsing import *
-from goblins.meta_goblin import MetaGoblin
+from goblins.meta import MetaGoblin
 
 
 class TopshopGoblin(MetaGoblin):

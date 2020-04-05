@@ -1,5 +1,5 @@
 import re
-from goblins.meta_goblin import MetaGoblin
+from goblins.meta import MetaGoblin
 
 # BUG: does not work ---> different (new) url formats to consider
 

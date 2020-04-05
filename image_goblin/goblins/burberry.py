@@ -1,5 +1,5 @@
 import re
-from goblins.meta_goblin import MetaGoblin
+from goblins.meta import MetaGoblin
 
 
 class BurberryGoblin(MetaGoblin):
@@ -11,7 +11,7 @@ class BurberryGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.url_pat = r'https*://assets.burberry[^"]+\.jpe*g'
+        self.url_pat = r'https?://assets\.burberry[^" ]+'
 
     def __str__(self):
         return 'burberry goblin'
@@ -28,5 +28,5 @@ class BurberryGoblin(MetaGoblin):
             else:
                 urls = self.extract_urls(self.url_pat, target)
             for url in urls:
-                self.collect(f'{url}?scl=1')
+                self.collect(f'{self.dequery(url)}?scl=1')
         self.loot()

@@ -1,5 +1,5 @@
 import re
-from goblins.meta_goblin import MetaGoblin
+from goblins.meta import MetaGoblin
 
 
 class PrettyLittleThingGoblin(MetaGoblin):
@@ -29,4 +29,4 @@ class PrettyLittleThingGoblin(MetaGoblin):
                 urls = self.extract_urls(self.url_pat, target)
             for url in urls:
                 self.collect(url, clean=True)
-        self.loot(self.collection)
+        self.loot()

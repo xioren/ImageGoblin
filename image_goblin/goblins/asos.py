@@ -1,7 +1,7 @@
 import re
 import os
 from time import sleep
-from goblins.meta_goblin import MetaGoblin
+from goblins.meta import MetaGoblin
 
 
 # alternate scaled: '?wid=2239&hei=2857&size=2239,2857&qlt=100'

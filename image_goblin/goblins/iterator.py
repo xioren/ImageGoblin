@@ -1,7 +1,7 @@
 import os
 import re
 from time import sleep
-from goblins.meta_goblin import MetaGoblin
+from goblins.meta import MetaGoblin
 
 # TODO: implement natural sorting
 

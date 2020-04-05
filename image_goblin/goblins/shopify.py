@@ -1,7 +1,7 @@
 import re
-from goblins.meta_goblin import MetaGoblin
+from goblins.meta import MetaGoblin
 
-# TODO: add site specific iteration
+# TODO: add site specific iteration and scannable flag
 
 class ShopifyGoblin(MetaGoblin):
 

@@ -1,8 +1,5 @@
 import re
-import os
-from time import sleep
-from string import ascii_uppercase as upper, digits
-from goblins.meta_goblin import MetaGoblin
+from goblins.meta import MetaGoblin
 
 
 # NOTE: video format: https://mosaic04.ztat.net.vgs.content/08/12/1C/0I/6Q/11/VIDEO/HIGH_QUALITY/1572009797216.mp4

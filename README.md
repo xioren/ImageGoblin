@@ -7,12 +7,12 @@
   + bug fixes
 
 ### this program:
-  + is designed to automate the discovery and retrieval of images on a web server.
+  + is a web scraping tool specifically for images.
   + is a work in progress.
 
 ### operation:
 
-+ *default:* inputting either a url or a text file with links (1 per line) will try to match the link(s) to a specific goblin. the goblin will download what images it can according to its rule set, in the highest possible quality. if no goblin is matched a generic goblin is used. if a text file is used, only the filename should be input, using the --local argument and the text file should be placed in the directory that the program will be ran from.
++ *default:* inputting either a url or a text file containing urls (1 per line) will try to match the url(s) to a specific goblin. the goblin will download what images it can according to its rule set, in the highest possible quality. if no goblin is matched a generic goblin is used. if a text file is used, only the filename should be input, using the --local argument and the text file should be placed in the directory that the program will be ran from.
 
   *examples:*
 
@@ -21,7 +21,7 @@
 
   goblin https://www.website.com/pages/somewebpage.html --force goblin
 
-  goblin --local links.txt --silent
+  goblin --local urls.txt --silent
   ```
 
 + *generic:* for any site without a specific goblin. greedy. strings can be added, substituted, or removed using a _modifier_. input the _modifier_ as the format argument. 'add _modifier_' will append the modifier to the end of the url; for example a query string. 'sub _modifier_ _replacement_' substitutes, while 'rem _modifier_' removes.
