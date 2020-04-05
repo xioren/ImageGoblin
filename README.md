@@ -1,12 +1,8 @@
-# web goblin v1.5 by xioren
+# web goblin v1.6 by xioren
 
-### changelog v1.5:
-  + homogenize variable names
-  + removed --all argument
-  + modified hungry goblin behavior
-  + removed strings module
-  + new handlers
-  + removed unused handlers
+### changelog v1.6:
+  + complete rework of handler dispatching
+  + added handlers
   + code cleanup
   + bug fixes
 
