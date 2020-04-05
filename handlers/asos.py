@@ -8,6 +8,7 @@ from handlers.meta_goblin import MetaGoblin
 
 
 class ASOSGoblin(MetaGoblin):
+
     '''
     accepts:
         - image
@@ -16,11 +17,6 @@ class ASOSGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.path_dl = os.path.join(self.path_main, 'fullsize')
-        self.path_scanned = os.path.join(self.path_main, 'scanned')
-        self.path_backup = os.path.join(self.path_main, 'backup')
-        self.path_external = os.path.join(os.getcwd(), 'asos')
-        self.query = '?scl=1&qlt=100'
 
     def __str__(self):
         return 'asos goblin'
@@ -47,7 +43,7 @@ class ASOSGoblin(MetaGoblin):
         if not re.search(r'\-[a-z0-9]+$', id):
             id += '-2'
         url = f'https://images.asos-media.com/products/asos/{id}'
-        return url + self.query if large else url
+        return url + '?scl=1&qlt=100' if large else url
 
     def extract_id(self, url):
         '''
@@ -55,19 +51,12 @@ class ASOSGoblin(MetaGoblin):
         '''
         return re.search(r'\d+', url).group()
 
-
-    def grab(self, url):
-        '''
-        grab a single url in high res
-        '''
-        color = self.extract_color(url)
-        id = self.extract_id(url)
-        if color:
-            self.collect(self.form_url(f'{id}-1-{color}', True))
-        for n in range(2, 5):
-            self.collect(self.form_url(f'{id}-{n}', True))
-
     def run(self):
         for target in self.args['targets'][self.__repr__()]:
-            self.grab(target)
+            color = self.extract_color(url)
+            id = self.extract_id(url)
+            if color:
+                self.collect(self.form_url(f'{id}-1-{color}', True))
+            for n in range(2, 5):
+                self.collect(self.form_url(f'{id}-{n}', True))
         self.loot()
