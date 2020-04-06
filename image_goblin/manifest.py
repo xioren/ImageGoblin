@@ -81,6 +81,7 @@ from goblins.triangl import TrianglGoblin
 from goblins.underprotection import UnderprotectionGoblin
 from goblins.urban_outfitters import UrbanOutfittersGoblin
 from goblins.victorias_secret import VictoriasSecretGoblin
+from goblins.vila import VilaGoblin
 from goblins.vitamin_a import VitaminAGoblin
 from goblins.wolford import WolfordGoblin
 from goblins.womens_secret import WomensSecretGoblin
@@ -176,6 +177,7 @@ goblins = {
             'underprotection': (r'underprotection', UnderprotectionGoblin),
             'urbanoutfitters':(r'urbanoutfitters(eu)*', UrbanOutfittersGoblin),
             'victoriassecret': (r'victoriassecret', VictoriasSecretGoblin),
+            'vila': (r'vila', VilaGoblin),
             'vitamina': (r'vitaminaswim', VitaminAGoblin),
             'wolford': (r'wolfordshop', WolfordGoblin),
             'womensecret': (r'womensecret', WomensSecretGoblin),

@@ -19,12 +19,13 @@ class GammaGoblin(MetaGoblin):
         - marlies dekkers
         - sandro
         - springfield
+        - vila
         - womens secret
     '''
 
     def __init__(self, args):
         super().__init__(args)
-        self.url_pat = fr'[^" ]+demandware[^" ]+\d+_\d\.jpg'
+        self.url_pat = r'[^" ]+demandware[^" ]+.jpg'
 
     def extract_parts(self, url):
         iter = re.search(self.iter, url).group()
@@ -41,6 +42,8 @@ class GammaGoblin(MetaGoblin):
             else:
                 urls = self.extract_urls(self.url_pat, target)
             for url in urls:
+                if not re.search(self.img_pat, url):
+                    continue
                 id, iter, end = self.extract_parts(self.isolate(url))
                 # self.generate_modifiers(iter)
                 for mod in self.modifiers:

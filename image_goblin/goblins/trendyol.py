@@ -20,14 +20,14 @@ class TrendyolGoblin(MetaGoblin):
         return 'trandyol goblin'
 
     def __repr__(self):
-        return 'trandyol'
+        return 'trendyol'
 
     def extract_base(self, url):
-        return re.sub(r'\d+_[a-z]+(_[a-z]+)*\.jpg', '', url)
+        return re.sub(r'\d+_[a-z]+(_[a-z]+)?\.jpg', '', url)
 
     def run(self):
         for target in self.args['targets'][self.__repr__()]:
-            if 'img-trendyol' in target:
+            if 'ProductImages' in target:
                 urls = [target]
             else:
                 urls = self.extract_urls(self.url_pat, target)
