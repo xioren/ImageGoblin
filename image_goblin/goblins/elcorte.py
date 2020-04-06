@@ -4,9 +4,7 @@ from goblins.meta import MetaGoblin
 # BUG: does not work ---> different (new) url formats to consider
 
 class ElcorteGoblin(MetaGoblin):
-
-    '''
-    accepts:
+    '''accepts:
         - image
         - webpage
     '''
@@ -22,9 +20,11 @@ class ElcorteGoblin(MetaGoblin):
         return 'elcorteingles'
 
     def remove_end(self, url):
+        '''strip end of url returning only the base'''
         return re.sub(r'\d+_+\d+x\d+.jpg', '', url)
 
     def extract_id(self, url):
+        '''extract image id from url'''
         return re.search(r'([A-Za-z\d]+_){2}', url).group().strip('_')
 
     def run(self):

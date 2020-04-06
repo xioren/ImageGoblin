@@ -6,9 +6,7 @@ from goblins.meta import MetaGoblin
 
 
 class CAGoblin(MetaGoblin):
-
-    '''
-    accepts:
+    '''accepts:
         - image
         - webpage
     '''
@@ -24,6 +22,7 @@ class CAGoblin(MetaGoblin):
         return 'canda'
 
     def extract_id(self, url):
+        '''extract image id from url'''
         return re.search(r'/\d+-\d+', url).group()
 
     def run(self):

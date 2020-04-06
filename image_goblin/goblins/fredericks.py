@@ -3,9 +3,7 @@ from goblins.meta import MetaGoblin
 
 
 class FredericksGoblin(MetaGoblin):
-
-    '''
-    accepts:
+    '''accepts:
         - image
     '''
 

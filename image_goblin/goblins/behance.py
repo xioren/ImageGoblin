@@ -4,9 +4,7 @@ from goblins.meta import MetaGoblin
 # TODO: needs better approach
 
 class BehanceGoblin(MetaGoblin):
-
-    '''
-    accepts:
+    '''accepts:
         - image
     '''
 
@@ -23,6 +21,7 @@ class BehanceGoblin(MetaGoblin):
         return 'behance'
 
     def fit(self, url, size):
+        '''sub size into url'''
         return re.sub(self.size_pat, size, url)
 
     def run(self):

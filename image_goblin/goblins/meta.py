@@ -10,6 +10,8 @@ from parsing import Parser
 
 
 class MetaGoblin(Parser):
+    '''common methods inherited by all other goblins
+    '''
 
     def __init__(self, args):
         super().__init__()
@@ -27,16 +29,13 @@ class MetaGoblin(Parser):
         print(f'[{self.__str__()}] <deployed>')
 
     def make_dirs(self, *paths):
-        '''
-        creates directories
-        '''
+        '''creates directories'''
         for path in paths:
             if not os.path.exists(path):
                 os.makedirs(path)
 
     def cleanup(self, path):
-        '''
-        cleanup small unwanted files (icons, thumbnails, etc...)
+        '''cleanup small unwanted files (icons, thumbnails, etc...)
         default 50kb threshold
         '''
         # NOTE:  dangerous, consider recieving file manifest instead?
@@ -55,40 +54,30 @@ class MetaGoblin(Parser):
                         continue
 
     def toggle_collecton_type(self, reverse=False):
-        '''
-        toggle collection type between list and set
-        '''
+        '''toggle collection type between list and set'''
         if type(self.collection) == set:
             self.collection = []
         else:
             self.collection = {}
 
     def new_collection(self):
-        '''
-        initialize a new collection
-        '''
+        '''initialize a new collection'''
         if type(self.collection) == set:
             self.collection = set()
         else:
             self.collection = []
 
     def grab_vid(self, url):
-        '''
-        download a video in best quality, primarily for vimeo
-        '''
+        '''download a video in best quality, primarily for vimeo'''
         filename = self.extract_filename(url)
         os.system(f'youtube-dl --output {self.path_main}/{filename} {url}')
 
     def filter(self, iterable):
-        '''
-        remove duplicates from a list
-        '''
+        '''remove duplicates from a list'''
         return set(iterable)
 
     def unzip(self, data):
-        '''
-        gzip decompression
-        '''
+        '''gzip decompression'''
         try:
             return decompress(data)
         except OSError:
@@ -97,9 +86,7 @@ class MetaGoblin(Parser):
             return None
 
     def retrieve(self, url, path='', n=0, gzip=True, save=True):
-        '''
-        retrieve web content
-        '''
+        '''retrieve web content'''
         request = Request(url, None, self.headers[gzip])
         try:
             with urlopen(request, timeout=20) as response:
@@ -137,9 +124,7 @@ class MetaGoblin(Parser):
         return True
 
     def retry(self, url, n, path, save, error):
-        '''
-        retry connection after a socket timeout
-        '''
+        '''retry connection after a socket timeout'''
         if not self.args['silent']:
             print(f'[{self.__str__()}] <{error}> retry attempt {n}')
         if n > 5:
@@ -151,15 +136,11 @@ class MetaGoblin(Parser):
         return self.retrieve(url, path, n, save)
 
     def get_html(self, url, n=0, gzip=True):
-        '''
-        retrieve web page html
-        '''
+        '''retrieve web page html'''
         return self.retrieve(url, save=False)
 
     def write_file(self, data, path, mode='w', iter=False):
-        '''
-        write to disk
-        '''
+        '''write to disk'''
         try:
             with open(path, mode) as file:
                 if iter:
@@ -172,9 +153,7 @@ class MetaGoblin(Parser):
                 print(f'[{self.__str__()}] <{e}> {path}')
 
     def read_file(self, path, iter=False):
-        '''
-        read txt file
-        '''
+        '''read txt file'''
         try:
             with open(path, 'r') as file:
                 if iter:
@@ -186,9 +165,7 @@ class MetaGoblin(Parser):
                 print(f'[{self.__str__()}] <{e}> {path}')
 
     def is_duplicate(self, path, url):
-        '''
-        check for filename duplicates
-        '''
+        '''check for filename duplicates'''
         local_files = set()
         for root, dirs, files in os.walk(path):
             for file in files:
@@ -199,9 +176,7 @@ class MetaGoblin(Parser):
             return False
 
     def extract_urls(self, pattern, url):
-        '''
-        extact urls from html based on regex pattern
-        '''
+        '''extact urls from html based on regex pattern'''
         try:
             return {url.group() for url in re.finditer(pattern, self.get_html(url))}
         except TypeError as e:
@@ -210,9 +185,7 @@ class MetaGoblin(Parser):
             return ''
 
     def collect(self, url, filename='', clean=False):
-        '''
-        finalize and add urls tof.path_main) collection
-        '''
+        '''finalize and add urls tof.path_main) collection'''
         if clean:
             url = self.sanitize(url)
         if not filename:
@@ -223,9 +196,7 @@ class MetaGoblin(Parser):
             self.collection.append(f'{self.finalize(url)}-break-{filename}')
 
     def loot(self, save_loc=None, timeout=False):
-        '''
-        retrieve collected urls
-        '''
+        '''retrieve collected urls'''
         track = 0
         loot_tally = 0
         timeout = False

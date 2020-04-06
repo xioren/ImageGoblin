@@ -3,11 +3,7 @@ from goblins.meta import MetaGoblin
 
 
 class TheIconicGoblin(MetaGoblin):
-
-    '''
-    mode options:
-        -
-    accepts:
+    '''accepts:
         - image
         - webpage
     '''
@@ -23,6 +19,7 @@ class TheIconicGoblin(MetaGoblin):
         return 'theiconic'
 
     def extract_id(self, url):
+        '''extract image id from url'''
         return re.search(r'\d+\-\d+\-', url).group()
 
     def run(self):

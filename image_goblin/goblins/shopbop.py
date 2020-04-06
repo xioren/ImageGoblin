@@ -3,9 +3,7 @@ from goblins.meta import MetaGoblin
 
 
 class ShopbopGoblin(MetaGoblin):
-
-    '''
-    accepts:
+    '''accepts:
         - image
         - webpage
     '''

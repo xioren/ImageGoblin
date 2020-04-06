@@ -20,6 +20,8 @@ parser.add_argument('--force', help='force a specific goblin')
 parser.add_argument('--list', help='list available goblins', action='store_true')
 parser.add_argument('--nosort', help='download directly to current directory, without creating sub dirs',
                     action='store_true')
+parser.add_argument('--noupgrade', help='do not remove cropping',
+                    action='store_true')
 parser.add_argument('--noclean', help='do not remove small files',
                     action='store_true')
 parser.add_argument('--feed', help='input urls one at a time',
@@ -34,7 +36,7 @@ args_dict = {'targets': args.target, 'mode': args.mode, 'timeout': args.timeout,
              'silent': args.silent, 'tickrate': args.rate, 'local': args.local,
              'force': args.force, 'list': args.list, 'nosort': args.nosort,
              'noclean': args.noclean, 'feed': args.feed,
-             'verbose': args.verbose}
+             'verbose': args.verbose, 'noupgrade': args.noupgrade}
 
 
 if __name__ == '__main__':

@@ -4,9 +4,7 @@ from goblins.generic_omega import MetaGoblin
 # NOTE: can use gamma goblin but has no real conistancy with filenames or urls
 
 class WolfordGoblin(MetaGoblin):
-
-    '''
-    accepts:
+    '''accepts:
         - image
     '''
 
@@ -24,6 +22,7 @@ class WolfordGoblin(MetaGoblin):
         return 'wolford'
 
     def prep(self, url):
+        '''strip cropping from url'''
         return re.sub(r'default/\w+/images', 'default/images', url).replace('dw/image/v2/BBCH_PRD/', '')
 
     def run(self):

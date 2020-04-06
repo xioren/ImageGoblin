@@ -3,9 +3,7 @@ from goblins.meta import MetaGoblin
 
 
 class PrettyLittleThingGoblin(MetaGoblin):
-
-    '''
-    accepts:
+    '''accepts:
         - image
     '''
 

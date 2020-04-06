@@ -3,9 +3,7 @@ from goblins.meta import MetaGoblin
 
 
 class GettyGoblin(MetaGoblin):
-
-    '''
-    accepts:
+    '''accepts:
         - image
         - webpage
     '''
@@ -21,6 +19,7 @@ class GettyGoblin(MetaGoblin):
         return 'getty'
 
     def upgrade(self, image):
+        '''sub in higher resolution cropping'''
         id = re.search(r'id\d+', image).group()
         return f'https://media.gettyimages.com/photos/picture-{id}?s=2048x2048'
 

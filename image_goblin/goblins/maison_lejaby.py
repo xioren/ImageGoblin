@@ -3,9 +3,7 @@ from goblins.meta import MetaGoblin
 
 
 class MaisonLejabyGoblin(MetaGoblin):
-
-    '''
-    accepts:
+    '''accepts:
         - image
         - webpage
     '''

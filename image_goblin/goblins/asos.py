@@ -8,9 +8,7 @@ from goblins.meta import MetaGoblin
 
 
 class ASOSGoblin(MetaGoblin):
-
-    '''
-    accepts:
+    '''accepts:
         - image
         - webpage
     '''
@@ -25,9 +23,7 @@ class ASOSGoblin(MetaGoblin):
         return 'asos'
 
     def extract_color(self, url):
-        '''
-        extract color from url
-        '''
+        '''extract color from url'''
         if 'images.asos-media' in url:
             color = re.search(r'\d+\-\d\-\w+', url)
         else:
@@ -36,9 +32,7 @@ class ASOSGoblin(MetaGoblin):
             return re.sub(r'\d+-\d-', '', color.group().lstrip('clr='))
 
     def form_url(self, id, large=False):
-        '''
-        generate a url from an image id
-        '''
+        '''generate a url from an image id'''
         id = str(id)
         if not re.search(r'\-[a-z0-9]+$', id):
             id += '-2'
@@ -46,9 +40,7 @@ class ASOSGoblin(MetaGoblin):
         return url + '?scl=1&qlt=100' if large else url
 
     def extract_id(self, url):
-        '''
-        pull image id from url
-        '''
+        '''pull image id from url'''
         return re.search(r'\d+', url).group()
 
     def run(self):

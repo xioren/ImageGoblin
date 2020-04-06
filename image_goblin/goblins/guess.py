@@ -3,9 +3,7 @@ from goblins.meta import MetaGoblin
 
 
 class GuessGoblin(MetaGoblin):
-
-    '''
-    accepts:
+    '''accepts:
         - image
     '''
 

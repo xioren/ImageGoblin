@@ -3,9 +3,7 @@ from goblins.meta import MetaGoblin
 
 
 class VictoriasSecretGoblin(MetaGoblin):
-
-    '''
-    accepts:
+    '''accepts:
         - image
     '''
 
@@ -19,6 +17,7 @@ class VictoriasSecretGoblin(MetaGoblin):
         return 'victoriassecret'
 
     def extract(self, url):
+        '''extract filename'''
         return re.search(r'\w+.jpg', url).group()
 
     def run(self):

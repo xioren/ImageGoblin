@@ -9,12 +9,14 @@ class Dispatcher:
         self.args = args
 
     def identify(self, url):
+        '''match url to goblin via regex'''
         for key in goblins:
             if re.search(goblins[key][0], url, re.IGNORECASE):
                 return key
         return 'generic'
 
     def dispatch(self):
+        '''identify and deploy goblins according to input url(s)'''
         url_assignment = {}
         if self.args['list']:
             for key in goblins:

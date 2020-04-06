@@ -3,9 +3,7 @@ from goblins.meta import MetaGoblin
 
 
 class SavageXGoblin(MetaGoblin):
-
-    '''
-    accepts:
+    '''accepts:
         - image
         - webpage
     '''
@@ -21,6 +19,7 @@ class SavageXGoblin(MetaGoblin):
         return 'savagex'
 
     def strip(self, url):
+        '''strip end of url and return the base'''
         return re.sub(r'(LAYDOWN|\d)\-\d+x\d+.jpg', '', url)
 
     def run(self):

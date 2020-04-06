@@ -16,6 +16,7 @@ class KotonGoblin(EpsilonGoblin):
         return 'koton'
 
     def custom(self, url):
+        # unused
         return url
 
     def generate_modifiers(self, url):

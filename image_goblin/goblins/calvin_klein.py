@@ -5,7 +5,7 @@ class CalvinKleinGoblin(BetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.query = '?fmt=jpeg&qlt=100&scl=1.3'
+        self.query = '?fmt=jpeg&qlt=100&scl=1.4'
 
     def __str__(self):
         return 'calvin klein goblin'

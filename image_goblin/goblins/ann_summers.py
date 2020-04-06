@@ -6,9 +6,7 @@ from goblins.meta import MetaGoblin
 
 
 class AnnSummersGoblin(MetaGoblin):
-
-    '''
-    accepts:
+    '''accepts:
         - image
         - webpage
     '''

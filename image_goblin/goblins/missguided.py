@@ -3,9 +3,7 @@ from goblins.meta import MetaGoblin
 
 
 class MissguidedGoblin(MetaGoblin):
-
-    '''
-    accepts:
+    '''accepts:
         - image
     '''
 
@@ -19,6 +17,7 @@ class MissguidedGoblin(MetaGoblin):
         return 'missguided'
 
     def extract_id(self, url):
+        '''extract image id from url'''
         return re.search(r'[A-Z\d]+', url).group().upper()
 
     def run(self):

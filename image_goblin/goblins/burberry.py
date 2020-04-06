@@ -3,9 +3,7 @@ from goblins.meta import MetaGoblin
 
 
 class BurberryGoblin(MetaGoblin):
-
-    '''
-    accepts:
+    '''accepts:
         - webpage
     '''
 

@@ -3,9 +3,7 @@ from goblins.meta import MetaGoblin
 
 
 class ZetaGoblin(MetaGoblin):
-
-    '''
-    handles: Calzedonia Group
+    '''handles: Calzedonia Group
     accepts:
         - image
         - webpage
@@ -26,6 +24,7 @@ class ZetaGoblin(MetaGoblin):
         return 'zeta'
 
     def prep(self, url):
+        '''remove cropping, end of url and return base'''
         return re.sub(r'h/\d+/', '', re.sub(r'w/\d+', 'w/3400', re.sub(r'[A-Z0-9]+\.jpg', '', url)))
 
     def run(self):

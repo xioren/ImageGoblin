@@ -4,9 +4,7 @@ from goblins.meta import MetaGoblin
 # NOTE: may work for trendyol
 
 class EpsilonGoblin(MetaGoblin):
-
-    '''
-    handles: Medianova CDN
+    '''handles: Medianova CDN
     docs: https://docs.medianova.com/image-resize-and-optimization-module/
     accepts:
         - image
@@ -19,7 +17,7 @@ class EpsilonGoblin(MetaGoblin):
     def __init__(self, args):
         super().__init__(args)
 
-    def clean(self, url):
+    def decrop(self, url):
         return re.sub(r'mnresize/\d+/\d+', '', self.custom(url))
 
     def run(self):
@@ -29,7 +27,7 @@ class EpsilonGoblin(MetaGoblin):
             else:
                 urls = self.extract_urls(self.url_pat, target)
             for url in urls:
-                base, _ = re.split(self.mod_pat, self.clean(url))
+                base, _ = re.split(self.mod_pat, self.decrop(url))
                 self.generate_modifiers(url)
                 for mod in self.modifiers:
                     self.collect(f'{base}{mod}{self.end}')

@@ -3,9 +3,7 @@ from goblins.meta import MetaGoblin
 
 
 class WoodWoodGoblin(MetaGoblin):
-
-    '''
-    accepts:
+    '''accepts:
         - image
     '''
 
@@ -19,10 +17,12 @@ class WoodWoodGoblin(MetaGoblin):
         return 'woodwood'
 
     def extract_id(self, url):
+        '''extract image id from url'''
         return re.search(r'/\d+/\d+/', url).group().strip('/').split('/')
 
     def extract_name(self, url):
-        return re.sub(r'\d+x\d+c', '1600x2400c',re.search(r'[^ "/]+\.jpg$', url).group().replace('.jpg', ''))
+        '''extract name id from url and sub in higher resolution cropping'''
+        return re.sub(r'\d+x\d+c', '1600x2400c', re.search(r'[^ "/]+\.jpg$', url).group().replace('.jpg', ''))
 
     def run(self):
         for target in self.args['targets'][self.__repr__()]:

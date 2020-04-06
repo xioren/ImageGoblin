@@ -6,9 +6,7 @@ from goblins.meta import MetaGoblin
 
 
 class BetaGoblin(MetaGoblin):
-
-    '''
-    handles: Adobe Dynamic Media Image Serving and Image Rendering API (scene7)
+    '''handles: Adobe Dynamic Media Image Serving and Image Rendering API (scene7)
     docs: https://docs.adobe.com/content/help/en/dynamic-media-developer-resources/image-serving-api/image-serving-api/http-protocol-reference/command-reference/c-command-reference.html
     accepts:
         - image
@@ -30,9 +28,11 @@ class BetaGoblin(MetaGoblin):
         self.query = '?fmt=jpeg&qlt=100&scl=1'
 
     def extract_id(self, url):
+        '''extract image id from url'''
         return re.search(r'[A-Za-z0-9]+_([A-Za-z0-9]+)*', url).group()
 
     def correct_format(self, url):
+        '''check if the url is of the correct format'''
         if re.search(r'[a-z0-9]+_([a-z0-9]+)*', url):
             return True
         else:

@@ -5,9 +5,7 @@ from goblins.meta import MetaGoblin
 # legacy: https://www.trendyol.com/assets/product/media/images/20191021/17/449253/57309150/5/5_org_zoom.jpg
 
 class TrendyolGoblin(MetaGoblin):
-
-    '''
-    accepts:
+    '''accepts:
         - image
         - webpage
     '''
@@ -23,6 +21,7 @@ class TrendyolGoblin(MetaGoblin):
         return 'trendyol'
 
     def extract_base(self, url):
+        '''extract base of url'''
         return re.sub(r'\d+_[a-z]+(_[a-z]+)?\.jpg', '', url)
 
     def run(self):

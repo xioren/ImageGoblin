@@ -3,9 +3,7 @@ from goblins.meta import MetaGoblin
 
 
 class BoohooGoblin(MetaGoblin):
-
-    '''
-    accepts:
+    '''accepts:
         - image
         - webpage
     '''
@@ -23,6 +21,7 @@ class BoohooGoblin(MetaGoblin):
         return 'boohoo'
 
     def extract_id(self, url):
+        '''extract image id from url'''
         return re.search(r'[a-z\d]+_[a-z\d]+_xl', url).group()
 
     def run(self):

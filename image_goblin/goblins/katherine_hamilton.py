@@ -3,9 +3,7 @@ from goblins.meta import MetaGoblin
 
 
 class KatherineHamiltonGoblin(MetaGoblin):
-
-    '''
-    accepts:
+    '''accepts:
         - webpage
     '''
 

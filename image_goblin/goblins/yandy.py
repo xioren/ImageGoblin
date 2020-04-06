@@ -3,9 +3,7 @@ from goblins.meta import MetaGoblin
 
 
 class YandyGoblin(MetaGoblin):
-
-    '''
-    accepts:
+    '''accepts:
         - webpage
     '''
 

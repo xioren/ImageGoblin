@@ -4,9 +4,7 @@ from goblins.meta import MetaGoblin
 # NOTE: removing origin works in some cases, are there different origins?
 
 class HMGoblin(MetaGoblin):
-
-    '''
-    accepts:
+    '''accepts:
         - image
         - webpage
     '''
@@ -22,6 +20,7 @@ class HMGoblin(MetaGoblin):
         return 'handm'
 
     def extract_source(self, url):
+        '''extract source path from url'''
         return re.search(r'source\[[\w\./]+\]', url).group().replace('source[', '').rstrip(']')
 
     def run(self):

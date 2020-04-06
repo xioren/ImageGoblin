@@ -3,9 +3,7 @@ from goblins.meta import MetaGoblin
 
 
 class TallyWeijlGoblin(MetaGoblin):
-
-    '''
-    accepts:
+    '''accepts:
         - webpage
     '''
 

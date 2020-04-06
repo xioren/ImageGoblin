@@ -3,11 +3,7 @@ from goblins.meta import MetaGoblin
 
 
 class SsenseGoblin(MetaGoblin):
-
-    '''
-    mode options:
-        -
-    accepts:
+    '''accepts:
         - image
     '''
 
@@ -21,6 +17,7 @@ class SsenseGoblin(MetaGoblin):
         return 'ssense'
 
     def extract_id(self, url):
+        '''extract image id from url'''
         return re.search(r'[A-Z\d]+_\d', url).group()[:-2]
 
     def run(self):

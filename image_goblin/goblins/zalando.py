@@ -6,9 +6,7 @@ from goblins.meta import MetaGoblin
 
 
 class ZalandoGoblin(MetaGoblin):
-
-    '''
-    accepts:
+    '''accepts:
         - image
         - webpage
     '''
@@ -24,9 +22,7 @@ class ZalandoGoblin(MetaGoblin):
         return 'zalando'
 
     def form_url(self, image, size='large'):
-        '''
-        form url from filename
-        '''
+        '''form url from filename'''
         # TODO: does not handle digit.digit formats
         image = re.sub('.jpe*g', '', image).upper()
         if not re.search(r'@\d+', image):
@@ -39,9 +35,7 @@ class ZalandoGoblin(MetaGoblin):
             return f'https://mosaic01.ztat.net/vgs/media/original/{compounded}.jpg'
 
     def identify(self, url):
-        '''
-        identify url type
-        '''
+        '''identify url type'''
         if '.html' in url:
             return 'page'
         elif len(url) < 15:
@@ -50,17 +44,13 @@ class ZalandoGoblin(MetaGoblin):
             return 'image'
 
     def extract_id(self, url):
-        '''
-        extract image id
-        '''
+        '''extract image id from url'''
         # # WARNING: will throw exception if non zalando images are input
         # QUESTION: can this handle digit.digit formats?
         return re.sub(r'@\d+|\.(jpe*g|html|\d)', '', re.search(r'(\w+\-\w+(@\d+(\.\d)*)*(\.(jpe*g|html))*)$', self.dequery(url)).group())
 
     def scan(self, url):
-        '''
-        scan for images
-        '''
+        '''scan for imagess'''
         self.new_collection()
         id = self.extract_id(url)
         for n in range(1, 50):

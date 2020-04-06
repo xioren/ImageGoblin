@@ -3,8 +3,7 @@ from goblins.meta import MetaGoblin
 
 
 class LePetitTrouGoblin(MetaGoblin):
-    '''
-    accepts:
+    '''accepts:
         - image
         - webpage
     '''

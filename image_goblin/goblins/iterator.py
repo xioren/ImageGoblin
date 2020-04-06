@@ -6,9 +6,7 @@ from goblins.meta import MetaGoblin
 # TODO: implement natural sorting
 
 class IteratorGoblin(MetaGoblin):
-
-    '''
-    accepts:
+    '''accepts:
         - image
     '''
 
@@ -22,15 +20,14 @@ class IteratorGoblin(MetaGoblin):
         return 'iterator'
 
     def extract_iterable(self, url):
-        '''
-        seperate iterable from a url (mode 3)
-        '''
+        '''seperate iterable from a url (mode 3)'''
         return re.split('@@@', url)
 
     # IDEA: instead of hard coding 50, maybe use dynamic value.
     # possibly based on timeout value.
     # TODO: add reverse.
     def generate_urls(self, base, iterable, end):
+        '''generate block of urls to iterate over'''
         stripped_iter = int(iterable.lstrip('0'))
         for n in range(stripped_iter, stripped_iter + 50, self.args['increment']):
             self.collect(f'{base}{str(n).zfill(len(iterable))}{end}')
@@ -39,9 +36,7 @@ class IteratorGoblin(MetaGoblin):
         return str(int(iterable.lstrip('0')) + 50).zfill(len(iterable))
 
     def iterate(self):
-        '''
-        re-forms url and iterates (mode 3)
-        '''
+        '''main iteration method'''
         self.toggle_collecton_type()
         round = 1
         base, iterable, end = self.extract_iterable(self.args['targets'][self.__repr__()][0])

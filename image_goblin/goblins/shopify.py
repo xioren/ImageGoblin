@@ -4,9 +4,7 @@ from goblins.meta import MetaGoblin
 # TODO: add site specific iteration and scannable flag
 
 class ShopifyGoblin(MetaGoblin):
-
-    '''
-    accepts:
+    '''accepts:
         - webpage
     generic back-end for:
         - bamba swim
@@ -35,6 +33,7 @@ class ShopifyGoblin(MetaGoblin):
         self.url_pat = r'cdn.shopify.com/[^" \n]+((\w+-)+)*\d+x(\d+)*[^" \n]+'
 
     def trim(self, url):
+        '''remove alternate file hash'''
         # NOTE: changed to 4 instead of +...check if always 4 with different urls
         return re.sub(r'_[a-z\d]+(\-[a-z\d]+){4}', '', url)
 

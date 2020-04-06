@@ -4,9 +4,7 @@ from goblins.meta import MetaGoblin
 
 
 class OmegaGoblin(MetaGoblin):
-
-    '''
-    handles: all urls that did not match a specific goblin
+    '''handles: all urls that did not match a specific goblin
     accepts:
         - image
         - webpage
@@ -22,25 +20,28 @@ class OmegaGoblin(MetaGoblin):
     def __repr__(self):
         return 'generic'
 
+    def format(self, url):
+        '''format a url either automatically or via user input modifier'''
+        if not self.args['noupgrade']:
+            return self.auto_format(url)
+        elif self.args['format']:
+            return self.user_format(url)
+        else:
+            return url
+
     def find_urls(self, url):
-        '''
-        extract media urls from html
-        '''
+        '''extract image urls from html'''
         urls = self.extract_urls(self.url_pat, url)
         cleaned_urls = [re.sub(r'<img.+src="', '', url) for url in urls]
         for url in cleaned_urls:
             if re.search(self.filter_pat, url):
                 continue
-            if self.args['format']:
-                url = self.user_format(url)
-            self.collect(url)
+            self.collect(self.format(url))
 
     def run(self):
         for target in self.args['targets'][self.__repr__()]:
             if re.search(r'\.(jpe?g|png|gif|webp|tiff?)', target, re.IGNORECASE):
-                if self.args['format']:
-                    target = self.user_format(target)
-                self.collect(target)
+                self.collect(self.format(target))
             else:
                 self.find_urls(target)
             self.loot()

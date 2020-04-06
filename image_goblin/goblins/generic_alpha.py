@@ -4,9 +4,7 @@ from goblins.meta import MetaGoblin
 # TODO: add site specific flag/iteration
 
 class AlphaGoblin(MetaGoblin):
-
-    '''
-    handles: Magento (media/catalog)
+    '''handles: Magento (media/catalog)
     docs: https://docs.magento.com/m2/ee/user_guide/catalog/product-image-resizing.html
     accepts:
         - webpage

@@ -3,9 +3,7 @@ from goblins.meta import MetaGoblin
 
 
 class MangoGoblin(MetaGoblin):
-
-    '''
-    accepts:
+    '''accepts:
         - image
         - webpage
     '''
@@ -23,6 +21,7 @@ class MangoGoblin(MetaGoblin):
         return 'mango'
 
     def extract_id(self, url):
+        '''extract image id from url'''
         return re.search(r'T\d', url).group(), re.search(r'\d+_\d+', url).group()
 
     def run(self):
