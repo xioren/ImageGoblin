@@ -23,8 +23,9 @@ class Parser:
             r'(\.|-)\d+w',
             # BUG: \-e\d+ catches some dashed filenames by mistake, consider changing
             # r'\-e\d+'
-            r'/v/\d/.+\.webp$',
-            r'w/\d+/'
+            r'/v/\d/.+\.webp$'
+            # BUG: removing legitimate url portions
+            # r'w/\d+/'
         ]
 
     def extract_filename(self, url):

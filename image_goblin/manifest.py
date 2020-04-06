@@ -60,6 +60,7 @@ from goblins.nasty_gal import NastyGalGoblin
 from goblins.only_hearts import OnlyHeartsGoblin
 from goblins.oysho import OyshoGoblin
 from goblins.prettylittlething import PrettyLittleThingGoblin
+from goblins.promise import PromiseGoblin
 from goblins.pull_and_bear import PullandBearGoblin
 from goblins.sandro import SandroGoblin
 from goblins.savagex import SavageXGoblin
@@ -156,6 +157,7 @@ goblins = {
             'onlyhearts': (r'onlyhearts', OnlyHeartsGoblin),
             'oysho': (r'oysho', OyshoGoblin),
             'prettylittlething': (r'prettylittlething', PrettyLittleThingGoblin),
+            'promise': (r'promise', PromiseGoblin),
             'pullandbear': (r'pullandbear', PullandBearGoblin),
             'sandro': (r'sandro-paris', SandroGoblin),
             'savagex': (r'savagex', SavageXGoblin),

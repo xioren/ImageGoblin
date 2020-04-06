@@ -1,6 +1,7 @@
 import re
 from goblins.meta import MetaGoblin
 
+# TODO: add site specific flag/iteration
 
 class AlphaGoblin(MetaGoblin):
 
@@ -15,12 +16,13 @@ class AlphaGoblin(MetaGoblin):
         - blush
         - maison close
         - only hearts
+        - promise
         - simone perele
     '''
 
     def __init__(self, args):
         super().__init__(args)
-        self.url_pat = r'https*\:[^" \n]+media[^" \n]+\.jpe*g'
+        self.url_pat = r'https*\:[^" \n]+media[^" \n]+\.jpe?g'
         self.clean=True
 
     def run(self):
@@ -32,5 +34,5 @@ class AlphaGoblin(MetaGoblin):
             else:
                 urls = self.extract_urls(self.url_pat, target)
             for url in urls:
-                self.collect(re.sub(r'cache/(\d/\w+/(\d+x(\d+)*/)*)*\w+/', '', url.replace('\\', '')), clean=self.clean)
+                self.collect(re.sub(r'cache/(\d/\w+/(\d+x(\d+)?/)?)?\w+/', '', url.replace('\\', '')), clean=self.clean)
         self.loot()
