@@ -22,4 +22,7 @@ https://photosex.biz/imager/w_000/h_000/image.jpg
 
 https://images2.imagebam.com/00/00/00/image.jpg
 https://thumbs2.imagebam.com/00/00/00/image.jpg
+
+https://images3.imgbox.com/00/00/image_o.jpg
+https://thumbs3.imgbox.com/00/00/image_t.jpg
 '''

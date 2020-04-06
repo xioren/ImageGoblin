@@ -40,10 +40,10 @@ class OmegaGoblin(MetaGoblin):
 
     def run(self):
         for target in self.args['targets'][self.__repr__()]:
-            if re.search(r'\.(jpe?g|png|gif|webp|tiff?)', target, re.IGNORECASE):
+            if re.search(r'\.(jpe?g|png|gif|webp|tiff?)|upload', target, re.IGNORECASE):
                 self.collect(self.format(target))
             else:
                 self.find_urls(target)
-            self.loot()
+        self.loot()
         if not self.args['nodl'] and not self.args['noclean']:
             self.cleanup(self.path_main)

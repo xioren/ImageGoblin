@@ -199,10 +199,10 @@ class MetaGoblin(Parser):
         '''retrieve collected urls'''
         track = 0
         loot_tally = 0
-        timeout = False
+        timed_out = False
         for url in self.collection:
             if timeout and track >= timeout:
-                timeout = True
+                timed_out = True
                 break
             url, filename = url.split('-break-')
             if self.args['nodl']:
@@ -226,4 +226,4 @@ class MetaGoblin(Parser):
                 track += 1
             sleep(self.args['tickrate'])
         print(f'[{self.__str__()}] <looted> {loot_tally} file(s)')
-        return True, timeout
+        return True, timed_out
