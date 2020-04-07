@@ -103,10 +103,8 @@ class MetaGoblin(Parser):
 
     def retry(self, url, n, path, save):
         '''retry connection after a socket timeout'''
+        # TODO: add verbose outputs
         if not self.args['silent']:
-            if self.args['verbose']:
-                print(f'[{self.__str__()}] <timeout> retry attempt {n} {url}')
-            else:
                 print(f'[{self.__str__()}] <timeout> retry attempt {n}')
         if n > 5:
             if not self.args['silent']:

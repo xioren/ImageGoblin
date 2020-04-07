@@ -1,4 +1,4 @@
-# image goblin v1.0.7 by xioren
+# ImageGoblin v1.0.7 by xioren
 
 ### changelog v1.0.7:
   + optimized chunk handling
@@ -25,12 +25,12 @@
   goblin --local urls.txt --silent
   ```
 
-+ *generic:* for any site without a specific goblin. greedy. strings can be added, substituted, or removed using a _modifier_. input the _modifier_ as the format argument. 'add _modifier_' will append the modifier to the end of the url; for example a query string. 'sub _modifier_ _replacement_' substitutes, while 'rem _modifier_' removes.
++ *generic:* for any site without a specific goblin. greedy. by default, this mode will automatically try to remove common cropping. explicitly passing a modifier via '--format mode _modifier_' overrides this functionality. 'add _modifier_' will append the modifier to the end of the url; for example a query string. 'sub _modifier_ _replacement_' substitutes, while 'rem _modifier_' removes.
 
     *examples:*
 
     ```
-    goblin https://website.com/uploads/image_01-300x300.jpg -f rem -\d+x\d+
+    goblin https://website.com/pages/somewebpage.html -f rem -\d+x\d+
     ```
 
     https://website.com/uploads/image_01-300x300.jpg
@@ -70,12 +70,11 @@
 
     etc...
 
-+ *instagram:* partial support. for now, this goblin will only parse the html of an instagram page that is saved to a txt file. the file should be named 'html.txt' and placed in the directory that this program is ran from. this goblin will take a while to complete. the url to the instagram page or username needs to be input when ran. if only the username is passed, it is necessary to --force instagram in order to match the correct goblin.
++ *instagram:* partial support. for now, this goblin will only parse the html of an instagram page that is saved to a txt file. the file should be named 'html.txt' and placed in the directory that this program is ran from. this goblin will take some time to complete. the url to the instagram page or username needs to be input when ran. if only the username is passed, it is necessary to --force instagram in order to match the correct goblin.
 
 + *feed:* using the feed argument, you can accumulate urls by inputting them one by one using the --feed mode. this is useful for accumulating urls as you find them while browsing the web, and downloading all at once.   
 
 *misc:*
-  + for the generic goblin, inputting '-f auto' as an option will try to remove some common cropping patterns from image urls.
   + a specific goblin can be forced using '--force _goblin_'.
   + all available goblins can be listed using '-l or --list'.
   + the format input needs to be exact so make sure elements/spaces/commas have not been erroneously added or left out.
