@@ -22,9 +22,9 @@ class MetaGoblin(Parser):
             self.path_main = os.getcwd()
         else:
             self.path_main = os.path.join(os.getcwd(), 'goblin_loot', self.__str__().replace(' ', '_'))
-        self.headers = {True: {'User-Agent': 'ImageGoblin/1.0.6',
+        self.headers = {True: {'User-Agent': 'ImageGoblin/1.0.7',
                                'Accept-Encoding': 'gzip'},
-                        False: {'User-Agent': 'ImageGoblin/1.0.6'}}
+                        False: {'User-Agent': 'ImageGoblin/1.0.7'}}
         self.collection = set()
         if not self.args['nodl']:
             self.make_dirs(self.path_main)

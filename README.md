@@ -1,7 +1,8 @@
-# image goblin v1.0.6 by xioren
+# image goblin v1.0.7 by xioren
 
-### changelog v1.0.6:
-  + complete rework of goblin dispatching
+### changelog v1.0.7:
+  + optimized chunk handling
+  + expanded url compatibility
   + added goblins
   + code cleanup
   + bug fixes
