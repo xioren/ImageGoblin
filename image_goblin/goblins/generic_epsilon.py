@@ -1,4 +1,5 @@
 import re
+
 from goblins.meta import MetaGoblin
 
 # NOTE: may work for trendyol
@@ -17,8 +18,9 @@ class EpsilonGoblin(MetaGoblin):
     def __init__(self, args):
         super().__init__(args)
 
-    def decrop(self, url):
-        return re.sub(r'mnresize/\d+/\d+', '', self.custom(url))
+    def prep(self, url):
+        '''remove cropping'''
+        return re.sub(r'mnresize/\d+/\d+', '', url).replace('Thumbs', 'Originals')
 
     def run(self):
         for target in self.args['targets'][self.__repr__()]:
@@ -27,8 +29,8 @@ class EpsilonGoblin(MetaGoblin):
             else:
                 urls = self.extract_urls(self.url_pat, target)
             for url in urls:
-                base, _ = re.split(self.mod_pat, self.decrop(url))
+                url_base, _ = re.split(self.mod_pat, self.prep(url))
                 self.generate_modifiers(url)
                 for mod in self.modifiers:
-                    self.collect(f'{base}{mod}{self.end}')
+                    self.collect(f'{url_base}{mod}{self.url_end}')
         self.loot()

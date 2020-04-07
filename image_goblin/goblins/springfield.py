@@ -15,7 +15,3 @@ class SpringfieldGoblin(GammaGoblin):
 
     def __repr__(self):
         return 'springfield'
-
-    def generate_modifiers(self, iter):
-        # unused
-        pass

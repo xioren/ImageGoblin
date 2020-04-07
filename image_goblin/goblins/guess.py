@@ -1,4 +1,5 @@
 import re
+
 from goblins.meta import MetaGoblin
 
 
@@ -9,12 +10,17 @@ class GuessGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
+        self.url_pat = r'https://res\.cloudinary\.com/guess\-img/[^" ]+\?pgw=1'
 
     def __str__(self):
         return 'guess goblin'
 
     def __repr__(self):
         return 'guess'
+
+    def prep(self, url):
+        '''decrop and return url base'''
+        return re.sub(r'c_fill[^/]+/c_fill[^/]+/', '', re.sub(r'-ALT\d', '', self.dequery(url)))
 
     def run(self):
         for target in self.args['targets'][self.__repr__()]:
@@ -23,10 +29,9 @@ class GuessGoblin(MetaGoblin):
             else:
                 urls = []
                 if not self.args['silent']:
-                    print(f'[{self.__str__()}] <WARNING> url type not supported')
-                # urls = self.extract_urls(r'https://res\.cloudinary\.com/guess\-img/[^" ]+\?pgw=1', self.args['url'])
+                    print(f'[{self.__str__()}] <WARNING> webpage urls not supported')
             for url in urls:
-                base = re.sub(r'c_fill[^/]+/c_fill[^/]+/', '', re.sub(r'-ALT\d', '', self.dequery(url)))
+                url_base = self.prep(url)
                 for id in ('', '-ALT1', '-ALT2', '-ALT3', '-ALT4'):
-                    self.collect(f'{base}{id}')
+                    self.collect(f'{url_base}{id}')
         self.loot()

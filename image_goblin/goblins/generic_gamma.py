@@ -1,4 +1,5 @@
 import re
+
 from goblins.meta import MetaGoblin
 
 # NOTE: scaling with q=100 gives higher resolution; investigate.
@@ -33,7 +34,7 @@ class GammaGoblin(MetaGoblin):
 
     def isolate(self, url):
         '''isolate the end of the url'''
-        return re.search(r'/*[^/]+\.jpe*g', url).group().lstrip('/')
+        return re.search(r'/?[^/]+\.jpe?g', url).group().lstrip('/')
 
     def run(self):
         for target in self.args['targets'][self.__repr__()]:
@@ -44,8 +45,7 @@ class GammaGoblin(MetaGoblin):
             for url in urls:
                 if not re.search(self.img_pat, url):
                     continue
-                id, iter, end = self.extract_parts(self.isolate(url))
-                # self.generate_modifiers(iter)
+                id, iter, url_end = self.extract_parts(self.isolate(url))
                 for mod in self.modifiers:
-                    self.collect(f'{self.url_base}{id}{mod}{end}')
+                    self.collect(f'{self.url_base}{id}{mod}{url_end}')
         self.loot()

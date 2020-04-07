@@ -1,4 +1,5 @@
 import re
+
 from goblins.meta import MetaGoblin
 
 # TODO: add site specific iteration and scannable flag
@@ -30,7 +31,7 @@ class ShopifyGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.url_pat = r'cdn.shopify.com/[^" \n]+((\w+-)+)*\d+x(\d+)*[^" \n]+'
+        self.url_pat = r'cdn\.shopify\.com/[^" \n]+((\w+-)+)?\d+x(\d+)?[^" \n]+'
 
     def trim(self, url):
         '''remove alternate file hash'''
@@ -42,15 +43,14 @@ class ShopifyGoblin(MetaGoblin):
             if 'cdn.shopify' in target:
                 urls = []
                 if not self.args['silent']:
-                    print(f'[{self.__str__()}] <WARNING> url type not supported')
+                    print(f'[{self.__str__()}] <WARNING> image urls not supported')
             else:
                 urls = self.extract_urls(self.url_pat, target)
             for url in urls:
-                # TODO: fix this to be specific to trim (or whatevr arguemnt is passed)
-                if self.args['format']:
-                    self.collect(self.trim(url), clean=True)
-                else:
+                if self.args['noupgrade']:
                     self.collect(url, clean=True)
+                else:
+                    self.collect(self.trim(url), clean=True)
         self.loot()
         if not self.args['nodl'] and not self.args['noclean']:
             self.cleanup(self.path_main)

@@ -1,4 +1,5 @@
 import re
+
 from goblins.meta import MetaGoblin
 
 
@@ -24,7 +25,7 @@ class ZalandoGoblin(MetaGoblin):
     def form_url(self, image, size='large'):
         '''form url from filename'''
         # TODO: does not handle digit.digit formats
-        image = re.sub('.jpe*g', '', image).upper()
+        image = re.sub('.jpe?g', '', image).upper()
         if not re.search(r'@\d+', image):
             image += '@8'
         compounded = f'{image[:2]}/{image[2:4]}/{image[4:6]}/{image[6:8]}/'\
@@ -45,9 +46,8 @@ class ZalandoGoblin(MetaGoblin):
 
     def extract_id(self, url):
         '''extract image id from url'''
-        # # WARNING: will throw exception if non zalando images are input
         # QUESTION: can this handle digit.digit formats?
-        return re.sub(r'@\d+|\.(jpe*g|html|\d)', '', re.search(r'(\w+\-\w+(@\d+(\.\d)*)*(\.(jpe*g|html))*)$', self.dequery(url)).group())
+        return re.sub(r'@\d+|\.(jpe?g|html|\d)', '', re.search(r'(\w+\-\w+(@\d+(\.\d)?)?(\.(jpe*g|html))?)$', self.dequery(url)).group())
 
     def scan(self, url):
         '''scan for imagess'''

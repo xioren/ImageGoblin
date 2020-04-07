@@ -1,5 +1,6 @@
 import re
 import os
+
 from time import sleep
 from goblins.meta import MetaGoblin
 
@@ -39,14 +40,10 @@ class ASOSGoblin(MetaGoblin):
         url = f'https://images.asos-media.com/products/asos/{id}'
         return url + '?scl=1&qlt=100' if large else url
 
-    def extract_id(self, url):
-        '''pull image id from url'''
-        return re.search(r'\d+', url).group()
-
     def run(self):
         for target in self.args['targets'][self.__repr__()]:
             color = self.extract_color(target)
-            id = self.extract_id(target)
+            id = re.search(r'\d+', target).group()
             if color:
                 self.collect(self.form_url(f'{id}-1-{color}', True))
             for n in range(2, 5):

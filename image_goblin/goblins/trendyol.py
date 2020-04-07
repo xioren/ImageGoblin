@@ -1,4 +1,5 @@
 import re
+
 from goblins.meta import MetaGoblin
 
 # NOTE: may have switched to new cdn; investigate.
@@ -12,7 +13,7 @@ class TrendyolGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.url_pat = r'https://img-trendyol\.mncdn\.com/Assets/ProductImages/\w+/\w+/[^" ,]+\.jpg'
+        self.url_pat = r'https?://(img-trendyol\.mncdn|cdn\.dsmcdn)\.com/[^" ,]+\d_org(_zoom)?\.jpg'
 
     def __str__(self):
         return 'trandyol goblin'
@@ -26,12 +27,12 @@ class TrendyolGoblin(MetaGoblin):
 
     def run(self):
         for target in self.args['targets'][self.__repr__()]:
-            if 'ProductImages' in target:
+            if 'img-trendyol' in target or 'cdn.dsmcdn' in target:
                 urls = [target]
             else:
                 urls = self.extract_urls(self.url_pat, target)
             for url in urls:
-                base = self.extract_base(url)
+                url_base = self.extract_base(url)
                 for n in range(1, 16):
-                    self.collect(f'{base}{n}_org_zoom.jpg')
+                    self.collect(f'{url_base}{n}_org_zoom.jpg')
         self.loot()

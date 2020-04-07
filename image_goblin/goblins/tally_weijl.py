@@ -1,4 +1,5 @@
 import re
+
 from goblins.meta import MetaGoblin
 
 
@@ -9,7 +10,7 @@ class TallyWeijlGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.url_pat = r'https*://www\.tally\-weijl\.com/img/[^" ]+\.jpg'
+        self.url_pat = r'https?://www\.tally\-weijl\.com/img/[^" ]+\.jpg'
 
     def __str__(self):
         return 'tally weijl goblin'

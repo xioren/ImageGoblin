@@ -1,4 +1,5 @@
 import re
+
 from goblins.meta import MetaGoblin
 
 
@@ -10,7 +11,7 @@ class GettyGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.url_pat = r'https*[^"]+id\d+'
+        self.url_pat = r'https?://[^"]+id\d+'
 
     def __str__(self):
         return 'getty goblin'

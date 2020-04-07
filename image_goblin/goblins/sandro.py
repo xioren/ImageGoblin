@@ -15,6 +15,3 @@ class SandroGoblin(GammaGoblin):
 
     def __repr__(self):
         return 'sandro'
-
-    def generate_modifiers(self, iter):
-        pass

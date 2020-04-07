@@ -1,4 +1,5 @@
 import re
+
 from goblins.meta import MetaGoblin
 
 
@@ -9,7 +10,7 @@ class DollsKillGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.url_pat = r'img src="https://media.dollskill.com[^"]+\-\d+.jpg'
+        self.url_pat = r'img src="https?://media\.dollskill\.com[^"]+\-\d+.jpg'
 
     def __str__(self):
         return 'dolls kill goblin'
@@ -22,9 +23,9 @@ class DollsKillGoblin(MetaGoblin):
             if 'media.dollskill' in target:
                 url = []
                 if not self.args['silent']:
-                    print(f'[{self.__str__()}] <WARNING> url type not supported')
+                    print(f'[{self.__str__()}] <WARNING> image urls not supported')
             else:
                 urls = self.extract_urls(self.url_pat, target)
             for url in urls:
-                self.collect(re.sub(r'\d+.jpg', '1.jpeg', url).replace('img src="', ''))
+                self.collect(re.sub(r'\d+\.jpg', '1.jpeg', url).lstrip('img src="'))
         self.loot()

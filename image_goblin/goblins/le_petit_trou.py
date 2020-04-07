@@ -1,4 +1,5 @@
 import re
+
 from goblins.meta import MetaGoblin
 
 
@@ -10,7 +11,7 @@ class LePetitTrouGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.url_pat = r'https://cdn.shoplo[^"]+\.jpg'
+        self.url_pat = r'https?://cdn\.shoplo[^"]+\.jpg'
 
     def __str__(self):
         return 'le-petit-trou goblin'

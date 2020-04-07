@@ -1,9 +1,9 @@
 import re
+
 from urllib.parse import urlparse, unquote
 
 
 class Parser:
-
     '''generic parsing methods'''
 
     def __init__(self):
@@ -15,7 +15,7 @@ class Parser:
         self.filter_pat = r'\.(js|css|pdf)|(fav)?icon|logo|menu'
         self.cropping_pats = [
             r'(@|-|_)?(\d{3,4}x(\d{3,4})?|(\d{3,4})?x\d{3,4})',
-            r'(-|_)?(large|big|thumb)(-|_)?',
+            r'(-|_)?large(-|_)?',
             r'c_fill,f_auto,g_north,h_\d+,q_auto:best,w_\d+/v1/',
             r'expanded_[a-z]+/',
             r'(\.|-)\d+w',
@@ -81,7 +81,6 @@ class Parser:
         '''convert relative url to absolute'''
         return self.get_netloc(self.args['url']) + relative
 
-
     def finalize(self, url):
         '''
         prepare a url for downloading
@@ -101,13 +100,34 @@ class Parser:
                 return unique
 
     def auto_format(self, url):
-        '''attempt to upgrade common image types'''
-        url = self.sanitize(url)
-        if 'squarespace' in url:
+        '''attempt to upscale common url formats'''
+        if 'acidimg' in url:
+            url = url.replace('small', 'big')
+        elif 'imagetwist' in url:
+            url = url.replace('/th/', '/i/').replace('.jpg', '.JPG')
+        elif 'imgbox' in url:
+            url = url.replace('_t', '_o').replace('thumb', 'image')
+        elif 'imgcredit' in url:
+            url = url.replace('.th', '').replace('.md', '')
+        elif 'imgur' in url:
+            filename = re.search(r'[^/]+$', url).group()
+            if len(filename) == 11:
+                pass
+            else:
+                url = 'https://i.imgur.com/{}'.format(re.sub(r'[\w]\.', '.', filename))
+        elif 'imx.to' in url:
+            url = url.replace('/t/', '/i/')
+        elif 'pimpandhost' in url:
+            url = url.replace('_s', '').replace('_m', '')
+        elif 'pixhost' in url:
+            url = re.sub(r't(?![a-z])', 'img', url.replace('thumb', 'image'))
+        elif 'pixroute' in url:
+            url = url.replace('_t', '')
+        elif 'squarespace' in url:
             url += '?format=original'
-        if 'wix' in url:
+        elif 'wix' in url:
             url = re.sub(r'\.jpg.+$', '', url) + '.jpg'
-        return url
+        return self.sanitize(url)
 
     def user_format(self, url):
         '''add, substitute, or remove elements from a url'''

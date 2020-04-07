@@ -5,10 +5,8 @@ class OyshoGoblin(DeltaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        if self.args['format']:
-            self.size = self.args['format'][0]
-        else:
-            self.size = 0
+        self.size = 0
+        self.accept_webpage = False
 
     def __str__(self):
         return 'oysho goblin'

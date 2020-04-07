@@ -1,4 +1,3 @@
-from parsing import *
 from goblins.meta import MetaGoblin
 
 

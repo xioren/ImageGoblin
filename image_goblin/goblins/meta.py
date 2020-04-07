@@ -1,8 +1,10 @@
 import os
 import re
+
 from time import sleep
-from gzip import decompress
 from socket import timeout
+from gzip import decompress
+from shutil import copyfileobj
 from io import DEFAULT_BUFFER_SIZE
 from urllib.request import urlopen, Request
 from urllib.error import HTTPError, URLError
@@ -20,9 +22,9 @@ class MetaGoblin(Parser):
             self.path_main = os.getcwd()
         else:
             self.path_main = os.path.join(os.getcwd(), 'goblin_loot', self.__str__().replace(' ', '_'))
-        self.headers = {True: {'User-Agent': 'GoblinTeam/1.6',
+        self.headers = {True: {'User-Agent': 'ImageGoblin/1.0.6',
                                'Accept-Encoding': 'gzip'},
-                        False: {'User-Agent': 'GoblinTeam/1.6'}}
+                        False: {'User-Agent': 'ImageGoblin/1.0.6'}}
         self.collection = set()
         if not self.args['nodl']:
             self.make_dirs(self.path_main)
@@ -58,7 +60,7 @@ class MetaGoblin(Parser):
         if type(self.collection) == set:
             self.collection = []
         else:
-            self.collection = {}
+            self.collection = set()
 
     def new_collection(self):
         '''initialize a new collection'''
@@ -67,15 +69,6 @@ class MetaGoblin(Parser):
         else:
             self.collection = []
 
-    def grab_vid(self, url):
-        '''download a video in best quality, primarily for vimeo'''
-        filename = self.extract_filename(url)
-        os.system(f'youtube-dl --output {self.path_main}/{filename} {url}')
-
-    def filter(self, iterable):
-        '''remove duplicates from a list'''
-        return set(iterable)
-
     def unzip(self, data):
         '''gzip decompression'''
         try:
@@ -83,35 +76,20 @@ class MetaGoblin(Parser):
         except OSError:
             return data
         except EOFError:
-            return None
+            # TODO: improve this
+            return b''
 
     def retrieve(self, url, path='', n=0, gzip=True, save=True):
         '''retrieve web content'''
         request = Request(url, None, self.headers[gzip])
         try:
             with urlopen(request, timeout=20) as response:
-                encoding = response.info().get('Content-Encoding')
-                if not save:
-                    data = response.read()
-                    if encoding == 'gzip':
-                        data = self.unzip(data)
-                        if not data:
-                            return self.retrieve(url, gzip=False, save=False)
-                    return data.decode('utf-8', 'ignore')
-                else:
-                    with open(path, 'wb') as file:
-                        while True:
-                            data = response.read(DEFAULT_BUFFER_SIZE)
-                            if not data:
-                                break
-                            if encoding == 'gzip':
-                                data = self.unzip(data)
-                                if not data:
-                                    return self.retrieve(url, path, gzip=False)
-                            file.write(data)
+                    if save:
+                        with open(path, 'wb') as file:
+                            copyfileobj(response, file, DEFAULT_BUFFER_SIZE)
+                    else:
+                        return self.unzip(response.read()).decode('utf-8', 'ignore')
         except HTTPError as e:
-            if e.code == 502:
-                return self.retry(url, n+1, path, save, e)
             if self.args['verbose'] and not self.args['silent']:
                 print(f'[{self.__str__()}] <{e}> {url}')
             return None
@@ -120,32 +98,35 @@ class MetaGoblin(Parser):
                 print(f'[{self.__str__()}] <{e}> {url}')
             return None
         except timeout:
-            return self.retry(url, n+1, path, save, timeout)
+            return self.retry(url, n+1, path, save)
         return True
 
-    def retry(self, url, n, path, save, error):
+    def retry(self, url, n, path, save):
         '''retry connection after a socket timeout'''
         if not self.args['silent']:
-            print(f'[{self.__str__()}] <{error}> retry attempt {n}')
+            if self.args['verbose']:
+                print(f'[{self.__str__()}] <timeout> retry attempt {n} {url}')
+            else:
+                print(f'[{self.__str__()}] <timeout> retry attempt {n}')
         if n > 5:
             if not self.args['silent']:
-                print(f'[{self.__str__()}] <{error}> aborting after {n} retries')
+                print(f'[{self.__str__()}] <timeout> aborting after {n} retries')
             return None
         else:
             sleep(self.args['tickrate'])
         return self.retrieve(url, path, n, save)
 
-    def get_html(self, url, n=0, gzip=True):
+    def get_html(self, url):
         '''retrieve web page html'''
         return self.retrieve(url, save=False)
 
     def write_file(self, data, path, mode='w', iter=False):
         '''write to disk'''
+        # QUESTION: is this used?
         try:
             with open(path, mode) as file:
                 if iter:
-                    for item in data:
-                        file.write(f'{item}\n')
+                    file.writelines(data)
                 else:
                     file.write(data)
         except OSError as e:
@@ -163,17 +144,6 @@ class MetaGoblin(Parser):
         except OSError as e:
             if self.args['verbose'] and not self.args['silent']:
                 print(f'[{self.__str__()}] <{e}> {path}')
-
-    def is_duplicate(self, path, url):
-        '''check for filename duplicates'''
-        local_files = set()
-        for root, dirs, files in os.walk(path):
-            for file in files:
-                local_files.add(self.extract_filename(file))
-        if self.extract_filename(url) in local_files:
-            return True
-        else:
-            return False
 
     def extract_urls(self, pattern, url):
         '''extact urls from html based on regex pattern'''
@@ -225,5 +195,5 @@ class MetaGoblin(Parser):
             else:
                 track += 1
             sleep(self.args['tickrate'])
-        print(f'[{self.__str__()}] <looted> {loot_tally} file(s)')
+        print(f'[{self.__str__()}] <complete> {loot_tally} file(s) looted')
         return True, timed_out

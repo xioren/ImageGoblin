@@ -1,4 +1,5 @@
 import re
+
 from goblins.meta import MetaGoblin
 
 
@@ -22,7 +23,7 @@ class YandyGoblin(MetaGoblin):
             if 'assets.yandycdn' in target:
                 urls = []
                 if not self.args['silent']:
-                    print(f'[{self.__str__()}] <WARNING> url type not supported')
+                    print(f'[{self.__str__()}] <WARNING> image urls not supported')
             else:
                 urls = self.extract_urls(self.url_pat, target)
             for url in urls:

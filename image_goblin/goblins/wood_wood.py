@@ -1,4 +1,5 @@
 import re
+
 from goblins.meta import MetaGoblin
 
 
@@ -9,6 +10,7 @@ class WoodWoodGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
+        self.url_pat = r'https?://www\.woodwood\.com/shared/[^" ]+\.jpg'
 
     def __str__(self):
         return 'wood wood goblin'
@@ -20,22 +22,21 @@ class WoodWoodGoblin(MetaGoblin):
         '''extract image id from url'''
         return re.search(r'/\d+/\d+/', url).group().strip('/').split('/')
 
-    def extract_name(self, url):
-        '''extract name id from url and sub in higher resolution cropping'''
-        return re.sub(r'\d+x\d+c', '1600x2400c', re.search(r'[^ "/]+\.jpg$', url).group().replace('.jpg', ''))
+    def upscale(self, url):
+        '''sub in higher resolution cropping and return filename'''
+        return re.sub(r'\d+x\d+c', '1600x2400c', self.extract_filename(url))
 
     def run(self):
         for target in self.args['targets'][self.__repr__()]:
             if 'shared' in target:
                 urls = [target]
             else:
-                # urls = self.extract_urls(r'https*://www\.woodwood\.com/shared/[^" ]+\.jpg', self.args['url'])
                 urls = []
                 if not self.args['silent']:
-                    print(f'[{self.__str__()}] <WARNING> url type not supported')
+                    print(f'[{self.__str__()}] <WARNING> webpage urls not supported')
             for url in urls:
                 id, image_num = self.extract_id(url)
-                name = self.extract_name(url)
+                filename = self.upscale(url)
                 for n in range(int(image_num) - 6, int(image_num) + 7):
-                    self.collect(f'https://www.woodwood.com/shared/{id}/{n}/{name}.jpg', filename=name.replace('1600x2400c', f'{id}-{n}'))
+                    self.collect(f'https://www.woodwood.com/shared/{id}/{n}/{filename}.jpg', filename=filename.replace('1600x2400c', f'{id}-{n}'))
         self.loot()

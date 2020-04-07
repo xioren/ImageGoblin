@@ -1,4 +1,5 @@
 import re
+
 from goblins.meta import MetaGoblin
 
 

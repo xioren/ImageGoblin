@@ -1,5 +1,6 @@
 import re
 import os
+
 from manifest import goblins
 
 
@@ -38,7 +39,11 @@ class Dispatcher:
                 url_assignment[key] = [url]
         self.args['targets'] = url_assignment
         if self.args['force']:
-            goblin = goblins[self.args['force']][1]
+            try:
+                goblin = goblins[self.args['force']][1]
+            except KeyError:
+                print('[ERROR] <unkown goblin> use --list to see available goblins')
+                return
             goblin(self.args).run()
         else:
             for key in url_assignment:

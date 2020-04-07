@@ -1,14 +1,17 @@
 import re
+
 from goblins.meta import MetaGoblin
 
 
 class SsenseGoblin(MetaGoblin):
     '''accepts:
         - image
+        - webpage
     '''
 
     def __init__(self, args):
         super().__init__(args)
+        self.url_pat = r'https*://(img\.ssensemedia|res\.cloudinary)\.com/(images?|ssenseweb)/[^" ]+'
 
     def __str__(self):
         return 'ssense goblin'
@@ -22,13 +25,10 @@ class SsenseGoblin(MetaGoblin):
 
     def run(self):
         for target in self.args['targets'][self.__repr__()]:
-            if 'img.ssensemedia' in target:
+            if 'img.ssensemedia' in target or 'res.cloudinary' in target:
                 urls = [target]
             else:
-                # urls = self.extract_urls(r'https*://img\.ssensemedia\.com/images*/[^" ]', self.args['url'])
-                urls = []
-                if not self.args['silent']:
-                    print(f'[{self.__str__()}] <WARNING> url type not supported')
+                urls = self.extract_urls(self.url_pat, target)
             for url in urls:
                 id = self.extract_id(url)
                 for n in range(6):

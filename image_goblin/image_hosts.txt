@@ -1,28 +1,45 @@
-# image host urls
-# TODO: implement
+reference image host urls
 
-'''
+ -------------------------------------------
 large
 small
+--------------------------------------------
 
-https://img00.pixroute.com/i/00000/image.jpg
-https://img00.pixroute.com/i/00000/image_t.jpg
+https://img00.pixroute.com/i/00000/filename.jpg
+https://img00.pixroute.com/i/00000/filename_t.jpg
 
-https://img00.pixhost.to/images/00/image.jpg
-https://t00.pixhost.to/thumbs/00/image.jpg
+https://img00.pixhost.to/images/00/filename.jpg
+https://t00.pixhost.to/thumbs/00/filename.jpg
 
-https://i000.imx.to/i/0000/00/00/image.jpg
-https://i000.imx.to/t/0000/00/00/image.jpg
+https://i000.imx.to/i/0000/00/00/filename.jpg
+https://i000.imx.to/t/0000/00/00/filename.jpg
 
-https://i.pixxxels.cc/uniquestring/image.jpg
-https://i.pixxxels.cc/uniquestring/image.jpg
+https://i.pixxxels.cc/uniquestring/filename.jpg
+https://i.pixxxels.cc/uniquestring/filename.jpg
 
-https://photosex.biz/pic_b/image.jpg
-https://photosex.biz/imager/w_000/h_000/image.jpg
+https://photosex.biz/pic_b/filename.jpg
+https://photosex.biz/imager/w_000/h_000/filename.jpg
 
-https://images2.imagebam.com/00/00/00/image.jpg
-https://thumbs2.imagebam.com/00/00/00/image.jpg
+https://images0.imagebam.com/00/00/00/filename.jpg
+https://thumbs0.imagebam.com/00/00/00/image.jpg
 
-https://images3.imgbox.com/00/00/image_o.jpg
-https://thumbs3.imgbox.com/00/00/image_t.jpg
-'''
+https://images0.imgbox.com/00/00/filename_o.jpg
+https://thumbs0.imgbox.com/00/00/filename_t.jpg
+
+http://s0.imgcredit.xyz/0000/00/00/filename.jpg
+http://s0.imgcredit.xyz/0000/00/00/filename.th.jpg
+
+https://ist0-0.filesor.com/pimpandhost.com/0/0/0/0/00000/0/0/0/0/00000/filename.jpg
+https://ist0-0.filesor.com/pimpandhost.com/0/0/0/0/00000/0/0/0/0/00000/filename_s.jpg
+
+https://s0d0.turboimg.net/sp/hash/filename.jpg
+https://s0d0.turboimg.net/t0/00000000_filename.jpg
+
+http://img0000.imagevenue.com/string-00000/loc00/filename.jpeg
+http://img000.imagevenue.com/loc00/th_filename.jpeg
+
+https://img00.imagetwist.com/i/00000/filemame.JPG
+https://img00.imagetwist.com/th/00000/flename.jpg
+
+https://i.acidimg.cc/big/0000/00/00/filename.jpg
+https://i.acidimg.cc/small/0000/00/00/filename.jpg

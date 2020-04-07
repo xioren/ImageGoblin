@@ -17,6 +17,3 @@ class BouxAvenueGoblin(GammaGoblin):
 
     def __repr__(self):
         return 'bouxavenue'
-
-    def generate_modifiers(self, iter):
-        pass

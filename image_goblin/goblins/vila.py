@@ -15,6 +15,3 @@ class VilaGoblin(GammaGoblin):
 
     def __repr__(self):
         return 'vila'
-
-    def generate_modifiers(self, iter):
-        pass

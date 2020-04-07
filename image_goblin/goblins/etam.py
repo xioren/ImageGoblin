@@ -15,6 +15,3 @@ class EtamGoblin(GammaGoblin):
 
     def __repr__(self):
         return 'etam'
-
-    def generate_modifiers(self, iter):
-        pass

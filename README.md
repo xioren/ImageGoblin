@@ -1,6 +1,6 @@
-# image goblin v1.6 by xioren
+# image goblin v1.0.6 by xioren
 
-### changelog v1.6:
+### changelog v1.0.6:
   + complete rework of goblin dispatching
   + added goblins
   + code cleanup

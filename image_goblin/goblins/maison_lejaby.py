@@ -1,4 +1,5 @@
 import re
+
 from goblins.meta import MetaGoblin
 
 
@@ -10,7 +11,7 @@ class MaisonLejabyGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.url_pat = r'https://www\.maisonlejaby\.com.+\.jpg'
+        self.url_pat = r'maisonlejaby\.com/phototheque/[^" ]+\.jpg'
 
     def __str__(self):
         return 'maison lejaby goblin'
@@ -20,12 +21,12 @@ class MaisonLejabyGoblin(MetaGoblin):
 
     def run(self):
         for target in self.args['targets'][self.__repr__()]:
-            if '.jpg' in target:
+            if 'phototheque' in target:
                 urls = [target]
             else:
                 urls = self.extract_urls(self.url_pat, target)
             for url in urls:
-                url = re.sub(r'[A-Z]\.jpg', '', url).replace('medium', 'large')
-                for char in ('A', 'B', 'C', 'D', 'E', 'F'):
-                    self.collect(f'{url}{char}.jpg')
+                url_base = re.sub(r'[A-Z](\.[A-Z0-9]+)?\.jpg', '', url).replace('medium', 'large')
+                for mod in ('A', 'B', 'C', 'D', 'E', 'F'):
+                    self.collect(f'{url_base}{mod}.jpg')
         self.loot()

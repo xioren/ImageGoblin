@@ -16,6 +16,3 @@ class MarliesDekkersGoblin(GammaGoblin):
 
     def __repr__(self):
         return 'marliesdekkers'
-
-    def generate_modifiers(self, iter):
-        pass

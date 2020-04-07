@@ -1,4 +1,5 @@
 import re
+
 from time import sleep
 from goblins.meta import MetaGoblin
 
@@ -7,7 +8,7 @@ class DeltaGoblin(MetaGoblin):
     '''handles: Inditex Group (_n_n_n)
     accepts:
         - image
-        - webpage
+        - webpage*
     generic backend for:
         - bershka
         - massimodutti
@@ -19,22 +20,28 @@ class DeltaGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.url_pat = r'https*://static[^"]+\.jpe*g'
+        self.url_pat = r'https?://static[^"]+_\d_\d_\d\.jpe?g'
         self.modifiers = ('_1_1_', '_2_1_', '_2_2_', '_2_3_',
                           '_2_4_', '_2_5_', '_2_6_', '_2_7_',
                           '_2_8_', '_2_9_', '_4_1_', '_6_1_')
 
-    def decrop(self, url):
+    def shorten_query(self, url):
+        '''remove cropping from query string'''
         return re.sub(r'&imwidth=\d+', '', url)
 
     def run(self):
         for target in self.args['targets'][self.__repr__()]:
-            if '.jpg' in target:
+            if 'static' in target:
                 urls = [target]
             else:
-                urls = self.extract_urls(self.url_pat, target)
+                if not self.accept_webpage:
+                    urls = []
+                    if not self.args['silent']:
+                        print(f'[{self.__str__()}] <WARNING> webpage urls not supported')
+                else:
+                    urls = self.extract_urls(self.url_pat, target)
             for url in urls:
-                base, end = re.split(r'_\d_\d_\d+', url)
+                url_base, url_end = re.split(r'_\d_\d_\d+', url)
                 for mod in self.modifiers:
-                    self.collect(self.decrop(f'{base}{mod}{self.size}{self.decrop(end)}'))
+                    self.collect('{}{}{}{}'.format(re.sub(r"w/\d+/", "", url_base), mod, self.size, self.shorten_query(url_end)))
         self.loot()

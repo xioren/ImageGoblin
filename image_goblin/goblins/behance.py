@@ -1,4 +1,5 @@
 import re
+
 from goblins.meta import MetaGoblin
 
 # TODO: needs better approach
@@ -10,7 +11,7 @@ class BehanceGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.url_pat = r'https://mir-s3-cdn-cf.behance.net/project_modules/[\w/\.]+\.[A-Za-z]+'
+        self.url_pat = r'https?://mir-s3-cdn-cf\.behance\.net/project_modules/[\w/\.]+\.[A-Za-z]+'
         self.size_pat = r'1400(_opt_1)*|max_1200|disp'
         self.sizes = ('max_3840', 'fs', '1400', 'max_1200', 'disp')
 
@@ -33,7 +34,7 @@ class BehanceGoblin(MetaGoblin):
             else:
                 urls = []
                 if not self.args['silent']:
-                    print(f'[{self.__str__()}] <WARNING> url type not supported')
+                    print(f'[{self.__str__()}] <WARNING> webpage urls not supported')
             for url in urls:
                 for size in self.sizes:
                     self.collect(self.fit(url, size))

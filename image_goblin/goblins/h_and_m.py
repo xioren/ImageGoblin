@@ -1,4 +1,5 @@
 import re
+
 from goblins.meta import MetaGoblin
 
 # NOTE: removing origin works in some cases, are there different origins?
@@ -11,7 +12,7 @@ class HMGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.url_pats = r'source\[[\w\./]+\]'
+        self.url_pat = r'source\[[\w\./]+\]'
 
     def __str__(self):
         return 'h&m goblin'
@@ -21,7 +22,7 @@ class HMGoblin(MetaGoblin):
 
     def extract_source(self, url):
         '''extract source path from url'''
-        return re.search(r'source\[[\w\./]+\]', url).group().replace('source[', '').rstrip(']')
+        return re.search(r'source\[[\w\./]+\]', url).group().lstrip('source[').rstrip(']')
 
     def run(self):
         for target in self.args['targets'][self.__repr__()]:
@@ -29,7 +30,7 @@ class HMGoblin(MetaGoblin):
                 # NOTE: does not scan
                 urls = [target]
             else:
-                urls = self.extract_urls(self.url_pats, target)
+                urls = self.extract_urls(self.url_pat, target)
             for url in urls:
                 source = self.extract_source(url)
                 self.collect(f'https://lp2.hm.com/hmgoepprod?set=quality[100],source[{source}],origin[dam]&call=url[file:/product/zoom]',

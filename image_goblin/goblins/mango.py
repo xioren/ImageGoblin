@@ -1,4 +1,5 @@
 import re
+
 from goblins.meta import MetaGoblin
 
 
@@ -10,7 +11,7 @@ class MangoGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.url_pat = r'https://st\.mngbcn\.com[^"\? ]+\.jpg'
+        self.url_pat = r'https?://st\.mngbcn\.com[^"\? ]+\.jpg'
         self.query = '?qlt=100'
         self.modifiers = ('', '_R', '_D1', '_D2', '_D3', '_D4', '_D5', '_D6')
 

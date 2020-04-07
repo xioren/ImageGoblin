@@ -1,4 +1,5 @@
 import re
+
 from goblins.meta import MetaGoblin
 
 
@@ -47,10 +48,10 @@ class BetaGoblin(MetaGoblin):
             for url in urls:
                 if not self.correct_format(url):
                     continue
-                base = self.identify(url)
+                url_base = self.identify(url)
                 id = self.extract_id(url)
                 for mod in self.modifiers:
-                    self.collect(f'{base}{id}{mod}{self.query}')
+                    self.collect(f'{url_base}{id}{mod}{self.query}')
         self.loot()
         if not self.args['nodl'] and not self.args['noclean']:
             self.cleanup(self.path_main)

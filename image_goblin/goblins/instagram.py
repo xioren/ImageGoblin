@@ -1,5 +1,6 @@
 import os
 import re
+
 from time import sleep
 from goblins.meta import MetaGoblin
 
@@ -11,7 +12,7 @@ class InstagramGoblin(MetaGoblin):
         self.username = self.extract_username(self.args['targets'][self.__repr__()][0])
         self.html_local = os.path.join(os.getcwd(), 'html.txt')
         self.sub_dir = os.path.join(self.path_main, self.username)
-        self.url_pat = r'https://scontent[^"\n \']+_n\.[^"\n \']+'
+        self.url_pat = r'https?://scontent[^"\n \']+_n\.[^"\n \']+'
         self.make_dirs(self.sub_dir)
 
     def __str__(self):
@@ -21,16 +22,15 @@ class InstagramGoblin(MetaGoblin):
         return 'instagram'
 
     def extract_username(self, url):
-        return re.search(r'(/*[^/]+/*)$', url).group().strip('/')
+        return re.search(r'(/?[^/]+/?)$', url).group().strip('/')
 
     def move_vid(self, path):
         '''move videos into seperate directory'''
-        dirpath = os.path.join(path, 'vid')
-        if os.path.exists(dirpath) is False:
-            os.mkdir(dirpath)
+        vid_path = os.path.join(path, 'vid')
+        self.make_dirs(vid_path)
         for file in os.listdir(path):
             if '.mp4' in file:
-                os.rename(os.path.join(path, file), os.path.join(dirpath, file))
+                os.rename(os.path.join(path, file), os.path.join(vid_path, file))
 
     def find_posts(self):
         '''parse html for posts'''

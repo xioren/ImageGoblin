@@ -1,4 +1,5 @@
 import re
+
 from goblins.generic_gamma import GammaGoblin
 
 
@@ -19,6 +20,3 @@ class HunkemollerGoblin(GammaGoblin):
 
     def __repr__(self):
         return 'hunkemoller'
-
-    def generate_modifiers(self, iter):
-        pass

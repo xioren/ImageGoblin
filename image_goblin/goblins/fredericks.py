@@ -1,4 +1,5 @@
 import re
+
 from goblins.meta import MetaGoblin
 
 
@@ -9,6 +10,7 @@ class FredericksGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
+        self.url_pat = r'//[^" \n]+\.jpe?g'
 
     def __str__(self):
         return 'fredericks goblin'
@@ -22,10 +24,9 @@ class FredericksGoblin(MetaGoblin):
                 # NOTE: does not scan
                 urls = [target]
             else:
-                # urls = self.extract_urls(r'//[^" \n]+\.jpe*g', self.args['url'])
                 urls = []
                 if not self.args['silent']:
-                    print(f'[{self.__str__()}] <WARNING> url type not supported')
+                    print(f'[{self.__str__()}] <WARNING> webpage urls not supported')
             for url in urls:
                 self.collect(re.sub(r'\.\d+w', '', url))
         self.loot()

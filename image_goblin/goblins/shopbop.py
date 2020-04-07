@@ -1,4 +1,5 @@
 import re
+
 from goblins.meta import MetaGoblin
 
 
@@ -10,13 +11,17 @@ class ShopbopGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.url_pat = r'https://[a-z\-\.]+amazon\.com[^" ]+\.jpg'
+        self.url_pat = r'https?://[a-z\-\.]+amazon\.com[^" ]+\.jpg'
 
     def __str__(self):
         return 'shopbop goblin'
 
     def __repr__(self):
         return 'shopbop'
+
+    def prep(self, url):
+        '''prepare the url by removing cropping and mobile elements'''
+        return re.sub(r'._\w+(_\w+)*_\w+_', '', url).replace('m.media', 'images-na.ssl-images').replace('2-1', '2-0')
 
     def run(self):
         for target in self.args['targets'][self.__repr__()]:
@@ -25,7 +30,7 @@ class ShopbopGoblin(MetaGoblin):
             else:
                 urls = self.extract_urls(self.url_pat, target)
             for url in urls:
-                url = re.sub(r'._\w+(_\w+)*_\w+_', '', url).replace('m.media', 'images-na.ssl-images').replace('2-1', '2-0')
+                url = self.prep(url)
                 for n in range(1, 7):
                     self.collect(re.sub(r'q\d', fr'q{n}', url))
         self.loot()
