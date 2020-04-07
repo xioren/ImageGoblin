@@ -85,6 +85,7 @@ from goblins.urban_outfitters import UrbanOutfittersGoblin
 from goblins.victorias_secret import VictoriasSecretGoblin
 from goblins.vila import VilaGoblin
 from goblins.vitamin_a import VitaminAGoblin
+from goblins.watercult import WatercultGoblin
 from goblins.wolford import WolfordGoblin
 from goblins.womens_secret import WomensSecretGoblin
 from goblins.wood_wood import WoodWoodGoblin
@@ -177,12 +178,13 @@ goblins = {
             'tommyhilfiger':(r'tommy-europe|shoptommy', TommyHilfigerGoblin),
             'topshop': ('topshop.com', TopshopGoblin),
             'trendyol': ('trendyol', TrendyolGoblin),
-            'triangl': ('triangl', TrianglGoblin),
+            'triangl': ('triangl.com', TrianglGoblin),
             'underprotection': ('underprotection', UnderprotectionGoblin),
             'urbanoutfitters':(r'urbanoutfitters(eu)?', UrbanOutfittersGoblin),
             'victoriassecret': ('victoriassecret', VictoriasSecretGoblin),
             'vila': ('vila', VilaGoblin),
             'vitamina': ('vitaminaswim', VitaminAGoblin),
+            'watercult': ('watercult.com', WatercultGoblin),
             'wolford': ('wolfordshop', WolfordGoblin),
             'womensecret': ('womensecret', WomensSecretGoblin),
             'woodwood': ('woodwood', WoodWoodGoblin),

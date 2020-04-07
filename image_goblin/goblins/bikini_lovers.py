@@ -1,3 +1,5 @@
+import re
+
 from goblins.generic_alpha import AlphaGoblin
 
 

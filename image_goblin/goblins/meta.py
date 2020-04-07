@@ -12,8 +12,7 @@ from parsing import Parser
 
 
 class MetaGoblin(Parser):
-    '''common methods inherited by all other goblins
-    '''
+    '''common methods inherited by all other goblins'''
 
     def __init__(self, args):
         super().__init__()
@@ -53,7 +52,6 @@ class MetaGoblin(Parser):
                     except PermissionError as e:
                         if self.args['verbose'] and not self.args['silent']:
                             print(f'[{self.__str__()}] <{e}> {filepath}')
-                        continue
 
     def toggle_collecton_type(self, reverse=False):
         '''toggle collection type between list and set'''

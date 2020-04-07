@@ -2,6 +2,7 @@ import re
 
 from goblins.meta import MetaGoblin
 
+# NOTE: stripping _d sometimes works; investigate.
 
 class AlphaGoblin(MetaGoblin):
     '''handles: Magento (media/catalog)
@@ -18,6 +19,7 @@ class AlphaGoblin(MetaGoblin):
         - promise
         - reserved
         - simone perele
+        - watercult
     '''
 
     def __init__(self, args):
