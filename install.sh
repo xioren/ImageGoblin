@@ -7,9 +7,9 @@
 # pass u to uninstall
 
 
-if [ $1 == 'u' ]
+if [ $1 ] && [ $1 == 'u' ]
 then
-    rm /usr/local/bin/goblin
+    rm /usr/local/bin/goblin && echo symlink removed
 else
-    ln -s $PWD/image_goblin/image_goblin.py /usr/local/bin/goblin
+    ln -s $PWD/image_goblin/image_goblin.py /usr/local/bin/goblin && echo symlink created at /usr/local/bin/goblin
 fi
