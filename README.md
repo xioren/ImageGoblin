@@ -6,7 +6,7 @@
 + code cleanup
 + bug fixes
 
-## This Program:
+### This Program:
 
 + is a web scraping tool specifically for the discovery and retrieval of images on a webpage/server in the highest possible quality
 + is a work in progress
