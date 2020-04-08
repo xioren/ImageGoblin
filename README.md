@@ -1,30 +1,30 @@
 # ImageGoblin
 
-### changelog v1.0.8:
+#### changelog v1.0.8:
 + complete instagram support
 + added goblins
 + code cleanup
 + bug fixes
 
-# This Program:
+## This Program:
 
 + is a web scraping tool specifically for the discovery and retrieval of images on a webpage/server in the highest possible quality
 + is a work in progress
 
-# Requirements
+### Requirements
 
 + Python 3.6+
 
-# Operation
+### Operation
 
 + *Default*: Inputting either a url or a text file containing urls (1 per line) will try to match the url(s) to a specific goblin. The goblin will download what images it can according to its rule set, in the highest possible quality. if no goblin is matched a generic goblin is used. If a text file is used, only the filename should be input, using the --local argument and the text file should be placed in the directory that the program will be ran from.
 
   *Examples:*
 
   ```
-  python3 image_goblin.py https://www.website.com/files/image01.jpg
+  goblin https://www.website.com/files/cropped/image.jpg
 
-  python3 image_goblin.py https://www.website.com/pages/somewebpage.html --force goblin
+  goblin https://www.website.com/pages/somewebpage.html --force goblin
 
   python3 image_goblin.py --local urls.txt --silent
   ```
@@ -34,7 +34,7 @@
   *Examples:*
 
   ```
-  python3 image_goblin.py https://website.com/pages/somewebpage.html -f rem -\d+x\d+
+  goblin https://website.com/pages/somewebpage.html -f rem -\d+x\d+
   ```
 
   https://website.com/uploads/image_01-300x300.jpg
@@ -45,7 +45,7 @@
 
 
   ```
-  python3 image_goblin.py https://website.com/uploads/image_01.jpg?size=small --format sub size=\w+ size=large'
+  goblin https://website.com/uploads/image_01.jpg?size=small --format sub size=\w+ size=large'
   ```
 
   https://website.com/uploads/image_01.jpg?size=small
@@ -59,7 +59,7 @@
   *Example:*
 
   ```
-  python3 image_goblin.py https://website.com/uploads/image_@@@01@@@.jpg --timeout 10 --rate 3
+  goblin https://website.com/uploads/image_@@@01@@@.jpg --timeout 10 --rate 3
   ```
 
   The program will then iterate through and download all images it can find with that url structure on the server.
@@ -78,7 +78,7 @@
 
 + *Feed:* Using the feed argument, you can accumulate urls by inputting them one by one using the --feed mode. This is useful for accumulating urls as you find them while browsing the web, and downloading all at once.   
 
-### Misc:
+#### Misc:
   + A specific goblin can be forced using '--force _goblin_'.
   + All available goblins can be listed using '-l or --list'.
   + The format input needs to be exact so make sure elements/spaces/commas have not been erroneously added or left out.
