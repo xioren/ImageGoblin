@@ -7,6 +7,9 @@ from hashlib import md5
 from urllib.parse import quote
 from goblins.meta import MetaGoblin
 
+# TODO:
+#   - add support for stories
+#   - add support for specifying # of posts
 
 class InstagramGoblin(MetaGoblin):
 

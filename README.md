@@ -1,20 +1,25 @@
-# ImageGoblin v1.0.8 by xioren
+# ImageGoblin
 
-### changelog v1.0.8d:
-  + complete instagram support
-  + added goblins
-  + code cleanup
-  + bug fixes
+### changelog v1.0.8:
++ complete instagram support
++ added goblins
++ code cleanup
++ bug fixes
 
-### this program:
-  + is a web scraping tool specifically for images.
-  + is a work in progress.
+# This Program:
 
-### operation:
++ is a web scraping tool specifically for the discovery and retrieval of images on a webpage/server in the highest possible quality
++ is a work in progress
 
-+ *default:* inputting either a url or a text file containing urls (1 per line) will try to match the url(s) to a specific goblin. the goblin will download what images it can according to its rule set, in the highest possible quality. if no goblin is matched a generic goblin is used. if a text file is used, only the filename should be input, using the --local argument and the text file should be placed in the directory that the program will be ran from.
+# Requirements
 
-  *examples:*
++ Python 3.6+
+
+# Operation
+
++ *Default*: Inputting either a url or a text file containing urls (1 per line) will try to match the url(s) to a specific goblin. The goblin will download what images it can according to its rule set, in the highest possible quality. if no goblin is matched a generic goblin is used. If a text file is used, only the filename should be input, using the --local argument and the text file should be placed in the directory that the program will be ran from.
+
+  *Examples:*
 
   ```
   python3 image_goblin.py https://www.website.com/files/image01.jpg
@@ -24,57 +29,57 @@
   python3 image_goblin.py --local urls.txt --silent
   ```
 
-+ *generic:* for any site without a specific goblin. greedy. by default, this mode will automatically try to remove common cropping. explicitly passing a modifier via '--format mode _modifier_' overrides this functionality. 'add _modifier_' will append the modifier to the end of the url; for example a query string. 'sub _modifier_ _replacement_' substitutes, while 'rem _modifier_' removes.
++ *Generic:* For any site without a specific goblin. Greedy. By default, this mode will automatically try to remove common cropping. Explicitly passing a modifier via '--format' overrides this functionality. The usage format is '--format _mode_ _modifier_[ _replacement_]'. 'add _modifier_' will append the modifier to the end of the url; for example a query string. 'sub _modifier_ _replacement_' substitutes, while 'rem _modifier_' removes.
 
-    *examples:*
+  *Examples:*
 
-    ```
-    python3 image_goblin.py https://website.com/pages/somewebpage.html -f rem -\d+x\d+
-    ```
+  ```
+  python3 image_goblin.py https://website.com/pages/somewebpage.html -f rem -\d+x\d+
+  ```
 
-    https://website.com/uploads/image_01-300x300.jpg
+  https://website.com/uploads/image_01-300x300.jpg
 
-    becomes
+  becomes
 
-    https://website.com/uploads/image_01.jpg
+  https://website.com/uploads/image_01.jpg
 
 
-    ```
-    python3 image_goblin.py https://website.com/uploads/image_01.jpg?size=small --format sub size=\w+ size=large'
-    ```
+  ```
+  python3 image_goblin.py https://website.com/uploads/image_01.jpg?size=small --format sub size=\w+ size=large'
+  ```
 
-    https://website.com/uploads/image_01.jpg?size=small
+  https://website.com/uploads/image_01.jpg?size=small
 
-    becomes
+  becomes
 
-    https://website.com/uploads/image_01.jpg?size=large
+  https://website.com/uploads/image_01.jpg?size=large
 
-+ *iterate:* when provided a url to a single file (usually an image), the program will try to download that file and all other files with the same url structure that are on the server (but not necessarily displayed on the website). the iterable needs to be surrounded by '@@@' on either side when input to indicate the portion of the url to be iterated.
++ *Iterate:* When provided a url to a single image url, the program will try to download that images and all other images with the same url structure that are on the server (but not necessarily displayed on the website). The iterable needs to be surrounded by '@@@' on either side when input to indicate the portion of the url to be iterated.
 
-    *example:*
+  *Example:*
 
-    ```
-    python3 image_goblin.py https://website.com/uploads/image_@@@01@@@.jpg --timeout 10 --rate 3
-    ```
+  ```
+  python3 image_goblin.py https://website.com/uploads/image_@@@01@@@.jpg --timeout 10 --rate 3
+  ```
 
-    the program will then iterate through and download all images it can find with that url structure on the server.
+  The program will then iterate through and download all images it can find with that url structure on the server.
 
-    * https://website.com/uploads/image_01.jpg
-    * https://website.com/uploads/image_02.jpg
-    * https://website.com/uploads/image_03.jpg
-    * https://website.com/uploads/image_04.jpg
-    * https://website.com/uploads/image_05.jpg
-    * ...
-    * https://website.com/uploads/image_107.jpg
+  * https://website.com/uploads/image_01.jpg
+  * https://website.com/uploads/image_02.jpg
+  * https://website.com/uploads/image_03.jpg
+  * https://website.com/uploads/image_04.jpg
+  * https://website.com/uploads/image_05.jpg
+  * ...
+  * https://website.com/uploads/image_107.jpg
 
-    etc...
+  etc...
 
-+ *instagram:* input the instagram page url or username. if only the username is passed, it is necessary to --force instagram in order to match the correct goblin.
++ *Instagram:* Input the instagram page url or username. If only the username is passed, it is necessary to --force instagram in order to match the correct goblin.
 
-+ *feed:* using the feed argument, you can accumulate urls by inputting them one by one using the --feed mode. this is useful for accumulating urls as you find them while browsing the web, and downloading all at once.   
++ *Feed:* Using the feed argument, you can accumulate urls by inputting them one by one using the --feed mode. This is useful for accumulating urls as you find them while browsing the web, and downloading all at once.   
 
-*misc:*
-  + a specific goblin can be forced using '--force _goblin_'.
-  + all available goblins can be listed using '-l or --list'.
-  + the format input needs to be exact so make sure elements/spaces/commas have not been erroneously added or left out.
-  + if little or no (relevant) images are found then the page is probably generated dynamically with javascript which the program can not handle.
+### Misc:
+  + A specific goblin can be forced using '--force _goblin_'.
+  + All available goblins can be listed using '-l or --list'.
+  + The format input needs to be exact so make sure elements/spaces/commas have not been erroneously added or left out.
+  + If little or no (relevant) images are found then the page is probably generated dynamically with javascript which the program can not handle.
