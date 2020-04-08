@@ -1,8 +1,7 @@
-# ImageGoblin v1.0.7 by xioren
+# ImageGoblin v1.0.8 by xioren
 
-### changelog v1.0.7:
-  + optimized chunk handling
-  + expanded url compatibility
+### changelog v1.0.8d:
+  + complete instagram support
   + added goblins
   + code cleanup
   + bug fixes
@@ -18,11 +17,11 @@
   *examples:*
 
   ```
-  goblin https://www.website.com/files/image01.jpg
+  python3 image_goblin.py https://www.website.com/files/image01.jpg
 
-  goblin https://www.website.com/pages/somewebpage.html --force goblin
+  python3 image_goblin.py https://www.website.com/pages/somewebpage.html --force goblin
 
-  goblin --local urls.txt --silent
+  python3 image_goblin.py --local urls.txt --silent
   ```
 
 + *generic:* for any site without a specific goblin. greedy. by default, this mode will automatically try to remove common cropping. explicitly passing a modifier via '--format mode _modifier_' overrides this functionality. 'add _modifier_' will append the modifier to the end of the url; for example a query string. 'sub _modifier_ _replacement_' substitutes, while 'rem _modifier_' removes.
@@ -30,7 +29,7 @@
     *examples:*
 
     ```
-    goblin https://website.com/pages/somewebpage.html -f rem -\d+x\d+
+    python3 image_goblin.py https://website.com/pages/somewebpage.html -f rem -\d+x\d+
     ```
 
     https://website.com/uploads/image_01-300x300.jpg
@@ -41,7 +40,7 @@
 
 
     ```
-    goblin https://website.com/uploads/image_01.jpg?size=small --format sub size=\w+ size=large'
+    python3 image_goblin.py https://website.com/uploads/image_01.jpg?size=small --format sub size=\w+ size=large'
     ```
 
     https://website.com/uploads/image_01.jpg?size=small
@@ -55,7 +54,7 @@
     *example:*
 
     ```
-    goblin https://website.com/uploads/image_@@@01@@@.jpg --timeout 10 --rate 3
+    python3 image_goblin.py https://website.com/uploads/image_@@@01@@@.jpg --timeout 10 --rate 3
     ```
 
     the program will then iterate through and download all images it can find with that url structure on the server.
@@ -70,7 +69,7 @@
 
     etc...
 
-+ *instagram:* partial support. for now, this goblin will only parse the html of an instagram page that is saved to a txt file. the file should be named 'html.txt' and placed in the directory that this program is ran from. this goblin will take some time to complete. the url to the instagram page or username needs to be input when ran. if only the username is passed, it is necessary to --force instagram in order to match the correct goblin.
++ *instagram:* input the instagram page url or username. if only the username is passed, it is necessary to --force instagram in order to match the correct goblin.
 
 + *feed:* using the feed argument, you can accumulate urls by inputting them one by one using the --feed mode. this is useful for accumulating urls as you find them while browsing the web, and downloading all at once.   
 

@@ -21,9 +21,8 @@ class MetaGoblin(Parser):
             self.path_main = os.getcwd()
         else:
             self.path_main = os.path.join(os.getcwd(), 'goblin_loot', self.__str__().replace(' ', '_'))
-        self.headers = {True: {'User-Agent': 'ImageGoblin/1.0.7',
-                               'Accept-Encoding': 'gzip'},
-                        False: {'User-Agent': 'ImageGoblin/1.0.7'}}
+        self.headers = {'User-Agent': 'ImageGoblin/1.0.7',
+                        'Accept-Encoding': 'gzip'}
         self.collection = set()
         if not self.args['nodl']:
             self.make_dirs(self.path_main)
@@ -77,9 +76,9 @@ class MetaGoblin(Parser):
             # TODO: improve this
             return b''
 
-    def retrieve(self, url, path='', n=0, gzip=True, save=True):
+    def retrieve(self, url, path='', n=0, save=True):
         '''retrieve web content'''
-        request = Request(url, None, self.headers[gzip])
+        request = Request(url, None, self.headers)
         try:
             with urlopen(request, timeout=20) as response:
                     if save:
@@ -112,7 +111,7 @@ class MetaGoblin(Parser):
             sleep(self.args['tickrate'])
         return self.retrieve(url, path, n, save)
 
-    def get_html(self, url):
+    def get_response(self, url):
         '''retrieve web page html'''
         return self.retrieve(url, save=False)
 
@@ -144,7 +143,7 @@ class MetaGoblin(Parser):
     def extract_urls(self, pattern, url):
         '''extact urls from html based on regex pattern'''
         try:
-            return {url.group() for url in re.finditer(pattern, self.get_html(url))}
+            return {url.group() for url in re.finditer(pattern, self.get_response(url))}
         except TypeError as e:
             if self.args['verbose'] and not self.args['silent']:
                 print(f'[{self.__str__()}] <{e}>')
