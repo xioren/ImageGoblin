@@ -30,7 +30,7 @@
   python3 image_goblin.py --local urls.txt --silent
   ```
 
-+ *Generic:* For any site without a specific goblin. Greedy. By default, this mode will automatically try to remove common cropping. Explicitly passing a modifier via '--format' overrides this functionality. The usage format is '--format _mode_ _modifier_[ _replacement_]'. 'add _modifier_' will append the modifier to the end of the url; for example a query string. 'sub _modifier_ _replacement_' substitutes, while 'rem _modifier_' removes.
++ *Generic:* For any site without a specific goblin. Greedy. By default, this mode will automatically try to remove common cropping. Using the '--format' option overrides this functionality. The usage format is '--format _mode_ _modifier_[ _replacement_]'. 'add _modifier_' will append the modifier to the end of the url; for example a query string. 'sub _modifier_ _replacement_' substitutes, while 'rem _modifier_' removes.
 
   *Examples:*
 
@@ -82,5 +82,5 @@
 #### Misc:
   + A specific goblin can be forced using '--force _goblin_'.
   + All available goblins can be listed using '-l or --list'.
-  + The format input needs to be exact so make sure elements/spaces/commas have not been erroneously added or left out.
+  + The format input needs to be exact so make sure modifiers/spaces have not been erroneously added or left out.
   + If little or no (relevant) images are found then the page is probably generated dynamically with javascript which the program can not handle.

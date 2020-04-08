@@ -26,11 +26,14 @@ class ASOSGoblin(MetaGoblin):
     def extract_color(self, url):
         '''extract color from url'''
         if 'images.asos-media' in url:
-            color = re.search(r'\d+\-\d\-\w+', url)
+            color = re.search(r'\d+\-1\-[a-z0-9]+', url).group()
         else:
-            color = re.search(r'clr=\w+', url)
-        if color:
-            return re.sub(r'\d+-\d-', '', color.group().lstrip('clr='))
+            try:
+                color = re.search(r'clr=\w+', url).group().lstrip('clr=')
+            except AttributeError:
+                # QUESTION: add hiphen to re?
+                color = self.extract_urls(r'\d+-1-[a-z0-9]+', url).pop()
+        return re.sub(r'\d+-\d-', '', color)
 
     def form_url(self, id, large=False):
         '''generate a url from an image id'''
@@ -43,7 +46,7 @@ class ASOSGoblin(MetaGoblin):
     def run(self):
         for target in self.args['targets'][self.__repr__()]:
             color = self.extract_color(target)
-            id = re.search(r'\d+', target).group()
+            id = re.search(r'\d{5,}', target).group()
             if color:
                 self.collect(self.form_url(f'{id}-1-{color}', True))
             for n in range(2, 5):

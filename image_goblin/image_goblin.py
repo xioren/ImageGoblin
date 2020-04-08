@@ -14,7 +14,7 @@ parser.add_argument('-i', '--increment', help='iteration step size (n)',
                     type=int, default=1)
 parser.add_argument('-n', '--nodl', help='skip downloading and print urls to stdout',
                     action='store_true')
-parser.add_argument('-r', '--rate', help='program tickrate (n)', type=float, default=0)
+parser.add_argument('-d', '--delay', help='request delay, default: 0', type=float, default=0)
 parser.add_argument('-l', '--local', help='filename of local text file containing urls')
 parser.add_argument('--force', help='force a specific goblin')
 parser.add_argument('--list', help='list available goblins', action='store_true')
@@ -33,7 +33,7 @@ args = parser.parse_args()
 
 args_dict = {'targets': args.target, 'mode': args.mode, 'timeout': args.timeout,
              'format': args.format, 'increment': args.increment, 'nodl': args.nodl,
-             'silent': args.silent, 'tickrate': args.rate, 'local': args.local,
+             'silent': args.silent, 'delay': args.delay, 'local': args.local,
              'force': args.force, 'list': args.list, 'nosort': args.nosort,
              'noclean': args.noclean, 'feed': args.feed,
              'verbose': args.verbose, 'noupgrade': args.noupgrade}

@@ -108,7 +108,7 @@ class MetaGoblin(Parser):
                 print(f'[{self.__str__()}] <timeout> aborting after {n} retries')
             return None
         else:
-            sleep(self.args['tickrate'])
+            sleep(self.args['dealay'])
         return self.retrieve(url, path, n, save)
 
     def get_response(self, url):
@@ -179,7 +179,6 @@ class MetaGoblin(Parser):
             if os.path.exists(filepath):
                 if not self.args['silent']:
                     print(f'[{self.__str__()}] <file exists> {filename}')
-                track += 1
                 continue
             attempt = self.retrieve(url, filepath)
             if attempt:
@@ -189,6 +188,6 @@ class MetaGoblin(Parser):
                 track = 0
             else:
                 track += 1
-            sleep(self.args['tickrate'])
+            sleep(self.args['delay'])
         print(f'[{self.__str__()}] <complete> {loot_tally} file(s) looted')
         return True, timed_out

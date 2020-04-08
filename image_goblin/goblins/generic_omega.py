@@ -23,10 +23,10 @@ class OmegaGoblin(MetaGoblin):
 
     def format(self, url):
         '''format a url either automatically or via user input modifier'''
-        if not self.args['noupgrade']:
-            return self.auto_format(url)
-        elif self.args['format']:
+        if self.args['format']:
             return self.user_format(url)
+        elif not self.args['noupgrade']:
+            return self.auto_format(url)
         else:
             return url
 

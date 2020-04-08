@@ -57,14 +57,8 @@ class Parser:
     def add_scheme(self, url):
         '''checks for and adds scheme'''
         if not urlparse(url)[0]:
-            url = 'https://' + url.lstrip('/')
+            url = f'https://{url}'
         return url
-
-    def add_jpeg(self, filename):
-        '''add .jpeg to filename'''
-        if not re.search(regex_patterns['filetype'], filename):
-            filename += '.jpeg'
-        return filename
 
     def get_netloc(self, url):
         '''return netloc of a url'''
@@ -79,7 +73,7 @@ class Parser:
 
     def make_absolute(self, relative):
         '''convert relative url to absolute'''
-        return self.get_netloc(self.args['url']) + relative
+        return self.get_netloc(self.args['targets'][self.__repr__()][0]) + relative
 
     def finalize(self, url):
         '''

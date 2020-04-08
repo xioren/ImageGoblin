@@ -28,11 +28,11 @@ class IteratorGoblin(MetaGoblin):
     def generate_urls(self, base, iterable, end):
         '''generate block of urls to iterate over'''
         stripped_iter = int(iterable.lstrip('0'))
-        for n in range(stripped_iter, stripped_iter + 50, self.args['increment']):
+        for n in range(stripped_iter, stripped_iter + 100, self.args['increment']):
             self.collect(f'{base}{str(n).zfill(len(iterable))}{end}')
 
     def increment_iterable(self, iterable):
-        return str(int(iterable.lstrip('0')) + 50).zfill(len(iterable))
+        return str(int(iterable.lstrip('0')) + 100).zfill(len(iterable))
 
     def iterate(self):
         '''main iteration method'''
@@ -53,4 +53,3 @@ class IteratorGoblin(MetaGoblin):
 
     def run(self):
         self.iterate()
-        print(f'[{self.__str__()}] <looted> {self.loot_tally} files')

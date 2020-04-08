@@ -77,20 +77,20 @@ class InstagramGoblin(MetaGoblin):
             cursor = json.loads(media_response)['data']['user']['edge_owner_to_timeline_media']['page_info']['end_cursor']
             if not cursor:
                 break
-            sleep(self.args['tickrate'])
+            sleep(self.args['delay'])
         return posts
 
     def find_media(self, posts):
         '''parses each post for media'''
         for post in posts:
             if not self.args['silent']:
-                print(f'[{self.__str__()}] <parsing> {post}')
+                print(f'[{self.__str__()}] <parsing> /p/{post}/')
             content = self.extract_urls(self.url_pat, f'https://www.instagram.com/p/{post}/')
             for url in content:
                 if re.search(r'/[a-z]\d{3}x\d{3}/|ig_cache_key|c\d\.\d+\.\d+', url):
                     continue
                 self.collect(url.replace(r'\u0026', '&'), f'{self.username}_{self.extract_filename(url)}')
-            sleep(self.args['tickrate'])
+            sleep(self.args['delay'])
 
     def run(self):
         posts = self.find_posts()
