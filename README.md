@@ -1,7 +1,8 @@
 # ImageGoblin
 
 #### changelog v1.0.8:
-+ complete instagram support
++ completed instagram support
++ added install script
 + added goblins
 + code cleanup
 + bug fixes

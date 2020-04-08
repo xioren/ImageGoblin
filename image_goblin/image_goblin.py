@@ -14,7 +14,7 @@ parser.add_argument('-i', '--increment', help='iteration step size (n)',
                     type=int, default=1)
 parser.add_argument('-n', '--nodl', help='skip downloading and print urls to stdout',
                     action='store_true')
-parser.add_argument('-r', '--rate', help='program tickrate (n)', type=float, default=1)
+parser.add_argument('-r', '--rate', help='program tickrate (n)', type=float, default=0)
 parser.add_argument('-l', '--local', help='filename of local text file containing urls')
 parser.add_argument('--force', help='force a specific goblin')
 parser.add_argument('--list', help='list available goblins', action='store_true')
