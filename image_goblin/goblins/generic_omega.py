@@ -35,7 +35,7 @@ class OmegaGoblin(MetaGoblin):
         urls = self.extract_urls(self.url_pat, url)
         cleaned_urls = [re.sub(r'<img.+src="', '', url) for url in urls]
         for url in cleaned_urls:
-            if re.search(self.filter_pat, url):
+            if re.search(self.filter_pat, url, re.IGNORECASE):
                 continue
             self.collect(self.format(url))
 
