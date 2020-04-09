@@ -5,8 +5,8 @@ from time import sleep
 from goblins.meta import MetaGoblin
 
 
-# alternate scaled: '?wid=2239&hei=2857&size=2239,2857&qlt=100'
-
+# alternate scaled query: '?wid=2239&hei=2857&size=2239,2857&qlt=100'
+# alternate url format: https://images.asos-media.com/inv/media/7/6/5/4/01234567/color/image1xxl.jpg
 
 class ASOSGoblin(MetaGoblin):
     '''accepts:

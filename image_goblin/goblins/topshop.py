@@ -10,6 +10,7 @@ class TopshopGoblin(MetaGoblin):
     def __init__(self, args):
         super().__init__(args)
         self.url_pat = r'images\.topshop\.com/i/TopShop/[A-Z\d]+_[A-Z]_\d\.jpg'
+        self.query = '?scl=1&qlt=100'
 
     def __str__(self):
         return 'topshop goblin'
@@ -25,5 +26,5 @@ class TopshopGoblin(MetaGoblin):
                 urls = self.extract_urls(self.url_pat, target)
             for url in urls:
                 for n in range(1, 6):
-                    self.collect('{}{}.jpg'.format(self.dequery(url)[:-5], n))
+                    self.collect(f'{self.dequery(url)[:-5]}{n}.jpg{self.query}')
         self.loot()

@@ -1,6 +1,7 @@
 import os
 import re
 
+from sys import exit
 from time import sleep
 from socket import timeout
 from gzip import decompress
@@ -30,16 +31,22 @@ class MetaGoblin(Parser):
 
     def make_dirs(self, *paths):
         '''creates directories'''
+        # BUG: sometimes dirs do not make correctly leaving empty binary file
         for path in paths:
             if not os.path.exists(path):
-                os.makedirs(path)
+                try:
+                    os.makedirs(path)
+                except OSError as e:
+                    # NOTE: no sense in continuing if the download dirs fail to make
+                    # may change approach in future
+                    exit(f'[{self.__str__()}] <{e}> {path}')
 
     def cleanup(self, path):
         '''cleanup small unwanted files (icons, thumbnails, etc...)
         default 50kb threshold
         '''
         # NOTE:  dangerous, consider recieving file manifest instead?
-        # TEMP: restrict usage to only the directories created by this app
+        # TEMP: restrict usage to only the directories created by this app to prevent deleting user files
         if not self.args['nosort']:
             for file in os.listdir(path):
                 filepath = os.path.join(path, file)
@@ -48,7 +55,7 @@ class MetaGoblin(Parser):
                 if os.path.getsize(filepath) < 50000:
                     try:
                         os.remove(filepath)
-                    except PermissionError as e:
+                    except OSError as e:
                         if self.args['verbose'] and not self.args['silent']:
                             print(f'[{self.__str__()}] <{e}> {filepath}')
 
@@ -160,13 +167,12 @@ class MetaGoblin(Parser):
         else:
             self.collection.append(f'{self.finalize(url)}-break-{filename}')
 
-    def loot(self, save_loc=None, timeout=False):
+    def loot(self, save_loc=None, timeout=0):
         '''retrieve collected urls'''
-        track = 0
-        loot_tally = 0
+        failed = loot_tally = 0
         timed_out = False
         for url in self.collection:
-            if timeout and track >= timeout:
+            if timeout and failed >= timeout:
                 timed_out = True
                 break
             url, filename = url.split('-break-')
@@ -185,9 +191,9 @@ class MetaGoblin(Parser):
                 if not self.args['silent']:
                     print(f'[{self.__str__()}] <looted> {filename}')
                 loot_tally += 1
-                track = 0
+                failed = 0
             else:
-                track += 1
+                failed += 1
             sleep(self.args['delay'])
         print(f'[{self.__str__()}] <complete> {loot_tally} file(s) looted')
-        return True, timed_out
+        return timed_out

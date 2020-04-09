@@ -42,7 +42,7 @@ class IteratorGoblin(MetaGoblin):
         while True:
             print(f'[{self.__str__()}] <iterating> round {round}')
             self.generate_urls(base, iterable, end)
-            _, timeout = self.loot(timeout=self.args['timeout'])
+            timeout = self.loot(timeout=self.args['timeout'])
             if not timeout:
                 round += 1
                 iterable = self.increment_iterable(iterable)

@@ -40,11 +40,11 @@ class InstagramGoblin(MetaGoblin):
             if '.mp4' in file:
                 os.rename(os.path.join(path, file), os.path.join(vid_path, file))
 
-    def hash(self, x):
-        return md5(x.encode()).hexdigest()
+    def hash(self, string):
+        return md5(string.encode()).hexdigest()
 
     def find_posts(self):
-        '''parse user profile for posts
+        '''parse instagram page for posts
         code inspired by:
             - https://github.com/ytdl-org/youtube-dl
             - https://github.com/rarcega/instagram-scraper
@@ -57,6 +57,8 @@ class InstagramGoblin(MetaGoblin):
         csrf_token = initial_response['config']['csrf_token']
         rhx_gis = initial_response.get('rhx_gis', '3c7ca9dcefcf966d11dacf1f151335e8')
         cursor = ''
+        if not self.args['silent']:
+            print(f'[{self.__str__()}] <collecting posts>')
         while True:
             variables = json.dumps(
                 {
@@ -84,13 +86,14 @@ class InstagramGoblin(MetaGoblin):
         '''parses each post for media'''
         for post in posts:
             if not self.args['silent']:
-                print(f'[{self.__str__()}] <parsing> /p/{post}/')
+                print(f'[{self.__str__()}] <parsing post> /p/{post}/')
             content = self.extract_urls(self.url_pat, f'https://www.instagram.com/p/{post}/')
             for url in content:
                 if re.search(r'/[a-z]\d{3}x\d{3}/|ig_cache_key|c\d\.\d+\.\d+', url):
                     continue
                 self.collect(url.replace(r'\u0026', '&'), f'{self.username}_{self.extract_filename(url)}')
             sleep(self.args['delay'])
+        print(f'[{self.__str__()}] <parsing complete>')
 
     def run(self):
         posts = self.find_posts()

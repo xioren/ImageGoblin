@@ -13,7 +13,9 @@ class OmegaGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.url_pat = fr'(<img[^<>]+src="[^" ;\']+)|((https?://)?[^"\n \';]+{self.filetypes}({self.query_pat})?)'
+        self.url_pat_a = r'<img.+?(src|data([^=]+)?)="[^"]+'
+        self.url_pat_b = fr'(https?://)?(/[^"\n \';]+)+{self.filetypes}({self.query_pat})?'
+        self.url_pat_compunded = f'{self.url_pat_a}|{self.url_pat_b}'
 
     def __str__(self):
         return 'generic goblin'
@@ -32,16 +34,17 @@ class OmegaGoblin(MetaGoblin):
 
     def find_urls(self, url):
         '''extract image urls from html'''
-        urls = self.extract_urls(self.url_pat, url)
-        cleaned_urls = [re.sub(r'<img.+src="', '', url) for url in urls]
+        print(f'[{self.__str__()}] <parsing urls>')
+        urls = self.extract_urls(self.url_pat_compunded, url)
+        cleaned_urls = [re.sub(r'<img[^<>]+="', '', url) for url in urls]
         for url in cleaned_urls:
             if re.search(self.filter_pat, url, re.IGNORECASE):
                 continue
-            self.collect(self.format(url))
+            self.collect(self.format(url.lstrip('.')))
 
     def run(self):
         for target in self.args['targets'][self.__repr__()]:
-            if re.search(r'\.(jpe?g|png|gif|webp|tiff?)|upload', target, re.IGNORECASE):
+            if re.search(f'{self.filetypes}|upload', target, re.IGNORECASE):
                 self.collect(self.format(target))
             else:
                 self.find_urls(target)

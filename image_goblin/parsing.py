@@ -10,13 +10,13 @@ class Parser:
         self.filename_pat = r'(/?[^/]+(\.\w+)?)$'
         self.query_pat = r'\?[^" ]+$'
         self.filetype_pat = r'\.[A-Za-z0-9]+'
-        self.filetypes = r'\.(jpe?g|png|gif|mp4|web(p|m)|tiff?)'
+        self.filetypes = r'\.(jpe?g|png|gif|mp4|web(p|m)|tiff?|mov)'
         self.tag_pat = r'<[^>]+>'
         self.filter_pat = r'\.(js|css|pdf)|(fav)?icon|logo|menu'
         self.cropping_pats = [
             r'(@|-|_)?(\d{3,4}x(\d{3,4})?|(\d{3,4})?x\d{3,4})',
             r'(-|_)?large(-|_)?',
-            r'c_fill,f_auto,g_north,h_\d+,q_auto:best,w_\d+/v1/',
+            r'([a-z]_[^,/]+,)+[a-z]_[^,/]+/v\d+/',
             r'expanded_[a-z]+/',
             r'(\.|-)\d+w',
             # BUG: \-e\d+ catches some dashed filenames by mistake, consider changing
@@ -57,7 +57,7 @@ class Parser:
     def add_scheme(self, url):
         '''checks for and adds scheme'''
         if not urlparse(url)[0]:
-            url = f'https://{url}'
+            url = f'https://{re.sub(r"^//", "", url)}'
         return url
 
     def get_netloc(self, url):
@@ -93,6 +93,19 @@ class Parser:
             else:
                 return unique
 
+    def user_format(self, url):
+        '''add, substitute, or remove elements from a url'''
+        if self.args['format'][0] == 'add':
+            return url + self.args['format'][1]
+        elif self.args['format'][0] == 'sub':
+            return re.sub(self.args['format'][1], self.args['format'][2], url)
+        elif self.args['format'][0] == 'rem':
+            return re.sub(self.args['format'][1], '', url)
+        else:
+            if not self.args['silent']:
+                print(f'[{self.__str__()}] <WARNING> unknown format')
+            return url
+
     def auto_format(self, url):
         '''attempt to upscale common url formats'''
         if 'acidimg' in url:
@@ -122,16 +135,3 @@ class Parser:
         elif 'wix' in url:
             url = re.sub(r'\.jpg.+$', '', url) + '.jpg'
         return self.sanitize(url)
-
-    def user_format(self, url):
-        '''add, substitute, or remove elements from a url'''
-        if self.args['format'][0] == 'add':
-            return url + self.args['format'][1]
-        elif self.args['format'][0] == 'sub':
-            return re.sub(self.args['format'][1], self.args['format'][2], url)
-        elif self.args['format'][0] == 'rem':
-            return re.sub(self.args['format'][1], '', url)
-        else:
-            if not self.args['silent']:
-                print(f'[{self.__str__()}] <WARNING> unknown format')
-            return url
