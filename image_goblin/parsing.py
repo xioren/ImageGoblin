@@ -12,10 +12,8 @@ class Parser:
         self.query_pat = r'\?[^" ]+$'
         self.filetype_pat = r'(?<=\.)[A-Za-z0-9]+'
         self.filetypes = r'\.(jpe?g|png|gif|mp4|web(p|m)|tiff?|mov)'
-        # TODO: remove if unused
-        # self.tag_pat = r'<[^>]+>'
         self.filter_pat = r'\.(js|css|pdf)|(fav)?icon|logo|menu'
-        self.cropping_pats = [
+        self.cropping_pats = (
             r'(@|-|_)?(\d{3,4}x(\d{3,4})?|(\d{3,4})?x\d{3,4})',
             r'(-|_)?large(-|_)?',
             r'(?<=/)([a-z]{,2}_[\w:]+(,|/)?)+/v\d+/',
@@ -23,9 +21,7 @@ class Parser:
             r'(\.|-)\d+w',
             r'-e\d+(?=\.)',
             r'/v/\d/.+\.webp$'
-            # BUG: removing legitimate url portions -> modify.
-            # r'w/\d+/'
-        ]
+        )
 
     def extract_filename(self, url):
         '''extracts filename from url'''
@@ -58,7 +54,7 @@ class Parser:
     def add_scheme(self, url):
         '''checks for and adds scheme'''
         if not urlparse(url)[0]:
-            url = f'https://{re.sub(r"^//", "", url)}'
+            url = f'https://{re.sub(r"^/{2,}", "", url)}'
         return url
 
     def get_netloc(self, url):
@@ -77,9 +73,8 @@ class Parser:
         return self.get_netloc(self.args['targets'][self.__repr__()][0]) + relative
 
     def finalize(self, url):
-        '''
-        prepare a url for downloading
-        '''
+        '''prepare a url for downloading'''
+        url = url.replace('\\', '')
         if self.is_relative(url):
             url = self.make_absolute(url)
         return self.add_scheme(unquote(url.strip('/')))
@@ -136,6 +131,8 @@ class Parser:
             url = url.replace('_t', '')
         elif 'squarespace' in url:
             url += '?format=original'
+        elif 'tumblr' in url and not '1280.jpg' in url:
+            url = re.sub(r'\d+(?=\.jpg)', '1280', url)
         elif 'wix' in url:
             url = re.sub(r'(?<=\.jpg).+$', '', url)
         return url

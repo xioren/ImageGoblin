@@ -28,6 +28,7 @@ from goblins.faithfull_the_brand import FaithfullTheBrandGoblin
 from goblins.fashion_nova import FashionNovaGoblin
 from goblins.five_dancewear import FiveDancewearGoblin
 from goblins.fleur_du_mal import FleurDuMalGoblin
+from goblins.flickr import FlickrGoblin
 from goblins.for_love_and_lemons import ForLoveAndLemonsGoblin
 from goblins.fortnight import FortnightGoblin
 from goblins.fredericks import FredericksGoblin
@@ -126,6 +127,7 @@ goblins = {
     'faithfullthebrand': ('faithfullthebrand', FaithfullTheBrandGoblin),
     'fivedancewear': ('fivedancewear', FiveDancewearGoblin),
     'fleurdumal': ('fleurdumal', FleurDuMalGoblin),
+    'flickr': ('flickr', FlickrGoblin),
     'fredericks': ('fredericks', FredericksGoblin),
     'forloveandlemons': ('forloveandlemons', ForLoveAndLemonsGoblin),
     'fortnight': ('fortnightlingerie', FortnightGoblin),

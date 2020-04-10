@@ -28,7 +28,7 @@
 
   goblin https://www.website.com/pages/somewebpage.html --force goblin
 
-  python3 image_goblin.py --local urls.txt --silent
+  goblin --local urls.txt --silent
   ```
 
 + *Generic:* For any site without a specific goblin. Greedy. By default, this mode will automatically try to remove common cropping. Using the '--format' option overrides this functionality. The usage format is '--format _mode_ _modifier_[ _replacement_]'. 'add _modifier_' will append the modifier to the end of the url; for example a query string. 'sub _modifier_ _replacement_' substitutes, while 'rem _modifier_' removes.
