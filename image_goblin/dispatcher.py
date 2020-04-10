@@ -25,7 +25,7 @@ class Dispatcher:
         if self.args['list']:
             for key in goblins:
                 print(key)
-            return
+            return None
         elif self.args['local']:
             with open(os.path.join(os.getcwd(), self.args['local'])) as file:
                 urls = set(file.read().splitlines())
@@ -35,7 +35,7 @@ class Dispatcher:
         else:
             if not self.args['targets']:
                 print(f'[{self.__str__()}] <ERROR> input not understood')
-                return
+                return None
             urls = [self.args['targets']]
         for url in urls:
             if self.args['force']:
@@ -52,7 +52,7 @@ class Dispatcher:
                 goblin = goblins[self.args['force']][1]
             except KeyError:
                 print(f'[{self.__str__()}] <ERROR> unkown goblin -> use --list to see available goblins')
-                return
+                return None
             goblin(self.args).run()
         else:
             for key in url_assignment:

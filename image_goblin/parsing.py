@@ -135,7 +135,7 @@ class Parser:
         elif 'pixroute' in url:
             url = url.replace('_t', '')
         elif 'squarespace' in url:
-            url = '?format=original'
+            url += '?format=original'
         elif 'wix' in url:
             url = re.sub(r'(?<=\.jpg).+$', '', url)
         return url
