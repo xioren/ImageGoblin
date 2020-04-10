@@ -10,7 +10,7 @@ class PrettyLittleThingGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.url_pat = r'https?://cdn\-img\.prettylittlething\.com[^" \n]+'
+        self.url_pat = r'https?://cdn-img\.prettylittlething\.com[^" \n]+'
 
     def __str__(self):
         return 'prettylittlething goblin'

@@ -1,10 +1,17 @@
-from goblins.generic_beta import BetaGoblin
+import re
+
+from goblins.meta import MetaGoblin
 
 
-class AmericanApparelGoblin(BetaGoblin):
+class AmericanApparelGoblin(MetaGoblin):
+    '''accepts:
+        - image*
+        - webpage
+    '''
 
     def __init__(self, args):
         super().__init__(args)
+        self.url_pat = r'https?://cdn\d+\.bigcommerce\.com/[^/]+/images/stencil/[^/]+/products/\d+/\d+/[a-z0-9]+_[a-z0-9]+_[^" ]+\.jpg'
 
     def __str__(self):
         return 'american apparel goblin'
@@ -12,6 +19,18 @@ class AmericanApparelGoblin(BetaGoblin):
     def __repr__(self):
         return 'americanapparel'
 
-    def identify(self, url):
-        self.modifiers = ('', '_01', '_02', '_03', '_04', '_05')
-        return 'https://s7d9.scene7.com/is/image/AmericanApparel/'
+    def split_url(self, url):
+        '''split url into base, end and sub out cropping'''
+        return re.split(r'_(\d{2})?(?=_)', re.sub(r'(?<=stencil/)[^/]+', 'original', url), 1)
+
+    def run(self):
+        for target in self.args['targets'][self.__repr__()]:
+            if 'bigcommerce' in target:
+                urls = [self.dequery(target)]
+            else:
+                urls = self.extract_urls(self.url_pat, target)
+            for url in urls:
+                url_base, _, url_end = self.split_url(url)
+                for mod in ('', '01', '02', '03', '04'):
+                    self.collect(f'{url_base}_{mod}{url_end}')
+        self.loot()

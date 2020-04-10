@@ -2,34 +2,35 @@ import re
 
 from urllib.parse import urlparse, unquote
 
+# IDEA: consider implementing re.compile
 
 class Parser:
     '''generic parsing methods'''
 
     def __init__(self):
-        self.filename_pat = r'(/?[^/]+(\.\w+)?)$'
+        self.filename_pat = r'((?<=/)[^/]+(\.\w+)?)$'
         self.query_pat = r'\?[^" ]+$'
-        self.filetype_pat = r'\.[A-Za-z0-9]+'
+        self.filetype_pat = r'(?<=\.)[A-Za-z0-9]+'
         self.filetypes = r'\.(jpe?g|png|gif|mp4|web(p|m)|tiff?|mov)'
-        self.tag_pat = r'<[^>]+>'
+        # TODO: remove if unused
+        # self.tag_pat = r'<[^>]+>'
         self.filter_pat = r'\.(js|css|pdf)|(fav)?icon|logo|menu'
         self.cropping_pats = [
             r'(@|-|_)?(\d{3,4}x(\d{3,4})?|(\d{3,4})?x\d{3,4})',
             r'(-|_)?large(-|_)?',
-            r'([a-z]_[^,/]+,)+[a-z]_[^,/]+/v\d+/',
+            r'(?<=/)([a-z]{,2}_[\w:]+(,|/)?)+/v\d+/',
             r'expanded_[a-z]+/',
             r'(\.|-)\d+w',
-            # BUG: \-e\d+ catches some dashed filenames by mistake, consider changing
-            # r'\-e\d+'
+            r'-e\d+(?=\.)',
             r'/v/\d/.+\.webp$'
-            # BUG: removing legitimate url portions
+            # BUG: removing legitimate url portions -> modify.
             # r'w/\d+/'
         ]
 
     def extract_filename(self, url):
         '''extracts filename from url'''
         try:
-            return re.sub(self.filetype_pat, '', re.search(self.filename_pat, self.dequery(url)).group().strip('/'))
+            return re.sub(self.filetype_pat, '', re.search(self.filename_pat, self.dequery(url)).group()).rstrip('.')
         except AttributeError:
             return 'image'
 
@@ -49,10 +50,10 @@ class Parser:
 
     def filetype(self, url):
         '''extract file type'''
-        type = re.search(self.filetypes, url, re.IGNORECASE)
+        type = re.search(f'{self.filetype_pat}$', self.dequery(url), re.IGNORECASE)
         if not type:
             return 'jpeg'
-        return type.group().lstrip('.').replace('jpg', 'jpeg')
+        return type.group().replace('jpg', 'jpeg')
 
     def add_scheme(self, url):
         '''checks for and adds scheme'''
@@ -85,6 +86,8 @@ class Parser:
 
     def make_unique(self, filename):
         '''make filename unique'''
+        # FIXME: unused and not up to date with current
+        # if kept, needs a filepath arg or something along those lines
         n = 1
         while True:
             unique = f'({n}).'.join(filename.split('.'))
@@ -108,6 +111,7 @@ class Parser:
 
     def auto_format(self, url):
         '''attempt to upscale common url formats'''
+        url = self.sanitize(url)
         if 'acidimg' in url:
             url = url.replace('small', 'big')
         elif 'imagetwist' in url:
@@ -131,7 +135,7 @@ class Parser:
         elif 'pixroute' in url:
             url = url.replace('_t', '')
         elif 'squarespace' in url:
-            url += '?format=original'
+            url = '?format=original'
         elif 'wix' in url:
-            url = re.sub(r'\.jpg.+$', '', url) + '.jpg'
-        return self.sanitize(url)
+            url = re.sub(r'(?<=\.jpg).+$', '', url)
+        return url

@@ -9,15 +9,18 @@ class Dispatcher:
     def __init__(self, args):
         self.args = args
 
+    def __str__(self):
+        return 'dispatcher'
+
     def identify(self, url):
-        '''match url to goblin via regex'''
+        '''match url to a specific goblin'''
         for key in goblins:
-            if re.search(goblins[key][0], url, re.IGNORECASE):
+            if re.search(f'(?:{goblins[key][0]})', url, re.IGNORECASE):
                 return key
         return 'generic'
 
     def dispatch(self):
-        '''identify and deploy goblins according to input url(s)'''
+        '''identify and deploy goblins'''
         url_assignment = {}
         if self.args['list']:
             for key in goblins:
@@ -30,9 +33,15 @@ class Dispatcher:
             goblin = goblins['hungry'][1]
             urls = goblin().run()
         else:
+            if not self.args['targets']:
+                print(f'[{self.__str__()}] <ERROR> input not understood')
+                return
             urls = [self.args['targets']]
         for url in urls:
-            key = self.identify(url)
+            if self.args['force']:
+                key = self.args['force']
+            else:
+                key = self.identify(url)
             if url_assignment.get(key):
                 url_assignment[key].append(url)
             else:
@@ -42,7 +51,7 @@ class Dispatcher:
             try:
                 goblin = goblins[self.args['force']][1]
             except KeyError:
-                print('[ERROR] <unkown goblin> use --list to see available goblins')
+                print(f'[{self.__str__()}] <ERROR> unkown goblin -> use --list to see available goblins')
                 return
             goblin(self.args).run()
         else:

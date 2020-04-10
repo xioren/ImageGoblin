@@ -18,9 +18,11 @@ class InstagramGoblin(MetaGoblin):
         self.username = self.extract_username(self.args['targets'][self.__repr__()][0])
         self.sub_dir = os.path.join(self.path_main, self.username)
         self.url_pat = r'https?://scontent[^"\n \']+_n\.[^"\n \']+'
-        self.headers = {'User-Agent': 'Firefox/72',
-                        'Accept-Encoding': 'gzip',
-                        'Cookie': 'ig_pr=1'}
+        self.headers = {
+            'User-Agent': 'Firefox/72',
+            'Accept-Encoding': 'gzip',
+            'Cookie': 'ig_pr=1'
+            }
         self.make_dirs(self.sub_dir)
 
     def __str__(self):
@@ -89,7 +91,7 @@ class InstagramGoblin(MetaGoblin):
                 print(f'[{self.__str__()}] <parsing post> /p/{post}/')
             content = self.extract_urls(self.url_pat, f'https://www.instagram.com/p/{post}/')
             for url in content:
-                if re.search(r'/[a-z]\d{3}x\d{3}/|ig_cache_key|c\d\.\d+\.\d+', url):
+                if re.search(r'(?:/[a-z]\d{3}x\d{3}/|ig_cache_key|c\d\.\d+\.\d+)', url):
                     continue
                 self.collect(url.replace(r'\u0026', '&'), f'{self.username}_{self.extract_filename(url)}')
             sleep(self.args['delay'])

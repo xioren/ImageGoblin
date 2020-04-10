@@ -10,7 +10,7 @@ class KatherineHamiltonGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.url_pat = r'https?[^" \n]+\.jpg'
+        self.url_pat = r'https?://[^" \n]+\.jpg'
         self.modifiers = ('', '-front', '-back', '-side', '-set', '-fton', '-open', '-fron-1')
 
     def __str__(self):

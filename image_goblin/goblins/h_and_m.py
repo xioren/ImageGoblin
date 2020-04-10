@@ -22,7 +22,7 @@ class HMGoblin(MetaGoblin):
 
     def extract_source(self, url):
         '''extract source path from url'''
-        return re.search(r'source\[[\w\./]+\]', url).group().lstrip('source[').rstrip(']')
+        return re.search(r'source\[[\w\./]+\]', url).group().replace('source[', '').rstrip(']')
 
     def run(self):
         for target in self.args['targets'][self.__repr__()]:

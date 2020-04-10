@@ -22,7 +22,7 @@ class MetaGoblin(Parser):
             self.path_main = os.getcwd()
         else:
             self.path_main = os.path.join(os.getcwd(), 'goblin_loot', self.__str__().replace(' ', '_'))
-        self.headers = {'User-Agent': 'ImageGoblin/1.0.7',
+        self.headers = {'User-Agent': 'ImageGoblin/0.1.9',
                         'Accept-Encoding': 'gzip'}
         self.collection = set()
         if not self.args['nodl']:
@@ -38,14 +38,14 @@ class MetaGoblin(Parser):
                     os.makedirs(path)
                 except OSError as e:
                     # NOTE: no sense in continuing if the download dirs fail to make
-                    # may change approach in future
+                    # may change approach in future, exit for now
                     exit(f'[{self.__str__()}] <{e}> {path}')
 
     def cleanup(self, path):
         '''cleanup small unwanted files (icons, thumbnails, etc...)
         default 50kb threshold
         '''
-        # NOTE:  dangerous, consider recieving file manifest instead?
+        # WARNING:  dangerous, consider recieving file manifest instead?
         # TEMP: restrict usage to only the directories created by this app to prevent deleting user files
         if not self.args['nosort']:
             for file in os.listdir(path):
@@ -80,7 +80,7 @@ class MetaGoblin(Parser):
         except OSError:
             return data
         except EOFError:
-            # TODO: improve this
+            # OPTIMIZE: return something other than empty bytes?
             return b''
 
     def retrieve(self, url, path='', n=0, save=True):

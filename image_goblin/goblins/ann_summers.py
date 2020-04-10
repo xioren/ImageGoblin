@@ -3,7 +3,7 @@ import re
 from goblins.meta import MetaGoblin
 
 
-# NOTE: some images use demandware
+# NOTE: some images use demandware; switched cdn's?
 
 
 class AnnSummersGoblin(MetaGoblin):

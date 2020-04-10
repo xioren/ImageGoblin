@@ -26,7 +26,7 @@ class ZetaGoblin(MetaGoblin):
 
     def prep(self, url):
         '''remove cropping, end of url and return base'''
-        return re.sub(r'h/\d+/', '', re.sub(r'w/\d+', 'w/3400', re.sub(r'[A-Z0-9]+\.jpg', '', url)))
+        return re.sub(r'w/\d+', 'w/3400', re.sub(r'[A-Z0-9]+\.jpg|h/\d+/', '', url))
 
     def run(self):
         for target in self.args['targets'][self.__repr__()]:

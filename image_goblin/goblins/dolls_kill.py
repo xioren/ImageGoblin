@@ -27,5 +27,5 @@ class DollsKillGoblin(MetaGoblin):
             else:
                 urls = self.extract_urls(self.url_pat, target)
             for url in urls:
-                self.collect(re.sub(r'\d+\.jpg', '1.jpeg', url).lstrip('img src="'))
+                self.collect(re.sub(r'\d+\.jpg', '1.jpeg', url).replace('img src="', ''))
         self.loot()

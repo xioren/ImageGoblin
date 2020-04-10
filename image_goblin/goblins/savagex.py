@@ -11,7 +11,7 @@ class SavageXGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.url_pat = r'https*://[^" \n]+\d\-800x800.jpg'
+        self.url_pat = r'https?://[^" \n]+\d-800x800\.jpg'
 
     def __str__(self):
         return 'savagex goblin'
@@ -21,7 +21,7 @@ class SavageXGoblin(MetaGoblin):
 
     def strip(self, url):
         '''strip end of url and return the base'''
-        return re.sub(r'(LAYDOWN|\d)\-\d+x\d+.jpg', '', url)
+        return re.sub(r'(LAYDOWN|\d)\-\d+x\d+\.jpg', '', url)
 
     def run(self):
         for target in self.args['targets'][self.__repr__()]:

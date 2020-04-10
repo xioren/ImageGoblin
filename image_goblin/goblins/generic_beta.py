@@ -13,7 +13,6 @@ class BetaGoblin(MetaGoblin):
         - image
         - webpage
     generic backend for:
-        - american apparel
         - anthropologie
         - calvin klein
         - esprit
@@ -25,33 +24,33 @@ class BetaGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.url_pat = r'\w+\.scene7[^" \n]+'
+        self.url_pat = fr'https?://[a-z0-9]+\.scene7\.com/is/image/[A-Za-z]+/\w+(_\w+)?_\w+'
         self.query = '?fmt=jpeg&qlt=100&scl=1'
 
     def extract_id(self, url):
         '''extract image id from url'''
-        return re.search(r'[A-Za-z0-9]+_([A-Za-z0-9]+)*', url).group()
+        return re.search(r'\w+(_\w+)?(?=_\w+)', url).group()
 
-    def correct_format(self, url):
-        '''check if the url is of the correct format'''
-        if re.search(r'[a-z0-9]+_([a-z0-9]+)*', url):
-            return True
-        else:
-            return False
+    def extract_base(self, url):
+        '''extract url base'''
+        return re.sub(r'(?<=/)[^/]+$', '', url)
 
     def run(self):
         for target in self.args['targets'][self.__repr__()]:
             if 'scene7' in target:
-                urls = [target]
+                urls = [self.dequery(target)]
             else:
-                urls = self.extract_urls(self.url_pat, target)
+                if self.accept_webpage:
+                    urls = self.extract_urls(self.url_pat, target)
+                else:
+                    urls = []
+                    if not self.args['silent']:
+                        print(f'[{self.__str__()}] <WARNING> webpage urls not supported')
             for url in urls:
-                if not self.correct_format(url):
-                    continue
-                url_base = self.identify(url)
                 id = self.extract_id(url)
+                self.url_base = self.extract_base(url)
                 for mod in self.modifiers:
-                    self.collect(f'{url_base}{id}{mod}{self.query}')
+                    self.collect(f'{self.url_base}{id}{mod}{self.query}')
         self.loot()
         if not self.args['nodl'] and not self.args['noclean']:
             self.cleanup(self.path_main)

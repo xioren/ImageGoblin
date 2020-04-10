@@ -11,7 +11,7 @@ class SsenseGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.url_pat = r'https*://(img\.ssensemedia|res\.cloudinary)\.com/(images?|ssenseweb)/[^" ]+'
+        self.url_pat = r'https?://(img\.ssensemedia|res\.cloudinary)\.com/(images?|ssenseweb)/[^" ]+'
 
     def __str__(self):
         return 'ssense goblin'
@@ -21,7 +21,7 @@ class SsenseGoblin(MetaGoblin):
 
     def extract_id(self, url):
         '''extract image id from url'''
-        return re.search(r'[A-Z\d]+_\d', url).group()[:-2]
+        return re.search(r'[A-Z\d]+(?=_\d)', url).group()
 
     def run(self):
         for target in self.args['targets'][self.__repr__()]:

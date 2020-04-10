@@ -10,7 +10,7 @@ class GuessGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.url_pat = r'https://res\.cloudinary\.com/guess\-img/[^" ]+\?pgw=1'
+        self.url_pat = r'https?://res\.cloudinary\.com/guess-img/[^" ]+\?pgw=1'
 
     def __str__(self):
         return 'guess goblin'
@@ -20,7 +20,7 @@ class GuessGoblin(MetaGoblin):
 
     def prep(self, url):
         '''decrop and return url base'''
-        return re.sub(r'c_fill[^/]+/c_fill[^/]+/', '', re.sub(r'-ALT\d', '', self.dequery(url)))
+        return re.sub(r'(?<=/)([a-z]{,2}_\w+(,|/)?)+/v\d+/|-ALT\d', '', self.dequery(url))
 
     def run(self):
         for target in self.args['targets'][self.__repr__()]:

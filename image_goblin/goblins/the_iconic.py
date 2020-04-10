@@ -11,7 +11,7 @@ class TheIconicGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.url_pat = r'(\d+\-){2}\d\.jpg'
+        self.url_pat = r'(\d+-){2}\d\.jpg'
 
     def __str__(self):
         return 'the iconic goblin'
@@ -21,7 +21,7 @@ class TheIconicGoblin(MetaGoblin):
 
     def extract_id(self, url):
         '''extract image id from url'''
-        return re.search(r'\d+\-\d+\-', url).group()
+        return re.search(r'\d+-\d+-', url).group()
 
     def run(self):
         for target in self.args['targets'][self.__repr__()]:

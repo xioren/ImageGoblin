@@ -1,8 +1,9 @@
 # ImageGoblin
 
-#### changelog v1.0.8:
-+ completed instagram support
-+ added install script
+#### changelog v0.1.9:
++ rebase
++ ongoing re-working of regex's
++ optimizations
 + added goblins
 + code cleanup
 + bug fixes
@@ -55,12 +56,12 @@
 
   https://website.com/uploads/image_01.jpg?size=large
 
-+ *Iterate:* When provided a url to a single image url, the program will try to download that images and all other images with the same url structure that are on the server (but not necessarily displayed on the website). The iterable needs to be surrounded by '@@@' on either side when input to indicate the portion of the url to be iterated.
++ *Iterate:* When provided a url to a single image url, the program will try to download that images and all other images with the same url structure that are on the server (but not necessarily displayed on the website). The iterable needs to be surrounded by '#' on either side when input to indicate the portion of the url to be iterated.
 
   *Example:*
 
   ```
-  goblin https://website.com/uploads/image_@@@01@@@.jpg --timeout 10 --rate 3
+  goblin https://website.com/uploads/image_#01#.jpg --timeout 10 --delay 3
   ```
 
   The program will then iterate through and download all images it can find with that url structure on the server.
@@ -83,4 +84,4 @@
   + A specific goblin can be forced using '--force _goblin_'.
   + All available goblins can be listed using '-l or --list'.
   + The format input needs to be exact so make sure modifiers/spaces have not been erroneously added or left out.
-  + If little or no (relevant) images are found then the page is probably generated dynamically with javascript which the program can not handle.
+  + If little or no (relevant) images are found then the page is probably generated dynamically with javascript which the program can not handle. You can also try with the --noupgrade handle.

@@ -20,7 +20,6 @@ from goblins.caroswim import CaroSwimGoblin
 from goblins.cecilie_copenhagen import CecilieGoblin
 from goblins.dolls_kill import DollsKillGoblin
 from goblins.dora_larsen import DoraLarsenGoblin
-from goblins.elcorte import ElcorteGoblin
 from goblins.else_lingerie import ElseGoblin
 from goblins.esprit import EspritGoblin
 from goblins.etam import EtamGoblin
@@ -102,7 +101,7 @@ goblins = {
     'amiclubwear': ('amiclubwear', AMIGoblin),
     'annsummers': ('annsummers', AnnSummersGoblin),
     'anthropologie': ('anthropologie', AnthropologieGoblin),
-    'asos': (r'asos|(\d+\-\d(\-\[a-z-9]+)?)$', ASOSGoblin),
+    'asos': (r'asos|(\d+-\d(-[a-z-9]+)?(\.jpe?g)?)$', ASOSGoblin),
     'bambaswim': ('bambaswim', BambaSwimGoblin),
     'behance': (r'behance|mir\-s3\-cdn', BehanceGoblin),
     'bershka': ('bershka', BershkaGoblin),
@@ -119,7 +118,6 @@ goblins = {
     'ceciliecopenhagen': ('ceciliecopenhagen', CecilieGoblin),
     'dollskill': ('dollskill', DollsKillGoblin),
     'doralarsen': ('doralarsen', DoraLarsenGoblin),
-    'elcorteingles': ('elcorteingles', ElcorteGoblin),
     'else': ('elselingerie', ElseGoblin),
     'esprit': ('esprit', EspritGoblin),
     'etam': ('etam', EtamGoblin),
@@ -134,14 +132,14 @@ goblins = {
     'freepeople': ('freepeople', FreePeopleGoblin),
     'generic': ('#####', OmegaGoblin),
     'getty': ('gettyimages', GettyGoblin),
-    'geuss': (r'guess(-img)?', GuessGoblin),
+    'guess': (r'guess(-img)?', GuessGoblin),
     'handm': ('hm.com', HMGoblin),
     'hungry': ('#####', HungryGoblin),
     'hunkemoller': ('hunkemoller', HunkemollerGoblin),
     'hottopic': ('hottopic', HotTopicGoblin),
     'instagram': ('instagram', InstagramGoblin),
     'intimissimi': ('intimissimi', IntimissimiGoblin),
-    'iterator': (r'@@@\d+@@@', IteratorGoblin),
+    'iterator': (r'#\d#', IteratorGoblin),
     'jennyfer': ('jennyfer', JennyferGoblin),
     'katherinehamilton': ('katherinehamilton', KatherineHamiltonGoblin),
     'kikidemontparnasse': ('kikidm', KikiDeMontparnasseGoblin),

@@ -43,7 +43,7 @@ class GammaGoblin(MetaGoblin):
             else:
                 urls = self.extract_urls(self.url_pat, target)
             for url in urls:
-                if not re.search(self.img_pat, url):
+                if not re.search(f'(?:{self.img_pat})', url):
                     continue
                 id, iter, url_end = self.extract_parts(self.isolate(url))
                 for mod in self.modifiers:
