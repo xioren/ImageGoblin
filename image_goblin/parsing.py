@@ -8,7 +8,7 @@ class Parser:
     '''generic parsing methods'''
 
     def __init__(self):
-        self.filename_pat = r'((?<=/)[^/]+(\.\w+)?)$'
+        self.filename_pat = r'(?<=/)[^/]+$'
         self.query_pat = r'\?[^" ]+$'
         self.filetype_pat = r'(?<=\.)[A-Za-z0-9]+'
         self.filetypes = r'\.(jpe?g|png|gif|mp4|web(p|m)|tiff?|mov)'
@@ -26,8 +26,8 @@ class Parser:
     def extract_filename(self, url):
         '''extracts filename from url'''
         try:
-            return re.sub(self.filetype_pat, '', re.search(self.filename_pat, self.dequery(url)).group()).rstrip('.')
-        except AttributeError:
+            return re.sub(r'\..+$', '', re.search(self.filename_pat, self.dequery(url)).group())
+        except AttributeError as e:
             return 'image'
 
     def decrop(self, url):

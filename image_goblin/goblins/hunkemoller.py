@@ -11,7 +11,7 @@ class HunkemollerGoblin(GammaGoblin):
     def __init__(self, args):
         super().__init__(args)
         self.modifiers = ('_1', '_2', '_3', '_4', '_5')
-        self.iter = r'_\d'
+        self.iter_pat = r'_\d(?=\.jpg)'
         self.img_pat = r'\d+_\d\.jpg'
         self.url_base = 'https://www.hunkemoller.co.uk/on/demandware.static/-/Sites-hkm-master/default/images/large/'
 

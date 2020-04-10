@@ -16,6 +16,8 @@ class ASOSGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
+        self.query = '?scl=1&qlt=100'
+        self.url_base = 'https://images.asos-media.com/products/asos/'
 
     def __str__(self):
         return 'asos goblin'
@@ -31,17 +33,16 @@ class ASOSGoblin(MetaGoblin):
             color = re.search(r'(?<=-1-)[a-z0-9]+', url)
         return color.group() if color else ''
 
-    def form_url(self, id, large=False):
+    def form_url(self, id):
         '''generate a url from an image id'''
-        url = f'https://images.asos-media.com/products/asos/{id}'
-        return url + '?scl=1&qlt=100' if large else url
+        return f'{self.url_base}{id}{self.query}'
 
     def run(self):
         for target in self.args['targets'][self.__repr__()]:
             color = self.extract_color(target)
             id = re.search(r'\d+(?=-[0-9])', target).group()
             if color:
-                self.collect(self.form_url(f'{id}-1-{color}', True))
+                self.collect(self.form_url(f'{id}-1-{color}'))
             for n in range(2, 5):
-                self.collect(self.form_url(f'{id}-{n}', True))
+                self.collect(self.form_url(f'{id}-{n}'))
         self.loot()

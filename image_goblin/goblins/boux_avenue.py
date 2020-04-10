@@ -9,7 +9,7 @@ class BouxAvenueGoblin(GammaGoblin):
         # QUESTION: are there more than 3?
         self.modifiers = ('FR', 'BK', 'ST')
         self.img_pat = r'[A-Z_]+_[A-Z]+\.jpg'
-        self.iter = r'\d+_[A-Z0-9]+_0_'
+        self.iter_pat = r'\d+_[A-Z0-9]+_0_'
         self.url_base = 'https://www.bouxavenue.com/on/demandware.static/-/Sites-bouxavenue-master-catalog/default/'
 
     def __str__(self):

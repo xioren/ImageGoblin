@@ -120,7 +120,7 @@ goblins = {
     'dollskill': ('dollskill', DollsKillGoblin),
     'doralarsen': ('doralarsen', DoraLarsenGoblin),
     'else': ('elselingerie', ElseGoblin),
-    'esprit': ('esprit', EspritGoblin),
+    'esprit': (r'esprit\.[a-z]+', EspritGoblin),
     'etam': ('etam', EtamGoblin),
     'fae': ('fae.house', FaeGoblin),
     'fashionnova': ('fashionnova', FashionNovaGoblin),

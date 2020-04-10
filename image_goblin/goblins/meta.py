@@ -150,7 +150,7 @@ class MetaGoblin(Parser):
     def extract_urls(self, pattern, url):
         '''extact urls from html based on regex pattern'''
         try:
-            return {url.group() for url in re.finditer(pattern, self.get_response(url))}
+            return {url.group().replace('\\', '') for url in re.finditer(pattern, self.get_response(url))}
         except TypeError as e:
             if self.args['verbose'] and not self.args['silent']:
                 print(f'[{self.__str__()}] <{e}>')

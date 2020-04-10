@@ -33,7 +33,7 @@ class ShopifyGoblin(MetaGoblin):
         super().__init__(args)
         self.url_pat = r'cdn\.shopify\.com/[^" \n]+((\w+-)+)?\d+x(\d+)?[^" \n]+'
 
-    def trim(self, url):
+    def trim_url(self, url):
         '''remove alternate file hash'''
         # NOTE: changed to 4 instead of +...check if always 4 with different urls
         return re.sub(r'_[a-z\d]+(\-[a-z\d]+){4}', '', url)
@@ -50,7 +50,7 @@ class ShopifyGoblin(MetaGoblin):
                 if self.args['noupgrade']:
                     self.collect(url, clean=True)
                 else:
-                    self.collect(self.trim(url), clean=True)
+                    self.collect(self.trim_url(url), clean=True)
         self.loot()
         if not self.args['nodl'] and not self.args['noclean']:
             self.cleanup(self.path_main)

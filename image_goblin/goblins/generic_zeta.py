@@ -15,7 +15,7 @@ class ZetaGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.url_pat = r'https://images\.calzedonia\.com/get/w/\d+/\w+_wear_\w+\.jpg'
+        self.url_pat = r'https?://images\.calzedonia\.com/get/w/\d+/\w+_wear_\w+\.jpg'
         self.modifiers = ('FI', 'BI', 'M', 'DT1', 'C', 'B', 'F')
 
     def __str__(self):

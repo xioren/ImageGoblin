@@ -24,17 +24,17 @@ class GammaGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.url_pat = r'[^" ]+demandware[^" ]+.jpg'
+        self.url_pat = r'[^" ]+demandware[^" ]+\.jpg'
 
     def extract_parts(self, url):
         '''split the url into base, id, end'''
-        iter = re.search(self.iter, url).group()
+        iter = re.search(self.iter_pat, url).group()
         id, end = url.split(iter)
         return id, iter, end
 
     def isolate(self, url):
         '''isolate the end of the url'''
-        return re.search(r'/?[^/]+\.jpe?g', url).group().lstrip('/')
+        return re.search(r'(?<=/)[^/]+\.jpe?g', url).group()
 
     def run(self):
         for target in self.args['targets'][self.__repr__()]:

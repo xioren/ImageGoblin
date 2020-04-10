@@ -7,7 +7,7 @@ class EtamGoblin(GammaGoblin):
         super().__init__(args)
         self.modifiers = ('_x', '_a', '_b', '_c', '_d', '_6')
         self.img_pat = r'\d+_[a-z\d]\.jpg'
-        self.iter = r'_[a-z\d]'
+        self.iter_pat = r'_[a-z\d](?=\.jpg)'
         self.url_base = 'https://www.etam.com/on/demandware.static/-/Sites-ELIN-master/default/'
 
     def __str__(self):

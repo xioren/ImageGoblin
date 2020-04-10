@@ -18,8 +18,8 @@ class EpsilonGoblin(MetaGoblin):
     def __init__(self, args):
         super().__init__(args)
 
-    def prep(self, url):
-        '''remove cropping'''
+    def trim_url(self, url):
+        '''remove cropping from url'''
         return re.sub(r'mnresize/\d+/\d+', '', url).replace('Thumbs', 'Originals')
 
     def run(self):
@@ -29,7 +29,7 @@ class EpsilonGoblin(MetaGoblin):
             else:
                 urls = self.extract_urls(self.url_pat, target)
             for url in urls:
-                url_base, _ = re.split(self.mod_pat, self.prep(url))
+                url_base, _ = re.split(self.mod_pat, self.trim_url(url))
                 self.generate_modifiers(url)
                 for mod in self.modifiers:
                     self.collect(f'{url_base}{mod}{self.url_end}')
