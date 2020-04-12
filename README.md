@@ -19,7 +19,7 @@
 
 ### Operation
 
-+ *Default*: Inputting either a url or a text file containing urls (1 per line) will try to match the url(s) to a specific goblin. The goblin will download what images it can according to its rule set, in the highest possible quality. if no goblin is matched a generic goblin is used. If a text file is used, only the filename should be input, using the --local argument and the text file should be placed in the directory that the program will be ran from.
++ *Default*: Inputting either a url or a text file containing urls (1 per line) will try to match the url(s) to a specific goblin. The goblin will download what images it can according to its rule set, in the highest possible quality. If no goblin is matched a generic goblin is used. If a text file is used, only the filename should be input using the --local argument and the text file should be placed in the same directory that the program will be ran from.
 
   *Examples:*
 

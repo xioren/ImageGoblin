@@ -10,13 +10,14 @@ class Parser:
     def __init__(self):
         self.filename_pat = r'(?<=/)[^/]+$'
         self.query_pat = r'\?[^" ]+$'
+        self.quality_pat = r'q((ua)?li?ty)=\d+'
         self.filetype_pat = r'(?<=\.)[A-Za-z0-9]+'
         self.filetypes = r'\.(jpe?g|png|gif|mp4|web(p|m)|tiff?|mov)'
         self.filter_pat = r'\.(js|css|pdf)|(fav)?icon|logo|menu'
         self.cropping_pats = (
-            r'(@|-|_)?(\d{3,4}x(\d{3,4})?|(\d{3,4})?x\d{3,4})',
+            r'[@\-_/]?((\d{3,4}x(\d{3,4})?|(\d{3,4})?x\d{3,4}))',
             r'(-|_)?large(-|_)?',
-            r'(?<=/)([a-z]{,2}_[\w:]+(,|/)?)+/v\d+/',
+            r'(?<=/)([a-z]{,2}_[\w:]+(,|/)?)+/v\d+/', # cloudfront
             r'expanded_[a-z]+/',
             r'(\.|-)\d+w',
             r'-e\d+(?=\.)',
@@ -106,6 +107,7 @@ class Parser:
 
     def auto_format(self, url):
         '''attempt to upscale common url formats'''
+        quality = re.search(self.quality_pat, url)
         url = self.sanitize(url)
         if 'acidimg' in url:
             url = url.replace('small', 'big')
@@ -125,6 +127,8 @@ class Parser:
             url = url.replace('/t/', '/i/')
         elif 'pimpandhost' in url:
             url = url.replace('_s', '').replace('_m', '')
+        elif 'pinimg' in url:
+               url = re.sub(r'\.com/', '.com/originals/', url)
         elif 'pixhost' in url:
             url = re.sub(r't(?![a-z])', 'img', url.replace('thumb', 'image'))
         elif 'pixroute' in url:
@@ -135,4 +139,6 @@ class Parser:
             url = re.sub(r'\d+(?=\.jpg)', '1280', url)
         elif 'wix' in url:
             url = re.sub(r'(?<=\.jpg).+$', '', url)
+        if quality:
+            url += '?{}'.format(re.sub(r'\d+', '100', quality.group()))
         return url
