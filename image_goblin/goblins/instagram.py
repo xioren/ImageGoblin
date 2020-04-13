@@ -9,21 +9,21 @@ from goblins.meta import MetaGoblin
 
 # TODO:
 #   - add support for stories
-#   - add support for specifying # of posts
+#   - add support for specifying # of posts to retrieve
 
 class InstagramGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
         self.username = self.extract_username(self.args['targets'][self.__repr__()][0])
-        self.sub_dir = os.path.join(self.path_main, self.username)
+        self.insta_dir = os.path.join(self.path_main, self.username)
         self.url_pat = r'https?://scontent[^"\n \']+_n\.[^"\n \']+'
         self.headers = {
             'User-Agent': 'Firefox/72',
             'Accept-Encoding': 'gzip',
             'Cookie': 'ig_pr=1'
             }
-        self.make_dirs(self.sub_dir)
+        self.make_dirs(self.insta_dir)
 
     def __str__(self):
         return 'instagram goblin'
@@ -100,7 +100,7 @@ class InstagramGoblin(MetaGoblin):
     def run(self):
         posts = self.find_posts()
         self.find_media(posts)
-        self.loot(save_loc=self.sub_dir)
-        self.move_vid(self.sub_dir)
+        self.loot(save_loc=self.insta_dir)
+        self.move_vid(self.insta_dir)
         if not self.args['nodl'] and not self.args['noclean']:
-            self.cleanup(self.sub_dir)
+            self.cleanup(self.insta_dir)

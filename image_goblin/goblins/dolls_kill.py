@@ -10,7 +10,7 @@ class DollsKillGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.url_pat = r'img src="https?://media\.dollskill\.com[^"]+\-\d+.jpg'
+        self.url_pat = r'img src="https?://media\.dollskill\.com[^" \']+\-\d+\.jpe?g'
 
     def __str__(self):
         return 'dolls kill goblin'

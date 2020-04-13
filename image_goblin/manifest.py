@@ -141,7 +141,7 @@ goblins = {
     'hottopic': ('hottopic', HotTopicGoblin),
     'instagram': ('instagram', InstagramGoblin),
     'intimissimi': ('intimissimi', IntimissimiGoblin),
-    'iterator': (r'#\d#', IteratorGoblin),
+    'iterator': (r'#\d+#', IteratorGoblin),
     'jennyfer': ('jennyfer', JennyferGoblin),
     'katherinehamilton': ('katherinehamilton', KatherineHamiltonGoblin),
     'kikidemontparnasse': ('kikidm', KikiDeMontparnasseGoblin),
