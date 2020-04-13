@@ -1,6 +1,6 @@
 # ImageGoblin
 
-#### changelog v0.1.9:
+#### changelog v0.2.0:
 + rebase
 + ongoing re-working of regex's
 + optimizations
@@ -10,7 +10,7 @@
 
 ### This Program:
 
-+ is a web scraping tool specifically for the discovery and retrieval of images on a webpage/server in the highest possible quality
++ is a web scraping tool specifically for the discovery and retrieval of images on a web server in the highest possible quality
 + is a work in progress
 
 ### Requirements

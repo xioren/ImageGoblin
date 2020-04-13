@@ -74,8 +74,7 @@ class Parser:
         return self.get_netloc(self.args['targets'][self.__repr__()][0]) + relative
 
     def finalize(self, url):
-        '''prepare a url for downloading'''
-        url = url.replace('\\', '')
+        '''prepare a url for an http request'''
         if self.is_relative(url):
             url = self.make_absolute(url)
         return self.add_scheme(unquote(url.strip('/')))
@@ -122,7 +121,7 @@ class Parser:
             if len(filename) == 11:
                 pass
             else:
-                url = 'https://i.imgur.com/{}'.format(re.sub(r'[\w]\.', '.', filename))
+                url = 'https://i.imgur.com/{}'.format(re.sub(r'\w\.', '.', filename))
         elif 'imx.to' in url:
             url = url.replace('/t/', '/i/')
         elif 'pimpandhost' in url:

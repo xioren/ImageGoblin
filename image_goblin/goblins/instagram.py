@@ -54,7 +54,7 @@ class InstagramGoblin(MetaGoblin):
         '''
         # NOTE: both 472f257a40c653c64c666ce877d59d2b and 42323d64886122307be10013ad2dcc44 work for query_hash
         posts = []
-        initial_response = json.loads(re.search(r'sharedData\s*=\s*({.+?})\s*;\s*[<\n]', self.get_response(f'https://www.instagram.com/{self.username}/')).group().lstrip('sharedData = ').rstrip(';<'))
+        initial_response = json.loads(re.search(r'sharedData\s*=\s*({.+?})\s*;\s*[<\n]', self.get_html(f'https://www.instagram.com/{self.username}/')).group().lstrip('sharedData = ').rstrip(';<'))
         user_id = initial_response['entry_data']['ProfilePage'][0]['graphql']['user']['id']
         csrf_token = initial_response['config']['csrf_token']
         rhx_gis = initial_response.get('rhx_gis', '3c7ca9dcefcf966d11dacf1f151335e8')
@@ -75,7 +75,7 @@ class InstagramGoblin(MetaGoblin):
                     'X-Instagram-GIS': self.hash(f'{rhx_gis}:{csrf_token}:{self.headers["User-Agent"]}:{variables}')
                 }
             )
-            media_response = self.get_response('https://www.instagram.com/graphql/query/?query_hash=42323d64886122307be10013ad2dcc44&variables={}'.format(quote(variables, safe='"')))
+            media_response = self.get_html('https://www.instagram.com/graphql/query/?query_hash=42323d64886122307be10013ad2dcc44&variables={}'.format(quote(variables, safe='"')))
             for post in {re.sub('"shortcode":', '', n.group()).strip('"') for n in re.finditer(r'"shortcode":"[^"]+"', media_response)}:
                 posts.append(post)
             cursor = json.loads(media_response)['data']['user']['edge_owner_to_timeline_media']['page_info']['end_cursor']

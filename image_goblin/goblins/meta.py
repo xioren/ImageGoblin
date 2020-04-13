@@ -1,6 +1,6 @@
 import os
 import re
-import __version__
+from version import __version__, __title__
 
 from sys import exit
 from time import sleep
@@ -85,8 +85,8 @@ class MetaGoblin(Parser):
             # OPTIMIZE: return something other than empty bytes?
             return b''
 
-    def retrieve(self, url, path='', n=0, save=True):
-        '''retrieve web content'''
+    def get(self, url, path='', n=0, save=True):
+        '''get web content'''
         request = Request(url, None, self.headers)
         try:
             with urlopen(request, timeout=20) as response:
@@ -106,19 +106,18 @@ class MetaGoblin(Parser):
     def retry(self, url, n, path, save):
         '''retry connection after a socket timeout'''
         # TODO: add verbose outputs
-        if not self.args['silent']:
-                print(f'[{self.__str__()}] <timeout> retry attempt {n}')
         if n > 5:
             if not self.args['silent']:
                 print(f'[{self.__str__()}] <timeout> aborting after {n} retries')
             return None
-        else:
-            sleep(self.args['dealay'])
-        return self.retrieve(url, path, n, save)
+        if not self.args['silent']:
+                print(f'[{self.__str__()}] <timeout> retry attempt {n}')
+        sleep(self.args['dealay'])
+        return self.get(url, path, n, save)
 
-    def get_response(self, url):
-        '''retrieve web page html'''
-        return self.retrieve(url, save=False)
+    def get_html(self, url):
+        '''return html'''
+        return self.get(url, save=False)
 
     def write_file(self, data, path, mode='w', iter=False):
         '''write to disk'''
@@ -148,7 +147,7 @@ class MetaGoblin(Parser):
     def extract_urls(self, pattern, url):
         '''extact urls from html based on regex pattern'''
         try:
-            return {url.group().replace('\\', '') for url in re.finditer(pattern, self.get_response(url))}
+            return {url.group().replace('\\', '') for url in re.finditer(pattern, self.get_html(url))}
         except TypeError as e:
             if self.args['verbose'] and not self.args['silent']:
                 print(f'[{self.__str__()}] <{e}>')
@@ -166,7 +165,7 @@ class MetaGoblin(Parser):
             self.collection.append(f'{self.finalize(url)}-break-{filename}')
 
     def loot(self, save_loc=None, timeout=0):
-        '''retrieve collected urls'''
+        '''get collected urls'''
         failed = loot_tally = 0
         timed_out = False
         for url in self.collection:
@@ -184,7 +183,7 @@ class MetaGoblin(Parser):
                 if not self.args['silent']:
                     print(f'[{self.__str__()}] <file exists> {filename}')
                 continue
-            attempt = self.retrieve(url, filepath)
+            attempt = self.get(url, filepath)
             if attempt:
                 if not self.args['silent']:
                     print(f'[{self.__str__()}] <looted> {filename}')
