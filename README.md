@@ -1,6 +1,6 @@
 # ImageGoblin
 
-#### changelog v0.2.1:
+#### changelog v0.2.0:
 + optimizations
 + added goblins
 + code cleanup
