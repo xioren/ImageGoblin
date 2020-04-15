@@ -100,32 +100,31 @@ class InstagramGoblin(MetaGoblin):
             for url in content:
                 if re.search(r'(?:/[a-z]\d{3}x\d{3}/|c\d\.\d+\.\d+)', url):
                     continue
-                    print(url)
                 self.collect(re.sub(r'\\?u?0026', '&', url), f'{self.username}_{self.extract_filename(url)}')
             sleep(self.args['delay'])
         print(f'[{self.__str__()}] <parsing complete>')
 
-    def find_stories(self, url):
-        response = json.loads(self.get_html(url))
-        items = []
-        for reel_media in response['data']['reels_media']:
-            items.extend([self.set_story_url(item) for item in reel_media['items']])
-            for item in reel_media['items']:
-                item['highlight'] = fetching_highlights_metadata
-                self.stories.append(item)
-        return items
+    # def find_stories(self, url):
+    #     response = json.loads(self.get_html(url))
+    #     items = []
+    #     for reel_media in response['data']['reels_media']:
+    #         items.extend([self.set_story_url(item) for item in reel_media['items']])
+    #         for item in reel_media['items']:
+    #             item['highlight'] = fetching_highlights_metadata
+    #             self.stories.append(item)
+    #     return items
 
-    def find_main_stories(self):
-        return self.get_stories(self.stories_url.format(quote('{{"reel_ids":["{}"],"tag_names":[],"location_ids":[],"highlight_reel_ids":[],"precomposed_overlay":false}}'.format(self.user_id), safe='"')))
-
-    def find_highlight_stories(self):
-        response = json.loads(self.get_html('{{"user_id":"{0}","include_chaining":false,"include_reel":false,"include_suggested_users":false,"include_logged_out_extras":false,"include_highlight_reels":true,"include_related_profiles":false}}'.format(user_id)))
-        higlight_stories_ids = [item['node']['id'] for item in response['data']['user']['edge_highlight_reels']['edges']]
-        ids_chunks = [higlight_stories_ids[i:i + 3] for i in range(0, len(higlight_stories_ids), 3)]
-        stories = []
-        for ids_chunk in ids_chunks:
-            stories.extend(self.get_stories(self.stories_reel_id_url.format('{{"reel_ids":[],"tag_names":[],"location_ids":[],"highlight_reel_ids":["{}"],"precomposed_overlay":false}}'.format('%22%2C%22'.join(str(x) for x in ids_chunk)))))
-        return stories
+    # def find_main_stories(self):
+    #     return self.get_stories(self.stories_url.format(quote('{{"reel_ids":["{}"],"tag_names":[],"location_ids":[],"highlight_reel_ids":[],"precomposed_overlay":false}}'.format(self.user_id), safe='"')))
+    
+    # def find_highlight_stories(self):
+    #     response = json.loads(self.get_html('{{"user_id":"{}","include_chaining":false,"include_reel":false,"include_suggested_users":false,"include_logged_out_extras":false,"include_highlight_reels":true,"include_related_profiles":false}}'.format(user_id)))
+    #     higlight_stories_ids = [item['node']['id'] for item in response['data']['user']['edge_highlight_reels']['edges']]
+    #     ids_chunks = [higlight_stories_ids[i:i + 3] for i in range(0, len(higlight_stories_ids), 3)]
+    #     stories = []
+    #     for ids_chunk in ids_chunks:
+    #         stories.extend(self.get_stories(self.stories_reel_id_url.format('{{"reel_ids":[],"tag_names":[],"location_ids":[],"highlight_reel_ids":["{}"],"precomposed_overlay":false}}'.format('%22%2C%22'.join(str(x) for x in ids_chunk)))))
+    #     return stories
 
     def run(self):
         self.get_user_data()
