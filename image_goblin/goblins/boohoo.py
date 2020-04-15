@@ -23,7 +23,7 @@ class BoohooGoblin(MetaGoblin):
 
     def extract_id(self, url):
         '''extract image id from url'''
-        return re.search(r'[a-z\d]+_[a-z\d]+_xl', url).group()
+        return re.search(r'[a-z\d]+_[a-z\d%]+_xl', url).group()
 
     def run(self):
         for target in self.args['targets'][self.__repr__()]:
@@ -34,5 +34,5 @@ class BoohooGoblin(MetaGoblin):
             for url in urls:
                 id = self.extract_id(url)
                 for mod in self.modifiers:
-                    self.collect(f'{self.url_base}{id}{n}')
+                    self.collect(f'{self.url_base}{id}{mod}')
         self.loot()

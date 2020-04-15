@@ -3,6 +3,7 @@ import re
 from goblins.meta import MetaGoblin
 
 # NOTE: scaling with q=100 gives higher resolution; investigate.
+# recheck all
 
 class GammaGoblin(MetaGoblin):
     '''handles: Demandware
@@ -15,6 +16,8 @@ class GammaGoblin(MetaGoblin):
         - boux avenue
         - etam
         - hunkemoller
+        - jennyfer
+        - livy
         - marlies dekkers
         - sandro
         - springfield
@@ -24,13 +27,11 @@ class GammaGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.url_pat = r'[^" ]+demandware[^" ]+\.jpg'
+        self.url_pat = r'[^" ;]+demandware[^" ;]+\.jpg'
 
     def extract_parts(self, url):
         '''split the url into base, id, end'''
-        iter = re.search(self.iter_pat, url).group()
-        id, end = url.split(iter)
-        return id, iter, end
+        return re.split(self.iter_pat, url)
 
     def isolate(self, url):
         '''isolate the end of the url'''
@@ -45,7 +46,7 @@ class GammaGoblin(MetaGoblin):
             for url in urls:
                 if not re.search(f'(?:{self.img_pat})', url):
                     continue
-                id, iter, url_end = self.extract_parts(self.isolate(url))
+                id, url_end = self.extract_parts(self.isolate(url))
                 for mod in self.modifiers:
-                    self.collect(f'{self.url_base}{id}{mod}{url_end}')
+                    self.collect(f'{self.url_base}{id}{mod}{self.dequery(url_end)}')
         self.loot()

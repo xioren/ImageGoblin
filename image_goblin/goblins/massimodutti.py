@@ -1,5 +1,6 @@
 from goblins.generic_delta import DeltaGoblin
 
+# QUESTION: remove everything after initial query?
 
 class MassimoDuttiGoblin(DeltaGoblin):
 

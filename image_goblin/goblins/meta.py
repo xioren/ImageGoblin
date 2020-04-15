@@ -1,6 +1,5 @@
 import os
 import re
-from version import __version__, __title__
 
 from sys import exit
 from time import sleep
@@ -11,6 +10,7 @@ from ssl import CertificateError
 from io import DEFAULT_BUFFER_SIZE
 from urllib.request import urlopen, Request
 from urllib.error import HTTPError, URLError
+from version import __version__
 from parsing import Parser
 
 
@@ -24,9 +24,10 @@ class MetaGoblin(Parser):
             self.path_main = os.getcwd()
         else:
             self.path_main = os.path.join(os.getcwd(), 'goblin_loot', self.__str__().replace(' ', '_'))
-        self.headers = {'User-Agent': f'{__title__}/{__version__}',
+        self.headers = {'User-Agent': f'ImageGoblin/{__version__}',
                         'Accept-Encoding': 'gzip'}
         self.collection = set()
+        self.looted = set()
         if not self.args['nodl']:
             self.make_dirs(self.path_main)
         print(f'[{self.__str__()}] <deployed>')
@@ -47,19 +48,13 @@ class MetaGoblin(Parser):
         '''cleanup small unwanted files (icons, thumbnails, etc...)
         default 50kb threshold
         '''
-        # WARNING:  dangerous, consider recieving file manifest instead?
-        # TEMP: restrict usage to only the directories created by this app to prevent deleting user files
-        if not self.args['nosort']:
-            for file in os.listdir(path):
-                filepath = os.path.join(path, file)
-                if os.path.isdir(filepath):
-                    continue
-                if os.path.getsize(filepath) < 50000:
-                    try:
-                        os.remove(filepath)
-                    except OSError as e:
-                        if self.args['verbose'] and not self.args['silent']:
-                            print(f'[{self.__str__()}] <{e}> {filepath}')
+        for path in self.looted:
+            if os.path.getsize(path) < 50000:
+                try:
+                    os.remove(path)
+                except OSError as e:
+                    if self.args['verbose'] and not self.args['silent']:
+                        print(f'[{self.__str__()}] <{e}> {path}')
 
     def toggle_collecton_type(self, reverse=False):
         '''toggle collection type between list and set'''
@@ -154,7 +149,7 @@ class MetaGoblin(Parser):
             return ''
 
     def collect(self, url, filename='', clean=False):
-        '''finalize and add urls tof.path_main) collection'''
+        '''finalize and add urls to collection'''
         if clean:
             url = self.sanitize(url)
         if not filename:
@@ -173,12 +168,13 @@ class MetaGoblin(Parser):
                 timed_out = True
                 break
             url, filename = url.split('-break-')
+            ftype = self.filetype(url)
             if self.args['nodl']:
                 print(url, end='\n\n')
                 continue
             if not save_loc:
                 save_loc = self.path_main
-            filepath = os.path.join(save_loc, f'{filename}.{self.filetype(url)}')
+            filepath = os.path.join(save_loc, f'{filename}.{ftype}')
             if os.path.exists(filepath):
                 if not self.args['silent']:
                     print(f'[{self.__str__()}] <file exists> {filename}')
@@ -189,6 +185,7 @@ class MetaGoblin(Parser):
                     print(f'[{self.__str__()}] <looted> {filename}')
                 loot_tally += 1
                 failed = 0
+                self.looted.add(filepath)
             else:
                 failed += 1
             sleep(self.args['delay'])

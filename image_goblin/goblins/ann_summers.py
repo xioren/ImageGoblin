@@ -16,7 +16,7 @@ class AnnSummersGoblin(MetaGoblin):
         super().__init__(args)
         self.query = '?scl=1&qlt=100'
         self.modifiers = ('', '_1', '_2', '_3', '_4')
-        self.url_pat = r'i\d\.adis\.ws/i/annsummers/\d+_Z'
+        self.url_pat = r'i\d\.adis\.ws/i/annsummers/[A-Z\d]+_Z'
 
     def __str__(self):
         return 'ann summers goblin'

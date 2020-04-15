@@ -2,7 +2,9 @@ import re
 
 from goblins.meta import MetaGoblin
 
-# TODO: implement natural sorting
+# TODO:
+#   - implement natural sorting
+#   - add webpage mode
 
 class IteratorGoblin(MetaGoblin):
     '''accepts:
@@ -24,7 +26,9 @@ class IteratorGoblin(MetaGoblin):
 
     # IDEA: instead of hard coding 50, maybe use dynamic value.
     # possibly based on timeout value.
-    # TODO: add reverse.
+    # TODO:
+    #   - add reverse
+
     def generate_urls(self, base, iterable, end):
         '''generate block of urls to iterate over'''
         stripped_iter = int(iterable.lstrip('0'))

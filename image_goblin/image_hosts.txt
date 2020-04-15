@@ -1,6 +1,6 @@
-reference image host urls
+reference urls
 
- -------------------------------------------
+--------------------------------------------
 large
 small
 --------------------------------------------
@@ -43,3 +43,9 @@ https://img00.imagetwist.com/th/00000/flename.jpg
 
 https://i.acidimg.cc/big/0000/00/00/filename.jpg
 https://i.acidimg.cc/small/0000/00/00/filename.jpg
+
+--------------------------------------------
+misc
+--------------------------------------------
+
+https://bucket-name.s3[.Region].amazonaws.com/key name

@@ -2,6 +2,7 @@ import re
 
 from goblins.meta import MetaGoblin
 
+# QUESTION: can this handle single image?
 
 class YandyGoblin(MetaGoblin):
     '''accepts:

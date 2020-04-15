@@ -21,7 +21,7 @@ class DollsKillGoblin(MetaGoblin):
     def run(self):
         for target in self.args['targets'][self.__repr__()]:
             if 'media.dollskill' in target:
-                url = []
+                urls = []
                 if not self.args['silent']:
                     print(f'[{self.__str__()}] <WARNING> image urls not supported')
             else:

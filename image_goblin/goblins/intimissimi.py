@@ -1,7 +1,6 @@
-import re
-
 from goblins.generic_zeta import ZetaGoblin
 
+# sometimes throws 502 errors
 
 class IntimissimiGoblin(ZetaGoblin):
 
