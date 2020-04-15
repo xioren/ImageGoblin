@@ -1,7 +1,7 @@
 # ImageGoblin
 
 #### changelog v0.2.1:
-+ after adding new features over the last few version, lots of new bugs sprang up. this
++ after adding new features over the last few versions, lots of new bugs sprang up. this
   release revolves around fixing them.
 
 ### This Program:
