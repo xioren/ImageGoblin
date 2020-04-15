@@ -40,6 +40,8 @@ class OmegaGoblin(MetaGoblin):
         for url in cleaned_urls:
             if re.search(self.filter_pat, url, re.IGNORECASE):
                 continue
+            elif '.php?img=' in url:
+                url = url.split('.php?img=')[1]
             self.collect(self.format(url.lstrip('.')))
 
     def run(self):

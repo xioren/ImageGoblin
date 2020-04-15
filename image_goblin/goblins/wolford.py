@@ -4,6 +4,8 @@ from goblins.generic_omega import MetaGoblin
 
 # NOTE: can use gamma goblin but has no real conistancy with filenames or urls
 
+# FIXME: does not work
+
 class WolfordGoblin(MetaGoblin):
     '''accepts:
         - image

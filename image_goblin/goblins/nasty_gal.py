@@ -2,6 +2,7 @@ import re
 
 from goblins.meta import MetaGoblin
 
+# TODO: shares cdn with booho...combine?
 
 class NastyGalGoblin(MetaGoblin):
     '''accepts:
@@ -25,7 +26,7 @@ class NastyGalGoblin(MetaGoblin):
 
     def run(self):
         for target in self.args['targets'][self.__repr__()]:
-            if 'adis.ws' in target:
+            if 'media.nastygal' in target:
                 urls = [target]
             else:
                 urls = self.extract_urls(self.url_pat, target)

@@ -9,10 +9,10 @@ class Parser:
 
     def __init__(self):
         self.filename_pat = r'(?<=/)[^/]+$'
-        self.query_pat = r'\?[^" ]+$'
+        self.query_pat = r'[\?&][^" ]+$'
         self.quality_pat = r'q((ua)?li?ty)=\d+'
         self.filetype_pat = r'(?<=\.)[A-Za-z0-9]+'
-        self.filetypes = r'\.(jpe?g|png|gif|mp4|web(p|m)|tiff?|mov)'
+        self.filetypes = r'\.(jpe?g|png|gif|mp4|web[pm]|tiff?|mov|svg|bmp|exif)'
         self.filter_pat = r'\.(js|css|pdf)|(fav)?icon|logo|menu'
         self.cropping_pats = (
             r'[@\-_/]?((\d{3,4}x(\d{3,4})?|(\d{3,4})?x\d{3,4}))',
@@ -113,7 +113,10 @@ class Parser:
         elif 'imagetwist' in url:
             url = url.replace('/th/', '/i/').replace('.jpg', '.JPG')
         elif 'imgbox' in url:
-            url = url.replace('_t', '_o').replace('thumb', 'image')
+            if '-t' in url or '.t' in url:
+                url = re.sub(r'\d[\-\.]t', 'i', url)
+            else:
+                url = url.replace('_t', '_o').replace('thumb', 'image')
         elif 'imgcredit' in url:
             url = url.replace('.th', '').replace('.md', '')
         elif 'imgur' in url:
@@ -134,8 +137,11 @@ class Parser:
             url = url.replace('_t', '')
         elif 'squarespace' in url:
             url += '?format=original'
-        elif 'tumblr' in url and not '1280.jpg' in url:
-            url = re.sub(r'\d+(?=\.jpg)', '1280', url)
+        elif 'tumblr' in url:
+            if '.gif' in url:
+                url = re.sub(r'\d+(?=\.gif)', '500', url)
+            else:
+                url = re.sub(r'\d+(?=\.jpg)', '1280', url)
         elif 'wix' in url:
             url = re.sub(r'(?<=\.jpg).+$', '', url)
         if quality:

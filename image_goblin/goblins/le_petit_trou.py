@@ -22,6 +22,7 @@ class LePetitTrouGoblin(MetaGoblin):
     def run(self):
         for target in self.args['targets'][self.__repr__()]:
             if 'shoplo' in target:
+                # NOTE: does not scan
                 urls = [target]
             else:
                 urls = self.extract_urls(self.url_pat, target)

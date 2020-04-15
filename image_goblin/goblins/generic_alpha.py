@@ -11,6 +11,7 @@ class AlphaGoblin(MetaGoblin):
         - image*
         - webpage
     generic back-end for:
+        - ami clubwear
         - agent provocateur
         - bikini lovers
         - blush
@@ -28,7 +29,7 @@ class AlphaGoblin(MetaGoblin):
 
     def trim_url(self, url):
         '''remove cropping from url'''
-        return re.sub(r'/(custom_)?cache/.+?(?=/[a-z0-9]/)', '', url)
+        return re.sub(r'/(custom_)?cache.*?(?=/\w/\w/)', '', url)
 
     def run(self):
         for target in self.args['targets'][self.__repr__()]:
