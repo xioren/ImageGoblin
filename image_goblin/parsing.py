@@ -13,7 +13,7 @@ class Parser:
         self.quality_pat = r'q((ua)?li?ty)=\d+'
         self.filetype_pat = r'(?<=\.)[A-Za-z0-9]+'
         self.filetypes = r'\.(jpe?g|png|gif|mp4|web[pm]|tiff?|mov|svg|bmp|exif)'
-        self.filter_pat = r'\.(js|css|pdf)|(fav)?icon|logo|menu'
+        self.filter_pat = r'\.(js|css|pdf|php|html)|(fav)?icon|logo|menu'
         self.cropping_pats = (
             r'[@\-_/]?((\d{3,4}x(\d{3,4})?|(\d{3,4})?x\d{3,4}))',
             r'(-|_)?large(-|_)?',

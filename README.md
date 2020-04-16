@@ -77,6 +77,7 @@
 + *feed:* using the feed argument, you can accumulate urls by inputting them one by one using the --feed mode. this is useful for accumulating urls as you find them while browsing the web, and downloading all at once.   
 
 #### Misc:
+  + this program has only been tested on linux but should work on windows/mac as well.
   + the install script is optional and linux specific. it only serves to add a symlink to /usr/local/bin so that the program can be run from the shell with 'goblin' instead of 'python3 /path/to/image_goblin.py'.
   + a specific goblin can be forced using '--force _goblin_'.
   + all available goblins can be listed using '-l or --list'.

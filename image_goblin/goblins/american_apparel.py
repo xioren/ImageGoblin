@@ -2,6 +2,7 @@ import re
 
 from goblins.meta import MetaGoblin
 
+# TODO: add bigcommerce cdn generic goblin
 
 class AmericanApparelGoblin(MetaGoblin):
     '''accepts:
