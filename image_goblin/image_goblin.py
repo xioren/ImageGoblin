@@ -29,6 +29,8 @@ parser.add_argument('--nosort', help='download directly to current directory, wi
 
 parser.add_argument('--noupgrade', help='do not remove cropping', action='store_true')
 
+# parser.add_argument('--posts', help='number of instagram posts to fetch (optional)', type=int, default=0)
+
 parser.add_argument('-s', '--silent', help='suppress output', action='store_true')
 
 parser.add_argument('target', nargs='?', help='webpage or image url')
@@ -52,6 +54,7 @@ args_dict = {
     'nodl': args.nodl,
     'nosort': args.nosort,
     'noupgrade': args.noupgrade,
+    # 'posts': args.posts,
     'silent': args.silent,
     'targets': args.target,
     'timeout': args.timeout,
