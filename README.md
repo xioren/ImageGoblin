@@ -72,7 +72,7 @@
 
   etc...
 
-+ *instagram:* input the instagram page url or username. if only the username is passed, it is necessary to --force instagram in order to match the correct goblin.
++ *instagram:* input the instagram page url, username, or post. this goblin will scrape the entire profile, unless the url refers to a single post. if only the username is passed, it is necessary to --force instagram in order to match the correct goblin.
 
 + *feed:* using the feed argument, you can accumulate urls by inputting them one by one using the --feed mode. this is useful for accumulating urls as you find them while browsing the web, and downloading all at once.   
 
