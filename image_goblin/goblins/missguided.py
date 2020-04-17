@@ -29,12 +29,10 @@ class MissguidedGoblin(MetaGoblin):
             else:
                 # NOTE: currently throws 405 error
                 urls = []
-                if not self.args['silent']:
-                    print(f'[{self.__str__()}] <WARNING> webpage urls not supported')
+                self.logger.log(1, self.__str__(), 'WARNING', 'webpage urls not supported')
             for url in urls:
                 id = self.extract_id(url)
                 for n in range(1, 6):
                     self.collect(f'https://media.missguided.com/i/missguided/{id}_0{n}')
         self.loot()
-        if not self.args['nodl'] and not self.args['noclean']:
-            self.cleanup(self.path_main)
+        self.cleanup(self.path_main)

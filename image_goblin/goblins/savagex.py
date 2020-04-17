@@ -33,5 +33,4 @@ class SavageXGoblin(MetaGoblin):
                 for n in range(1, 5):
                     self.collect(self.strip(url) + f'{n}-1600x1600.jpg')
         self.loot()
-        if not self.args['nodl'] and not self.args['noclean']:
-            self.cleanup(self.path_main)
+        self.cleanup(self.path_main)

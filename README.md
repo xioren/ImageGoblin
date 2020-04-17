@@ -1,8 +1,12 @@
 # ImageGoblin
 
-#### changelog v0.2.1:
-+ after adding new features over the last few versions, lots of new bugs sprang up. this
-  release revolves around fixing them.
+#### changelog v0.2.2:
++ finished implementing full instagram support
++ added separate logger to handle all program output
++ redesigned http request handling
++ new goblins
++ bug fixes
++ code clean up and improvements
 
 ### This Program:
 
@@ -72,9 +76,9 @@
 
   etc...
 
-+ *instagram:* input the instagram page url, username, or post. this goblin will scrape the entire profile, unless the url refers to a single post. if only the username is passed, it is necessary to --force instagram in order to match the correct goblin.
++ *instagram:* input the instagram page url, username, or post. this goblin will scrape the entire profile, unless the url refers to a single post. if only the username is passed, it is necessary to --force instagram in order to match the correct goblin. stories require the user to be logged in to instagram; pass the ---login flag to do so.
 
-+ *feed:* using the feed argument, you can accumulate urls by inputting them one by one using the --feed mode. this is useful for accumulating urls as you find them while browsing the web, and downloading all at once.   
++ *feed:* using the feed flag, you can accumulate urls by inputting them one by one. this is useful for accumulating urls as you find them while browsing the web, and downloading all at once. try it :)
 
 #### Misc:
   + this program has only been tested on linux but should work on windows/mac as well.

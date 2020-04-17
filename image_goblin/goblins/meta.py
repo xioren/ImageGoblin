@@ -8,10 +8,12 @@ from gzip import decompress
 from shutil import copyfileobj
 from ssl import CertificateError
 from io import DEFAULT_BUFFER_SIZE
+from urllib.parse import urlencode
 from urllib.request import urlopen, Request
 from urllib.error import HTTPError, URLError
 from version import __version__
 from parsing import Parser
+from logger import Logger
 
 
 class MetaGoblin(Parser):
@@ -28,33 +30,59 @@ class MetaGoblin(Parser):
                         'Accept-Encoding': 'gzip'}
         self.collection = set()
         self.looted = set()
-        if not self.args['nodl']:
-            self.make_dirs(self.path_main)
-        print(f'[{self.__str__()}] <deployed>')
+        self.logger = Logger(self.args['verbose'], self.args['silent'])
+        self.make_dirs(self.path_main)
+        self.logger.log(0, self.__str__(), 'deployed')
+
+
+####################################################################
+# wrapper classes
+####################################################################
+
+    class Get:
+        '''wrapper for http.client.HTTPResponse'''
+
+        def __init__(self, object):
+            self.code = object.code if object else ''
+            self.info = object.info().as_string() if object else ''
+            self.content = MetaGoblin.unzip(object.read()).decode('utf-8', 'ignore') if object else {}
+
+    class Post:
+        '''wrapper for http.client.HTTPResponse'''
+
+        def __init__(self, object):
+            self.code = object.code if object else ''
+            self.info = object.info().as_string() if object else ''
+            self.content = MetaGoblin.unzip(object.read()).decode('utf-8', 'ignore') if object else {}
+
+####################################################################
+# common methods
+####################################################################
 
     def make_dirs(self, *paths):
         '''creates directories'''
         # BUG: sometimes dirs do not make correctly leaving empty binary file
-        for path in paths:
-            if not os.path.exists(path):
-                try:
-                    os.makedirs(path)
-                except OSError as e:
-                    # NOTE: no sense in continuing if the download dirs fail to make
-                    # may change approach in future, exit for now
-                    exit(f'[{self.__str__()}] <{e}> {path}')
+        if not self.args['nodl']:
+            for path in paths:
+                if not os.path.exists(path):
+                    try:
+                        os.makedirs(path)
+                    except OSError as e:
+                        # NOTE: no sense in continuing if the download dirs fail to make
+                        # may change approach in future, exit for now
+                        exit(f'[{self.__str__()}] <{e}> {path}')
 
     def cleanup(self, path):
         '''cleanup small unwanted files (icons, thumbnails, etc...)
         default 50kb threshold
         '''
-        for path in self.looted:
-            if os.path.getsize(path) < 50000:
-                try:
-                    os.remove(path)
-                except OSError as e:
-                    if self.args['verbose'] and not self.args['silent']:
-                        print(f'[{self.__str__()}] <{e}> {path}')
+        if not self.args['nodl'] and not self.args['noclean']:
+            for path in self.looted:
+                if os.path.getsize(path) < 50000:
+                    try:
+                        os.remove(path)
+                    except OSError as e:
+                        self.logger.log(2, self.__str__(), e, path)
 
     def toggle_collecton_type(self, reverse=False):
         '''toggle collection type between list and set'''
@@ -70,7 +98,8 @@ class MetaGoblin(Parser):
         else:
             self.collection = []
 
-    def unzip(self, data):
+    @staticmethod
+    def unzip(data):
         '''gzip decompression'''
         try:
             return decompress(data)
@@ -80,39 +109,57 @@ class MetaGoblin(Parser):
             # OPTIMIZE: return something other than empty bytes?
             return b''
 
-    def get(self, url, path='', n=0, save=True):
-        '''get web content'''
-        request = Request(url, None, self.headers)
+    def make_request(self, url, n=0, data=None):
+        '''make a web request'''
+        request = Request(url, data, self.headers)
         try:
-            with urlopen(request, timeout=20) as response:
-                    if save:
-                        with open(path, 'wb') as file:
-                            copyfileobj(response, file, DEFAULT_BUFFER_SIZE)
-                    else:
-                        return self.unzip(response.read()).decode('utf-8', 'ignore')
-        except (HTTPError, URLError, CertificateError) as e:
-            if self.args['verbose'] and not self.args['silent']:
-                print(f'[{self.__str__()}] <{e}> {url}')
-            return None
+            return urlopen(request, timeout=20)
+        except HTTPError as e:
+            if e.code == 502:
+                return self.retry(url, n+1, path, save)
+            self.logger.log(2, self.__str__(), e, url)
+        except (URLError, CertificateError) as e:
+            self.logger.log(2, self.__str__(), e, url)
         except timeout:
-            return self.retry(url, n+1, path, save)
-        return True
+            return self.retry(url, n+1, data)
 
-    def retry(self, url, n, path, save):
+    def extend_cookie(self, cookie, value):
+        '''add to or update a cookie'''
+        if not self.headers.get(cookie):
+            self.headers.update({cookie: value})
+        else:
+            values = set(self.headers[cookie].split('; '))
+            values.add(value)
+            self.headers[cookie] = '; '.join(values)
+
+    def get(self, url, content=False):
+        '''make a get request'''
+        return self.Get(self.make_request(url))
+
+    def post(self, url, data):
+        '''make a post request'''
+        return self.Post(self.make_request(url, data=urlencode(data).encode()))
+
+    def download(self, url, path):
+        '''download web content'''
+        response = self.make_request(url)
+        # content_length = response.info()['Content-Length']
+        if response:
+            with open(path, 'wb') as file:
+                copyfileobj(response, file, DEFAULT_BUFFER_SIZE)
+            return True
+
+    def retry(self, url, n, data):
         '''retry connection after a socket timeout'''
         # TODO: add verbose outputs
         if n > 5:
             if not self.args['silent']:
-                print(f'[{self.__str__()}] <timeout> aborting after {n} retries')
+                self.logger.log(1, self.__str__(), timeout, f'aborting after {n} retries')
             return None
         if not self.args['silent']:
-                print(f'[{self.__str__()}] <timeout> retry attempt {n}')
-        sleep(self.args['dealay'])
-        return self.get(url, path, n, save)
-
-    def get_webpage(self, url):
-        '''return html'''
-        return self.get(url, save=False)
+                self.logger.log(1, self.__str__(), timeout, f'retry attempt {n}')
+        sleep(3)
+        return self.make_request(url, n, data)
 
     def write_file(self, data, path, mode='w', iter=False):
         '''write to disk'''
@@ -124,8 +171,7 @@ class MetaGoblin(Parser):
                 else:
                     file.write(data)
         except OSError as e:
-            if self.args['verbose'] and not self.args['silent']:
-                print(f'[{self.__str__()}] <{e}> {path}')
+            self.logger.log(2, self.__str__(), e, path)
 
     def read_file(self, path, iter=False):
         '''read txt file'''
@@ -136,16 +182,14 @@ class MetaGoblin(Parser):
                 else:
                     return file.read()
         except OSError as e:
-            if self.args['verbose'] and not self.args['silent']:
-                print(f'[{self.__str__()}] <{e}> {path}')
+            self.logger.log(2, self.__str__(), e, path)
 
     def extract_urls(self, pattern, url):
         '''extact urls from html based on regex pattern'''
         try:
-            return {url.group().replace('\\', '') for url in re.finditer(pattern, self.get_webpage(url))}
+            return {url.group().replace('\\', '') for url in re.finditer(pattern, self.get(url).content)}
         except TypeError as e:
-            if self.args['verbose'] and not self.args['silent']:
-                print(f'[{self.__str__()}] <{e}>')
+            self.logger.log(2, self.__str__(), e, url)
             return ''
 
     def collect(self, url, filename='', clean=False):
@@ -176,18 +220,16 @@ class MetaGoblin(Parser):
                 save_loc = self.path_main
             filepath = os.path.join(save_loc, f'{filename}.{ftype}')
             if os.path.exists(filepath):
-                if not self.args['silent']:
-                    print(f'[{self.__str__()}] <file exists> {filename}')
+                self.logger.log(1, self.__str__(), 'file exists', filename)
                 continue
-            attempt = self.get(url, filepath)
+            attempt = self.download(url, filepath)
             if attempt:
-                if not self.args['silent']:
-                    print(f'[{self.__str__()}] <looted> {filename}')
+                self.logger.log(1, self.__str__(), 'looted', filename)
                 loot_tally += 1
                 failed = 0
                 self.looted.add(filepath)
             else:
                 failed += 1
             sleep(self.args['delay'])
-        print(f'[{self.__str__()}] <complete> {loot_tally} file(s) looted')
+        self.logger.log(0, self.__str__(), 'complete', f'{loot_tally} file(s) looted')
         return timed_out

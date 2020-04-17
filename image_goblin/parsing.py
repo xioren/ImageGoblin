@@ -12,6 +12,7 @@ class Parser:
         self.query_pat = r'[\?&][^" ]+$'
         self.quality_pat = r'q((ua)?li?ty)=\d+'
         self.filetype_pat = r'(?<=\.)[A-Za-z0-9]+'
+        # IDEA: add mimtype iding from headers?
         self.filetypes = r'\.(jpe?g|png|gif|mp4|web[pm]|tiff?|mov|svg|bmp|exif)'
         self.filter_pat = r'\.(js|css|pdf|php|html)|(fav)?icon|logo|menu'
         self.cropping_pats = (
@@ -75,6 +76,7 @@ class Parser:
 
     def finalize(self, url):
         '''prepare a url for an http request'''
+        url = re.sub(r'^(/?\.)+(?=/)', '', url)
         if self.is_relative(url):
             url = self.make_absolute(url)
         return self.add_scheme(unquote(url.strip('/')))

@@ -1,5 +1,4 @@
 import re
-import os
 
 from goblins.meta import MetaGoblin
 
@@ -13,7 +12,7 @@ class OmegaGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.url_pat_a = r'<img.+?(src|data([^=]+)?)="[^"]+'
+        self.url_pat_a = r'<img.+?(src|data([^=]+)?)="[^" ]+'
         self.url_pat_b = fr'(https?://)?(/[^"\n \';]+)+{self.filetypes}({self.query_pat})?'
         self.url_pat_compounded = f'{self.url_pat_a}|{self.url_pat_b}'
 
@@ -51,5 +50,4 @@ class OmegaGoblin(MetaGoblin):
             else:
                 self.find_urls(target)
         self.loot()
-        if not self.args['nodl'] and not self.args['noclean']:
-            self.cleanup(self.path_main)
+        self.cleanup(self.path_main)

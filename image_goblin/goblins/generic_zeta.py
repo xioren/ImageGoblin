@@ -2,6 +2,7 @@ import re
 
 from goblins.meta import MetaGoblin
 
+# sometimes throws 502 errors
 
 class ZetaGoblin(MetaGoblin):
     '''handles: Calzedonia Group

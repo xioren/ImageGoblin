@@ -36,19 +36,16 @@ class AlphaGoblin(MetaGoblin):
             if 'media/catalog' in target:
                 if not self.accept_image:
                     urls = []
-                    if not self.args['silent']:
-                        print(f'[{self.__str__()}] <WARNING> image urls not supported')
+                    self.logger.log(1, self.__str__(), 'WARNING', 'image urls not supported')
                 else:
                     urls = self.generate_urls(target)
             else:
                 if not self.accept_webpage:
                     urls = []
-                    if not self.args['silent']:
-                        print(f'[{self.__str__()}] <WARNING> webpage urls not supported')
+                    self.logger.log(1, self.__str__(), 'WARNING', 'webpage urls not supported')
                 else:
                     urls = self.generate_urls(target, False)
             for url in urls:
                 self.collect(self.trim_url(url))
         self.loot()
-        if not self.args['nodl'] and not self.args['noclean']:
-            self.cleanup(self.path_main)
+        self.cleanup(self.path_main)

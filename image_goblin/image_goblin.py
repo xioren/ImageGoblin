@@ -19,6 +19,8 @@ parser.add_argument('--list', help='list available goblins', action='store_true'
 
 parser.add_argument('-l', '--local', help='filename of local text file containing urls')
 
+parser.add_argument('--login', help='log in to instagram', action='store_true')
+
 parser.add_argument('-m', '--mode', help='mode of operation')
 
 parser.add_argument('--noclean', help='do not remove small files', action='store_true')
@@ -49,6 +51,7 @@ args_dict = {
     'increment': args.increment,
     'list': args.list,
     'local': args.local,
+    'login': args.login,
     'mode': args.mode,
     'noclean': args.noclean,
     'nodl': args.nodl,

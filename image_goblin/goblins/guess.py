@@ -28,8 +28,7 @@ class GuessGoblin(MetaGoblin):
                 urls = [target]
             else:
                 urls = []
-                if not self.args['silent']:
-                    print(f'[{self.__str__()}] <WARNING> webpage urls not supported')
+                self.logger.log(1, self.__str__(), 'WARNING', 'webpage urls not supported')
             for url in urls:
                 url_base = self.prep(url)
                 for id in ('', '-ALT1', '-ALT2', '-ALT3', '-ALT4'):

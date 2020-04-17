@@ -44,13 +44,11 @@ class BetaGoblin(MetaGoblin):
                     urls = self.extract_urls(self.url_pat, target)
                 else:
                     urls = []
-                    if not self.args['silent']:
-                        print(f'[{self.__str__()}] <WARNING> webpage urls not supported')
+                    self.logger.log(1, self.__str__(), 'WARNING', 'webpage urls not supported')
             for url in urls:
                 id = self.extract_id(url)
                 self.url_base = self.extract_base(url)
                 for mod in self.modifiers:
                     self.collect(f'{self.url_base}{id}{mod}{self.query}')
         self.loot()
-        if not self.args['nodl'] and not self.args['noclean']:
-            self.cleanup(self.path_main)
+        self.cleanup(self.path_main)

@@ -78,6 +78,7 @@ from goblins.tally_weijl import TallyWeijlGoblin
 from goblins.tezenis import TezenisGoblin
 from goblins.the_great_eros import TheGreatErosGoblin
 from goblins.the_iconic import TheIconicGoblin
+from goblins.tisja_damen import TisjaDamenGoblin
 from goblins.tommy_hilfiger import TommyHilfigerGoblin
 from goblins.topshop import TopshopGoblin
 from goblins.trendyol import TrendyolGoblin
@@ -179,6 +180,7 @@ goblins = {
     'thegreateros': (r'thegreateros\.[a-z]+', TheGreatErosGoblin),
     'theiconic': (r'theiconic\.[a-z]+', TheIconicGoblin),
     'tommyhilfiger':(r'tommy-europe|shoptommy|tommy\.[a-z]+', TommyHilfigerGoblin),
+    'tisjadamen': (r'tisjadamen\.[a-z]+', TisjaDamenGoblin),
     'topshop': (r'topshop\.[a-z]+', TopshopGoblin),
     'trendyol': (r'trendyol\.[a-z]+', TrendyolGoblin),
     'triangl': (r'triangl\.[a-z]+', TrianglGoblin),

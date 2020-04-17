@@ -1,6 +1,5 @@
 import re
 
-from time import sleep
 from goblins.meta import MetaGoblin
 
 
@@ -36,8 +35,7 @@ class DeltaGoblin(MetaGoblin):
             else:
                 if not self.accept_webpage:
                     urls = []
-                    if not self.args['silent']:
-                        print(f'[{self.__str__()}] <WARNING> webpage urls not supported')
+                    self.logger.log(1, self.__str__(), 'WARNING', 'webpage urls not supported')
                 else:
                     urls = self.extract_urls(self.url_pat, target)
             for url in urls:

@@ -4,7 +4,6 @@ import os
 from time import sleep
 from goblins.meta import MetaGoblin
 
-
 # alternate scaled query: '?wid=2239&hei=2857&size=2239,2857&qlt=100'
 # alternate url format: https://images.asos-media.com/inv/media/7/6/5/4/01234567/color/image1xxl.jpg
 
@@ -33,7 +32,7 @@ class ASOSGoblin(MetaGoblin):
     def extract_color(self, url):
         '''extract color from url'''
         if 'asos.com' in url:
-            color = re.search(r'(?<=clr=)[a-z0-9]+', url) or re.search(r'(?<=-1-)[a-z0-9]+', self.get_webpage(url))
+            color = re.search(r'(?<=clr=)[a-z0-9]+', url) or re.search(r'(?<=-1-)[a-z0-9]+', self.get(url).content)
         else:
             color = re.search(r'(?<=-1-)[a-z0-9]+', url) or re.search(r'(?<!/\d/\d)/[a-z0-9]+(?=/[^/]+$)', url)
         return color.group().lstrip('/') if color else ''

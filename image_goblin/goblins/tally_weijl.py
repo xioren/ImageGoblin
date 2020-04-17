@@ -22,8 +22,7 @@ class TallyWeijlGoblin(MetaGoblin):
         for target in self.args['targets'][self.__repr__()]:
             if '/img/' in target:
                 urls = []
-                if not self.args['silent']:
-                    print(f'[{self.__str__()}] <WARNING> url type not supported')
+                self.logger.log(1, self.__str__(), 'WARNING', 'image urls not supported')
             else:
                 urls = self.extract_urls(self.url_pat, target)
             for url in urls:

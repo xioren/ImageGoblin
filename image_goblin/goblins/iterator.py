@@ -44,7 +44,7 @@ class IteratorGoblin(MetaGoblin):
         round = 1
         base, iterable, end = self.extract_iterable(self.args['targets'][self.__repr__()][0])
         while True:
-            print(f'[{self.__str__()}] <iterating> round {round}')
+            self.logger.log(0, self.__str__(), 'iterating', f'round {round}')
             self.generate_urls(base, iterable, end)
             timeout = self.loot(timeout=self.args['timeout'])
             if not timeout:
@@ -52,7 +52,7 @@ class IteratorGoblin(MetaGoblin):
                 iterable = self.increment_iterable(iterable)
                 self.new_collection()
             else:
-                print(f'[{self.__str__()}] <timeout> after {self.args["timeout"]} attempts')
+                self.logger.log(0, self.__str__(), 'timeout', f'after {self.args["timeout"]} attempts')
                 return None
 
     def run(self):

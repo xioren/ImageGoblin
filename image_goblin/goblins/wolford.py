@@ -30,8 +30,7 @@ class WolfordGoblin(MetaGoblin):
                 urls = [target]
             else:
                 urls = []
-                if not self.args['silent']:
-                    print(f'[{self.__str__()}] <WARNING> webpage urls not supported')
+                self.logger.log(1, self.__str__(), 'WARNING', 'webpage urls not supported')
             for url in urls:
                 url = self.prep(url)
                 if 'Additional-Picture' in url:

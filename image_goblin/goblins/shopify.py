@@ -42,8 +42,7 @@ class ShopifyGoblin(MetaGoblin):
         for target in self.args['targets'][self.__repr__()]:
             if 'cdn.shopify' in target:
                 urls = []
-                if not self.args['silent']:
-                    print(f'[{self.__str__()}] <WARNING> image urls not supported')
+                self.logger.log(1, self.__str__(), 'WARNING', 'image urls not supported')
             else:
                 urls = self.extract_urls(self.url_pat, target)
             for url in urls:
@@ -52,5 +51,4 @@ class ShopifyGoblin(MetaGoblin):
                 else:
                     self.collect(self.trim_url(url), clean=True)
         self.loot()
-        if not self.args['nodl'] and not self.args['noclean']:
-            self.cleanup(self.path_main)
+        self.cleanup(self.path_main)

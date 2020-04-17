@@ -22,8 +22,7 @@ class PrettyLittleThingGoblin(MetaGoblin):
         for target in self.args['targets'][self.__repr__()]:
             if 'cdn-img.prettylittlething' in target:
                 urls = []
-                if not self.args['silent']:
-                    print(f'[{self.__str__()}] <WARNING> image urls not supported')
+                self.logger.log(1, self.__str__(), 'WARNING', 'image urls not supported')
             else:
                 urls = self.extract_urls(self.url_pat, target)
             for url in urls:
