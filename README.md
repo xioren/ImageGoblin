@@ -7,7 +7,7 @@
 + introduced html tag parsing for generic goblin
 + new goblins
 + bug fixes
-+ code clean up and improvements
++ misc code clean up and improvements
 
 ### This Program:
 
@@ -32,7 +32,7 @@
   goblin --local urls.txt --silent
   ```
 
-+ *generic:* for any site without a specific goblin. greedy. by default, this mode will automatically try to remove common cropping. Using the '--format' option overrides this functionality and instead formats according to user input modifier(s). the usage format for this is '--format _mode_ _modifier_[ _replacement_]'. 'add _modifier_' will append the modifier to the end of the url; for example a query string. 'sub _modifier_ _replacement_' substitutes, while 'rem _modifier_' removes.
++ *generic:* for any site without a specific goblin. by default, this mode will automatically try to remove common cropping. Using the '--format' option overrides this functionality and instead formats according to user input modifier(s). the usage format for this is '--format _mode_ _modifier_[ _replacement_]'. 'add _modifier_' will append the modifier to the end of the url; for example a query string. 'sub _modifier_ _replacement_' substitutes, while 'rem _modifier_' removes. you can enforce greedy mode with --greedy, sometimes this will find more images.
 
   *examples:*
 
@@ -42,7 +42,7 @@
   goblin https://website.com/uploads/image_01.jpg?size=small --format sub size=\w+ size=large'
   ```
 
-+ *iterate:* when provided a url to a single image url, the program will try to download that images and all other images with the same url structure that are on the server (but not necessarily displayed on the website). the iterable needs to be surrounded by '#' on either side when input to indicate the portion of the url to be iterated. use the --step flag to set step size (default 1); negative values will iterate down.
++ *iterate:* when provided a url to a single image url, the program will try to download that image and all other images with the same url structure that are on the server (but not necessarily displayed on the website). the iterable needs to be surrounded by '#' on either side when input to indicate the portion of the url to be iterated. use the --step flag to set step size (default 1); negative values will iterate down.
 
   *example:*
 
@@ -62,7 +62,7 @@
 
   etc...
 
-+ *instagram:* input the instagram page url, username, or post. this goblin will scrape the entire profile, unless the url refers to a single post. if only the username is passed, it is necessary to --force instagram in order to match the correct goblin. stories require the user to be logged in to instagram; pass the --login flag to do so. the number if posts to retrieve can also be specified with --posts (must be < 100). finally, if 'latest' is passed as the --mode argument, the program will only retrieve the main stories and the latest three posts.
++ *instagram:* input an instagram page url, username, or post. this goblin will scrape the entire profile by default. if only the username is passed, it is necessary to --force instagram in order to match the correct goblin. stories require the user to be logged in to instagram; pass the --login flag to do so. the number of posts to retrieve can also be specified with --posts n (n < 100). finally, if 'latest' or 'recent' is passed as the --mode argument, the program will only retrieve the main stories and the latest three posts; this will prompt for login automatically.
 
 + *feed:* using the feed flag, you can accumulate urls by inputting them one by one. this is useful for accumulating urls as you find them while browsing the web, and downloading all at once. try it :)
 
