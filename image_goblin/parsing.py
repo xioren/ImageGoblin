@@ -39,7 +39,7 @@ class Parser:
     class GoblinHTMLParser(HTMLParser):
 
         attributes = {}
-        tag_pat = re.compile('(?:ima?ge?|video|meta|source)')
+        tag_pat = re.compile('(?:ima?ge?|video|source)')
 
         def handle_starttag(self, tag, attrs):
             if re.search(self.tag_pat, tag):

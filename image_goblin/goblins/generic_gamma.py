@@ -43,7 +43,7 @@ class GammaGoblin(MetaGoblin):
             if 'demandware' in target:
                 urls = [target]
             else:
-                urls = self.extract_urls_greedy(self.url_pat, arget)
+                urls = self.extract_urls_greedy(self.url_pat, target)
             for url in urls:
                 if not re.search(f'(?:{self.img_pat})', url):
                     continue

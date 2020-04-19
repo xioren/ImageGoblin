@@ -17,6 +17,6 @@ class MaisonCloseGoblin(AlphaGoblin):
 
     def generate_urls(self, url, image=True):
         if image:
-            pass
+            return [url]
         else:
             return self.extract_urls_greedy(self.url_pat, url)

@@ -26,7 +26,7 @@ class DollsKillGoblin(MetaGoblin):
                 urls = [target]
                 self.logger.log(1, self.__str__(), 'WARNING', 'image urls not fully supported')
             else:
-                urls = self.extract_urls(self.url_pat, target)
+                urls = self.extract_urls_greedy(self.url_pat, target)
             for url in urls:
                 self.collect(re.sub(r'\d+\.jpg', '1.jpeg', url).replace('img src="', ''))
         self.loot()

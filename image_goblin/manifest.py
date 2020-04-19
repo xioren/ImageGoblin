@@ -159,7 +159,7 @@ goblins = {
     'mango': (r'mango\.[a-z]+|mngbcn', MangoGoblin),
     'marliesdekkers': (r'marliesdekkers\.[a-z]+', MarliesDekkersGoblin),
     'massimodutti': (r'massimodutti\.[a-z]+', MassimoDuttiGoblin),
-    'missguided': (r'missguided\.[a-z]+', MissguidedGoblin),
+    'missguided': (r'missguided(us)?\.[a-z]+', MissguidedGoblin),
     'nastygal': (r'nastygal\.[a-z]+', NastyGalGoblin),
     'only': (r'only\.[a-z]+', OnlyGoblin),
     'onlyhearts': (r'onlyhearts\.[a-z]+', OnlyHeartsGoblin),
