@@ -13,6 +13,7 @@ class IteratorGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
+        self.block_size = self.args['step'] * 100
 
     def __str__(self):
         return 'iterator goblin'
@@ -21,22 +22,21 @@ class IteratorGoblin(MetaGoblin):
         return 'iterator'
 
     def extract_iterable(self, url):
-        '''seperate iterable from a url (mode 3)'''
+        '''seperate iterable from input url'''
         return re.split('#', url)
 
-    # IDEA: instead of hard coding 50, maybe use dynamic value.
-    # possibly based on timeout value.
-    # TODO:
-    #   - add reverse
+    def strip_iter(self, url):
+        '''isolate iterable'''
+        return int(url.lstrip('0'))
 
     def generate_urls(self, base, iterable, end):
         '''generate block of urls to iterate over'''
-        stripped_iter = int(iterable.lstrip('0'))
-        for n in range(stripped_iter, stripped_iter + 100, self.args['increment']):
+        stripped_iter = self.strip_iter(iterable)
+        for n in range(stripped_iter, stripped_iter + self.block_size, self.args['step']):
             self.collect(f'{base}{str(n).zfill(len(iterable))}{end}')
 
     def increment_iterable(self, iterable):
-        return str(int(iterable.lstrip('0')) + 100).zfill(len(iterable))
+        return str(self.strip_iter(iterable) + self.block_size).zfill(len(iterable))
 
     def iterate(self):
         '''main iteration method'''

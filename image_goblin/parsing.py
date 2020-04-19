@@ -1,7 +1,6 @@
 import re
 import urllib.parse
 
-from ast import literal_eval
 from os.path import join, exists
 from html.parser import HTMLParser
 
@@ -17,7 +16,7 @@ class Parser:
         self.filename_pat = re.compile(r'(?<=/)[^/]+$')
         self.query_pat = re.compile(r'[\?&][^" ]+$')
         self.quality_pat = re.compile(r'q((ua)?li?ty)=\d+')
-        self.filetype_pat = re.compile(r'(?<=\.)[A-Za-z0-9]+', flags=re.IGNORECASE)
+        self.filetype_pat = re.compile(r'(?<=\.)[A-Za-z0-9]+$', flags=re.IGNORECASE)
         # self.attribute_pat = re.compile(r'(src|data[^=]+(?!-id))="[^"]+')
         # IDEA: add mimetype id'ing from headers?
         self.filetypes = r'\.(jpe?g|png|gif|mp4|web[pm]|tiff?|mov|svg|bmp|exif)'
@@ -37,7 +36,6 @@ class Parser:
 # sub classes
 ####################################################################
 
-
     class GoblinHTMLParser(HTMLParser):
 
         attributes = {}
@@ -49,7 +47,6 @@ class Parser:
                     if attr[1] is None or '/' not in attr[1]:
                         continue
                     if attr[1].startswith(('{', '[')):
-                        # self.from_dictionary(attr[1])
                         continue
                     if 'data' in attr[0]:
                         attr = ['data', attr[1]]
@@ -57,29 +54,6 @@ class Parser:
                         self.attributes[attr[0]].append(attr[1])
                     else:
                         self.attributes[attr[0]] = [attr[1]]
-
-        # def from_dictionary(self, values):
-        #     '''parse an embedded dictionary for attributes:value pairs'''
-        #     if type(values) == str:
-        #         dictionary = literal_eval(values.strip('[]'))
-        #     if type(values) == tuple:
-        #         dictionary = dict(values)
-        #     else:
-        #         dictionary = values
-        #     for attr in dictionary:
-        #         print(dictionary)
-        #         if type(dictionary[attr]) == dict:
-        #             self.from_dictionary(dictionary[attr])
-        #             continue
-        #         if not dictionary[attr] or '/' not in str(dictionary[attr]):
-        #             continue
-        #         if 'data' in attr:
-        #             dictionary['data'] = dictionary.pop[attr]
-        #             attr = 'data'
-        #         if attr in self.attributes:
-        #             self.attributes[dictionary[attr]].append(dictionary[attr])
-        #         else:
-        #             self.attributes[dictionary[attr]] = [dictionary[attr]]
 
 ####################################################################
 # methods
@@ -112,7 +86,7 @@ class Parser:
 
     def filetype(self, url):
         '''extract file type'''
-        type = re.search(f'{self.filetype_pat}$', self.dequery(url))
+        type = re.search(self.filetype_pat, self.dequery(url))
         if not type:
             return 'jpeg'
         return type.group().replace('jpg', 'jpeg')
@@ -120,7 +94,9 @@ class Parser:
     def add_scheme(self, url):
         '''checks for and adds scheme'''
         if not urllib.parse.urlparse(url)[0]:
-            if not url.startswith('.') and not url.startswith('/'):
+            if url.startswith('.') or url.startswith('/'):
+                pass
+            else:
                 return f'https://{url}'
         return url
 

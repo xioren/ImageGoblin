@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from sys import exit
 from argparse import ArgumentParser
 from dispatcher import Dispatcher
 
@@ -12,8 +13,6 @@ parser.add_argument('--feed', help='input urls one at a time', action='store_tru
 parser.add_argument('--force', help='force a specific goblin')
 
 parser.add_argument('-f', '--format', nargs='+', help='formatting modifier (action modifier[ modifier])')
-
-parser.add_argument('-i', '--increment', help='iteration step size (n)', type=int, default=1)
 
 parser.add_argument('--greedy', help='find urls based on regex instead of html tags (only applies to generic goblin)', action='store_true')
 
@@ -41,6 +40,8 @@ parser.add_argument('--posts', help='number of instagram posts (n) to fetch (opt
 
 parser.add_argument('-s', '--silent', help='suppress output', action='store_true')
 
+parser.add_argument('--step', help='iteration step size (n)', type=int, default=1)
+
 parser.add_argument('target', nargs='?', help='webpage or image url')
 
 parser.add_argument('-t', '--timeout', help='iteration timeout threshold (n)', type=int, default=5)
@@ -55,7 +56,6 @@ args_dict = {
     'force': args.force,
     'format': args.format,
     'greedy': args.greedy,
-    'increment': args.increment,
     'list': args.list,
     'local': args.local,
     'login': args.login,
@@ -68,10 +68,15 @@ args_dict = {
     'noupgrade': args.noupgrade,
     'posts': args.posts,
     'silent': args.silent,
+    'step': args.step,
     'targets': args.target,
     'timeout': args.timeout,
     'verbose': args.verbose
     }
 
 if __name__ == '__main__':
-    Dispatcher(args_dict).dispatch()
+    try:
+        Dispatcher(args_dict).dispatch()
+    except KeyboardInterrupt:
+        print('-----exiting-----')
+        exit(130)

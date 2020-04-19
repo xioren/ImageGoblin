@@ -74,7 +74,8 @@ class MetaGoblin(Parser):
                     except OSError as e:
                         # NOTE: no sense in continuing if the download dirs fail to make
                         # may change approach in future, exit for now
-                        exit(f'[{self.__str__()}] <{e}> {path}')
+                        self.logger.log(0, self.__str__(), e, 'exiting')
+                        exit(1)
 
     def cleanup(self, path):
         '''cleanup small unwanted files (icons, thumbnails, etc...)

@@ -18,7 +18,7 @@ class InstagramGoblin(MetaGoblin):
     def __init__(self, args):
         super().__init__(args)
         self.logged_in = False
-        self.posts = self.args['posts'] if self.args['posts'] <= 100 else 100
+        self.num_posts = self.args['posts'] if self.args['posts'] <= 100 else 100
         self.base_url = 'https://www.instagram.com/'
         # NOTE: both 472f257a40c653c64c666ce877d59d2b and 42323d64886122307be10013ad2dcc44 work for media query_hash
         self.media_url = 'graphql/query/?query_hash=42323d64886122307be10013ad2dcc44&variables={}'
@@ -62,13 +62,12 @@ class InstagramGoblin(MetaGoblin):
         response = self.get(self.base_url)
         self.csrf_token = self.extract_csrf_token(response.info)
         self.headers.update({'X-CSRFToken': self.csrf_token})
-        if self.args['login']:
+        if self.args['login'] or self.args['mode'] == 'latest' or self.args['mode'] == 'recent':
             username = input(f'[{self.__str__()}] username: ')
             password = getpass(f'[{self.__str__()}] password: ')
             response = self.post(f'{self.base_url}accounts/login/ajax/',
                                  data={'username': username, 'password': password})
-            del username
-            del password
+            del username, password
             login_text = json.loads(response.content)
             if login_text.get('authenticated') and response.code == 200:
                 self.extend_cookie('Cookie', re.search(r'sessionid=[^\n]+', response.info).group())
@@ -92,6 +91,7 @@ class InstagramGoblin(MetaGoblin):
 
     def verify_account(self, checkpoint_url):
         '''complete security challenge to verify account'''
+        # WARNING: untested
         # QUESTION: are all these header updates necessary? test without. and
         # should they be assigned to self.csrf_token?
         response = self.get(f'{self.base_url.rstrip("/")}{checkpoint_url}')
@@ -130,7 +130,7 @@ class InstagramGoblin(MetaGoblin):
             variables = json.dumps(
                 {
                     'id': self.user_id,
-                    'first': self.posts,
+                    'first': self.num_posts,
                     'after': cursor
                 }
             )
@@ -141,11 +141,13 @@ class InstagramGoblin(MetaGoblin):
                 }
             )
             response = self.get(self.base_url + self.media_url.format(quote(variables, safe='"')))
-            posts.extend([n.group() for n in re.finditer(r'(?<="shortcode":")[^"]+', response.content)])
-            if self.posts < 100:
+            posts.extend([post.group() for post in re.finditer(r'(?<="shortcode":")[^"]+', response.content)])
+            if self.num_posts < 100:
+                # user specified finite number of posts to grab, dont keep scanning.
                 break
             cursor = json.loads(response.content)['data']['user']['edge_owner_to_timeline_media']['page_info']['end_cursor']
             if not cursor:
+                # reached the end
                 break
             sleep(self.args['delay'])
         return posts
@@ -155,7 +157,7 @@ class InstagramGoblin(MetaGoblin):
         for post in posts:
             self.logger.log(1, self.__str__(), 'parsing post', f'/p/{post}')
             content = self.extract_urls_greedy(r'(?<="display_url":")[^"]+|(?<="video_url":")[^"]+',
-                                        f'{self.base_url}p/{post}/?__a=1')
+                                               f'{self.base_url}p/{post}/?__a=1')
             for url in content:
                 self.collect(url, f'{self.username}_{self.extract_filename(url)}')
             sleep(self.args['delay'])
@@ -203,7 +205,7 @@ class InstagramGoblin(MetaGoblin):
                 if self.logged_in:
                     self.logger.log(1, self.__str__(), 'collecting stories')
                     self.get_main_stories()
-                    if not self.args['mode'] == 'latest':
+                    if self.args['mode'] != 'latest' and self.args['mode'] != 'recent':
                         self.get_highlight_stories()
                 posts = self.get_posts()
                 self.get_media(posts)

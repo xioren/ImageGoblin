@@ -37,27 +37,12 @@
   *examples:*
 
   ```
-  goblin https://website.com/pages/somewebpage.html -f rem -\d+x\d+
-  ```
+  goblin https://website.com/pages/somewebpage.html -f rem -300x300
 
-  https://website.com/uploads/image_01-300x300.jpg
-
-  becomes
-
-  https://website.com/uploads/image_01.jpg
-
-
-  ```
   goblin https://website.com/uploads/image_01.jpg?size=small --format sub size=\w+ size=large'
   ```
 
-  https://website.com/uploads/image_01.jpg?size=small
-
-  becomes
-
-  https://website.com/uploads/image_01.jpg?size=large
-
-+ *iterate:* when provided a url to a single image url, the program will try to download that images and all other images with the same url structure that are on the server (but not necessarily displayed on the website). the iterable needs to be surrounded by '#' on either side when input to indicate the portion of the url to be iterated.
++ *iterate:* when provided a url to a single image url, the program will try to download that images and all other images with the same url structure that are on the server (but not necessarily displayed on the website). the iterable needs to be surrounded by '#' on either side when input to indicate the portion of the url to be iterated. use the --step flag to set step size (default 1); negative values will iterate down.
 
   *example:*
 
