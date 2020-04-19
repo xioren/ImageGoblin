@@ -6,7 +6,7 @@ from goblins.meta import MetaGoblin
 
 class AmericanApparelGoblin(MetaGoblin):
     '''accepts:
-        - image*
+        - image
         - webpage
     '''
 
@@ -25,11 +25,12 @@ class AmericanApparelGoblin(MetaGoblin):
         return re.split(r'_(\d{2})?(?=_)', re.sub(r'(?<=stencil/)[^/]+', 'original', url), 1)
 
     def run(self):
+        self.logger.log(1, self.__str__(), 'collecting links')
         for target in self.args['targets'][self.__repr__()]:
             if 'bigcommerce' in target:
                 urls = [self.dequery(target)]
             else:
-                urls = self.extract_urls(self.url_pat, target)
+                urls = self.extract_urls_greedy(self.url_pat, target)
             for url in urls:
                 url_base, _, url_end = self.split_url(url)
                 for mod in ('', '01', '02', '03', '04'):

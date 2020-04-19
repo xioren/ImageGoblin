@@ -6,6 +6,7 @@ from goblins.meta import MetaGoblin
 
 class ShopifyGoblin(MetaGoblin):
     '''accepts:
+        - image*
         - webpage
     generic back-end for:
         - bamba swim
@@ -31,20 +32,20 @@ class ShopifyGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.url_pat = r'cdn\.shopify\.com/[^" \n]+((\w+-)+)?\d+x(\d+)?[^" \n]+'
+        self.url_pat = r'cdn\.shopify\.com/s/files/[^" \n]+((\w+-)+)?\d+x(\d+)?[^" \n]+'
 
     def trim_url(self, url):
         '''remove alternate file hash'''
-        # NOTE: changed to 4 instead of +...check if always 4 with different urls
         return re.sub(r'_[a-z\d]+(\-[a-z\d]+){4}', '', url)
 
     def run(self):
+        self.logger.log(1, self.__str__(), 'collecting links')
         for target in self.args['targets'][self.__repr__()]:
             if 'cdn.shopify' in target:
-                urls = []
-                self.logger.log(1, self.__str__(), 'WARNING', 'image urls not supported')
+                urls = [target]
+                self.logger.log(1, self.__str__(), 'WARNING', 'image urls not fully supported')
             else:
-                urls = self.extract_urls(self.url_pat, target)
+                urls = self.extract_urls_greedy(self.url_pat, target)
             for url in urls:
                 if self.args['noupgrade']:
                     self.collect(url, clean=True)

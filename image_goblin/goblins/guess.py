@@ -23,6 +23,7 @@ class GuessGoblin(MetaGoblin):
         return re.sub(r'(?<=/)([a-z]{,2}_\w+(,|/)?)+/v\d+/|-ALT\d', '', self.dequery(url))
 
     def run(self):
+        self.logger.log(1, self.__str__(), 'collecting links')
         for target in self.args['targets'][self.__repr__()]:
             if 'guess-img' in target:
                 urls = [target]

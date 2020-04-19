@@ -19,4 +19,4 @@ class MaisonCloseGoblin(AlphaGoblin):
         if image:
             pass
         else:
-            return self.extract_urls(self.url_pat, url)
+            return self.extract_urls_greedy(self.url_pat, url)

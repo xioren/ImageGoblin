@@ -6,7 +6,7 @@ from goblins.meta import MetaGoblin
 
 class HMGoblin(MetaGoblin):
     '''accepts:
-        - image
+        - image*
         - webpage
     '''
 
@@ -25,10 +25,11 @@ class HMGoblin(MetaGoblin):
         return re.search(r'source\[[\w\./]+\]', url).group().replace('source[', '').rstrip(']')
 
     def run(self):
+        self.logger.log(1, self.__str__(), 'collecting links')
         for target in self.args['targets'][self.__repr__()]:
             if 'lp2.hm' in target:
-                # NOTE: does not scan
                 urls = [target]
+                self.logger.log(1, self.__str__(), 'WARNING', 'image urls not fully supported')
             else:
                 urls = self.extract_urls(self.url_pat, target)
             for url in urls:

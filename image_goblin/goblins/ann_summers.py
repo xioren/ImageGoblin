@@ -25,11 +25,12 @@ class AnnSummersGoblin(MetaGoblin):
         return 'annsummers'
 
     def run(self):
+        self.logger.log(1, self.__str__(), 'collecting links')
         for target in self.args['targets'][self.__repr__()]:
             if 'adis.ws' in target:
                 urls = [target]
             else:
-                urls = self.extract_urls(self.url_pat, target)
+                urls = self.extract_urls_greedy(self.url_pat, target)
             for url in urls:
                 url = re.sub(r'(_\d)?\.jpg', '', self.dequery(url))
                 for mod in self.modifiers:

@@ -5,7 +5,7 @@ class TommyHilfigerGoblin(BetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.accept_webpage = False
+        self.accept_webpage = True
 
     def __str__(self):
         return 'tommy hilfiger goblin'

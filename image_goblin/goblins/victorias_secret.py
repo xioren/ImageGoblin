@@ -5,7 +5,7 @@ from goblins.meta import MetaGoblin
 
 class VictoriasSecretGoblin(MetaGoblin):
     '''accepts:
-        - image
+        - image*
     '''
 
     def __init__(self, args):
@@ -19,10 +19,11 @@ class VictoriasSecretGoblin(MetaGoblin):
         return 'victoriassecret'
 
     def run(self):
+        self.logger.log(1, self.__str__(), 'collecting links')
         for target in self.args['targets'][self.__repr__()]:
             if 'victoriassecret.com/p/' in target:
-                # NOTE: does not scan
                 urls = [target]
+                self.logger.log(1, self.__str__(), 'WARNING', 'image urls not fully supported')
             else:
                 urls = []
                 self.logger.log(1, self.__str__(), 'WARNING', 'webpage urls not supported')

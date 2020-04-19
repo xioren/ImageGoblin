@@ -5,7 +5,7 @@ from goblins.meta import MetaGoblin
 
 class GettyGoblin(MetaGoblin):
     '''accepts:
-        - image
+        - image*
         - webpage
     '''
 
@@ -25,12 +25,13 @@ class GettyGoblin(MetaGoblin):
         return f'https://media.gettyimages.com/photos/picture-{id}?s=2048x2048'
 
     def run(self):
+        self.logger.log(1, self.__str__(), 'collecting links')
         for target in self.args['targets'][self.__repr__()]:
             if 'media' in target:
-                # NOTE: does not scan
                 urls = [target]
+                self.logger.log(1, self.__str__(), 'WARNING', 'image urls not fully supported')
             else:
-                urls = self.extract_urls(self.url_pat, target)
+                urls = self.extract_urls_greedy(self.url_pat, target)
             for url in urls:
                 self.collect(self.upgrade(url))
         self.loot()

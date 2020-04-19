@@ -38,11 +38,12 @@ class GammaGoblin(MetaGoblin):
         return re.search(r'(?<=/)[^/]+\.jpe?g', url).group()
 
     def run(self):
+        self.logger.log(1, self.__str__(), 'collecting links')
         for target in self.args['targets'][self.__repr__()]:
             if 'demandware' in target:
                 urls = [target]
             else:
-                urls = self.extract_urls(self.url_pat, target)
+                urls = self.extract_urls_greedy(self.url_pat, arget)
             for url in urls:
                 if not re.search(f'(?:{self.img_pat})', url):
                     continue

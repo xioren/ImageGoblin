@@ -15,23 +15,29 @@ parser.add_argument('-f', '--format', nargs='+', help='formatting modifier (acti
 
 parser.add_argument('-i', '--increment', help='iteration step size (n)', type=int, default=1)
 
+parser.add_argument('--greedy', help='find urls based on regex instead of html tags (only applies to generic goblin)', action='store_true')
+
 parser.add_argument('--list', help='list available goblins', action='store_true')
 
 parser.add_argument('-l', '--local', help='filename of local text file containing urls')
 
 parser.add_argument('--login', help='log in to instagram', action='store_true')
 
+parser.add_argument('--mask', help='use a common user agent header', action='store_true')
+
 parser.add_argument('-m', '--mode', help='mode of operation')
 
 parser.add_argument('--noclean', help='do not remove small files', action='store_true')
 
-parser.add_argument('-n', '--nodl', help='skip downloading and print urls to stdout', action='store_true')
+parser.add_argument('--nodl', help='skip downloading and print urls to stdout', action='store_true')
+
+parser.add_argument('--noskip', help='make filename unique if a file with the same filename already exists, instead of skipping', action='store_true')
 
 parser.add_argument('--nosort', help='download directly to current directory, without creating sub dirs', action='store_true')
 
-parser.add_argument('--noupgrade', help='do not remove cropping', action='store_true')
+parser.add_argument('--noupgrade', help='do not remove cropping from urls', action='store_true')
 
-# parser.add_argument('--posts', help='number of instagram posts to fetch (optional)', type=int, default=0)
+parser.add_argument('--posts', help='number of instagram posts (n) to fetch (optional, n<100)', type=int, default=100)
 
 parser.add_argument('-s', '--silent', help='suppress output', action='store_true')
 
@@ -48,16 +54,19 @@ args_dict = {
     'feed': args.feed,
     'force': args.force,
     'format': args.format,
+    'greedy': args.greedy,
     'increment': args.increment,
     'list': args.list,
     'local': args.local,
     'login': args.login,
+    'mask': args.mask,
     'mode': args.mode,
     'noclean': args.noclean,
+    'noskip': args.noskip,
     'nodl': args.nodl,
     'nosort': args.nosort,
     'noupgrade': args.noupgrade,
-    # 'posts': args.posts,
+    'posts': args.posts,
     'silent': args.silent,
     'targets': args.target,
     'timeout': args.timeout,

@@ -24,12 +24,13 @@ class TisjaDamenGoblin(MetaGoblin):
         return re.search(r'(?<=/)[^/]+$', url).group()
 
     def run(self):
+        self.logger.log(1, self.__str__(), 'collecting links')
         for target in self.args['targets'][self.__repr__()]:
             if 'images' in target:
-                # NOTE: does not scan
                 urls = [target]
+                self.logger.log(1, self.__str__(), 'WARNING', 'image urls not fully supported')
             else:
-                urls = self.extract_urls(self.url_pat, target)
+                urls = self.extract_urls_greedy(self.url_pat, target)
             for url in urls:
                 image = self.trim(url)
                 for n in range(1, 4):

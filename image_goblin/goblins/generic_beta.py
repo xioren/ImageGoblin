@@ -24,7 +24,7 @@ class BetaGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.url_pat = fr'https?://[a-z0-9]+\.scene7\.com/is/image/[A-Za-z]+/\w+(_\w+)?_\w+'
+        self.url_pat = fr'https?://[a-z0-9\-]+\.scene7\.com/is/image/[A-Za-z]+/\w+(_\w+)?_\w+'
         self.query = '?fmt=jpeg&qlt=100&scl=1'
 
     def extract_id(self, url):
@@ -36,15 +36,17 @@ class BetaGoblin(MetaGoblin):
         return re.sub(r'(?<=/)[^/]+$', '', url)
 
     def run(self):
+        self.logger.log(1, self.__str__(), 'collecting links')
         for target in self.args['targets'][self.__repr__()]:
             if 'scene7' in target:
                 urls = [self.dequery(target)]
             else:
                 if self.accept_webpage:
-                    urls = self.extract_urls(self.url_pat, target)
+                    urls = self.extract_urls_greedy(self.url_pat, target)
                 else:
                     urls = []
-                    self.logger.log(1, self.__str__(), 'WARNING', 'webpage urls not supported')
+                    if not self.args['silent']:
+                        print(f'[{self.__str__()}] <WARNING> webpage urls not supported')
             for url in urls:
                 id = self.extract_id(url)
                 self.url_base = self.extract_base(url)

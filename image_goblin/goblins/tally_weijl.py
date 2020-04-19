@@ -5,6 +5,7 @@ from goblins.meta import MetaGoblin
 
 class TallyWeijlGoblin(MetaGoblin):
     '''accepts:
+        - image*
         - webpage
     '''
 
@@ -19,12 +20,13 @@ class TallyWeijlGoblin(MetaGoblin):
         return 'tallyweijl'
 
     def run(self):
+        self.logger.log(1, self.__str__(), 'collecting links')
         for target in self.args['targets'][self.__repr__()]:
             if '/img/' in target:
-                urls = []
-                self.logger.log(1, self.__str__(), 'WARNING', 'image urls not supported')
+                urls = [target]
+                self.logger.log(1, self.__str__(), 'WARNING', 'image urls not fully supported')
             else:
-                urls = self.extract_urls(self.url_pat, target)
+                urls = self.extract_urls_greedy(self.url_pat, target)
             for url in urls:
                 self.collect(re.sub(r'img/\d+/\d+', 'img/1800/1800', url))
         self.loot()

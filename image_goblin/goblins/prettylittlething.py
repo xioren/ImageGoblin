@@ -5,7 +5,8 @@ from goblins.meta import MetaGoblin
 
 class PrettyLittleThingGoblin(MetaGoblin):
     '''accepts:
-        - image
+        - image*
+        - webpage
     '''
 
     def __init__(self, args):
@@ -19,12 +20,13 @@ class PrettyLittleThingGoblin(MetaGoblin):
         return 'prettylittlething'
 
     def run(self):
+        self.logger.log(1, self.__str__(), 'collecting links')
         for target in self.args['targets'][self.__repr__()]:
             if 'cdn-img.prettylittlething' in target:
-                urls = []
-                self.logger.log(1, self.__str__(), 'WARNING', 'image urls not supported')
+                urls = [target]
+                self.logger.log(1, self.__str__(), 'WARNING', 'image urls not fully supported')
             else:
-                urls = self.extract_urls(self.url_pat, target)
+                urls = self.extract_urls_greedy(self.url_pat, target)
             for url in urls:
                 self.collect(url, clean=True)
         self.loot()

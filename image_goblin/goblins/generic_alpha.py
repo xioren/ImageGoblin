@@ -9,7 +9,7 @@ class AlphaGoblin(MetaGoblin):
     docs: https://docs.magento.com/m2/ee/user_guide/catalog/product-image-resizing.html
     accepts:
         - image*
-        - webpage
+        - webpage*
     generic back-end for:
         - ami clubwear
         - agent provocateur
@@ -32,13 +32,12 @@ class AlphaGoblin(MetaGoblin):
         return re.sub(r'/(custom_)?cache.*?(?=/\w/\w/)', '', url)
 
     def run(self):
+        self.logger.log(1, self.__str__(), 'collecting links')
         for target in self.args['targets'][self.__repr__()]:
             if 'media/catalog' in target:
                 if not self.accept_image:
-                    urls = []
-                    self.logger.log(1, self.__str__(), 'WARNING', 'image urls not supported')
-                else:
-                    urls = self.generate_urls(target)
+                    self.logger.log(1, self.__str__(), 'WARNING', 'image urls not fully supported')
+                urls = self.generate_urls(target)
             else:
                 if not self.accept_webpage:
                     urls = []

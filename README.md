@@ -2,8 +2,9 @@
 
 #### changelog v0.2.2:
 + finished implementing full instagram support
-+ added separate logger to handle all program output
++ added logger to handle all program output
 + redesigned http request handling
++ introduced html tag parsing for generic goblin
 + new goblins
 + bug fixes
 + code clean up and improvements
@@ -76,7 +77,7 @@
 
   etc...
 
-+ *instagram:* input the instagram page url, username, or post. this goblin will scrape the entire profile, unless the url refers to a single post. if only the username is passed, it is necessary to --force instagram in order to match the correct goblin. stories require the user to be logged in to instagram; pass the ---login flag to do so.
++ *instagram:* input the instagram page url, username, or post. this goblin will scrape the entire profile, unless the url refers to a single post. if only the username is passed, it is necessary to --force instagram in order to match the correct goblin. stories require the user to be logged in to instagram; pass the --login flag to do so. the number if posts to retrieve can also be specified with --posts (must be < 100). finally, if 'latest' is passed as the --mode argument, the program will only retrieve the main stories and the latest three posts.
 
 + *feed:* using the feed flag, you can accumulate urls by inputting them one by one. this is useful for accumulating urls as you find them while browsing the web, and downloading all at once. try it :)
 

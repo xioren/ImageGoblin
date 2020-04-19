@@ -13,7 +13,7 @@ from urllib.request import urlopen, Request
 from urllib.error import HTTPError, URLError
 from version import __version__
 from parsing import Parser
-from logger import Logger
+from logging import Logger
 
 
 class MetaGoblin(Parser):
@@ -26,17 +26,21 @@ class MetaGoblin(Parser):
             self.path_main = os.getcwd()
         else:
             self.path_main = os.path.join(os.getcwd(), 'goblin_loot', self.__str__().replace(' ', '_'))
-        self.headers = {'User-Agent': f'ImageGoblin/{__version__}',
+        if self.args['mask']:
+            user_agent = 'Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101 Firefox/68.0'
+        else:
+            user_agent = f'ImageGoblin/{__version__}'
+        self.headers = {'User-Agent': user_agent,
                         'Accept-Encoding': 'gzip'}
         self.collection = set()
         self.looted = set()
-        self.logger = Logger(self.args['verbose'], self.args['silent'])
         self.make_dirs(self.path_main)
+        self.logger = Logger(self.args['verbose'], self.args['silent'])
         self.logger.log(0, self.__str__(), 'deployed')
 
 
 ####################################################################
-# wrapper classes
+# sub classes
 ####################################################################
 
     class Get:
@@ -56,7 +60,7 @@ class MetaGoblin(Parser):
             self.content = MetaGoblin.unzip(object.read()).decode('utf-8', 'ignore') if object else {}
 
 ####################################################################
-# common methods
+# methods
 ####################################################################
 
     def make_dirs(self, *paths):
@@ -86,17 +90,14 @@ class MetaGoblin(Parser):
 
     def toggle_collecton_type(self, reverse=False):
         '''toggle collection type between list and set'''
-        if type(self.collection) == set:
-            self.collection = []
-        else:
+        if type(self.collection) == list:
             self.collection = set()
+        else:
+            self.collection = []
 
     def new_collection(self):
         '''initialize a new collection'''
-        if type(self.collection) == set:
-            self.collection = set()
-        else:
-            self.collection = []
+        self.collection.clear()
 
     @staticmethod
     def unzip(data):
@@ -111,7 +112,11 @@ class MetaGoblin(Parser):
 
     def make_request(self, url, n=0, data=None):
         '''make a web request'''
-        request = Request(url, data, self.headers)
+        try:
+            request = Request(self.add_scheme(url), data, self.headers)
+        except ValueError as e:
+            self.logger.log(2, self.__str__(), e, url)
+            return None
         try:
             return urlopen(request, timeout=20)
         except HTTPError as e:
@@ -161,20 +166,20 @@ class MetaGoblin(Parser):
         sleep(3)
         return self.make_request(url, n, data)
 
-    def write_file(self, data, path, mode='w', iter=False):
+    def write_file(self, data, path, iter=False):
         '''write to disk'''
         # QUESTION: is this used?
         try:
-            with open(path, mode) as file:
+            with open(path, 'w') as file:
                 if iter:
-                    file.writelines(data)
+                    file.write('\n'.join(data))
                 else:
                     file.write(data)
         except OSError as e:
             self.logger.log(2, self.__str__(), e, path)
 
     def read_file(self, path, iter=False):
-        '''read txt file'''
+        '''read from disk'''
         try:
             with open(path, 'r') as file:
                 if iter:
@@ -184,12 +189,26 @@ class MetaGoblin(Parser):
         except OSError as e:
             self.logger.log(2, self.__str__(), e, path)
 
-    def extract_urls(self, pattern, url):
-        '''extact urls from html based on regex pattern'''
+    def extract_urls(self, url):
+        '''extract urls from html by tags'''
+        urls = []
+        parser = self.GoblinHTMLParser()
+        response = self.get(url)
+        if response:
+            parser.feed(response.content)
+            for attribute in ('src', 'data', 'content', 'hi-?res'):
+                urls.extend(parser.attributes.get(attribute, ''))
+            return urls
+        else:
+            return ''
+
+    def extract_urls_greedy(self, pattern, url):
+        '''greedily extract urls from html by regex'''
         try:
             return {url.group().replace('\\', '') for url in re.finditer(pattern, self.get(url).content)}
         except TypeError as e:
-            self.logger.log(2, self.__str__(), e, url)
+            if self.args['verbose'] and not self.args['silent']:
+                self.logger.log(2, self.__str__(), e)
             return ''
 
     def collect(self, url, filename='', clean=False):
@@ -198,10 +217,10 @@ class MetaGoblin(Parser):
             url = self.sanitize(url)
         if not filename:
             filename = self.extract_filename(url)
-        if type(self.collection) == set:
-            self.collection.add(f'{self.finalize(url)}-break-{filename}')
-        else:
+        if type(self.collection) == list:
             self.collection.append(f'{self.finalize(url)}-break-{filename}')
+        else:
+            self.collection.add(f'{self.finalize(url)}-break-{filename}')
 
     def loot(self, save_loc=None, timeout=0):
         '''get collected urls'''
@@ -220,14 +239,17 @@ class MetaGoblin(Parser):
                 save_loc = self.path_main
             filepath = os.path.join(save_loc, f'{filename}.{ftype}')
             if os.path.exists(filepath):
-                self.logger.log(1, self.__str__(), 'file exists', filename)
-                continue
+                if self.args['noskip']:
+                    filepath = self.make_unique(save_loc, f'{filename}.{ftype}')
+                else:
+                    self.logger.log(1, self.__str__(), 'file exists', filename)
+                    continue
             attempt = self.download(url, filepath)
             if attempt:
                 self.logger.log(1, self.__str__(), 'looted', filename)
+                self.looted.add(filepath)
                 loot_tally += 1
                 failed = 0
-                self.looted.add(filepath)
             else:
                 failed += 1
             sleep(self.args['delay'])

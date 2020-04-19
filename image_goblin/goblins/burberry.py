@@ -5,6 +5,7 @@ from goblins.meta import MetaGoblin
 
 class BurberryGoblin(MetaGoblin):
     '''accepts:
+        - image*
         - webpage
     '''
 
@@ -19,12 +20,13 @@ class BurberryGoblin(MetaGoblin):
         return 'burberry'
 
     def run(self):
+        self.logger.log(1, self.__str__(), 'collecting links')
         for target in self.args['targets'][self.__repr__()]:
             if 'assets.burberry' in target:
-                urls = []
-                self.logger.log(1, self.__str__(), 'WARNING', 'image urls not supported')
+                urls = [target]
+                self.logger.log(1, self.__str__(), 'WARNING', 'image urls not fully supported')
             else:
-                urls = self.extract_urls(self.url_pat, target)
+                urls = self.extract_urls_greedy(self.url_pat, target)
             for url in urls:
                 self.collect(f'{self.dequery(url)}?scl=1')
         self.loot()

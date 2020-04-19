@@ -1,29 +1,89 @@
 import re
+import urllib.parse
 
-from urllib.parse import urlparse, unquote
+from ast import literal_eval
+from os.path import join, exists
+from html.parser import HTMLParser
 
-# IDEA: consider implementing re.compile
+# TEMP:
+# - <meta property="og:image" content="
+# - og:image(:secure_url)?" content="[^"]+
+# - background-image:[^"]+"[^"]+
 
 class Parser:
     '''generic parsing methods'''
 
     def __init__(self):
-        self.filename_pat = r'(?<=/)[^/]+$'
-        self.query_pat = r'[\?&][^" ]+$'
-        self.quality_pat = r'q((ua)?li?ty)=\d+'
-        self.filetype_pat = r'(?<=\.)[A-Za-z0-9]+'
-        # IDEA: add mimtype iding from headers?
+        self.filename_pat = re.compile(r'(?<=/)[^/]+$')
+        self.query_pat = re.compile(r'[\?&][^" ]+$')
+        self.quality_pat = re.compile(r'q((ua)?li?ty)=\d+')
+        self.filetype_pat = re.compile(r'(?<=\.)[A-Za-z0-9]+', flags=re.IGNORECASE)
+        # self.attribute_pat = re.compile(r'(src|data[^=]+(?!-id))="[^"]+')
+        # IDEA: add mimetype id'ing from headers?
         self.filetypes = r'\.(jpe?g|png|gif|mp4|web[pm]|tiff?|mov|svg|bmp|exif)'
-        self.filter_pat = r'\.(js|css|pdf|php|html)|(fav)?icon|logo|menu'
+        self.filter_pat = re.compile(r'\.(js|css|pdf|php|html)|(fav)?icon|logo|menu', flags=re.IGNORECASE)
         self.cropping_pats = (
-            r'[@\-_/]?((\d{3,4}x(\d{3,4})?|(\d{3,4})?x\d{3,4}))',
-            r'(-|_)?large(-|_)?',
-            r'(?<=/)([a-z]{,2}_[\w:]+(,|/)?)+/v\d+/', # cloudfront
-            r'expanded_[a-z]+/',
-            r'(\.|-)\d+w',
-            r'-e\d+(?=\.)',
-            r'/v/\d/.+\.webp$'
+            re.compile(r'[@\-_/]?((\d{3,4}x(\d{3,4})?|(\d{3,4})?x\d{3,4}))'), # 000x000
+            re.compile(r'[\-_](large|profile)|(large|profile)[\-_]'),
+            re.compile(r'(?<=/)([a-z]{,2}_[\w:]+(,|/)?)+/v\d+/'), # cloudfront
+            re.compile(r'expanded_[a-z]+/'),
+            re.compile(r'(\.|-)\d+w'), # -000w
+            re.compile(r'-e\d+(?=\.)'),
+            re.compile(r'/v/\d/.+\.webp$'),
+            re.compile(r'@\d+x')
         )
+
+####################################################################
+# sub classes
+####################################################################
+
+
+    class GoblinHTMLParser(HTMLParser):
+
+        attributes = {}
+        tag_pat = re.compile('(?:ima?ge?|video|meta|source)')
+
+        def handle_starttag(self, tag, attrs):
+            if re.search(self.tag_pat, tag):
+                for attr in attrs:
+                    if attr[1] is None or '/' not in attr[1]:
+                        continue
+                    if attr[1].startswith(('{', '[')):
+                        # self.from_dictionary(attr[1])
+                        continue
+                    if 'data' in attr[0]:
+                        attr = ['data', attr[1]]
+                    if attr[0] in self.attributes:
+                        self.attributes[attr[0]].append(attr[1])
+                    else:
+                        self.attributes[attr[0]] = [attr[1]]
+
+        # def from_dictionary(self, values):
+        #     '''parse an embedded dictionary for attributes:value pairs'''
+        #     if type(values) == str:
+        #         dictionary = literal_eval(values.strip('[]'))
+        #     if type(values) == tuple:
+        #         dictionary = dict(values)
+        #     else:
+        #         dictionary = values
+        #     for attr in dictionary:
+        #         print(dictionary)
+        #         if type(dictionary[attr]) == dict:
+        #             self.from_dictionary(dictionary[attr])
+        #             continue
+        #         if not dictionary[attr] or '/' not in str(dictionary[attr]):
+        #             continue
+        #         if 'data' in attr:
+        #             dictionary['data'] = dictionary.pop[attr]
+        #             attr = 'data'
+        #         if attr in self.attributes:
+        #             self.attributes[dictionary[attr]].append(dictionary[attr])
+        #         else:
+        #             self.attributes[dictionary[attr]] = [dictionary[attr]]
+
+####################################################################
+# methods
+####################################################################
 
     def extract_filename(self, url):
         '''extracts filename from url'''
@@ -46,64 +106,49 @@ class Parser:
         '''combines dequery and decrop'''
         return self.decrop(self.dequery(url))
 
+    def strip_attribute(self, url):
+        '''strip attribute from url'''
+        return re.sub('[^"]+"', '', url)
+
     def filetype(self, url):
         '''extract file type'''
-        type = re.search(f'{self.filetype_pat}$', self.dequery(url), re.IGNORECASE)
+        type = re.search(f'{self.filetype_pat}$', self.dequery(url))
         if not type:
             return 'jpeg'
         return type.group().replace('jpg', 'jpeg')
 
     def add_scheme(self, url):
         '''checks for and adds scheme'''
-        if not urlparse(url)[0]:
-            url = f'https://{re.sub(r"^/{2,}", "", url)}'
+        if not urllib.parse.urlparse(url)[0]:
+            if not url.startswith('.') and not url.startswith('/'):
+                return f'https://{url}'
         return url
-
-    def get_netloc(self, url):
-        '''return netloc of a url'''
-        return urlparse(url)[1]
-
-    def is_relative(self, url):
-        '''check if url is relative'''
-        if self.get_netloc(self.add_scheme(url)) == '':
-            return True
-        else:
-            return False
-
-    def make_absolute(self, relative):
-        '''convert relative url to absolute'''
-        return self.get_netloc(self.args['targets'][self.__repr__()][0]) + relative
 
     def finalize(self, url):
         '''prepare a url for an http request'''
-        url = re.sub(r'^(/?\.)+(?=/)', '', url)
-        if self.is_relative(url):
-            url = self.make_absolute(url)
-        return self.add_scheme(unquote(url.strip('/')))
+        url = urllib.parse.urljoin(self.add_scheme(self.args['targets'][self.__repr__()][0]),
+                                   self.add_scheme(url))
+        return urllib.parse.unquote(url)
 
-    def make_unique(self, filename):
+    def make_unique(self, path, filename):
         '''make filename unique'''
-        # FIXME: unused and not up to date with current
-        # if kept, needs a filepath arg or something along those lines
         n = 1
         while True:
-            unique = f'({n}).'.join(filename.split('.'))
-            if os.path.exists(unique):
+            new_path = join(path, f'({n}).'.join(filename.split('.')))
+            if exists(new_path):
                 n += 1
             else:
-                return unique
+                return new_path
 
     def user_format(self, url):
         '''add, substitute, or remove elements from a url'''
         if self.args['format'][0] == 'add':
             return url + self.args['format'][1]
         elif self.args['format'][0] == 'sub':
-            return re.sub(self.args['format'][1], self.args['format'][2], url)
+            return re.sub(fr'{self.args["format"][1]}', self.args['format'][2], url)
         elif self.args['format'][0] == 'rem':
-            return re.sub(self.args['format'][1], '', url)
+            return re.sub(fr'{self.args["format"][1]}', '', url)
         else:
-            if not self.args['silent']:
-                print(f'[{self.__str__()}] <WARNING> unknown format')
             return url
 
     def auto_format(self, url):

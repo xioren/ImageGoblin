@@ -24,11 +24,12 @@ class SavageXGoblin(MetaGoblin):
         return re.sub(r'(LAYDOWN|\d)\-\d+x\d+\.jpg', '', url)
 
     def run(self):
+        self.logger.log(1, self.__str__(), 'collecting links')
         for target in self.args['targets'][self.__repr__()]:
             if 'cdn.savagex' in target:
                 urls = [target]
             else:
-                urls = self.extract_urls(self.url_pat, target)
+                urls = self.extract_urls_greedy(self.url_pat, target)
             for url in urls:
                 for n in range(1, 5):
                     self.collect(self.strip(url) + f'{n}-1600x1600.jpg')

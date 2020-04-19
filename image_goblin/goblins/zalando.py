@@ -33,6 +33,7 @@ class ZalandoGoblin(MetaGoblin):
         return re.search(r'[A-Z0-9]+-[A-Z0-9]{3}(?![\-\w])', self.extract_filename(url).upper()).group()
 
     def run(self):
+        self.logger.log(1, self.__str__(), 'collecting links')
         for target in self.args['targets'][self.__repr__()]:
             self.new_collection()
             id = self.extract_id(target)

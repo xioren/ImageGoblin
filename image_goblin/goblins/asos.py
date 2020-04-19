@@ -42,6 +42,7 @@ class ASOSGoblin(MetaGoblin):
         return f'{self.url_base}{id}{self.query}'
 
     def run(self):
+        self.logger.log(1, self.__str__(), 'collecting links')
         for target in self.args['targets'][self.__repr__()]:
             color = self.extract_color(target)
             id = self.extract_id(target)

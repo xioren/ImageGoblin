@@ -29,6 +29,7 @@ class DeltaGoblin(MetaGoblin):
         return re.sub(r'&imwidth=\d+', '', url)
 
     def run(self):
+        self.logger.log(1, self.__str__(), 'collecting links')
         for target in self.args['targets'][self.__repr__()]:
             if 'static' in target:
                 urls = [target]
@@ -37,7 +38,7 @@ class DeltaGoblin(MetaGoblin):
                     urls = []
                     self.logger.log(1, self.__str__(), 'WARNING', 'webpage urls not supported')
                 else:
-                    urls = self.extract_urls(self.url_pat, target)
+                    urls = self.extract_urls_greedy(self.url_pat, target)
             for url in urls:
                 url_base, url_end = re.split(r'_\d_\d_\d+', url)
                 for mod in self.modifiers:

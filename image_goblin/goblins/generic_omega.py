@@ -12,9 +12,7 @@ class OmegaGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.url_pat_a = r'<img.+?(src|data([^=]+)?)="[^" ]+'
-        self.url_pat_b = fr'(https?://)?(/[^"\n \';]+)+{self.filetypes}({self.query_pat})?'
-        self.url_pat_compounded = f'{self.url_pat_a}|{self.url_pat_b}'
+        self.url_pat = re.compile(fr'(https?://)?[^"\n \';]+{self.filetypes}([\?&][^" ]+$)?', flags=re.IGNORECASE)
 
     def __str__(self):
         return 'generic goblin'
@@ -32,22 +30,30 @@ class OmegaGoblin(MetaGoblin):
             return url
 
     def find_urls(self, url):
-        '''extract image urls from html'''
-        print(f'[{self.__str__()}] <parsing urls>')
-        urls = self.extract_urls(self.url_pat_compounded, url)
-        cleaned_urls = [re.sub(r'<img[^<>]+="', '', url) for url in urls]
-        for url in cleaned_urls:
-            if re.search(self.filter_pat, url, re.IGNORECASE):
+        '''find and collect urls'''
+        urls = self.extract_urls(url)
+        for url in urls:
+            self.collect(self.format(url))
+
+    def find_urls_greedy(self, url):
+        '''greedily find and collect urls'''
+        urls = self.extract_urls_greedy(self.url_pat, url)
+        for url in urls:
+            if re.search(self.filter_pat, url):
                 continue
             elif '.php?img=' in url:
                 url = url.split('.php?img=')[1]
             self.collect(self.format(url.lstrip('.')))
 
     def run(self):
+        self.logger.log(1, self.__str__(), 'collecting links')
         for target in self.args['targets'][self.__repr__()]:
             if re.search(f'(?:{self.filetypes}|/uploads?/|/images?/)', target, re.IGNORECASE):
                 self.collect(self.format(target))
             else:
-                self.find_urls(target)
+                if self.args['greedy']:
+                    self.find_urls_greedy(target)
+                else:
+                    self.find_urls(target)
         self.loot()
         self.cleanup(self.path_main)

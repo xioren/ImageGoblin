@@ -27,6 +27,7 @@ class WoodWoodGoblin(MetaGoblin):
         return re.sub(r'\d+x\d+c', '1600x2400c', self.extract_filename(url))
 
     def run(self):
+        self.logger.log(1, self.__str__(), 'collecting links')
         for target in self.args['targets'][self.__repr__()]:
             if 'shared' in target:
                 urls = [target]

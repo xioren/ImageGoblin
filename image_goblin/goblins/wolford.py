@@ -25,6 +25,7 @@ class WolfordGoblin(MetaGoblin):
         return re.sub(r'default/\w+/images', 'default/images', url).replace('dw/image/v2/BBCH_PRD/', '')
 
     def run(self):
+        self.logger.log(1, self.__str__(), 'collecting links')
         for target in self.args['targets'][self.__repr__()]:
             if 'demandware' in target:
                 urls = [target]

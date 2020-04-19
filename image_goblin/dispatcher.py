@@ -40,6 +40,8 @@ class Dispatcher:
         for url in urls:
             if self.args['force']:
                 key = self.args['force']
+            if self.args['greedy']:
+                key = 'generic'
             else:
                 key = self.identify(url)
             if url_assignment.get(key):
@@ -53,6 +55,9 @@ class Dispatcher:
             except KeyError:
                 print(f'[{self.__str__()}] <ERROR> unkown goblin -> use --list to see available goblins')
                 return None
+            goblin(self.args).run()
+        elif self.args['greedy']:
+            goblin = goblins['generic'][1]
             goblin(self.args).run()
         else:
             for key in url_assignment:

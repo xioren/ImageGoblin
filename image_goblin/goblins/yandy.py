@@ -2,10 +2,10 @@ import re
 
 from goblins.meta import MetaGoblin
 
-# QUESTION: can this handle single image?
 
 class YandyGoblin(MetaGoblin):
     '''accepts:
+        - image*
         - webpage
     '''
 
@@ -20,12 +20,13 @@ class YandyGoblin(MetaGoblin):
         return 'yandy'
 
     def run(self):
+        self.logger.log(1, self.__str__(), 'collecting links')
         for target in self.args['targets'][self.__repr__()]:
             if 'assets.yandycdn' in target:
-                urls = []
-                self.logger.log(1, self.__str__(), 'WARNING', 'webpage urls not supported')
+                urls = [target]
+                self.logger.log(1, self.__str__(), 'WARNING', 'image urls not fully supported')
             else:
-                urls = self.extract_urls(self.url_pat, target)
+                urls = self.extract_urls_greedy(self.url_pat, target)
             for url in urls:
                 self.collect(url.replace('Products', 'HiRez'))
         self.loot()

@@ -13,6 +13,7 @@ from goblins.blush import BlushGoblin
 from goblins.boohoo import BoohooGoblin
 from goblins.bordelle import BordelleGoblin
 from goblins.boux_avenue import BouxAvenueGoblin
+from goblins.brownie import BrownieGoblin
 from goblins.burberry import BurberryGoblin
 from goblins.c_and_a import CAGoblin
 from goblins.calvin_klein import CalvinKleinGoblin
@@ -114,9 +115,10 @@ goblins = {
     'boohoo': (r'boohoo\.[a-z]+|adis\.ws', BoohooGoblin),
     'bordelle': (r'bordelle\.[a-z]+', BordelleGoblin),
     'bouxavenue': (r'bouxavenue\.[a-z]+', BouxAvenueGoblin),
+    'brownie': (r'browniespain\.[a-z]+', BrownieGoblin),
     'burberry': (r'burberry\.[a-z]+', BurberryGoblin),
     'canda': (r'c-and-a\.[a-z]+', CAGoblin),
-    'calvinklein': (r'calvinklein(eu)?\.[a-z]+', CalvinKleinGoblin),
+    'calvinklein': (r'calvinklein(eu)?(\.[a-z]+|/)', CalvinKleinGoblin),
     'caroswim': (r'caroswim\.[a-z]+', CaroSwimGoblin),
     'ceciliecopenhagen': (r'ceciliecopenhagen\.[a-z]+', CecilieGoblin),
     'dollskill': (r'dollskill\.[a-z]+', DollsKillGoblin),
