@@ -21,39 +21,39 @@ class IteratorGoblin(MetaGoblin):
     def __repr__(self):
         return 'iterator'
 
-    def extract_iterable(self, url):
-        '''seperate iterable from input url'''
+    def isolate_parts(self, url):
+        '''seperate url into base, iterable, end'''
         return re.split('#', url)
 
-    def strip_iter(self, url):
-        '''isolate iterable'''
+    def isolate_iterable(self, url):
+        '''isolate iterable from url'''
         return int(url.lstrip('0'))
 
     def generate_urls(self, base, iterable, end):
         '''generate block of urls to iterate over'''
-        stripped_iter = self.strip_iter(iterable)
+        stripped_iter = self.isolate_iterable(iterable)
         for n in range(stripped_iter, stripped_iter + self.block_size, self.args['step']):
             self.collect(f'{base}{str(n).zfill(len(iterable))}{end}')
 
     def increment_iterable(self, iterable):
-        return str(self.strip_iter(iterable) + self.block_size).zfill(len(iterable))
+        return str(self.isolate_iterable(iterable) + self.block_size).zfill(len(iterable))
 
     def iterate(self):
         '''main iteration method'''
         self.toggle_collecton_type()
         round = 1
-        base, iterable, end = self.extract_iterable(self.args['targets'][self.__repr__()][0])
+        base, iterable, end = self.isolate_parts(self.args['targets'][self.__repr__()][0])
         while True:
             self.logger.log(0, self.__str__(), 'iterating', f'round {round}')
             self.generate_urls(base, iterable, end)
             timeout = self.loot(timeout=self.args['timeout'])
-            if not timeout:
+            if timeout:
+                self.logger.log(0, self.__str__(), 'timeout', f'after {self.args["timeout"]} attempts')
+                return None
+            else:
                 round += 1
                 iterable = self.increment_iterable(iterable)
                 self.new_collection()
-            else:
-                self.logger.log(0, self.__str__(), 'timeout', f'after {self.args["timeout"]} attempts')
-                return None
 
     def run(self):
         self.iterate()

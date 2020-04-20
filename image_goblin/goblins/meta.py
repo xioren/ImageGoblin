@@ -196,7 +196,7 @@ class MetaGoblin:
         if attributes:
             attr_pat = attributes
         else:
-            attr_pat = re.compile(r'(?:src|data(?==)|data(?=-(src|lazy|url))|content|hires)')
+            attr_pat = re.compile(r'(?:src|data(?=(=|-src|-lazy|-url))|content|hires)')
         response = self.get(url)
         if response:
             urls = []
