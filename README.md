@@ -3,6 +3,7 @@
 #### changelog v0.2.3:
 + improvements to instagram login handling
 + changed parser to class instance instead of inherited
++ added goblins
 + bug fixes
 + misc code clean up and improvements
 
