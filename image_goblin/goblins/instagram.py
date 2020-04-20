@@ -69,16 +69,16 @@ class InstagramGoblin(MetaGoblin):
                 response = self.post(f'{self.base_url}accounts/login/ajax/',
                                      data={'username': username, 'password': password})
                 del username, password
-                login_text = json.loads(response.content)
-                if login_text.get('authenticated') and response.code == 200:
+                answer = json.loads(response.content)
+                if answer.get('authenticated') and response.code == 200:
                     self.extend_cookie('Cookie', re.search(r'sessionid=[^\n]+', response.info).group())
                     self.csrf_token = self.extract_csrf_token(response.info)
                     self.headers.update({'X-CSRFToken': self.csrf_token})
                     self.logged_in = True
                     self.logger.log(0, self.__str__(), 'logged in')
-                elif 'checkpoint_url' in login_text:
+                elif 'checkpoint_url' in answer:
                     self.logger.log(0, self.__str__(), 'WARNING', 'account verification required')
-                    self.verify_account(login_text.get('checkpoint_url'))
+                    self.verify_account(answer.get('checkpoint_url'))
                 else:
                     self.logger.log(0, self.__str__(), 'ERROR', 'login failed')
                     retry = input(f'[{self.__str__()}] retry? (y/n): ')
@@ -112,10 +112,10 @@ class InstagramGoblin(MetaGoblin):
                              'X-Instagram-AJAX': '1'})
         while True:
             code = int(input(f'[{self.__str__()}] enter security code: '))
-            code = self.post(f'{self.base_url.rstrip("/")}{checkpoint_url}', data={'security_code': code})
-            self.headers.update({'X-CSRFToken': self.extract_csrf_token(code.info)})
-            code_text = json.loads(code.content)
-            if code_text.get('status') == 'ok':
+            response = self.post(f'{self.base_url.rstrip("/")}{checkpoint_url}', data={'security_code': code})
+            self.headers.update({'X-CSRFToken': self.extract_csrf_token(response.info)})
+            answer = json.loads(response.content)
+            if answer.get('status') == 'ok':
                 self.logged_in = True
                 self.logger.log(0, self.__str__(), 'logged in')
             else:
@@ -140,6 +140,7 @@ class InstagramGoblin(MetaGoblin):
         '''parse instagram page for posts'''
         posts = []
         cursor = ''
+        post_pat = re.compile(r'(?<="shortcode":")[^"]+')
         self.logger.log(1, self.__str__(), 'collecting posts')
         while True:
             variables = json.dumps(
@@ -156,20 +157,20 @@ class InstagramGoblin(MetaGoblin):
                 }
             )
             response = self.get(self.base_url + self.media_url.format(quote(variables, safe='"')))
-            posts.extend([post.group() for post in re.finditer(r'(?<="shortcode":")[^"]+', response.content)])
+            posts.extend([post.group() for post in re.finditer(post_pat, response.content)])
             cursor = json.loads(response.content)['data']['user']['edge_owner_to_timeline_media']['page_info']['end_cursor']
             if not cursor or self.num_posts < 100:
-                # end of profile or user specified finite number of posts to grab.
+                # end of profile or user specified finite number of posts.
                 break
             sleep(self.args['delay'])
         return posts
 
     def get_media(self, posts):
         '''parses each post for media'''
+        media_pat = re.compile(r'(?<="display_url":")[^"]+|(?<="video_url":")[^"]+')
         for post in posts:
             self.logger.log(1, self.__str__(), 'parsing post', f'/p/{post}')
-            content = self.extract_urls_greedy(r'(?<="display_url":")[^"]+|(?<="video_url":")[^"]+',
-                                               f'{self.base_url}p/{post}/?__a=1')
+            content = self.extract_urls_greedy(media_pat, f'{self.base_url}p/{post}/?__a=1')
             for url in content:
                 self.collect(url, f'{self.username}_{self.parser.extract_filename(url)}')
             sleep(self.args['delay'])

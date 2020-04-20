@@ -14,6 +14,7 @@ class ZalandoGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
+        self.id_pat = re.compile(r'[A-Z0-9]+-[A-Z0-9]{3}(?![\-\w])')
 
     def __str__(self):
         return 'zalando goblin'
@@ -23,13 +24,13 @@ class ZalandoGoblin(MetaGoblin):
 
     def form_url(self, image):
         '''form url from filename'''
-        compounded = f'{image[:2]}/{image[2:4]}/{image[4:6]}/{image[6:8]}/'\
+        compounded = f'{image[:2]}/{image[2:4]}/{image[4:6]}/{image[6:8]}/' \
                      f'{image[8]}{image[10]}/{image[11:13]}/{image}'
         return f'https://mosaic01.ztat.net/vgs/media/original/{compounded}.jpg'
 
     def extract_id(self, url):
         '''extract image id from url'''
-        return re.search(r'[A-Z0-9]+-[A-Z0-9]{3}(?![\-\w])', self.parser.extract_filename(url).upper()).group()
+        return re.search(self.id_pat, self.parser.extract_filename(url).upper()).group()
 
     def run(self):
         self.toggle_collecton_type()

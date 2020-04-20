@@ -12,7 +12,8 @@ class AmericanApparelGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.url_pat = r'https?://cdn\d+\.bigcommerce\.com/[^/]+/images/stencil/[^/]+/products/\d+/\d+/[a-z0-9]+_[a-z0-9]+_[^" ]+\.jpg'
+        self.url_pat = r'https?://cdn\d+\.bigcommerce\.com/[^/]+/images/stencil/[^/]+' \
+                       r'/products/\d+/\d+/[a-z0-9]+_[a-z0-9]+_[^" ]+\.jpg'
 
     def __str__(self):
         return 'american apparel goblin'

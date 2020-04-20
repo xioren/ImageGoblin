@@ -2,7 +2,7 @@ import re
 import urllib.parse
 
 from os.path import join, exists
-from html.parser import HTMLParser
+
 
 # TEMP:
 # - <meta property="og:image" content="
@@ -10,7 +10,7 @@ from html.parser import HTMLParser
 # - background-image:[^"]+"[^"]+
 
 class Parser:
-    '''generic parsing methods'''
+    '''generic url/html parsing and manipulation methods'''
 
     def __init__(self, origin_url, user_formatting):
         self.origin_url = origin_url
@@ -21,7 +21,6 @@ class Parser:
         self.filetype_pat = re.compile(r'(?<=\.)[A-Za-z0-9]+$', flags=re.IGNORECASE)
         # IDEA: add mimetype id'ing from headers?
         self.filetypes = r'\.(jpe?g|png|gif|mp4|web[pm]|tiff?|mov|svg|bmp|exif)'
-        self.filter_pat = re.compile(r'\.(js|css|pdf|php|html)|(fav)?icon|logo|menu', flags=re.IGNORECASE)
         self.cropping_pats = (
             re.compile(r'[@\-_/]?((\d{3,4}x(\d{3,4})?|(\d{3,4})?x\d{3,4}))'), # 000x000
             re.compile(r'[\-_](large|profile)|(large|profile)[\-_]'),
@@ -37,24 +36,35 @@ class Parser:
 # sub classes
 ####################################################################
 
-    class GoblinHTMLParser(HTMLParser):
+    class GoblinHTMLParser:
 
-        attributes = {}
-        tag_pat = re.compile('(?:ima?ge?|video|source)')
+        def __init__(self, content):
+            self.html = content
+            self.attributes = {}
+            self.element_pat = re.compile(r'<[a-z]+ [^>]+>')
+            self.tag_pat = re.compile(r'(?<=<)[a-z\-]+')
+            self.attribute_pat = re.compile(r'[a-z\d\-]+="[^"]+')
+            self.elements = {}
 
-        def handle_starttag(self, tag, attrs):
-            if re.search(self.tag_pat, tag):
-                for attr in attrs:
-                    if attr[1] is None or '/' not in attr[1]:
-                        continue
-                    if attr[1].startswith(('{', '[')):
-                        continue
-                    if 'data' in attr[0]:
-                        attr = ['data', attr[1]] # homogonize data attr variations
-                    if attr[0] in self.attributes:
-                        self.attributes[attr[0]].append(attr[1])
+        def parse_elements(self):
+            '''extract and sort all elements from an html source'''
+            elements = re.finditer(self.element_pat, self.html)
+            for element in elements:
+                element = element.group()
+                tag = re.search(self.tag_pat, element).group()
+                if tag not in self.elements:
+                    self.elements[tag] = {}
+                attributes = re.finditer(self.attribute_pat, element)
+                for attribute in attributes:
+                    attr, value = attribute.group().split('="')
+                    if attr not in self.elements[tag]:
+                        self.elements[tag][attr] = [value]
                     else:
-                        self.attributes[attr[0]] = [attr[1]]
+                        self.elements[tag][attr].append(value)
+
+        def parse_arbitrary(self, pattern):
+            '''extract arbitrary elements from an html source'''
+            return re.finditer(pattern, self.html)
 
 ####################################################################
 # methods
@@ -103,8 +113,11 @@ class Parser:
 
     def finalize(self, url):
         '''prepare a url for an http request'''
-        url = urllib.parse.urljoin(self.add_scheme(self.origin_url),
-                                   self.add_scheme(url))
+        if '/' not in url:
+            url = self.add_scheme(self.dequery(self.origin_url)) + url
+        else:
+            url = urllib.parse.urljoin(self.add_scheme(self.origin_url),
+                                       self.add_scheme(url))
         return urllib.parse.unquote(url)
 
     def make_unique(self, path, filename):
@@ -143,12 +156,6 @@ class Parser:
                 url = url.replace('_t', '_o').replace('thumb', 'image')
         elif 'imgcredit' in url:
             url = url.replace('.th', '').replace('.md', '')
-        elif 'imgur' in url:
-            filename = re.search(r'[^/]+$', url).group()
-            if len(filename) == 11:
-                pass
-            else:
-                url = 'https://i.imgur.com/{}'.format(re.sub(r'\w\.', '.', filename))
         elif 'imx.to' in url:
             url = url.replace('/t/', '/i/')
         elif 'pimpandhost' in url:
@@ -159,6 +166,8 @@ class Parser:
             url = re.sub(r't(?![a-z])', 'img', url.replace('thumb', 'image'))
         elif 'pixroute' in url:
             url = url.replace('_t', '')
+        elif 'redd.it' in url:
+            url = self.dequery(url).replace('preview', 'i')
         elif 'squarespace' in url:
             url += '?format=original'
         elif 'tumblr' in url:

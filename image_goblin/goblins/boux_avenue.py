@@ -10,7 +10,8 @@ class BouxAvenueGoblin(GammaGoblin):
         self.modifiers = ('FR', 'BK', 'ST')
         self.img_pat = r'(?<=/)\d+_[A-Z\d]+_0_[A-Z]+\.jpg'
         self.iter_pat = r'[A-Z]+(?=\.)'
-        self.url_base = 'https://www.bouxavenue.com/on/demandware.static/-/Sites-bouxavenue-master-catalog/default/'
+        self.url_base = 'https://www.bouxavenue.com/on/demandware.static/-/' \
+                        'Sites-bouxavenue-master-catalog/default/'
 
     def __str__(self):
         return 'boux avenue goblin'

@@ -42,6 +42,7 @@ from goblins.hanne_bloch import HanneBlochGoblin
 from goblins.hungry import HungryGoblin
 from goblins.hunkemoller import HunkemollerGoblin
 from goblins.hot_topic import HotTopicGoblin
+from goblins.imgur import ImgurGoblin
 from goblins.instagram import InstagramGoblin
 from goblins.intimissimi import IntimissimiGoblin
 from goblins.iterator import IteratorGoblin
@@ -144,6 +145,7 @@ goblins = {
     'hungry': ('#####', HungryGoblin),
     'hunkemoller': (r'hunkemoller\.[a-z]+', HunkemollerGoblin),
     'hottopic': (r'hottopic\.[a-z]+', HotTopicGoblin),
+    'imgur': (r'imgur\.[a-z]+', ImgurGoblin),
     'instagram': (r'instagram\.[a-z]+', InstagramGoblin),
     'intimissimi': (r'intimissimi\.[a-z]+', IntimissimiGoblin),
     'iterator': (r'#\d+#', IteratorGoblin),

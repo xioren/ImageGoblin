@@ -10,7 +10,7 @@ class VictoriasSecretGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.url_pat = r'https?://www\.victoriassecret\.com/p/[^" ]+\.jpg'
+        # self.url_pat = r'https?://www\.victoriassecret\.com/p/[^" ]+\.jpg'
 
     def __str__(self):
         return 'victorias secret goblin'

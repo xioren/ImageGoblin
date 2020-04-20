@@ -38,5 +38,6 @@ class WoodWoodGoblin(MetaGoblin):
                 id, image_num = self.extract_id(url)
                 filename = self.upscale(url)
                 for n in range(int(image_num) - 6, int(image_num) + 7):
-                    self.collect(f'https://www.woodwood.com/shared/{id}/{n}/{filename}.jpg', filename=filename.replace('1600x2400c', f'{id}-{n}'))
+                    self.collect(f'https://www.woodwood.com/shared/{id}/{n}/{filename}.jpg',
+                                 filename=filename.replace('1600x2400c', f'{id}-{n}'))
         self.loot()

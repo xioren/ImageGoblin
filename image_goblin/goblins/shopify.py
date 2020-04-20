@@ -23,6 +23,7 @@ class ShopifyGoblin(MetaGoblin):
         - fleur du mal
         - for love and lemons
         - fortnight
+        - hanne bloch
         - skin
         - the great eros
         - triangl

@@ -1,8 +1,7 @@
 #!/bin/bash
 
-
-# run this after placing the program in the location you want it
 # linux only
+# run this after placing the program in the desired location
 # run with sudo
 # pass u to uninstall
 
