@@ -1,6 +1,6 @@
 # ImageGoblin
 
-#### changelog v0.2.2:
+#### changelog v0.2.3:
 + finished implementing full instagram support
 + added logger to handle all program output
 + redesigned http request handling
@@ -72,4 +72,4 @@
   + a specific goblin can be forced using '--force _goblin_'.
   + all available goblins can be listed using '-l or --list'.
   + the --format input needs to be exact so make sure modifiers/spaces have not been erroneously added or left out.
-  + if little or no (relevant) images are found then the page is probably generated dynamically with javascript which the program can not handle. you can also try with the --noupgrade handle.
+  + if little or no (relevant) images are found then the page is probably generated dynamically with javascript which the program can not handle. you can also try with the --noupgrade/--greedy handles.

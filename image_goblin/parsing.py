@@ -17,7 +17,6 @@ class Parser:
         self.query_pat = re.compile(r'[\?&][^" ]+$')
         self.quality_pat = re.compile(r'q((ua)?li?ty)=\d+')
         self.filetype_pat = re.compile(r'(?<=\.)[A-Za-z0-9]+$', flags=re.IGNORECASE)
-        # self.attribute_pat = re.compile(r'(src|data[^=]+(?!-id))="[^"]+')
         # IDEA: add mimetype id'ing from headers?
         self.filetypes = r'\.(jpe?g|png|gif|mp4|web[pm]|tiff?|mov|svg|bmp|exif)'
         self.filter_pat = re.compile(r'\.(js|css|pdf|php|html)|(fav)?icon|logo|menu', flags=re.IGNORECASE)
@@ -49,7 +48,7 @@ class Parser:
                     if attr[1].startswith(('{', '[')):
                         continue
                     if 'data' in attr[0]:
-                        attr = ['data', attr[1]]
+                        attr = ['data', attr[1]] # homogonize data attr variations
                     if attr[0] in self.attributes:
                         self.attributes[attr[0]].append(attr[1])
                     else:
