@@ -57,29 +57,37 @@ class InstagramGoblin(MetaGoblin):
     def hash(self, string):
         return md5(string.encode()).hexdigest()
 
-    def authenticate(self):
+    def authenticate(self, login):
         '''login to instagram or authenticate as guest'''
         response = self.get(self.base_url)
         self.csrf_token = self.extract_csrf_token(response.info)
         self.headers.update({'X-CSRFToken': self.csrf_token})
-        if self.args['login'] or self.args['mode'] == 'latest' or self.args['mode'] == 'recent':
-            username = input(f'[{self.__str__()}] username: ')
-            password = getpass(f'[{self.__str__()}] password: ')
-            response = self.post(f'{self.base_url}accounts/login/ajax/',
-                                 data={'username': username, 'password': password})
-            del username, password
-            login_text = json.loads(response.content)
-            if login_text.get('authenticated') and response.code == 200:
-                self.extend_cookie('Cookie', re.search(r'sessionid=[^\n]+', response.info).group())
-                self.csrf_token = self.extract_csrf_token(response.info)
-                self.headers.update({'X-CSRFToken': self.csrf_token})
-                self.logged_in = True
-                self.logger.log(0, self.__str__(), 'logged in')
-            elif 'checkpoint_url' in login_text:
-                self.logger.log(0, self.__str__(), 'WARNING', 'account verification required')
-                self.verify_account(login_text.get('checkpoint_url'))
-            else:
-                self.logger.log(0, self.__str__(), 'ERROR', 'login failed')
+        if login:
+            while True:
+                username = input(f'[{self.__str__()}] username: ')
+                password = getpass(f'[{self.__str__()}] password: ')
+                response = self.post(f'{self.base_url}accounts/login/ajax/',
+                                     data={'username': username, 'password': password})
+                del username, password
+                answer = json.loads(response.content)
+                if answer.get('authenticated') and response.code == 200:
+                    self.extend_cookie('Cookie', re.search(r'sessionid=[^\n]+', response.info).group())
+                    self.csrf_token = self.extract_csrf_token(response.info)
+                    self.headers.update({'X-CSRFToken': self.csrf_token})
+                    self.logged_in = True
+                    self.logger.log(0, self.__str__(), 'logged in')
+                elif 'checkpoint_url' in answer:
+                    self.logger.log(0, self.__str__(), 'WARNING', 'account verification required')
+                    self.verify_account(answer.get('checkpoint_url'))
+                else:
+                    self.logger.log(0, self.__str__(), 'ERROR', 'login failed')
+                    retry = input(f'[{self.__str__()}] retry? (y/n): ')
+                    if retry == 'y':
+                        continue
+                    else:
+                        self.logger.log(0, self.__str__(), 'continuing as guest')
+                break
+
 
     def logout(self):
         response = self.post(f'{self.base_url}accounts/logout/',
@@ -102,15 +110,22 @@ class InstagramGoblin(MetaGoblin):
         challenge = self.post(f'{self.base_url.rstrip("/")}{checkpoint_url}', data= {'choice': mode})
         self.headers.update({'X-CSRFToken': self.extract_csrf_token(challenge.info),
                              'X-Instagram-AJAX': '1'})
-        code = int(input(f'[{self.__str__()}] enter security code: '))
-        code = self.post(f'{self.base_url.rstrip("/")}{checkpoint_url}', data={'security_code': code})
-        self.headers.update({'X-CSRFToken': self.extract_csrf_token(code.info)})
-        code_text = json.loads(code.content)
-        if code_text.get('status') == 'ok':
-            self.logged_in = True
-            self.logger.log(0, self.__str__(), 'logged in')
-        else:
-            self.logger.log(0, self.__str__(), 'ERROR', 'security challenge failed')
+        while True:
+            code = int(input(f'[{self.__str__()}] enter security code: '))
+            response = self.post(f'{self.base_url.rstrip("/")}{checkpoint_url}', data={'security_code': code})
+            self.headers.update({'X-CSRFToken': self.extract_csrf_token(response.info)})
+            answer = json.loads(response.content)
+            if answer.get('status') == 'ok':
+                self.logged_in = True
+                self.logger.log(0, self.__str__(), 'logged in')
+            else:
+                self.logger.log(0, self.__str__(), 'ERROR', 'security challenge failed')
+                retry = input(f'[{self.__str__()}] retry? (y/n): ')
+                if retry == 'y':
+                    continue
+                else:
+                    self.logger.log(0, self.__str__(), 'continuing as guest')
+            break
 
     def get_initial_data(self):
         '''make initial request to recieve necessary variables'''
@@ -125,6 +140,7 @@ class InstagramGoblin(MetaGoblin):
         '''parse instagram page for posts'''
         posts = []
         cursor = ''
+        post_pat = re.compile(r'(?<="shortcode":")[^"]+')
         self.logger.log(1, self.__str__(), 'collecting posts')
         while True:
             variables = json.dumps(
@@ -141,25 +157,22 @@ class InstagramGoblin(MetaGoblin):
                 }
             )
             response = self.get(self.base_url + self.media_url.format(quote(variables, safe='"')))
-            posts.extend([post.group() for post in re.finditer(r'(?<="shortcode":")[^"]+', response.content)])
-            if self.num_posts < 100:
-                # user specified finite number of posts to grab, dont keep scanning.
-                break
+            posts.extend([post.group() for post in re.finditer(post_pat, response.content)])
             cursor = json.loads(response.content)['data']['user']['edge_owner_to_timeline_media']['page_info']['end_cursor']
-            if not cursor:
-                # reached the end
+            if not cursor or self.num_posts < 100:
+                # end of profile or user specified finite number of posts.
                 break
             sleep(self.args['delay'])
         return posts
 
     def get_media(self, posts):
         '''parses each post for media'''
+        media_pat = re.compile(r'(?<="display_url":")[^"]+|(?<="video_url":")[^"]+')
         for post in posts:
             self.logger.log(1, self.__str__(), 'parsing post', f'/p/{post}')
-            content = self.extract_urls_greedy(r'(?<="display_url":")[^"]+|(?<="video_url":")[^"]+',
-                                               f'{self.base_url}p/{post}/?__a=1')
+            content = self.extract_urls_greedy(media_pat, f'{self.base_url}p/{post}/?__a=1')
             for url in content:
-                self.collect(url, f'{self.username}_{self.extract_filename(url)}')
+                self.collect(url, f'{self.username}_{self.parser.extract_filename(url)}')
             sleep(self.args['delay'])
         self.logger.log(1, self.__str__(), 'parsing complete')
 
@@ -167,12 +180,11 @@ class InstagramGoblin(MetaGoblin):
         response = json.loads(self.get(url).content)
         for reel_media in response['data']['reels_media']:
             for item in reel_media['items']:
+                url = item['display_url']
+                self.collect(url, f'{self.username}_{self.parser.extract_filename(url)}')
                 if 'video_resources' in item:
                     url = item['video_resources'][-1]['src']
-                    self.collect(url, f'{self.username}_{self.extract_filename(url)}')
-                if 'display_resources' in item:
-                    url = item['display_resources'][-1]['src']
-                    self.collect(url, f'{self.username}_{self.extract_filename(url)}')
+                    self.collect(url, f'{self.username}_{self.parser.extract_filename(url)}')
 
     def get_main_stories(self):
         self.get_stories(self.stories_url.format(quote('{{"reel_ids":["{}"],"tag_names":[],' \
@@ -192,7 +204,7 @@ class InstagramGoblin(MetaGoblin):
 
 
     def run(self):
-        self.authenticate()
+        self.authenticate(self.args['login'])
         for target in self.args['targets'][self.__repr__()]:
             self.new_collection()
             self.setup(target)
@@ -200,7 +212,7 @@ class InstagramGoblin(MetaGoblin):
                 self.get_media([re.search(r'(?<=/p/)[^/]+', target).group()])
             else:
                 if self.args['mode'] == 'latest' or self.args['mode'] == 'recent':
-                    self.posts = 3
+                    self.num_posts = 3
                 self.get_initial_data()
                 if self.logged_in:
                     self.logger.log(1, self.__str__(), 'collecting stories')

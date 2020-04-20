@@ -20,7 +20,7 @@ class WolfordGoblin(MetaGoblin):
     def __repr__(self):
         return 'wolford'
 
-    def prep(self, url):
+    def trim(self, url):
         '''strip cropping from url'''
         return re.sub(r'default/\w+/images', 'default/images', url).replace('dw/image/v2/BBCH_PRD/', '')
 
@@ -33,7 +33,7 @@ class WolfordGoblin(MetaGoblin):
                 urls = []
                 self.logger.log(1, self.__str__(), 'WARNING', 'webpage urls not supported')
             for url in urls:
-                url = self.prep(url)
+                url = self.trim(url)
                 if 'Additional-Picture' in url:
                     for n in range(1, 4):
                         self.collect(f'{url[:-5]}{n}.JPG')

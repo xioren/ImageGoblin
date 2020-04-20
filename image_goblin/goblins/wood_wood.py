@@ -24,7 +24,7 @@ class WoodWoodGoblin(MetaGoblin):
 
     def upscale(self, url):
         '''sub in higher resolution cropping and return filename'''
-        return re.sub(r'\d+x\d+c', '1600x2400c', self.extract_filename(url))
+        return re.sub(r'\d+x\d+c', '1600x2400c', self.parser.extract_filename(url))
 
     def run(self):
         self.logger.log(1, self.__str__(), 'collecting links')
@@ -38,5 +38,6 @@ class WoodWoodGoblin(MetaGoblin):
                 id, image_num = self.extract_id(url)
                 filename = self.upscale(url)
                 for n in range(int(image_num) - 6, int(image_num) + 7):
-                    self.collect(f'https://www.woodwood.com/shared/{id}/{n}/{filename}.jpg', filename=filename.replace('1600x2400c', f'{id}-{n}'))
+                    self.collect(f'https://www.woodwood.com/shared/{id}/{n}/{filename}.jpg',
+                                 filename=filename.replace('1600x2400c', f'{id}-{n}'))
         self.loot()

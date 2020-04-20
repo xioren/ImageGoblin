@@ -1,8 +1,8 @@
 import re
+import os
 
 from goblins.meta import MetaGoblin
 
-# TODO: needs better approach
 
 class BehanceGoblin(MetaGoblin):
     '''accepts:
@@ -37,5 +37,8 @@ class BehanceGoblin(MetaGoblin):
                 self.logger.log(1, self.__str__(), 'WARNING', 'webpage urls not supported')
             for url in urls:
                 for size in self.sizes:
-                    self.collect(self.fit(url, size))
-        self.loot()
+                    new_url = self.fit(url, size)
+                    if self.get(new_url).code == 200:
+                        self.collect(new_url)
+                        break
+            self.loot()

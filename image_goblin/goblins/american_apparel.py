@@ -12,7 +12,8 @@ class AmericanApparelGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.url_pat = r'https?://cdn\d+\.bigcommerce\.com/[^/]+/images/stencil/[^/]+/products/\d+/\d+/[a-z0-9]+_[a-z0-9]+_[^" ]+\.jpg'
+        self.url_pat = r'https?://cdn\d+\.bigcommerce\.com/[^/]+/images/stencil/[^/]+' \
+                       r'/products/\d+/\d+/[a-z0-9]+_[a-z0-9]+_[^" ]+\.jpg'
 
     def __str__(self):
         return 'american apparel goblin'
@@ -28,7 +29,7 @@ class AmericanApparelGoblin(MetaGoblin):
         self.logger.log(1, self.__str__(), 'collecting links')
         for target in self.args['targets'][self.__repr__()]:
             if 'bigcommerce' in target:
-                urls = [self.dequery(target)]
+                urls = [self.parser.dequery(target)]
             else:
                 urls = self.extract_urls_greedy(self.url_pat, target)
             for url in urls:

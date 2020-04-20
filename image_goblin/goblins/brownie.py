@@ -2,6 +2,7 @@ import re
 
 from goblins.meta import MetaGoblin
 
+# BUG: currently getting gzip EOF errors
 
 class BrownieGoblin(MetaGoblin):
     '''accepts:

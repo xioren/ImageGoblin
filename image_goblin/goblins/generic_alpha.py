@@ -27,7 +27,7 @@ class AlphaGoblin(MetaGoblin):
         super().__init__(args)
         self.url_pat = r'https?:[^" \n]+media\\?/catalog[^" \n]+\.jpe?g'
 
-    def trim_url(self, url):
+    def trim(self, url):
         '''remove cropping from url'''
         return re.sub(r'/(custom_)?cache.*?(?=/\w/\w/)', '', url)
 
@@ -45,6 +45,6 @@ class AlphaGoblin(MetaGoblin):
                 else:
                     urls = self.generate_urls(target, False)
             for url in urls:
-                self.collect(self.trim_url(url))
+                self.collect(self.trim(url))
         self.loot()
         self.cleanup(self.path_main)

@@ -10,7 +10,7 @@ class Goblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        # self.url_pat = r''
+        self.url_pat = r''
 
     def __str__(self):
         return ' goblin'
@@ -24,7 +24,7 @@ class Goblin(MetaGoblin):
             if '' in target:
                 urls = [target]
             else:
-                urls = self.extract_urls(target)
+                urls = self.extract_urls_greedy(target)
             for url in urls:
                 self.collect(url)
         self.loot()

@@ -12,7 +12,8 @@ class OmegaGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.url_pat = re.compile(fr'(https?://)?[^"\n \';]+{self.filetypes}([\?&][^" ]+$)?', flags=re.IGNORECASE)
+        self.url_pat = re.compile(fr'(https?://)?[^"\n \';]+{self.parser.filetypes}([\?&][^" ]+$)?', flags=re.IGNORECASE)
+        self.filter_pat = re.compile(r'\.(js|css|pdf|php|html)|(fav)?icon|logo|menu', flags=re.IGNORECASE)
 
     def __str__(self):
         return 'generic goblin'
@@ -23,9 +24,9 @@ class OmegaGoblin(MetaGoblin):
     def format(self, url):
         '''format a url either automatically or via user input modifier'''
         if self.args['format']:
-            return self.user_format(url)
+            return self.parser.user_format(url)
         elif not self.args['noupgrade']:
-            return self.auto_format(url)
+            return self.parser.auto_format(url)
         else:
             return url
 
@@ -48,7 +49,11 @@ class OmegaGoblin(MetaGoblin):
     def run(self):
         self.logger.log(1, self.__str__(), 'collecting links')
         for target in self.args['targets'][self.__repr__()]:
+<<<<<<< HEAD
             if re.search(f'(?:{self.filetypes}|/upload/|/image/)', target, re.IGNORECASE):
+=======
+            if re.search(f'(?:{self.parser.filetypes}|/upload/|/image/)', target, re.IGNORECASE):
+>>>>>>> 0.2.3
                 self.collect(self.format(target))
             else:
                 if self.args['greedy']:

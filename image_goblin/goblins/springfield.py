@@ -8,7 +8,8 @@ class SpringfieldGoblin(GammaGoblin):
         self.modifiers = ('FM', 'TM', 'D1', 'D2', 'D3', 'D4', 'D5', 'D6', 'D7', 'D8')
         self.img_pat = r'P_[A-Z\d]+\.jpg'
         self.iter_pat = r'[A-Z\d]{2}(?=\.)'
-        self.url_base = 'https://myspringfield.com/on/demandware.static/-/Sites-gc-spf-master-catalog/default/images/hi-res/'
+        self.url_base = 'https://myspringfield.com/on/demandware.static/-/' \
+                        'Sites-gc-spf-master-catalog/default/images/hi-res/'
 
     def __str__(self):
         return 'springfield goblin'

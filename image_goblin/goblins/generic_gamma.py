@@ -49,5 +49,5 @@ class GammaGoblin(MetaGoblin):
                     continue
                 id, url_end = self.extract_parts(self.isolate(url))
                 for mod in self.modifiers:
-                    self.collect(f'{self.url_base}{id}{mod}{self.dequery(url_end)}')
+                    self.collect(f'{self.url_base}{id}{mod}{self.parser.dequery(url_end)}')
         self.loot()
