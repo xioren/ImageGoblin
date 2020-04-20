@@ -51,11 +51,7 @@ class OmegaGoblin(MetaGoblin):
     def run(self):
         self.logger.log(1, self.__str__(), 'collecting links')
         for target in self.args['targets'][self.__repr__()]:
-<<<<<<< HEAD
-            if re.search(f'(?:{self.filetypes}|/upload/|/image/)', target, re.IGNORECASE):
-=======
             if re.search(f'(?:{self.parser.filetypes}|/upload/|/image/)', target, re.IGNORECASE):
->>>>>>> 0.2.3
                 self.collect(self.format(target))
             else:
                 if self.args['greedy']:
