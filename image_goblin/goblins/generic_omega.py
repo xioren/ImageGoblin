@@ -12,8 +12,10 @@ class OmegaGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.url_pat = re.compile(fr'(https?://)?[^"\n \';]+{self.parser.filetypes}([\?&][^" ]+$)?', flags=re.IGNORECASE)
-        self.filter_pat = re.compile(r'\.(js|css|pdf|php|html)|(fav)?icon|logo|menu', flags=re.IGNORECASE)
+        self.url_pat = re.compile(fr'(https?://)?[^"\n \';]+{self.parser.filetypes}([\?&][^" ]+$)?',
+                                  flags=re.IGNORECASE)
+        self.filter_pat = re.compile(r'\.(js|css|pdf|php|html)|(fav)?icon|logo|menu',
+                                     flags=re.IGNORECASE)
 
     def __str__(self):
         return 'generic goblin'
