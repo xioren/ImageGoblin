@@ -35,5 +35,5 @@ class HMGoblin(MetaGoblin):
             for url in urls:
                 source = self.extract_source(url)
                 self.collect(f'https://lp2.hm.com/hmgoepprod?set=quality[100],source[{source}],origin[dam]&call=url[file:/product/zoom]',
-                             self.extract_filename(source))
+                             self.parser.extract_filename(source))
         self.loot()

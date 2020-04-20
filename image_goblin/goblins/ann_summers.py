@@ -32,7 +32,7 @@ class AnnSummersGoblin(MetaGoblin):
             else:
                 urls = self.extract_urls_greedy(self.url_pat, target)
             for url in urls:
-                url = re.sub(r'(_\d)?\.jpg', '', self.dequery(url))
+                url = re.sub(r'(_\d)?\.jpg', '', self.parser.dequery(url))
                 for mod in self.modifiers:
                     self.collect(f'{url}{mod}.jpg{self.query}')
         self.loot()

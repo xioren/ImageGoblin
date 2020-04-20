@@ -12,7 +12,9 @@ from html.parser import HTMLParser
 class Parser:
     '''generic parsing methods'''
 
-    def __init__(self):
+    def __init__(self, origin_url, user_formatting):
+        self.origin_url = origin_url
+        self.user_formatting = user_formatting
         self.filename_pat = re.compile(r'(?<=/)[^/]+$')
         self.query_pat = re.compile(r'[\?&][^" ]+$')
         self.quality_pat = re.compile(r'q((ua)?li?ty)=\d+')
@@ -101,7 +103,7 @@ class Parser:
 
     def finalize(self, url):
         '''prepare a url for an http request'''
-        url = urllib.parse.urljoin(self.add_scheme(self.args['targets'][self.__repr__()][0]),
+        url = urllib.parse.urljoin(self.add_scheme(self.origin_url),
                                    self.add_scheme(url))
         return urllib.parse.unquote(url)
 
@@ -118,11 +120,11 @@ class Parser:
     def user_format(self, url):
         '''add, substitute, or remove elements from a url'''
         if self.args['format'][0] == 'add':
-            return url + self.args['format'][1]
+            return url + self.user_formatting[1]
         elif self.args['format'][0] == 'sub':
-            return re.sub(fr'{self.args["format"][1]}', self.args['format'][2], url)
+            return re.sub(fr'{self.user_formatting[1]}', self.user_formatting[2], url)
         elif self.args['format'][0] == 'rem':
-            return re.sub(fr'{self.args["format"][1]}', '', url)
+            return re.sub(fr'{self.user_formatting[1]}', '', url)
         else:
             return url
 

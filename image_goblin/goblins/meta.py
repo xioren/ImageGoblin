@@ -16,7 +16,7 @@ from parsing import Parser
 from logging import Logger
 
 
-class MetaGoblin(Parser):
+class MetaGoblin:
     '''common methods inherited by all other goblins'''
 
     def __init__(self, args):
@@ -36,6 +36,7 @@ class MetaGoblin(Parser):
         self.looted = set()
         self.make_dirs(self.path_main)
         self.logger = Logger(self.args['verbose'], self.args['silent'])
+        self.parser = Parser(self.args['targets'][self.__repr__()][0], self.args['format'])
         self.logger.log(0, self.__str__(), 'deployed')
 
 
@@ -114,7 +115,7 @@ class MetaGoblin(Parser):
     def make_request(self, url, n=0, data=None):
         '''make a web request'''
         try:
-            request = Request(self.add_scheme(url), data, self.headers)
+            request = Request(self.parser.add_scheme(url), data, self.headers)
         except ValueError as e:
             self.logger.log(2, self.__str__(), e, url)
             return None
@@ -215,13 +216,13 @@ class MetaGoblin(Parser):
     def collect(self, url, filename='', clean=False):
         '''finalize and add urls to collection'''
         if clean:
-            url = self.sanitize(url)
+            url = self.parser.sanitize(url)
         if not filename:
-            filename = self.extract_filename(url)
+            filename = self.parser.extract_filename(url)
         if type(self.collection) == list:
-            self.collection.append(f'{self.finalize(url)}-break-{filename}')
+            self.collection.append(f'{self.parser.finalize(url)}-break-{filename}')
         else:
-            self.collection.add(f'{self.finalize(url)}-break-{filename}')
+            self.collection.add(f'{self.parser.finalize(url)}-break-{filename}')
 
     def loot(self, save_loc=None, timeout=0):
         '''get collected urls'''
@@ -232,7 +233,7 @@ class MetaGoblin(Parser):
                 timed_out = True
                 break
             url, filename = url.split('-break-')
-            ftype = self.filetype(url)
+            ftype = self.parser.filetype(url)
             if self.args['nodl']:
                 print(url, end='\n\n')
                 continue
@@ -241,7 +242,7 @@ class MetaGoblin(Parser):
             filepath = os.path.join(save_loc, f'{filename}.{ftype}')
             if os.path.exists(filepath):
                 if self.args['noskip']:
-                    filepath = self.make_unique(save_loc, f'{filename}.{ftype}')
+                    filepath = self.parser.make_unique(save_loc, f'{filename}.{ftype}')
                 else:
                     self.logger.log(1, self.__str__(), 'file exists', filename)
                     continue

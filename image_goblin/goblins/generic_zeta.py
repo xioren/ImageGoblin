@@ -25,7 +25,7 @@ class ZetaGoblin(MetaGoblin):
     def __repr__(self):
         return 'zeta'
 
-    def prep(self, url):
+    def trim(self, url):
         '''remove cropping, end of url and return base'''
         return re.sub(r'w/\d+', 'w/3400', re.sub(r'[A-Z0-9]+\.jpg|h/\d+/', '', url))
 
@@ -37,7 +37,7 @@ class ZetaGoblin(MetaGoblin):
             else:
                 urls = self.extract_urls_greedy(self.url_pat, target)
             for url in urls:
-                base = self.prep(url)
+                base = self.trim(url)
                 for mod in self.modifiers:
                     self.collect(f'{base}{mod}.jpg')
         self.loot()

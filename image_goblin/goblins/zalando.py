@@ -14,7 +14,6 @@ class ZalandoGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.toggle_collecton_type()
 
     def __str__(self):
         return 'zalando goblin'
@@ -30,9 +29,10 @@ class ZalandoGoblin(MetaGoblin):
 
     def extract_id(self, url):
         '''extract image id from url'''
-        return re.search(r'[A-Z0-9]+-[A-Z0-9]{3}(?![\-\w])', self.extract_filename(url).upper()).group()
+        return re.search(r'[A-Z0-9]+-[A-Z0-9]{3}(?![\-\w])', self.parser.extract_filename(url).upper()).group()
 
     def run(self):
+        self.toggle_collecton_type()
         self.logger.log(1, self.__str__(), 'collecting links')
         for target in self.args['targets'][self.__repr__()]:
             self.new_collection()

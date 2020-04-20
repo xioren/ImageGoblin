@@ -28,5 +28,5 @@ class BurberryGoblin(MetaGoblin):
             else:
                 urls = self.extract_urls_greedy(self.url_pat, target)
             for url in urls:
-                self.collect(f'{self.dequery(url)}?scl=1')
+                self.collect(f'{self.parser.dequery(url)}?scl=1')
         self.loot()

@@ -24,7 +24,7 @@ class WoodWoodGoblin(MetaGoblin):
 
     def upscale(self, url):
         '''sub in higher resolution cropping and return filename'''
-        return re.sub(r'\d+x\d+c', '1600x2400c', self.extract_filename(url))
+        return re.sub(r'\d+x\d+c', '1600x2400c', self.parser.extract_filename(url))
 
     def run(self):
         self.logger.log(1, self.__str__(), 'collecting links')

@@ -39,7 +39,7 @@ class BetaGoblin(MetaGoblin):
         self.logger.log(1, self.__str__(), 'collecting links')
         for target in self.args['targets'][self.__repr__()]:
             if 'scene7' in target:
-                urls = [self.dequery(target)]
+                urls = [self.parser.dequery(target)]
             else:
                 if self.accept_webpage:
                     urls = self.extract_urls_greedy(self.url_pat, target)

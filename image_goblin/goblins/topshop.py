@@ -27,5 +27,5 @@ class TopshopGoblin(MetaGoblin):
                 urls = self.extract_urls_greedy(self.url_pat, target)
             for url in urls:
                 for n in range(1, 6):
-                    self.collect(f'{self.dequery(url)[:-5]}{n}.jpg{self.query}')
+                    self.collect(f'{self.parser.dequery(url)[:-5]}{n}.jpg{self.query}')
         self.loot()
