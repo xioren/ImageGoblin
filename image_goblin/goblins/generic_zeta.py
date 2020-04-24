@@ -35,7 +35,7 @@ class ZetaGoblin(MetaGoblin):
             if 'calzedonia' in target:
                 urls = [target]
             else:
-                urls = self.extract_urls_greedy(self.url_pat, target)
+                urls = self.extract_by_regex(self.url_pat, target)
             for url in urls:
                 base = self.trim(url)
                 for mod in self.modifiers:

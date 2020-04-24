@@ -25,7 +25,7 @@ class MaisonLejabyGoblin(MetaGoblin):
             if 'phototheque' in target:
                 urls = [target]
             else:
-                urls = self.extract_urls_greedy(self.url_pat, target)
+                urls = self.extract_by_regex(self.url_pat, target)
             for url in urls:
                 url_base = re.sub(r'[A-Z](\.[A-Z0-9]+)?\.jpg', '', url).replace('medium', 'large')
                 for mod in ('A', 'B', 'C', 'D', 'E', 'F'):

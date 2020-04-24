@@ -29,7 +29,7 @@ class ShopbopGoblin(MetaGoblin):
             if 'amazon' in target:
                 urls = [target]
             else:
-                urls = self.extract_urls_greedy(self.url_pat, target)
+                urls = self.extract_by_regex(self.url_pat, target)
             for url in urls:
                 url = self.prep(url)
                 for n in range(1, 7):

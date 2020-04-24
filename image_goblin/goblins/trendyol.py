@@ -31,7 +31,7 @@ class TrendyolGoblin(MetaGoblin):
             if 'img-trendyol' in target or 'cdn.dsmcdn' in target:
                 urls = [target]
             else:
-                urls = self.extract_urls_greedy(self.url_pat, target)
+                urls = self.extract_by_regex(self.url_pat, target)
             for url in urls:
                 url_base = self.extract_base(url)
                 for n in range(1, 16):

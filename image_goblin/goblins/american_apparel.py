@@ -31,7 +31,7 @@ class AmericanApparelGoblin(MetaGoblin):
             if 'bigcommerce' in target:
                 urls = [self.parser.dequery(target)]
             else:
-                urls = self.extract_urls_greedy(self.url_pat, target)
+                urls = self.extract_by_regex(self.url_pat, target)
             for url in urls:
                 url_base, _, url_end = self.split_url(url)
                 for mod in ('', '01', '02', '03', '04'):

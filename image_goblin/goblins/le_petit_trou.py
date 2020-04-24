@@ -26,7 +26,7 @@ class LePetitTrouGoblin(MetaGoblin):
                 urls = [target]
                 self.logger.log(1, self.__str__(), 'WARNING', 'image urls not fully supported')
             else:
-                urls = self.extract_urls_greedy(self.url_pat, target)
+                urls = self.extract_by_regex(self.url_pat, target)
             for url in urls:
                 self.collect(re.sub(r'th\d+', 'orig', url))
         self.loot()

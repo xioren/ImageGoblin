@@ -32,7 +32,7 @@ class CAGoblin(MetaGoblin):
             if 'productimages' in target:
                 urls = [target]
             else:
-                urls = self.extract_urls_greedy(self.url_pat, target)
+                urls = self.extract_by_regex(self.url_pat, target)
             for url in urls:
                 id = self.extract_id(url)
                 for n in range(1, 6):

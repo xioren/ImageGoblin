@@ -51,7 +51,7 @@ class MetaGoblin:
         def __init__(self, object):
             self.code = object.code if object else ''
             self.info = object.info().as_string() if object else ''
-            self.content = MetaGoblin.unzip(object.read()).decode('utf-8', 'ignore') if object else {}
+            self.content = MetaGoblin.unzip(object.read()).decode('utf-8', 'ignore') if object else '{}'
 
     class Post:
         '''wrapper for http.client.HTTPResponse'''
@@ -59,7 +59,7 @@ class MetaGoblin:
         def __init__(self, object):
             self.code = object.code if object else ''
             self.info = object.info().as_string() if object else ''
-            self.content = MetaGoblin.unzip(object.read()).decode('utf-8', 'ignore') if object else {}
+            self.content = MetaGoblin.unzip(object.read()).decode('utf-8', 'ignore') if object else '{}'
 
 ####################################################################
 # methods
@@ -187,44 +187,24 @@ class MetaGoblin:
         except OSError as e:
             self.logger.log(2, self.__str__(), e, path)
 
-    def extract_urls(self, url, tag=None, attributes=None):
-        '''extract urls from html by tags'''
-        if tag:
-            tag_pat = tag
-        else:
-            tag_pat = re.compile('(?:ima?ge?|video|source)')
-        if attributes:
-            attr_pat = attributes
-        else:
-            attr_pat = re.compile(r'(?:src|data(?=(=|-src|-lazy|-url))|content|hires)')
+    def extract_by_tag(self, url, tag=None, attr=None):
+        '''extract from html by tag'''
         response = self.get(url)
         if response:
-            urls = []
             html_parser = self.parser.GoblinHTMLParser(response.content)
             html_parser.parse_elements()
-            for tag in html_parser.elements:
-                if re.search(tag_pat, tag):
-                    for attribute in html_parser.elements[tag]:
-                        if re.search(attr_pat, attribute):
-                            urls.extend(html_parser.elements[tag][attribute])
-            return urls
+            if tag and attr:
+                return html_parser.elements[tag][attr]
+            else:
+                return html_parser.elements
         else:
             return ''
 
-    def extract_urls_greedy(self, pattern, url):
-        '''extract urls from html by regex'''
+    def extract_by_regex(self, pattern, url):
+        '''extract from html by regex'''
         try:
-            return {url.group().replace('\\', '') for url in re.finditer(pattern, self.get(url).content)}
+            return {match.group() for match in re.finditer(pattern, self.get(url).content)}
         except TypeError:
-            return ''
-
-    def extract_arbitrary(self, url, pattern):
-        '''extract arbitrary elements from html by regex'''
-        response = self.get(url)
-        if response:
-            html_parser = self.parser.GoblinHTMLParser(response.content)
-            return html_parser.parse_arbitrary(pattern)
-        else:
             return ''
 
     def collect(self, url, filename='', clean=False):

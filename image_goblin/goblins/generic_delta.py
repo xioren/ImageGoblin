@@ -38,7 +38,7 @@ class DeltaGoblin(MetaGoblin):
                     urls = []
                     self.logger.log(1, self.__str__(), 'WARNING', 'webpage urls not supported')
                 else:
-                    urls = self.extract_urls_greedy(self.url_pat, target)
+                    urls = self.extract_by_regex(self.url_pat, target)
             for url in urls:
                 url_base, url_end = re.split(r'_\d_\d_\d+', url)
                 for mod in self.modifiers:

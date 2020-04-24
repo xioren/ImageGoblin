@@ -42,7 +42,7 @@ class BetaGoblin(MetaGoblin):
                 urls = [self.parser.dequery(target)]
             else:
                 if self.accept_webpage:
-                    urls = self.extract_urls_greedy(self.url_pat, target)
+                    urls = self.extract_by_regex(self.url_pat, target)
                 else:
                     urls = []
                     if not self.args['silent']:

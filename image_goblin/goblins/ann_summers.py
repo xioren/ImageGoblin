@@ -1,38 +1,13 @@
-import re
-
-from goblins.meta import MetaGoblin
+from goblins.generic_eta import EtaGoblin
 
 
-# NOTE: some images use demandware; switched cdn's?
-
-
-class AnnSummersGoblin(MetaGoblin):
-    '''accepts:
-        - image
-        - webpage
-    '''
+class AnnSummersGoblin(EtaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.query = '?scl=1&qlt=100'
-        self.modifiers = ('', '_1', '_2', '_3', '_4')
-        self.url_pat = r'i\d\.adis\.ws/i/annsummers/[A-Z\d]+_Z'
 
     def __str__(self):
         return 'ann summers goblin'
 
     def __repr__(self):
         return 'annsummers'
-
-    def run(self):
-        self.logger.log(1, self.__str__(), 'collecting links')
-        for target in self.args['targets'][self.__repr__()]:
-            if 'adis.ws' in target:
-                urls = [target]
-            else:
-                urls = self.extract_urls_greedy(self.url_pat, target)
-            for url in urls:
-                url = re.sub(r'(_\d)?\.jpg', '', self.parser.dequery(url))
-                for mod in self.modifiers:
-                    self.collect(f'{url}{mod}.jpg{self.query}')
-        self.loot()

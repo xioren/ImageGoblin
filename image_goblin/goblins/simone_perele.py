@@ -20,4 +20,4 @@ class SimonePereleGoblin(AlphaGoblin):
         if image:
             return [url]
         else:
-            return self.extract_urls_greedy(self.url_pat, url)
+            return self.extract_by_regex(self.url_pat, url)

@@ -14,6 +14,7 @@ class MangoGoblin(MetaGoblin):
         self.url_pat = r'https?://st\.mngbcn\.com[^"\? ]+\.jpg'
         self.query = '?qlt=100'
         self.modifiers = ('', '_R', '_D1', '_D2', '_D3', '_D4', '_D5', '_D6')
+        self.url_base = 'https://st.mngbcn.com/rcs/pics/static/'
 
     def __str__(self):
         return 'mango goblin'
@@ -31,10 +32,10 @@ class MangoGoblin(MetaGoblin):
             if 'mngbcn' in target:
                 urls = [target]
             else:
-                urls = self.extract_urls_greedy(self.url_pat, target)
+                urls = self.extract_by_regex(self.url_pat, target)
             for url in urls:
                 t, id = self.extract_id(url)
-                self.collect(f'https://st.mngbcn.com/rcs/pics/static/{t}/fotos/outfit/S20/{id}-99999999_01.jpg{self.query}')
+                self.collect(f'{self.url_base}{t}/fotos/outfit/S20/{id}-99999999_01.jpg{self.query}')
                 for mod in self.modifiers:
-                    self.collect(f'https://st.mngbcn.com/rcs/pics/static/{t}/fotos/S20/{id}{mod}.jpg{self.query}')
+                    self.collect(f'{self.url_base}{t}/fotos/S20/{id}{mod}.jpg{self.query}')
         self.loot()

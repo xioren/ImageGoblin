@@ -62,10 +62,6 @@ class Parser:
                     else:
                         self.elements[tag][attr].append(value)
 
-        def parse_arbitrary(self, pattern):
-            '''extract arbitrary elements from an html source'''
-            return re.finditer(pattern, self.html)
-
 ####################################################################
 # methods
 ####################################################################

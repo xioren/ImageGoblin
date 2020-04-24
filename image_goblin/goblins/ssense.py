@@ -29,7 +29,7 @@ class SsenseGoblin(MetaGoblin):
             if 'img.ssensemedia' in target or 'res.cloudinary' in target:
                 urls = [target]
             else:
-                urls = self.extract_urls_greedy(self.url_pat, target)
+                urls = self.extract_by_regex(self.url_pat, target)
             for url in urls:
                 id = self.extract_id(url)
                 for n in range(6):

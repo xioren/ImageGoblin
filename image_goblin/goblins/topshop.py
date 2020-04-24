@@ -24,7 +24,7 @@ class TopshopGoblin(MetaGoblin):
             if 'images.topshop' in target:
                 urls = [target]
             else:
-                urls = self.extract_urls_greedy(self.url_pat, target)
+                urls = self.extract_by_regex(self.url_pat, target)
             for url in urls:
                 for n in range(1, 6):
                     self.collect(f'{self.parser.dequery(url)[:-5]}{n}.jpg{self.query}')

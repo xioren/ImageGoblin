@@ -24,7 +24,7 @@ class Goblin(MetaGoblin):
             if '' in target:
                 urls = [target]
             else:
-                urls = self.extract_urls_greedy(target)
+                urls = self.extract_by_regex(target)
             for url in urls:
                 self.collect(url)
         self.loot()

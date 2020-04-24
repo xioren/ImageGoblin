@@ -4,8 +4,10 @@ from goblins.meta import MetaGoblin
 
 # TODO: add site specific iteration and scannable flag
 
-class ShopifyGoblin(MetaGoblin):
-    '''accepts:
+class ThetaGoblin(MetaGoblin):
+    '''handles: shopify
+    docs: https://help.shopify.com/en/manual/products/product-media
+    accepts:
         - image*
         - webpage
     generic back-end for:
@@ -24,6 +26,8 @@ class ShopifyGoblin(MetaGoblin):
         - for love and lemons
         - fortnight
         - hanne bloch
+        - kiki de montparnasse
+        - lounge
         - skin
         - the great eros
         - triangl
@@ -36,7 +40,7 @@ class ShopifyGoblin(MetaGoblin):
         self.url_pat = r'cdn\.shopify\.com/s/files/[^" \n]+((\w+-)+)?\d+x(\d+)?[^" \n]+'
 
     def trim(self, url):
-        '''remove alternate file hash'''
+        '''remove variant hash'''
         return re.sub(r'_[a-z\d]+(\-[a-z\d]+){4}', '', url)
 
     def run(self):
@@ -46,7 +50,7 @@ class ShopifyGoblin(MetaGoblin):
                 urls = [target]
                 self.logger.log(1, self.__str__(), 'WARNING', 'image urls not fully supported')
             else:
-                urls = self.extract_urls_greedy(self.url_pat, target)
+                urls = self.extract_by_regex(self.url_pat, target)
             for url in urls:
                 if self.args['noupgrade']:
                     self.collect(url, clean=True)

@@ -1,7 +1,7 @@
-from goblins.shopify import ShopifyGoblin
+from goblins.generic_theta import ThetaGoblin
 
 
-class SkinGoblin(ShopifyGoblin):
+class SkinGoblin(ThetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)

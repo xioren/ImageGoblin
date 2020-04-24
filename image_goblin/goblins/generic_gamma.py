@@ -30,7 +30,7 @@ class GammaGoblin(MetaGoblin):
         self.url_pat = r'[^" ;]+demandware[^" ;]+\.jpg'
 
     def extract_parts(self, url):
-        '''split the url into base, id, end'''
+        '''split the url into id, end'''
         return re.split(self.iter_pat, url)
 
     def isolate(self, url):
@@ -43,7 +43,7 @@ class GammaGoblin(MetaGoblin):
             if 'demandware' in target:
                 urls = [target]
             else:
-                urls = self.extract_urls_greedy(self.url_pat, target)
+                urls = self.extract_by_regex(self.url_pat, target)
             for url in urls:
                 if not re.search(f'(?:{self.img_pat})', url):
                     continue

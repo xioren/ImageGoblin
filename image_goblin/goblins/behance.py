@@ -1,5 +1,4 @@
 import re
-import os
 
 from goblins.meta import MetaGoblin
 
@@ -11,7 +10,7 @@ class BehanceGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.url_pat = r'https?://mir-s3-cdn-cf\.behance\.net/project_modules/[\w/\.]+\.[A-Za-z]+'
+        # self.url_pat = r'https?://mir-s3-cdn-cf\.behance\.net/project_modules/[\w/\.]+\.[A-Za-z]+'
         self.size_pat = r'1400(_opt_1)*|max_1200|disp'
         self.sizes = ('max_3840', 'fs', '1400', 'max_1200', 'disp')
 

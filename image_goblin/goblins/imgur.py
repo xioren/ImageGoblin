@@ -36,9 +36,9 @@ class ImgurGoblin(MetaGoblin):
                 if 'gallery' in target:
                     self.logger.log(1, self.__str__(), 'WARNING', 'https://imgur.com/gallery/XXXXXXX urls not supported')
                 else:
-                    matches = self.extract_arbitrary(target, r'(?<=image               : ){[^\n]+}(?=,\n)')
+                    matches = self.extract_by_regex(r'(?<=image               : ){[^\n]+}(?=,\n)', target)
                     for match in matches:
-                        items = x = json.loads(match.group())
+                        items = json.loads(match)
                         for item in items['album_images']['images']:
                             urls.append(f'https://i.imgur.com/{item["hash"]}{item["ext"]}')
             for url in urls:

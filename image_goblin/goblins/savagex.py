@@ -29,7 +29,7 @@ class SavageXGoblin(MetaGoblin):
             if 'cdn.savagex' in target:
                 urls = [target]
             else:
-                urls = self.extract_urls_greedy(self.url_pat, target)
+                urls = self.extract_by_regex(self.url_pat, target)
             for url in urls:
                 for n in range(1, 5):
                     self.collect(self.strip(url) + f'{n}-1600x1600.jpg')

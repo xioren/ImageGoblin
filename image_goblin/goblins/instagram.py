@@ -73,7 +73,7 @@ class InstagramGoblin(MetaGoblin):
                 if answer.get('authenticated') and response.code == 200:
                     self.extend_cookie('Cookie', re.search(r'sessionid=[^\n]+', response.info).group())
                     self.csrf_token = self.extract_csrf_token(response.info)
-                    self.headers.update({'X-CSRFToken': self.csrf_token})
+                    selfresponse.info.update({'X-CSRFToken': self.csrf_token})
                     self.logged_in = True
                     self.logger.log(0, self.__str__(), 'logged in')
                 elif 'checkpoint_url' in answer:
@@ -170,7 +170,7 @@ class InstagramGoblin(MetaGoblin):
         media_pat = re.compile(r'(?<="display_url":")[^"]+|(?<="video_url":")[^"]+')
         for post in posts:
             self.logger.log(1, self.__str__(), 'parsing post', f'/p/{post}')
-            content = self.extract_urls_greedy(media_pat, f'{self.base_url}p/{post}/?__a=1')
+            content = self.extract_by_regex(media_pat, f'{self.base_url}p/{post}/?__a=1')
             for url in content:
                 self.collect(url, f'{self.username}_{self.parser.extract_filename(url)}')
             sleep(self.args['delay'])
@@ -205,24 +205,24 @@ class InstagramGoblin(MetaGoblin):
 
     def run(self):
         self.authenticate(self.args['login'])
-        for target in self.args['targets'][self.__repr__()]:
-            self.new_collection()
-            self.setup(target)
-            if '/p/' in target:
-                self.get_media([re.search(r'(?<=/p/)[^/]+', target).group()])
-            else:
-                if self.args['mode'] == 'latest' or self.args['mode'] == 'recent':
-                    self.num_posts = 3
-                self.get_initial_data()
-                if self.logged_in:
-                    self.logger.log(1, self.__str__(), 'collecting stories')
-                    self.get_main_stories()
-                    if self.args['mode'] != 'latest' and self.args['mode'] != 'recent':
-                        self.get_highlight_stories()
-                posts = self.get_posts()
-                self.get_media(posts)
-            self.loot(save_loc=self.insta_dir)
-            if not self.args['nodl']:
-                self.move_vid()
-        if self.logged_in:
-            self.logout()
+        # for target in self.args['targets'][self.__repr__()]:
+        #     self.new_collection()
+        #     self.setup(target)
+        #     if '/p/' in target:
+        #         self.get_media([re.search(r'(?<=/p/)[^/]+', target).group()])
+        #     else:
+        #         if self.args['mode'] == 'latest' or self.args['mode'] == 'recent':
+        #             self.num_posts = 3
+        #         self.get_initial_data()
+        #         if self.logged_in:
+        #             self.logger.log(1, self.__str__(), 'collecting stories')
+        #             self.get_main_stories()
+        #             if self.args['mode'] != 'latest' and self.args['mode'] != 'recent':
+        #                 self.get_highlight_stories()
+        #         posts = self.get_posts()
+        #         self.get_media(posts)
+        #     self.loot(save_loc=self.insta_dir)
+        #     if not self.args['nodl']:
+        #         self.move_vid()
+        # if self.logged_in:
+        #     self.logout()
