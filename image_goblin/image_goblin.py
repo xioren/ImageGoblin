@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from sys import exit
 from argparse import ArgumentParser
+
 from dispatcher import Dispatcher
 
 

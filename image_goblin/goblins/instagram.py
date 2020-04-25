@@ -205,24 +205,24 @@ class InstagramGoblin(MetaGoblin):
 
     def run(self):
         self.authenticate(self.args['login'])
-        # for target in self.args['targets'][self.__repr__()]:
-        #     self.new_collection()
-        #     self.setup(target)
-        #     if '/p/' in target:
-        #         self.get_media([re.search(r'(?<=/p/)[^/]+', target).group()])
-        #     else:
-        #         if self.args['mode'] == 'latest' or self.args['mode'] == 'recent':
-        #             self.num_posts = 3
-        #         self.get_initial_data()
-        #         if self.logged_in:
-        #             self.logger.log(1, self.__str__(), 'collecting stories')
-        #             self.get_main_stories()
-        #             if self.args['mode'] != 'latest' and self.args['mode'] != 'recent':
-        #                 self.get_highlight_stories()
-        #         posts = self.get_posts()
-        #         self.get_media(posts)
-        #     self.loot(save_loc=self.insta_dir)
-        #     if not self.args['nodl']:
-        #         self.move_vid()
-        # if self.logged_in:
-        #     self.logout()
+        for target in self.args['targets'][self.__repr__()]:
+            self.new_collection()
+            self.setup(target)
+            if '/p/' in target:
+                self.get_media([re.search(r'(?<=/p/)[^/]+', target).group()])
+            else:
+                if self.args['mode'] == 'latest' or self.args['mode'] == 'recent':
+                    self.num_posts = 3
+                self.get_initial_data()
+                if self.logged_in:
+                    self.logger.log(1, self.__str__(), 'collecting stories')
+                    self.get_main_stories()
+                    if self.args['mode'] != 'latest' and self.args['mode'] != 'recent':
+                        self.get_highlight_stories()
+                posts = self.get_posts()
+                self.get_media(posts)
+            self.loot(save_loc=self.insta_dir)
+            if not self.args['nodl']:
+                self.move_vid()
+        if self.logged_in:
+            self.logout()

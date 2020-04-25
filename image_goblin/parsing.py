@@ -9,6 +9,7 @@ from os.path import join, exists
 # - og:image(:secure_url)?" content="[^"]+
 # - background-image:[^"]+"[^"]+
 
+
 class Parser:
     '''generic url/html parsing and manipulation methods'''
 
@@ -17,9 +18,9 @@ class Parser:
         self.user_formatting = user_formatting
         self.filename_pat = re.compile(r'(?<=/)[^/]+$')
         self.query_pat = re.compile(r'[\?&][^" ]+$')
-        self.quality_pat = re.compile(r'q((ua)?li?ty)=\d+')
+        self.quality_pat = re.compile(r'q((ua)?li?ty)?=\d+')
         self.filetype_pat = re.compile(r'(?<=\.)[A-Za-z0-9]+$', flags=re.IGNORECASE)
-        # IDEA: add mimetype id'ing from headers?
+        # IDEA: mimetype id'ing?
         self.filetypes = r'\.(jpe?g|png|gif|mp4|web[pm]|tiff?|mov|svg|bmp|exif)'
         self.cropping_pats = (
             re.compile(r'[@\-_/]?((\d{3,4}x(\d{3,4})?|(\d{3,4})?x\d{3,4}))'), # 000x000

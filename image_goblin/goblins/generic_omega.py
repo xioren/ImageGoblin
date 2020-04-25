@@ -16,8 +16,8 @@ class OmegaGoblin(MetaGoblin):
                                   flags=re.IGNORECASE)
         self.filter_pat = re.compile(r'\.(js|css|pdf|php|html)|(fav)?icon|logo|menu',
                                      flags=re.IGNORECASE)
-        self.attr_pat = re.compile(r'(?:src(?![a-z\-])|data(?![a-z\-])|data-(src|lazy|url)' \
-                              r'|content(?![a-z\-])|hires(?![a-z\-]))')
+        self.attr_pat = re.compile(r'(?:src(?==)|data(?![a-z\-])|data-(src(?!set)|lazy|url)' \
+                                   r'|content(?![a-z\-])|hires(?![a-z\-]))')
         self.tag_pat = re.compile('(?:ima?ge?|video|source)')
 
     def __str__(self):

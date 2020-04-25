@@ -22,10 +22,10 @@ class ZalandoGoblin(MetaGoblin):
     def __repr__(self):
         return 'zalando'
 
-    def form_url(self, image):
+    def form_url(self, filename):
         '''form url from filename'''
-        compounded = f'{image[:2]}/{image[2:4]}/{image[4:6]}/{image[6:8]}/' \
-                     f'{image[8]}{image[10]}/{image[11:13]}/{image}'
+        compounded = f'{filename[:2]}/{filename[2:4]}/{filename[4:6]}/{filename[6:8]}/' \
+                     f'{filename[8]}{filename[10]}/{filename[11:13]}/{filename}'
         return f'https://mosaic01.ztat.net/vgs/media/original/{compounded}.jpg'
 
     def extract_id(self, url):

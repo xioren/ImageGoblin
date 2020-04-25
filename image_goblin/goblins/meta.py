@@ -90,7 +90,7 @@ class MetaGoblin:
                     except OSError as e:
                         self.logger.log(2, self.__str__(), e, path)
 
-    def toggle_collecton_type(self, reverse=False):
+    def toggle_collecton_type(self):
         '''toggle collection type between list and set'''
         if type(self.collection) == list:
             self.collection = set()
@@ -122,9 +122,9 @@ class MetaGoblin:
         try:
             return urlopen(request, timeout=20)
         except HTTPError as e:
+            self.logger.log(2, self.__str__(), e, url)
             if e.code == 502:
                 return self.retry(url, n+1, data)
-            self.logger.log(2, self.__str__(), e, url)
         except (URLError, CertificateError) as e:
             self.logger.log(2, self.__str__(), e, url)
         except timeout:
@@ -203,7 +203,7 @@ class MetaGoblin:
     def extract_by_regex(self, pattern, url):
         '''extract from html by regex'''
         try:
-            return {match.group() for match in re.finditer(pattern, self.get(url).content)}
+            return {match.group().replace('\\', '') for match in re.finditer(pattern, self.get(url).content)}
         except TypeError:
             return ''
 

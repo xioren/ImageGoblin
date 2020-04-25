@@ -3,7 +3,6 @@ import re
 from goblins.meta import MetaGoblin
 
 # NOTE: scaling with q=100 gives higher resolution; investigate.
-# recheck all
 
 class GammaGoblin(MetaGoblin):
     '''handles: Demandware
@@ -15,7 +14,6 @@ class GammaGoblin(MetaGoblin):
     generic backend for:
         - boux avenue
         - etam
-        - hunkemoller
         - jennyfer
         - livy
         - marlies dekkers

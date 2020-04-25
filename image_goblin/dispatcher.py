@@ -1,6 +1,7 @@
 import re
 import os
 
+from logging import Logger
 from manifest import goblins
 
 
@@ -8,6 +9,7 @@ class Dispatcher:
 
     def __init__(self, args):
         self.args = args
+        self.logger = Logger(self.args['verbose'], self.args['silent'])
 
     def __str__(self):
         return 'dispatcher'
@@ -34,7 +36,7 @@ class Dispatcher:
             urls = goblin().run()
         else:
             if not self.args['targets']:
-                print(f'[{self.__str__()}] <ERROR> input not understood')
+                self.logger.log(0, self.__str__(), 'ERROR', 'input not understood')
                 return None
             urls = [self.args['targets']]
         for url in urls:
@@ -44,7 +46,7 @@ class Dispatcher:
                 key = 'generic'
             else:
                 key = self.identify(url)
-            if url_assignment.get(key):
+            if key in url_assignment:
                 url_assignment[key].append(url)
             else:
                 url_assignment[key] = [url]
@@ -53,6 +55,6 @@ class Dispatcher:
             try:
                 goblin = goblins[key][1]
             except KeyError:
-                print(f'[{self.__str__()}] <ERROR> unkown goblin -> use --list to see available goblins')
-                return None
+                self.logger.log(0, self.__str__(), 'ERROR', f'unkown goblin "{key}" -> use --list to see available goblins')
+                continue
             goblin(self.args).run()

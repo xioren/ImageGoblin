@@ -14,7 +14,7 @@ class CAGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.url_pat = r'https://www\.c-and-a\.com/productimages/[^" ]+/v[^" ]+-0[1-9]\.jpg'
+        self.url_pat = r'https?://www\.c-and-a\.com/productimages/[^" ]+/v[^" ]+-0[1-9]\.jpg'
 
     def __str__(self):
         return 'c&a goblin'
