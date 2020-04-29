@@ -1,6 +1,7 @@
 # ImageGoblin
 
-#### changelog v0.2.4:
+#### changelog v0.2.5:
++ fixed instagram
 + bug fixes
 + misc code clean up and improvements
 
