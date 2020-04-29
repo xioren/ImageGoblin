@@ -40,6 +40,8 @@ class Dispatcher:
                 return None
             urls = [self.args['targets']]
         for url in urls:
+            if url == '' or url == '\n':
+                continue
             if self.args['force']:
                 key = self.args['force']
             elif self.args['greedy']:

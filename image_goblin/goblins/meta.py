@@ -147,22 +147,28 @@ class MetaGoblin:
         '''make a post request'''
         return self.Post(self.make_request(url, data=urlencode(data).encode()))
 
-    def download(self, url, path):
+    def download(self, url, path, n=0):
         '''download web content'''
         response = self.make_request(url)
         if response:
-            with open(path, 'wb') as file:
-                copyfileobj(response, file, DEFAULT_BUFFER_SIZE)
+            try:
+                with open(path, 'wb') as file:
+                    copyfileobj(response, file, DEFAULT_BUFFER_SIZE)
+            except timeout:
+                return self.retry(url, n, path=path)
             return True
 
-    def retry(self, url, n, data):
+    def retry(self, url, n, data=None, path=None):
         '''retry connection after a socket timeout'''
         if n > 5:
             self.logger.log(1, self.__str__(), timeout, f'aborting after {n} retries')
             return None
         self.logger.log(1, self.__str__(), timeout, f'retry attempt {n}')
         sleep(3)
-        return self.make_request(url, n, data)
+        if path:
+            return self.download(url, path, n)
+        else:
+            return self.make_request(url, n, data)
 
     def write_file(self, data, path, iter=False):
         '''write to disk'''

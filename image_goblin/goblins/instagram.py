@@ -52,7 +52,12 @@ class InstagramGoblin(MetaGoblin):
                 os.rename(os.path.join(self.insta_dir, file), os.path.join(self.vid_dir, file))
 
     def extract_csrf_token(self, response):
-        return re.search(r'(?<=csrftoken=)[^;]+', response).group()
+        if 'csrftoken' in response.info:
+            return re.search(r'(?<=csrftoken=)[^;]+', response.info).group()
+        else:
+            data = json.loads(re.search(r'(?<=sharedData\s=\s){[^;]+',
+                                        response.content).group())
+            return data['config']['csrf_token']
 
     def hash(self, string):
         return md5(string.encode()).hexdigest()
@@ -60,7 +65,7 @@ class InstagramGoblin(MetaGoblin):
     def authenticate(self, login):
         '''login to instagram or authenticate as guest'''
         response = self.get(self.base_url)
-        self.csrf_token = self.extract_csrf_token(response.info)
+        self.csrf_token = self.extract_csrf_token(response)
         self.headers.update({'X-CSRFToken': self.csrf_token})
         if login:
             while True:
@@ -72,8 +77,8 @@ class InstagramGoblin(MetaGoblin):
                 answer = json.loads(response.content)
                 if answer.get('authenticated') and response.code == 200:
                     self.extend_cookie('Cookie', re.search(r'sessionid=[^\n]+', response.info).group())
-                    self.csrf_token = self.extract_csrf_token(response.info)
-                    selfresponse.info.update({'X-CSRFToken': self.csrf_token})
+                    self.csrf_token = self.extract_csrf_token(response)
+                    self.headers.update({'X-CSRFToken': self.csrf_token})
                     self.logged_in = True
                     self.logger.log(0, self.__str__(), 'logged in')
                 elif 'checkpoint_url' in answer:
@@ -87,7 +92,6 @@ class InstagramGoblin(MetaGoblin):
                     else:
                         self.logger.log(0, self.__str__(), 'continuing as guest')
                 break
-
 
     def logout(self):
         response = self.post(f'{self.base_url}accounts/logout/',
@@ -103,17 +107,17 @@ class InstagramGoblin(MetaGoblin):
         # QUESTION: are all these header updates necessary? test without. and
         # should they be assigned to self.csrf_token?
         response = self.get(f'{self.base_url.rstrip("/")}{checkpoint_url}')
-        self.headers.update({'X-CSRFToken': self.extract_csrf_token(response.info),
+        self.headers.update({'X-CSRFToken': self.extract_csrf_token(response),
                              'X-Instagram-AJAX': '1'})
         self.headers.update({'Referer': f'{self.base_url.rstrip("/")}{checkpoint_url}'})
         mode = input(f'[{self.__str__()}] receive code via (0 - sms, 1 - email): ')
         challenge = self.post(f'{self.base_url.rstrip("/")}{checkpoint_url}', data= {'choice': mode})
-        self.headers.update({'X-CSRFToken': self.extract_csrf_token(challenge.info),
+        self.headers.update({'X-CSRFToken': self.extract_csrf_token(challenge),
                              'X-Instagram-AJAX': '1'})
         while True:
             code = int(input(f'[{self.__str__()}] enter security code: '))
             response = self.post(f'{self.base_url.rstrip("/")}{checkpoint_url}', data={'security_code': code})
-            self.headers.update({'X-CSRFToken': self.extract_csrf_token(response.info)})
+            self.headers.update({'X-CSRFToken': self.extract_csrf_token(response)})
             answer = json.loads(response.content)
             if answer.get('status') == 'ok':
                 self.logged_in = True
@@ -133,7 +137,6 @@ class InstagramGoblin(MetaGoblin):
         response = json.loads(re.search(r'(?<=sharedData\s=\s){[^;]+',
                                         self.get(f'{self.base_url}{self.username}').content).group())
         self.user_id = response['entry_data']['ProfilePage'][0]['graphql']['user']['id']
-        # self.csrf_token = response['config']['csrf_token']
         self.rhx_gis = response.get('rhx_gis', '3c7ca9dcefcf966d11dacf1f151335e8')
 
     def get_posts(self):

@@ -79,5 +79,5 @@ if __name__ == '__main__':
     try:
         Dispatcher(args_dict).dispatch()
     except KeyboardInterrupt:
-        print('-----exiting-----')
+        print('\n-----exiting-----')
         exit(130)
