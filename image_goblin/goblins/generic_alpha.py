@@ -23,25 +23,26 @@ class AlphaGoblin(MetaGoblin):
         - watercult
     '''
 
+    URL_PAT = r'https?:[^" \n]+media\\?/catalog[^" \n]+\.jpe?g'
+
     def __init__(self, args):
         super().__init__(args)
-        self.url_pat = r'https?:[^" \n]+media\\?/catalog[^" \n]+\.jpe?g'
 
     def trim(self, url):
         '''remove cropping from url'''
         return re.sub(r'/(custom_)?cache.*?(?=/\w/\w/)', '', url)
 
     def run(self):
-        self.logger.log(1, self.__str__(), 'collecting links')
-        for target in self.args['targets'][self.__repr__()]:
+        self.logger.log(1, self.NAME, 'collecting links')
+        for target in self.args['targets'][self.ID]:
             if 'media/catalog' in target:
-                if not self.accept_image:
-                    self.logger.log(1, self.__str__(), 'WARNING', 'image urls not fully supported')
+                if not self.ACCEPT_IMAGE:
+                    self.logger.log(1, self.NAME, 'WARNING', 'image urls not fully supported')
                 urls = self.generate_urls(target)
             else:
-                if not self.accept_webpage:
+                if not self.ACCEPT_WEBPAGE:
                     urls = []
-                    self.logger.log(1, self.__str__(), 'WARNING', 'webpage urls not supported')
+                    self.logger.log(1, self.NAME, 'WARNING', 'webpage urls not supported')
                 else:
                     urls = self.generate_urls(target, False)
             for url in urls:

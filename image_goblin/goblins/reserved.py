@@ -5,16 +5,13 @@ from goblins.generic_alpha import AlphaGoblin
 
 class ReservedGoblin(AlphaGoblin):
 
+    NAME = 'reserved goblin'
+    ID = 'reserved'
+    ACCEPT_IMAGE = True
+    ACCEPT_WEBPAGE = True
+
     def __init__(self, args):
         super().__init__(args)
-        self.accept_image = True
-        self.accept_webpage = True
-
-    def __str__(self):
-        return 'reserved goblin'
-
-    def __repr__(self):
-        return 'reserved'
 
     def generate_urls(self, url, image=True):
         if image:

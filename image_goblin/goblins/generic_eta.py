@@ -14,12 +14,13 @@ class EtaGoblin(MetaGoblin):
         - nasty gal
     '''
 
+    QUERY = '?scl=1&qlt=100'
+    URL_PAT = r'i\d\.adis\.ws/i/[a-z]+/[\w_]+'
+    MODIFIERS = [f'_{n}' for n in range(1, 10)]
+
     def __init__(self, args):
         super().__init__(args)
-        self.query = '?scl=1&qlt=100'
-        self.url_pat = r'i\d\.adis\.ws/i/[a-z]+/[\w_]+'
-        self.modifiers = [f'_{n}' for n in range(1, 10)]
-        self.modifiers.insert(0, '')
+        self.MODIFIERS.insert(0, '')
 
     def __str__(self):
         return 'eta goblin'
@@ -29,17 +30,17 @@ class EtaGoblin(MetaGoblin):
 
     def trim(self, url):
         '''trim the url down'''
-        return re.search(self.url_pat, url).group().rstrip("_s/").replace('media.nastygal.com',
+        return re.search(self.URL_PAT, url).group().rstrip("_s/").replace('media.nastygal.com',
                                                                           'i1.adis.ws')
 
     def run(self):
-        self.logger.log(1, self.__str__(), 'collecting links')
-        for target in self.args['targets'][self.__repr__()]:
+        self.logger.log(1, self.NAME, 'collecting links')
+        for target in self.args['targets'][self.ID]:
             if '/i/' in target:
                 urls = [target]
             else:
-                urls = self.extract_by_regex(self.url_pat, target)
+                urls = self.extract_by_regex(self.URL_PAT, target)
             for url in urls:
-                for mod in self.modifiers:
-                    self.collect(f'{self.trim(url)}{mod}.jpg{self.query}')
+                for mod in self.MODIFIERS:
+                    self.collect(f'{self.trim(url)}{mod}.jpg{self.QUERY}')
         self.loot()

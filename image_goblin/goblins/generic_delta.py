@@ -17,30 +17,31 @@ class DeltaGoblin(MetaGoblin):
         - zara
     '''
 
+    URL_PAT = r'https?://static[^"]+_\d_\d_\d\.jpe?g'
+    MODIFIERS = ('_1_1_', '_2_1_', '_2_2_', '_2_3_',
+                 '_2_4_', '_2_5_', '_2_6_', '_2_7_',
+                 '_2_8_', '_2_9_', '_4_1_', '_6_1_')
+
     def __init__(self, args):
         super().__init__(args)
-        self.url_pat = r'https?://static[^"]+_\d_\d_\d\.jpe?g'
-        self.modifiers = ('_1_1_', '_2_1_', '_2_2_', '_2_3_',
-                          '_2_4_', '_2_5_', '_2_6_', '_2_7_',
-                          '_2_8_', '_2_9_', '_4_1_', '_6_1_')
 
     def trim(self, url):
         '''remove cropping from query string'''
         return re.sub(r'&imwidth=\d+', '', url)
 
     def run(self):
-        self.logger.log(1, self.__str__(), 'collecting links')
-        for target in self.args['targets'][self.__repr__()]:
+        self.logger.log(1, self.NAME, 'collecting links')
+        for target in self.args['targets'][self.ID]:
             if 'static' in target:
                 urls = [target]
             else:
-                if not self.accept_webpage:
+                if not self.ACCEPT_WEBPAGE:
                     urls = []
-                    self.logger.log(1, self.__str__(), 'WARNING', 'webpage urls not supported')
+                    self.logger.log(1, self.NAME, 'WARNING', 'webpage urls not supported')
                 else:
-                    urls = self.extract_by_regex(self.url_pat, target)
+                    urls = self.extract_by_regex(self.URL_PAT, target)
             for url in urls:
                 url_base, url_end = re.split(r'_\d_\d_\d+', url)
-                for mod in self.modifiers:
-                    self.collect('{}{}{}{}'.format(re.sub(r"w/\d+/", "", url_base), mod, self.size, self.trim(url_end)))
+                for mod in self.MODIFIERS:
+                    self.collect('{}{}{}{}'.format(re.sub(r"w/\d+/", "", url_base), mod, self.SIZE, self.trim(url_end)))
         self.loot()

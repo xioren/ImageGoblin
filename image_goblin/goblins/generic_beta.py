@@ -22,10 +22,11 @@ class BetaGoblin(MetaGoblin):
         - urban outfitters
     '''
 
+    URL_PAT = fr'https?://[a-z0-9\-]+\.scene7\.com/is/image/[A-Za-z]+/\w+(_\w+)?_\w+'
+    QUERY = '?fmt=jpeg&qlt=100&scl=1'
+
     def __init__(self, args):
         super().__init__(args)
-        self.url_pat = fr'https?://[a-z0-9\-]+\.scene7\.com/is/image/[A-Za-z]+/\w+(_\w+)?_\w+'
-        self.query = '?fmt=jpeg&qlt=100&scl=1'
 
     def extract_id(self, url):
         '''extract image id from url'''
@@ -36,21 +37,21 @@ class BetaGoblin(MetaGoblin):
         return re.sub(r'(?<=/)[^/]+$', '', url)
 
     def run(self):
-        self.logger.log(1, self.__str__(), 'collecting links')
-        for target in self.args['targets'][self.__repr__()]:
+        self.logger.log(1, self.NAME, 'collecting links')
+        for target in self.args['targets'][self.ID]:
             if 'scene7' in target:
                 urls = [self.parser.dequery(target)]
             else:
-                if self.accept_webpage:
-                    urls = self.extract_by_regex(self.url_pat, target)
+                if self.ACCEPT_WEBPAGE:
+                    urls = self.extract_by_regex(self.URL_PAT, target)
                 else:
                     urls = []
                     if not self.args['silent']:
-                        print(f'[{self.__str__()}] <WARNING> webpage urls not supported')
+                        print(f'[{self.NAME}] <WARNING> webpage urls not supported')
             for url in urls:
                 id = self.extract_id(url)
                 self.url_base = self.extract_base(url)
-                for mod in self.modifiers:
-                    self.collect(f'{self.url_base}{id}{mod}{self.query}')
+                for mod in self.MODIFIERS:
+                    self.collect(f'{self.url_base}{id}{mod}{self.QUERY}')
         self.loot()
         self.cleanup(self.path_main)

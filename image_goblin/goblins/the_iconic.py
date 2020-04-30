@@ -9,27 +9,24 @@ class TheIconicGoblin(MetaGoblin):
         - webpage
     '''
 
+    NAME = 'the iconic goblin'
+    ID = 'theiconic'
+    URL_PAT = r'(\d+-){2}\d\.jpg'
+
     def __init__(self, args):
         super().__init__(args)
-        self.url_pat = r'(\d+-){2}\d\.jpg'
-
-    def __str__(self):
-        return 'the iconic goblin'
-
-    def __repr__(self):
-        return 'theiconic'
 
     def extract_id(self, url):
         '''extract image id from url'''
         return re.search(r'\d+-\d+-', url).group()
 
     def run(self):
-        self.logger.log(1, self.__str__(), 'collecting links')
-        for target in self.args['targets'][self.__repr__()]:
+        self.logger.log(1, self.NAME, 'collecting links')
+        for target in self.args['targets'][self.ID]:
             if 'img1' in target or 'static' in target:
                 urls = [target]
             else:
-                urls = self.extract_by_regex(self.url_pat, target)
+                urls = self.extract_by_regex(self.URL_PAT, target)
             for url in urls:
                 id = self.extract_id(url)
                 for n in range(1, 6):

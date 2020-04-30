@@ -35,22 +35,23 @@ class ThetaGoblin(MetaGoblin):
         - vitamin a
     '''
 
+    URL_PAT = r'cdn\.shopify\.com/s/files/[^" \n]+((\w+-)+)?\d+x(\d+)?[^" \n]+'
+
     def __init__(self, args):
         super().__init__(args)
-        self.url_pat = r'cdn\.shopify\.com/s/files/[^" \n]+((\w+-)+)?\d+x(\d+)?[^" \n]+'
 
     def trim(self, url):
         '''remove variant hash'''
         return re.sub(r'_[a-z\d]+(\-[a-z\d]+){4}', '', url)
 
     def run(self):
-        self.logger.log(1, self.__str__(), 'collecting links')
-        for target in self.args['targets'][self.__repr__()]:
+        self.logger.log(1, self.NAME, 'collecting links')
+        for target in self.args['targets'][self.ID]:
             if 'cdn.shopify' in target:
                 urls = [target]
-                self.logger.log(1, self.__str__(), 'WARNING', 'image urls not fully supported')
+                self.logger.log(1, self.NAME, 'WARNING', 'image urls not fully supported')
             else:
-                urls = self.extract_by_regex(self.url_pat, target)
+                urls = self.extract_by_regex(self.URL_PAT, target)
             for url in urls:
                 if self.args['noupgrade']:
                     self.collect(url, clean=True)

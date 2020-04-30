@@ -18,7 +18,7 @@ from version import __version__
 
 
 class MetaGoblin:
-    '''common methods inherited by all other goblins'''
+    '''base goblin inherited by all other goblins'''
 
     def __init__(self, args):
         super().__init__()
@@ -26,7 +26,7 @@ class MetaGoblin:
         if self.args['nosort']:
             self.path_main = os.getcwd()
         else:
-            self.path_main = os.path.join(os.getcwd(), 'goblin_loot', self.__str__().replace(' ', '_'))
+            self.path_main = os.path.join(os.getcwd(), 'goblin_loot', self.NAME.replace(' ', '_'))
         if self.args['mask']:
             user_agent = 'Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101 Firefox/68.0'
         else:
@@ -37,8 +37,8 @@ class MetaGoblin:
         self.looted = set()
         self.make_dirs(self.path_main)
         self.logger = Logger(self.args['verbose'], self.args['silent'])
-        self.parser = Parser(self.args['targets'][self.__repr__()][0], self.args['format'])
-        self.logger.log(0, self.__str__(), 'deployed')
+        self.parser = Parser(self.args['targets'][self.ID][0], self.args['format'])
+        self.logger.log(0, self.NAME, 'deployed')
 
 
 ####################################################################
@@ -75,7 +75,7 @@ class MetaGoblin:
                     except OSError as e:
                         # NOTE: no sense in continuing if the download dirs fail to make
                         # may change approach in future, exit for now
-                        self.logger.log(0, self.__str__(), e, 'exiting')
+                        self.logger.log(0, self.NAME, e, 'exiting')
                         exit(1)
 
     def cleanup(self, path):
@@ -88,7 +88,7 @@ class MetaGoblin:
                     try:
                         os.remove(path)
                     except OSError as e:
-                        self.logger.log(2, self.__str__(), e, path)
+                        self.logger.log(2, self.NAME, e, path)
 
     def toggle_collecton_type(self):
         '''toggle collection type between list and set'''
@@ -101,7 +101,6 @@ class MetaGoblin:
         '''initialize a new collection'''
         self.collection.clear()
 
-    @staticmethod
     def unzip(data):
         '''gzip decompression'''
         try:
@@ -117,16 +116,16 @@ class MetaGoblin:
         try:
             request = Request(self.parser.add_scheme(url), data, self.headers)
         except ValueError as e:
-            self.logger.log(2, self.__str__(), e, url)
+            self.logger.log(2, self.NAME, e, url)
             return None
         try:
             return urlopen(request, timeout=20)
         except HTTPError as e:
-            self.logger.log(2, self.__str__(), e, url)
+            self.logger.log(2, self.NAME, e, url)
             if e.code == 502:
                 return self.retry(url, n+1, data)
         except (URLError, CertificateError) as e:
-            self.logger.log(2, self.__str__(), e, url)
+            self.logger.log(2, self.NAME, e, url)
         except timeout:
             return self.retry(url, n+1, data)
 
@@ -161,9 +160,9 @@ class MetaGoblin:
     def retry(self, url, n, data=None, path=None):
         '''retry connection after a socket timeout'''
         if n > 5:
-            self.logger.log(1, self.__str__(), timeout, f'aborting after {n} retries')
+            self.logger.log(1, self.NAME, timeout, f'aborting after {n} retries')
             return None
-        self.logger.log(1, self.__str__(), timeout, f'retry attempt {n}')
+        self.logger.log(1, self.NAME, timeout, f'retry attempt {n}')
         sleep(3)
         if path:
             return self.download(url, path, n)
@@ -180,7 +179,7 @@ class MetaGoblin:
                 else:
                     file.write(data)
         except OSError as e:
-            self.logger.log(2, self.__str__(), e, path)
+            self.logger.log(2, self.NAME, e, path)
 
     def read_file(self, path, iter=False):
         '''read from disk'''
@@ -191,7 +190,7 @@ class MetaGoblin:
                 else:
                     return file.read()
         except OSError as e:
-            self.logger.log(2, self.__str__(), e, path)
+            self.logger.log(2, self.NAME, e, path)
 
     def extract_by_tag(self, url, tag=None, attr=None):
         '''extract from html by tag'''
@@ -244,16 +243,16 @@ class MetaGoblin:
                 if self.args['noskip']:
                     filepath = self.parser.make_unique(save_loc, f'{filename}.{ftype}')
                 else:
-                    self.logger.log(1, self.__str__(), 'file exists', filename)
+                    self.logger.log(1, self.NAME, 'file exists', filename)
                     continue
             attempt = self.download(url, filepath)
             if attempt:
-                self.logger.log(1, self.__str__(), 'looted', filename)
+                self.logger.log(1, self.NAME, 'looted', filename)
                 self.looted.add(filepath)
                 loot_tally += 1
                 failed = 0
             else:
                 failed += 1
             sleep(self.args['delay'])
-        self.logger.log(0, self.__str__(), 'complete', f'{loot_tally} file(s) looted')
+        self.logger.log(0, self.NAME, 'complete', f'{loot_tally} file(s) looted')
         return timed_out

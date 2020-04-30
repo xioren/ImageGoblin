@@ -7,12 +7,11 @@ from manifest import goblins
 
 class Dispatcher:
 
+    NAME = 'dispatcher'
+
     def __init__(self, args):
         self.args = args
         self.logger = Logger(self.args['verbose'], self.args['silent'])
-
-    def __str__(self):
-        return 'dispatcher'
 
     def identify(self, url):
         '''match url to a specific goblin'''
@@ -36,7 +35,7 @@ class Dispatcher:
             urls = goblin().run()
         else:
             if not self.args['targets']:
-                self.logger.log(0, self.__str__(), 'ERROR', 'input not understood')
+                self.logger.log(0, self.NAME, 'ERROR', 'input not understood')
                 return None
             urls = [self.args['targets']]
         for url in urls:
@@ -57,6 +56,6 @@ class Dispatcher:
             try:
                 goblin = goblins[key][1]
             except KeyError:
-                self.logger.log(0, self.__str__(), 'ERROR', f'unkown goblin "{key}" -> use --list to see available goblins')
+                self.logger.log(0, self.NAME, 'ERROR', f'unkown goblin "{key}" -> use --list to see available goblins')
                 continue
             goblin(self.args).run()

@@ -7,23 +7,20 @@ class FlickrGoblin(MetaGoblin):
         - webpage
     '''
 
+    NAME = 'flickr goblin'
+    ID = 'flickr'
+    URL_PAT = r'live\.staticflickr.com\\/\d+\\/\d+_[a-z0-9]+_o\.jpg'
+
     def __init__(self, args):
         super().__init__(args)
-        self.url_pat = r'live\.staticflickr.com\\/\d+\\/\d+_[a-z0-9]+_o\.jpg'
-
-    def __str__(self):
-        return 'flickr goblin'
-
-    def __repr__(self):
-        return 'flickr'
 
     def run(self):
-        self.logger.log(1, self.__str__(), 'collecting links')
-        for target in self.args['targets'][self.__repr__()]:
+        self.logger.log(1, self.NAME, 'collecting links')
+        for target in self.args['targets'][self.ID]:
             if 'staticflickr' in target:
                 urls = [target]
             else:
-                urls = self.extract_by_regex(self.url_pat, target)
+                urls = self.extract_by_regex(FlickrGoblin.URL_PAT, target)
             for url in urls:
                 self.collect(url)
         self.loot()

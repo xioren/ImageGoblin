@@ -8,25 +8,22 @@ class VictoriasSecretGoblin(MetaGoblin):
         - image*
     '''
 
+    NAME = 'victorias secret goblin'
+    ID = 'victoriassecret'
+    # URL_PAT = r'https?://www\.victoriassecret\.com/p/[^" ]+\.jpg'
+
     def __init__(self, args):
         super().__init__(args)
-        # self.url_pat = r'https?://www\.victoriassecret\.com/p/[^" ]+\.jpg'
-
-    def __str__(self):
-        return 'victorias secret goblin'
-
-    def __repr__(self):
-        return 'victoriassecret'
 
     def run(self):
-        self.logger.log(1, self.__str__(), 'collecting links')
-        for target in self.args['targets'][self.__repr__()]:
+        self.logger.log(1, self.NAME, 'collecting links')
+        for target in self.args['targets'][self.ID]:
             if 'victoriassecret.com/p/' in target:
                 urls = [target]
-                self.logger.log(1, self.__str__(), 'WARNING', 'image urls not fully supported')
+                self.logger.log(1, self.NAME, 'WARNING', 'image urls not fully supported')
             else:
                 urls = []
-                self.logger.log(1, self.__str__(), 'WARNING', 'webpage urls not supported')
+                self.logger.log(1, self.NAME, 'WARNING', 'webpage urls not supported')
             for url in urls:
                 self.collect(re.sub(r'p/\d+x\d+', 'p/4040x5390', target))
         self.loot()

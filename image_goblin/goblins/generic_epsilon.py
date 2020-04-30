@@ -23,15 +23,15 @@ class EpsilonGoblin(MetaGoblin):
         return re.sub(r'mnresize/\d+/\d+', '', url).replace('Thumbs', 'Originals')
 
     def run(self):
-        self.logger.log(1, self.__str__(), 'collecting links')
-        for target in self.args['targets'][self.__repr__()]:
+        self.logger.log(1, self.NAME, 'collecting links')
+        for target in self.args['targets'][self.ID]:
             if 'mncdn' in target:
                 urls = [target]
             else:
-                urls = self.extract_by_regex(self.url_pat, target)
+                urls = self.extract_by_regex(self.URL_PAT, target)
             for url in urls:
-                url_base, _ = re.split(self.mod_pat, self.trim_url(url))
+                url_base, _ = re.split(self.MOD_PAT, self.trim_url(url))
                 self.generate_modifiers(url)
                 for mod in self.modifiers:
-                    self.collect(f'{url_base}{mod}{self.url_end}')
+                    self.collect(f'{url_base}{mod}{self.URL_END}')
         self.loot()

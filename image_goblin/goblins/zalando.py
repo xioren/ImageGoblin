@@ -12,15 +12,12 @@ class ZalandoGoblin(MetaGoblin):
         - webpage
     '''
 
+    NAME = 'zalando goblin'
+    ID = 'zalando'
+    ID_PAT = re.compile(r'[A-Z0-9]+-[A-Z0-9]{3}(?![\-\w])')
+
     def __init__(self, args):
         super().__init__(args)
-        self.id_pat = re.compile(r'[A-Z0-9]+-[A-Z0-9]{3}(?![\-\w])')
-
-    def __str__(self):
-        return 'zalando goblin'
-
-    def __repr__(self):
-        return 'zalando'
 
     def form_url(self, filename):
         '''form url from filename'''
@@ -30,12 +27,12 @@ class ZalandoGoblin(MetaGoblin):
 
     def extract_id(self, url):
         '''extract image id from url'''
-        return re.search(self.id_pat, self.parser.extract_filename(url).upper()).group()
+        return re.search(self.ID_PAT, self.parser.extract_filename(url).upper()).group()
 
     def run(self):
         self.toggle_collecton_type()
-        self.logger.log(1, self.__str__(), 'collecting links')
-        for target in self.args['targets'][self.__repr__()]:
+        self.logger.log(1, self.NAME, 'collecting links')
+        for target in self.args['targets'][self.ID]:
             self.new_collection()
             id = self.extract_id(target)
             for n in range(1, 50):

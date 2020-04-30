@@ -11,27 +11,24 @@ class WolfordGoblin(MetaGoblin):
         - image
     '''
 
+    NAME = 'wolford goblin'
+    ID = 'wolford'
+
     def __init__(self, args):
         super().__init__(args)
-
-    def __str__(self):
-        return 'wolford goblin'
-
-    def __repr__(self):
-        return 'wolford'
 
     def trim(self, url):
         '''strip cropping from url'''
         return re.sub(r'default/\w+/images', 'default/images', url).replace('dw/image/v2/BBCH_PRD/', '')
 
     def run(self):
-        self.logger.log(1, self.__str__(), 'collecting links')
-        for target in self.args['targets'][self.__repr__()]:
+        self.logger.log(1, self.NAME, 'collecting links')
+        for target in self.args['targets'][self.ID]:
             if 'demandware' in target:
                 urls = [target]
             else:
                 urls = []
-                self.logger.log(1, self.__str__(), 'WARNING', 'webpage urls not supported')
+                self.logger.log(1, self.NAME, 'WARNING', 'webpage urls not supported')
             for url in urls:
                 url = self.trim(url)
                 if 'Additional-Picture' in url:

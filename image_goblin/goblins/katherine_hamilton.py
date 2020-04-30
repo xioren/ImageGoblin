@@ -9,27 +9,24 @@ class KatherineHamiltonGoblin(MetaGoblin):
         - webpage
     '''
 
+    NAME = 'katherine hamilton goblin'
+    ID = 'katherinehamilton'
+    URL_PAT = r'https?://[^" \n]+\.jpg'
+    MODIFIERS = ('', '-front', '-back', '-side', '-set', '-fton', '-open', '-fron-1')
+
     def __init__(self, args):
         super().__init__(args)
-        self.url_pat = r'https?://[^" \n]+\.jpg'
-        self.modifiers = ('', '-front', '-back', '-side', '-set', '-fton', '-open', '-fron-1')
-
-    def __str__(self):
-        return 'katherine hamilton goblin'
-
-    def __repr__(self):
-        return 'katherinehamilton'
 
     def run(self):
-        self.logger.log(1, self.__str__(), 'collecting links')
-        for target in self.args['targets'][self.__repr__()]:
+        self.logger.log(1, self.NAME, 'collecting links')
+        for target in self.args['targets'][self.ID]:
             if '.jpg' in target:
                 urls = []
-                self.logger.log(1, self.__str__(), 'WARNING', 'image urls not fully supported')
+                self.logger.log(1, self.NAME, 'WARNING', 'image urls not fully supported')
             else:
-                urls = self.extract_by_regex(self.url_pat, target)
+                urls = self.extract_by_regex(self.URL_PAT, target)
             for url in urls:
                 url = re.sub(r'(-front|-back)?(\d+x\d+)?\.jpg', '', url).strip('-')
-                for mod in self.modifiers:
+                for mod in self.MODIFIERS:
                     self.collect(f'{url}{mod}.jpg')
         self.loot()

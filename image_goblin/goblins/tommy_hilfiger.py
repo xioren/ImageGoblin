@@ -3,18 +3,15 @@ from goblins.generic_beta import BetaGoblin
 
 class TommyHilfigerGoblin(BetaGoblin):
 
+    NAME = 'tommy hilfiger goblin'
+    ID = 'tommyhilfiger'
+    ACCEPT_WEBPAGE = True
+
     def __init__(self, args):
         super().__init__(args)
-        self.accept_webpage = True
-
-    def __str__(self):
-        return 'tommy hilfiger goblin'
-
-    def __repr__(self):
-        return 'tommyhilfiger'
 
     @property
-    def modifiers(self):
+    def MODIFIERS(self):
         if 'europe' in self.url_base:
             return ('_main', '_alternate1', '_alternate2', '_alternate3', '_alternate4')
         else:

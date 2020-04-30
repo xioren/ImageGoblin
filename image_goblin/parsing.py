@@ -4,34 +4,27 @@ import urllib.parse
 from os.path import join, exists
 
 
-# TEMP:
-# - <meta property="og:image" content="
-# - og:image(:secure_url)?" content="[^"]+
-# - background-image:[^"]+"[^"]+
-
-
 class Parser:
     '''generic url/html parsing and manipulation methods'''
+
+    FILENAME_PAT = re.compile(r'(?<=/)[^/]+$')
+    QEURY_PAT = re.compile(r'[\?&][^" ]+$')
+    QUALITY_PAT = re.compile(r'q((ua)?li?ty)?=\d+')
+    FILETYPE_PAT = re.compile(r'(?<=\.)[A-Za-z0-9]+$', flags=re.IGNORECASE)
+    CROPPING_PATS = (
+        re.compile(r'[@\-_/]?((\d{3,4}x(\d{3,4})?|(\d{3,4})?x\d{3,4}))'), # 000x000
+        re.compile(r'[\-_](large|profile)|(large|profile)[\-_]'),
+        re.compile(r'(?<=/)c_.+?/v1/'), # cloudfront
+        re.compile(r'expanded_[a-z]+/'),
+        re.compile(r'(\.|-)\d+w'), # -000w
+        re.compile(r'-e\d+(?=\.)'),
+        re.compile(r'/v/\d/.+\.webp$'),
+        re.compile(r'@\d+x')
+    )
 
     def __init__(self, origin_url, user_formatting):
         self.origin_url = origin_url
         self.user_formatting = user_formatting
-        self.filename_pat = re.compile(r'(?<=/)[^/]+$')
-        self.query_pat = re.compile(r'[\?&][^" ]+$')
-        self.quality_pat = re.compile(r'q((ua)?li?ty)?=\d+')
-        self.filetype_pat = re.compile(r'(?<=\.)[A-Za-z0-9]+$', flags=re.IGNORECASE)
-        # IDEA: mimetype id'ing?
-        self.filetypes = r'\.(jpe?g|png|gif|mp4|web[pm]|tiff?|mov|svg|bmp|exif)'
-        self.cropping_pats = (
-            re.compile(r'[@\-_/]?((\d{3,4}x(\d{3,4})?|(\d{3,4})?x\d{3,4}))'), # 000x000
-            re.compile(r'[\-_](large|profile)|(large|profile)[\-_]'),
-            re.compile(r'(?<=/)([a-z]{,2}_[\w:]+(,|/)?)+/v\d+/'), # cloudfront
-            re.compile(r'expanded_[a-z]+/'),
-            re.compile(r'(\.|-)\d+w'), # -000w
-            re.compile(r'-e\d+(?=\.)'),
-            re.compile(r'/v/\d/.+\.webp$'),
-            re.compile(r'@\d+x')
-        )
 
 ####################################################################
 # sub classes
@@ -39,23 +32,24 @@ class Parser:
 
     class GoblinHTMLParser:
 
+        ELEMENT_PAT = re.compile(r'<[a-z]+ [^>]+>')
+        TAG_PAT = re.compile(r'(?<=<)[a-z\-]+')
+        ATTRIBUTE_PAT = re.compile(r'[a-z\d\-]+="[^"]+')
+
         def __init__(self, content):
             self.html = content
             self.attributes = {}
-            self.element_pat = re.compile(r'<[a-z]+ [^>]+>')
-            self.tag_pat = re.compile(r'(?<=<)[a-z\-]+')
-            self.attribute_pat = re.compile(r'[a-z\d\-]+="[^"]+')
             self.elements = {}
 
         def parse_elements(self):
             '''extract and sort all elements from an html source'''
-            elements = re.finditer(self.element_pat, self.html)
+            elements = re.finditer(self.ELEMENT_PAT, self.html)
             for element in elements:
                 element = element.group()
-                tag = re.search(self.tag_pat, element).group()
+                tag = re.search(self.TAG_PAT, element).group()
                 if tag not in self.elements:
                     self.elements[tag] = {}
-                attributes = re.finditer(self.attribute_pat, element)
+                attributes = re.finditer(self.ATTRIBUTE_PAT, element)
                 for attribute in attributes:
                     attr, value = attribute.group().split('="')
                     if attr not in self.elements[tag]:
@@ -70,19 +64,19 @@ class Parser:
     def extract_filename(self, url):
         '''extracts filename from url'''
         try:
-            return re.sub(r'\..+$', '', re.search(self.filename_pat, self.dequery(url)).group())
+            return re.sub(r'\..+$', '', re.search(self.FILENAME_PAT, self.dequery(url)).group())
         except AttributeError as e:
             return 'image'
 
     def decrop(self, url):
         '''removes common cropping from url'''
-        for pat in self.cropping_pats:
+        for pat in self.CROPPING_PATS:
             url = re.sub(pat, '', url)
         return url
 
     def dequery(self, url):
         '''remove query string from url'''
-        return re.sub(self.query_pat, '', url)
+        return re.sub(self.QEURY_PAT, '', url)
 
     def sanitize(self, url):
         '''combines dequery and decrop'''
@@ -94,7 +88,7 @@ class Parser:
 
     def filetype(self, url):
         '''extract file type'''
-        type = re.search(self.filetype_pat, self.dequery(url))
+        type = re.search(self.FILETYPE_PAT, self.dequery(url))
         if not type:
             return 'jpeg'
         return type.group().replace('jpg', 'jpeg')
@@ -140,7 +134,7 @@ class Parser:
 
     def auto_format(self, url):
         '''attempt to upscale common url formats'''
-        quality = re.search(self.quality_pat, url)
+        quality = re.search(self.QUALITY_PAT, url)
         url = self.sanitize(url)
         if 'acidimg' in url:
             url = url.replace('small', 'big')

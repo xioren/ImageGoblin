@@ -8,19 +8,16 @@ class FredericksGoblin(MetaGoblin):
         - image*
     '''
 
+    NAME = 'fredericks goblin'
+    ID = 'fredericks'
+    # URL_PAT = r'//[^" \n]+\.jpe?g'
+
     def __init__(self, args):
         super().__init__(args)
-        self.url_pat = r'//[^" \n]+\.jpe?g'
-
-    def __str__(self):
-        return 'fredericks goblin'
-
-    def __repr__(self):
-        return 'fredericks'
 
     def run(self):
-        self.logger.log(1, self.__str__(), 'collecting links')
-        for target in self.args['targets'][self.__repr__()]:
+        self.logger.log(1, self.NAME, 'collecting links')
+        for target in self.args['targets'][self.ID]:
             if 'cloudfront' in target:
                 urls = [target]
                 self.logger.log(1, self.__str__(), 'WARNING', 'image urls not fully supported')

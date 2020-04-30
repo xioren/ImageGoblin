@@ -12,27 +12,24 @@ class CAGoblin(MetaGoblin):
         - webpage
     '''
 
+    NAME = 'c&a goblin'
+    ID = 'canda'
+    URL_PAT = r'https?://www\.c-and-a\.com/productimages/[^" ]+/v[^" ]+-0[1-9]\.jpg'
+
     def __init__(self, args):
         super().__init__(args)
-        self.url_pat = r'https?://www\.c-and-a\.com/productimages/[^" ]+/v[^" ]+-0[1-9]\.jpg'
-
-    def __str__(self):
-        return 'c&a goblin'
-
-    def __repr__(self):
-        return 'canda'
 
     def extract_id(self, url):
         '''extract image id from url'''
         return re.search(r'/\d+-\d+', url).group()
 
     def run(self):
-        self.logger.log(1, self.__str__(), 'collecting links')
-        for target in self.args['targets'][self.__repr__()]:
+        self.logger.log(1, self.NAME, 'collecting links')
+        for target in self.args['targets'][self.ID]:
             if 'productimages' in target:
                 urls = [target]
             else:
-                urls = self.extract_by_regex(self.url_pat, target)
+                urls = self.extract_by_regex(self.URL_PAT, target)
             for url in urls:
                 id = self.extract_id(url)
                 for n in range(1, 6):

@@ -8,15 +8,12 @@ class WoodWoodGoblin(MetaGoblin):
         - image
     '''
 
+    NAME = 'wood wood goblin'
+    ID = 'woodwood'
+    # URL_PAT = r'https?://www\.woodwood\.com/shared/[^" ]+\.jpg'
+
     def __init__(self, args):
         super().__init__(args)
-        self.url_pat = r'https?://www\.woodwood\.com/shared/[^" ]+\.jpg'
-
-    def __str__(self):
-        return 'wood wood goblin'
-
-    def __repr__(self):
-        return 'woodwood'
 
     def extract_id(self, url):
         '''extract image id from url'''
@@ -27,13 +24,13 @@ class WoodWoodGoblin(MetaGoblin):
         return re.sub(r'\d+x\d+c', '1600x2400c', self.parser.extract_filename(url))
 
     def run(self):
-        self.logger.log(1, self.__str__(), 'collecting links')
-        for target in self.args['targets'][self.__repr__()]:
+        self.logger.log(1, self.NAME, 'collecting links')
+        for target in self.args['targets'][self.ID]:
             if 'shared' in target:
                 urls = [target]
             else:
                 urls = []
-                self.logger.log(1, self.__str__(), 'WARNING', 'webpage urls not supported')
+                self.logger.log(1, self.NAME, 'WARNING', 'webpage urls not supported')
             for url in urls:
                 id, image_num = self.extract_id(url)
                 filename = self.upscale(url)

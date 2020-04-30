@@ -6,19 +6,16 @@ class Goblin(MetaGoblin):
         -
     '''
 
+    NAME = ' goblin'
+    ID = ''
+    URL_PAT = r''
+
     def __init__(self, args):
         super().__init__(args)
-        self.url_pat = r''
-
-    def __str__(self):
-        return ' goblin'
-
-    def __repr__(self):
-        return ''
 
     def run(self):
-        self.logger.log(1, self.__str__(), 'collecting links')
-        for target in self.args['targets'][self.__repr__()]:
+        self.logger.log(1, self.NAME, 'collecting links')
+        for target in self.args['targets'][self.ID]:
             if '' in target:
                 urls = [target]
             else:

@@ -11,27 +11,24 @@ class TrendyolGoblin(MetaGoblin):
         - webpage
     '''
 
+    NAME = 'trandyol goblin'
+    ID = 'trendyol'
+    URL_PAT = r'https?://(img-trendyol\.mncdn|cdn\.dsmcdn)\.com/[^" ,]+\d_org(_zoom)?\.jpg'
+
     def __init__(self, args):
         super().__init__(args)
-        self.url_pat = r'https?://(img-trendyol\.mncdn|cdn\.dsmcdn)\.com/[^" ,]+\d_org(_zoom)?\.jpg'
-
-    def __str__(self):
-        return 'trandyol goblin'
-
-    def __repr__(self):
-        return 'trendyol'
 
     def extract_base(self, url):
         '''extract base of url'''
         return re.sub(r'\d+_[a-z]+(_[a-z]+)?\.jpg', '', url)
 
     def run(self):
-        self.logger.log(1, self.__str__(), 'collecting links')
-        for target in self.args['targets'][self.__repr__()]:
+        self.logger.log(1, self.NAME, 'collecting links')
+        for target in self.args['targets'][self.ID]:
             if 'img-trendyol' in target or 'cdn.dsmcdn' in target:
                 urls = [target]
             else:
-                urls = self.extract_by_regex(self.url_pat, target)
+                urls = self.extract_by_regex(self.URL_PAT, target)
             for url in urls:
                 url_base = self.extract_base(url)
                 for n in range(1, 16):

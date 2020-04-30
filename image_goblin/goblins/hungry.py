@@ -3,19 +3,15 @@ from goblins.meta import MetaGoblin
 
 class HungryGoblin(MetaGoblin):
 
+    NAME = 'hungry goblin'
+
     def __init__(self):
         self.meal = set()
-        print(f'[{self.__str__()}] <deployed>')
-
-    def __str__(self):
-        return 'hungry goblin'
-
-    def __repr__(self):
-        return 'hungry'
+        print(f'[{self.NAME}] <deployed>')
 
     def run(self):
         while True:
-            bite = (input(f'[{self.__str__()}] <feed me> '))
+            bite = (input(f'[{self.NAME}] <feed me> '))
             if bite == '':
                 break
             self.meal.add(bite)

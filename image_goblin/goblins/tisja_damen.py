@@ -9,28 +9,25 @@ class TisjaDamenGoblin(MetaGoblin):
         - webpage
     '''
 
+    NAME = 'tisja damen goblin'
+    ID = 'tisjadamen'
+    URL_PAT = r'/images/magictoolbox_cache/[^" ]+\.jpg'
+
     def __init__(self, args):
         super().__init__(args)
-        self.url_pat = r'/images/magictoolbox_cache/[^" ]+\.jpg'
-
-    def __str__(self):
-        return 'tisja damen goblin'
-
-    def __repr__(self):
-        return 'tisjadamen'
 
     def trim(self, url):
         '''seperate image from rest url'''
         return re.search(r'(?<=/)[^/]+$', url).group()
 
     def run(self):
-        self.logger.log(1, self.__str__(), 'collecting links')
-        for target in self.args['targets'][self.__repr__()]:
+        self.logger.log(1, self.NAME, 'collecting links')
+        for target in self.args['targets'][self.ID]:
             if 'images' in target:
                 urls = [target]
-                self.logger.log(1, self.__str__(), 'WARNING', 'image urls not fully supported')
+                self.logger.log(1, self.NAME, 'WARNING', 'image urls not fully supported')
             else:
-                urls = self.extract_by_regex(self.url_pat, target)
+                urls = self.extract_by_regex(self.URL_PAT, target)
             for url in urls:
                 image = self.trim(url)
                 for n in range(1, 4):

@@ -3,11 +3,8 @@ from goblins.generic_theta import ThetaGoblin
 
 class DoraLarsenGoblin(ThetaGoblin):
 
+    NAME = 'dora larsen goblin'
+    ID = 'doralarsen'
+
     def __init__(self, args):
         super().__init__(args)
-
-    def __str__(self):
-        return 'dora larsen goblin'
-
-    def __repr__(self):
-        return 'doralarsen'

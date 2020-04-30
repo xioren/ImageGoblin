@@ -9,15 +9,12 @@ class GettyGoblin(MetaGoblin):
         - webpage
     '''
 
+    NAME = 'getty goblin'
+    ID = 'getty'
+    URL_PAT = r'https?://[^"]+id\d+'
+
     def __init__(self, args):
         super().__init__(args)
-        self.url_pat = r'https?://[^"]+id\d+'
-
-    def __str__(self):
-        return 'getty goblin'
-
-    def __repr__(self):
-        return 'getty'
 
     def upgrade(self, image):
         '''sub in higher resolution cropping'''
@@ -25,13 +22,13 @@ class GettyGoblin(MetaGoblin):
         return f'https://media.gettyimages.com/photos/picture-{id}?s=2048x2048'
 
     def run(self):
-        self.logger.log(1, self.__str__(), 'collecting links')
-        for target in self.args['targets'][self.__repr__()]:
+        self.logger.log(1, self.NAME, 'collecting links')
+        for target in self.args['targets'][self.ID]:
             if 'media' in target:
                 urls = [target]
-                self.logger.log(1, self.__str__(), 'WARNING', 'image urls not fully supported')
+                self.logger.log(1, self.NAME, 'WARNING', 'image urls not fully supported')
             else:
-                urls = self.extract_by_regex(self.url_pat, target)
+                urls = self.extract_by_regex(self.URL_PAT, target)
             for url in urls:
                 self.collect(self.upgrade(url))
         self.loot()

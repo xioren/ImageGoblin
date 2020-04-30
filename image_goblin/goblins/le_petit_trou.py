@@ -9,24 +9,21 @@ class LePetitTrouGoblin(MetaGoblin):
         - webpage
     '''
 
+    NAME = 'le-petit-trou goblin'
+    ID = 'lepetittrou'
+    URL_PAT = r'https?://cdn\.shoplo[^"]+\.jpg'
+
     def __init__(self, args):
         super().__init__(args)
-        self.url_pat = r'https?://cdn\.shoplo[^"]+\.jpg'
-
-    def __str__(self):
-        return 'le-petit-trou goblin'
-
-    def __repr__(self):
-        return 'lepetittrou'
 
     def run(self):
-        self.logger.log(1, self.__str__(), 'collecting links')
-        for target in self.args['targets'][self.__repr__()]:
+        self.logger.log(1, self.NAME, 'collecting links')
+        for target in self.args['targets'][self.ID]:
             if 'shoplo' in target:
                 urls = [target]
-                self.logger.log(1, self.__str__(), 'WARNING', 'image urls not fully supported')
+                self.logger.log(1, self.NAME, 'WARNING', 'image urls not fully supported')
             else:
-                urls = self.extract_by_regex(self.url_pat, target)
+                urls = self.extract_by_regex(self.URL_PAT, target)
             for url in urls:
                 self.collect(re.sub(r'th\d+', 'orig', url))
         self.loot()

@@ -27,7 +27,6 @@ from goblins.etam import EtamGoblin
 from goblins.fae import FaeGoblin
 from goblins.faithfull_the_brand import FaithfullTheBrandGoblin
 from goblins.fashion_nova import FashionNovaGoblin
-from goblins.five_dancewear import FiveDancewearGoblin
 from goblins.fleur_du_mal import FleurDuMalGoblin
 from goblins.flickr import FlickrGoblin
 from goblins.for_love_and_lemons import ForLoveAndLemonsGoblin
@@ -131,7 +130,6 @@ goblins = {
     'fae': (r'fae.house\.[a-z]+', FaeGoblin),
     'fashionnova': (r'fashionnova\.[a-z]+', FashionNovaGoblin),
     'faithfullthebrand': (r'faithfullthebrand\.[a-z]+', FaithfullTheBrandGoblin),
-    'fivedancewear': (r'fivedancewear\.[a-z]+', FiveDancewearGoblin),
     'fleurdumal': (r'fleurdumal\.[a-z]+', FleurDuMalGoblin),
     'flickr': (r'flickr\.[a-z]+', FlickrGoblin),
     'fredericks': (r'fredericks(\.[a-z]+|/)', FredericksGoblin),

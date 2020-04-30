@@ -11,15 +11,12 @@ class IteratorGoblin(MetaGoblin):
         - image
     '''
 
+    NAME = 'iterator goblin'
+    ID = 'iterator'
+
     def __init__(self, args):
         super().__init__(args)
         self.block_size = self.args['step'] * 100
-
-    def __str__(self):
-        return 'iterator goblin'
-
-    def __repr__(self):
-        return 'iterator'
 
     def isolate_parts(self, url):
         '''seperate url into base, iterable, end'''
@@ -42,13 +39,13 @@ class IteratorGoblin(MetaGoblin):
         '''main iteration method'''
         self.toggle_collecton_type()
         round = 1
-        base, iterable, end = self.isolate_parts(self.args['targets'][self.__repr__()][0])
+        base, iterable, end = self.isolate_parts(self.args['targets'][self.ID][0])
         while True:
-            self.logger.log(0, self.__str__(), 'iterating', f'round {round}')
+            self.logger.log(0, self.NAME, 'iterating', f'round {round}')
             self.generate_urls(base, iterable, end)
             timeout = self.loot(timeout=self.args['timeout'])
             if timeout:
-                self.logger.log(0, self.__str__(), 'timeout', f'after {self.args["timeout"]} attempts')
+                self.logger.log(0, self.NAME, 'timeout', f'after {self.args["timeout"]} attempts')
                 return None
             else:
                 round += 1

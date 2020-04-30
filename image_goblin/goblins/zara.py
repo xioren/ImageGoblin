@@ -3,13 +3,10 @@ from goblins.generic_delta import DeltaGoblin
 
 class ZaraGoblin(DeltaGoblin):
 
+    NAME = 'zara goblin'
+    ID = 'zara'
+    SIZE = 0
+    ACCEPT_WEBPAGE = True
+
     def __init__(self, args):
         super().__init__(args)
-        self.size = 0
-        self.accept_webpage = True
-
-    def __str__(self):
-        return 'zara goblin'
-
-    def __repr__(self):
-        return 'zara'

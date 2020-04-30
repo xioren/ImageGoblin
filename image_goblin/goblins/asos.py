@@ -13,16 +13,13 @@ class ASOSGoblin(MetaGoblin):
         - webpage
     '''
 
+    NAME = 'asos goblin'
+    ID = 'asos'
+    QUERY = '?scl=1&qlt=100'
+    URL_BASE = 'https://images.asos-media.com/products/asos/'
+
     def __init__(self, args):
         super().__init__(args)
-        self.query = '?scl=1&qlt=100'
-        self.url_base = 'https://images.asos-media.com/products/asos/'
-
-    def __str__(self):
-        return 'asos goblin'
-
-    def __repr__(self):
-        return 'asos'
 
     def extract_id(self, url):
         '''extract image id from url'''
@@ -41,11 +38,11 @@ class ASOSGoblin(MetaGoblin):
 
     def form_url(self, id):
         '''generate a url from an image id'''
-        return f'{self.url_base}{id}{self.query}'
+        return f'{self.URL_BASE}{id}{self.QUERY}'
 
     def run(self):
-        self.logger.log(1, self.__str__(), 'collecting links')
-        for target in self.args['targets'][self.__repr__()]:
+        self.logger.log(1, self.NAME, 'collecting links')
+        for target in self.args['targets'][self.ID]:
             color = self.extract_color(target)
             id = self.extract_id(target)
             if color:

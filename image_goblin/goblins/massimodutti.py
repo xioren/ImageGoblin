@@ -4,13 +4,10 @@ from goblins.generic_delta import DeltaGoblin
 
 class MassimoDuttiGoblin(DeltaGoblin):
 
+    NAME = 'massimo dutti goblin'
+    ID = 'massimodutti'
+    ACCEPT_WEBPAGE = True
+    SIZE = 0
+
     def __init__(self, args):
         super().__init__(args)
-        self.size = 0
-        self.accept_webpage = True
-
-    def __str__(self):
-        return 'massimo dutti goblin'
-
-    def __repr__(self):
-        return 'massimodutti'

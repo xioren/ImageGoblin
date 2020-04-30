@@ -9,33 +9,30 @@ class MangoGoblin(MetaGoblin):
         - webpage
     '''
 
+    NAME = 'mango goblin'
+    ID = 'mango'
+    URL_PAT = r'https?://st\.mngbcn\.com[^"\? ]+\.jpg'
+    QUERY = '?qlt=100'
+    MODIFIERS = ('', '_R', '_D1', '_D2', '_D3', '_D4', '_D5', '_D6')
+    URL_BASE = 'https://st.mngbcn.com/rcs/pics/static/'
+
     def __init__(self, args):
         super().__init__(args)
-        self.url_pat = r'https?://st\.mngbcn\.com[^"\? ]+\.jpg'
-        self.query = '?qlt=100'
-        self.modifiers = ('', '_R', '_D1', '_D2', '_D3', '_D4', '_D5', '_D6')
-        self.url_base = 'https://st.mngbcn.com/rcs/pics/static/'
-
-    def __str__(self):
-        return 'mango goblin'
-
-    def __repr__(self):
-        return 'mango'
 
     def extract_id(self, url):
         '''extract image id from url'''
         return re.search(r'T\d', url).group(), re.search(r'\d+_\d+', url).group()
 
     def run(self):
-        self.logger.log(1, self.__str__(), 'collecting links')
-        for target in self.args['targets'][self.__repr__()]:
+        self.logger.log(1, self.NAME, 'collecting links')
+        for target in self.args['targets'][self.ID]:
             if 'mngbcn' in target:
                 urls = [target]
             else:
-                urls = self.extract_by_regex(self.url_pat, target)
+                urls = self.extract_by_regex(self.URL_PAT, target)
             for url in urls:
                 t, id = self.extract_id(url)
-                self.collect(f'{self.url_base}{t}/fotos/outfit/S20/{id}-99999999_01.jpg{self.query}')
-                for mod in self.modifiers:
-                    self.collect(f'{self.url_base}{t}/fotos/S20/{id}{mod}.jpg{self.query}')
+                self.collect(f'{self.URL_BASE}{t}/fotos/outfit/S20/{id}-99999999_01.jpg{self.QUERY}')
+                for mod in self.MODIFIERS:
+                    self.collect(f'{self.URL_BASE}{t}/fotos/S20/{id}{mod}.jpg{self.QUERY}')
         self.loot()
