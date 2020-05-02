@@ -8,7 +8,7 @@ class Parser:
     '''generic url/html parsing and manipulation methods'''
 
     FILENAME_PAT = re.compile(r'(?<=/)[^/]+$')
-    QEURY_PAT = re.compile(r'[\?&][^" ]+$')
+    QUERY_PAT = re.compile(r'[\?&][^" ]+$')
     QUALITY_PAT = re.compile(r'q((ua)?li?ty)?=\d+')
     FILETYPE_PAT = re.compile(r'(?<=\.)[A-Za-z0-9]+$', flags=re.IGNORECASE)
     CROPPING_PATS = (
@@ -76,7 +76,7 @@ class Parser:
 
     def dequery(self, url):
         '''remove query string from url'''
-        return re.sub(self.QEURY_PAT, '', url)
+        return re.sub(self.QUERY_PAT, '', url)
 
     def sanitize(self, url):
         '''combines dequery and decrop'''

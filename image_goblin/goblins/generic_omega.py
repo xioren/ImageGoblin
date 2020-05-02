@@ -17,7 +17,7 @@ class OmegaGoblin(MetaGoblin):
                          flags=re.IGNORECASE)
     FILTER_PAT = re.compile(r'\.(js|css|pdf|php|html)|(fav)?icon|logo|menu',
                             flags=re.IGNORECASE)
-    ATTR_PAT = re.compile(r'(?:src(?==)|data(?![a-z\-])|data-(src(?!set)|lazy|url)' \
+    ATTR_PAT = re.compile(r'(?:src(?![a-z])|data(?![a-z\-])|data-(src(?!set)|lazy|url)' \
                           r'|content(?![a-z\-])|hires(?![a-z\-]))')
     TAG_PAT = re.compile('(?:ima?ge?|video|source)')
 
@@ -29,7 +29,7 @@ class OmegaGoblin(MetaGoblin):
         '''format a url either automatically or via user input modifier'''
         if self.args['format']:
             return self.parser.user_format(url)
-        elif not self.args['noupgrade']:
+        elif not self.args['noup']:
             return self.parser.auto_format(url)
         else:
             return url

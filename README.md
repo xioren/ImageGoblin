@@ -1,6 +1,7 @@
 # ImageGoblin
 
-#### changelog v0.2.6:
+#### changelog v0.2.7:
++ added progress bar
 + bug fixes
 + misc code clean up and improvements
 
@@ -27,7 +28,7 @@
   goblin --local urls.txt --silent
   ```
 
-+ *generic:* for any site without a specific goblin. by default, this mode will automatically try to remove common cropping. Using the '--format' option overrides this functionality and instead formats according to user input modifier(s). the usage format for this is '--format _mode_ _modifier_[ _replacement_]'. 'add _modifier_' will append the modifier to the end of the url; for example a query string. 'sub _modifier_ _replacement_' substitutes, while 'rem _modifier_' removes. using the --noupgrade flag prevents any automatic manipulation of urls. you can also enforce greedy mode with --greedy; sometimes this will find more images.
++ *generic:* for any site without a specific goblin. by default, this mode will automatically try to remove common cropping. Using the '--format' option overrides this functionality and instead formats according to user input modifier(s). the usage format for this is '--format _mode_ _modifier_[ _replacement_]'. 'add _modifier_' will append the modifier to the end of the url; for example a query string. 'sub _modifier_ _replacement_' substitutes, while 'rem _modifier_' removes. using the --noup flag prevents any automatic manipulation of urls. you can also enforce greedy mode with --greedy; sometimes this will find more images.
 
   *examples:*
 
@@ -77,4 +78,4 @@
   + a specific goblin can be forced using '--force _goblin_'.
   + all available goblins can be listed using '-l or --list'.
   + the --format input needs to be exact so make sure modifiers/spaces have not been erroneously added or left out.
-  + if little or no (relevant) images are found then the page is probably generated dynamically with javascript which the program can not handle. you can also try with the --noupgrade/--greedy handles.
+  + if little or no (relevant) images are found then the page is probably generated dynamically with javascript which the program can not handle. you can also try with the --noup/--greedy handles.

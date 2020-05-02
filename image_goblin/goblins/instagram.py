@@ -167,14 +167,17 @@ class InstagramGoblin(MetaGoblin):
 
     def get_media(self, posts):
         '''parses each post for media'''
+        post_num = 1
         media_pat = re.compile(r'(?<="display_url":")[^"]+|(?<="video_url":")[^"]+')
         for post in posts:
-            self.logger.log(1, self.NAME, 'parsing post', f'/p/{post}')
+            self.logger.progress(self.NAME, 'parsing posts', post_num, self.size_of(posts))
+            self.logger.log(2, self.NAME, 'parsing post', f'/p/{post}')
             content = self.extract_by_regex(media_pat, f'{self.BASE_URL}p/{post}/?__a=1')
             for url in content:
                 self.collect(url, f'{self.username}_{self.parser.extract_filename(url)}')
+            post_num += 1
             sleep(self.args['delay'])
-        self.logger.log(1, self.NAME, 'parsing complete')
+        self.logger.log(1, self.NAME, 'parsing complete', clear=True)
 
     def get_stories(self, url):
         response = json.loads(self.get(url).content)

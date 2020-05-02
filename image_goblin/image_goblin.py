@@ -35,7 +35,7 @@ parser.add_argument('--noskip', help='make filename unique if a file with the sa
 
 parser.add_argument('--nosort', help='download directly to current directory, without creating sub dirs', action='store_true')
 
-parser.add_argument('--noupgrade', help='do not remove cropping from urls', action='store_true')
+parser.add_argument('--noup', help='do not remove cropping from urls', action='store_true')
 
 parser.add_argument('--posts', help='number of instagram posts (n) to fetch (optional, n<100)', type=int, default=100)
 
@@ -66,7 +66,7 @@ args_dict = {
     'noskip': args.noskip,
     'nodl': args.nodl,
     'nosort': args.nosort,
-    'noupgrade': args.noupgrade,
+    'noup': args.noup,
     'posts': args.posts,
     'silent': args.silent,
     'step': args.step,

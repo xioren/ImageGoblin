@@ -53,7 +53,7 @@ class ThetaGoblin(MetaGoblin):
             else:
                 urls = self.extract_by_regex(self.URL_PAT, target)
             for url in urls:
-                if self.args['noupgrade']:
+                if self.args['noup']:
                     self.collect(url, clean=True)
                 else:
                     self.collect(self.trim(url), clean=True)

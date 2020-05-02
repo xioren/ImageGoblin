@@ -40,7 +40,6 @@ class MetaGoblin:
         self.parser = Parser(self.args['targets'][self.ID][0], self.args['format'])
         self.logger.log(0, self.NAME, 'deployed')
 
-
 ####################################################################
 # sub classes
 ####################################################################
@@ -100,6 +99,10 @@ class MetaGoblin:
     def new_collection(self):
         '''initialize a new collection'''
         self.collection.clear()
+
+    def size_of(self, iterable):
+        '''get size of list or set'''
+        return sum(1 for _ in iterable)
 
     def unzip(data):
         '''gzip decompression'''
@@ -226,6 +229,7 @@ class MetaGoblin:
     def loot(self, save_loc=None, timeout=0):
         '''retrieve collected urls'''
         failed = loot_tally = 0
+        file = 1
         timed_out = False
         for item in self.collection:
             if timeout and failed >= timeout:
@@ -235,6 +239,8 @@ class MetaGoblin:
             if self.args['nodl']:
                 print(url, end='\n\n')
                 continue
+            self.logger.progress(self.NAME, 'looting files', file, self.size_of(self.collection))
+            file += 1
             if not save_loc:
                 save_loc = self.path_main
             ftype = self.parser.filetype(url)
@@ -243,16 +249,16 @@ class MetaGoblin:
                 if self.args['noskip']:
                     filepath = self.parser.make_unique(save_loc, f'{filename}.{ftype}')
                 else:
-                    self.logger.log(1, self.NAME, 'file exists', filename)
+                    self.logger.log(2, self.NAME, 'file exists', filename)
                     continue
             attempt = self.download(url, filepath)
             if attempt:
-                self.logger.log(1, self.NAME, 'looted', filename)
+                self.logger.log(2, self.NAME, 'looted', filename)
                 self.looted.add(filepath)
                 loot_tally += 1
                 failed = 0
             else:
                 failed += 1
             sleep(self.args['delay'])
-        self.logger.log(0, self.NAME, 'complete', f'{loot_tally} file(s) looted')
+        self.logger.log(0, self.NAME, 'complete', f'{loot_tally} file(s) looted', clear=True)
         return timed_out
