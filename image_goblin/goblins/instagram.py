@@ -5,7 +5,7 @@ import json
 from time import sleep
 from hashlib import md5
 from getpass import getpass
-from urllib.parse import quote
+from urllib.parse import quote, urljoin
 from goblins.meta import MetaGoblin
 
 class InstagramGoblin(MetaGoblin):
@@ -68,7 +68,7 @@ class InstagramGoblin(MetaGoblin):
             while True:
                 username = input(f'[{self.NAME}] username: ')
                 password = getpass(f'[{self.NAME}] password: ')
-                response = self.post(f'{self.BASE_URL}accounts/login/ajax/',
+                response = self.post(urljoin(self.BASE_URL, 'accounts/login/ajax/'),
                                      data={'username': username, 'password': password})
                 del username, password
                 answer = json.loads(response.content)
@@ -86,12 +86,11 @@ class InstagramGoblin(MetaGoblin):
                     retry = input(f'[{self.NAME}] retry? (y/n): ')
                     if retry == 'y':
                         continue
-                    else:
-                        self.logger.log(0, self.NAME, 'continuing as guest')
+                    self.logger.log(0, self.NAME, 'continuing as guest')
                 break
 
     def logout(self):
-        response = self.post(f'{self.BASE_URL}accounts/logout/',
+        response = self.post(urljoin(self.BASE_URL, 'accounts/logout/'),
                              data={'csrfmiddlewaretoken': self.csrf_token})
         if response.code == 200:
             self.logger.log(0, self.NAME, 'logged out')
@@ -103,17 +102,21 @@ class InstagramGoblin(MetaGoblin):
         # WARNING: untested
         # QUESTION: are all these header updates necessary? test without. and
         # should they be assigned to self.csrf_token?
-        response = self.get(f'{self.BASE_URL.rstrip("/")}{checkpoint_url}')
-        self.headers.update({'X-CSRFToken': self.extract_csrf_token(response),
-                             'X-Instagram-AJAX': '1'})
-        self.headers.update({'Referer': f'{self.BASE_URL.rstrip("/")}{checkpoint_url}'})
+        verify_url = urljoin(self.BASE_URL, checkpoint_url)
+        response = self.get(verify_url)
+        self.headers.update(
+            {
+                'X-CSRFToken': self.extract_csrf_token(response),
+                'X-Instagram-AJAX': '1',
+                'Referer': verify_url
+            }
+        )
         mode = input(f'[{self.NAME}] receive code via (0 - sms, 1 - email): ')
-        challenge = self.post(f'{self.BASE_URL.rstrip("/")}{checkpoint_url}', data= {'choice': mode})
-        self.headers.update({'X-CSRFToken': self.extract_csrf_token(challenge),
-                             'X-Instagram-AJAX': '1'})
+        challenge = self.post(verify_url, data= {'choice': mode})
+        self.headers.update({'X-CSRFToken': self.extract_csrf_token(challenge)})
         while True:
             code = int(input(f'[{self.NAME}] enter security code: '))
-            response = self.post(f'{self.BASE_URL.rstrip("/")}{checkpoint_url}', data={'security_code': code})
+            response = self.post(verify_url, data={'security_code': code})
             self.headers.update({'X-CSRFToken': self.extract_csrf_token(response)})
             answer = json.loads(response.content)
             if answer.get('status') == 'ok':
@@ -132,7 +135,7 @@ class InstagramGoblin(MetaGoblin):
         '''make initial request to recieve necessary variables'''
         self.extend_cookie('Cookie', 'ig_pr=1')
         response = json.loads(re.search(r'(?<=sharedData\s=\s){[^;]+',
-                                        self.get(f'{self.BASE_URL}{self.username}').content).group())
+                                        self.get(urljoin(self.BASE_URL, self.username)).content).group())
         self.user_id = response['entry_data']['ProfilePage'][0]['graphql']['user']['id']
         self.rhx_gis = response.get('rhx_gis', '3c7ca9dcefcf966d11dacf1f151335e8')
 
@@ -140,7 +143,7 @@ class InstagramGoblin(MetaGoblin):
         '''parse instagram page for posts'''
         posts = []
         cursor = ''
-        post_pat = re.compile(r'(?<="shortcode":")[^"]+')
+        POST_PAT = re.compile(r'(?<="shortcode":")[^"]+')
         self.logger.log(1, self.NAME, 'collecting posts')
         while True:
             variables = json.dumps(
@@ -157,7 +160,7 @@ class InstagramGoblin(MetaGoblin):
                 }
             )
             response = self.get(self.BASE_URL + self.MEDIA_URL.format(quote(variables, safe='"')))
-            posts.extend([post.group() for post in re.finditer(post_pat, response.content)])
+            posts.extend([post.group() for post in re.finditer(POST_PAT, response.content)])
             cursor = json.loads(response.content)['data']['user']['edge_owner_to_timeline_media']['page_info']['end_cursor']
             if not cursor or self.num_posts < 100:
                 # end of profile or user specified finite number of posts.
@@ -168,12 +171,11 @@ class InstagramGoblin(MetaGoblin):
     def get_media(self, posts):
         '''parses each post for media'''
         post_num = 1
-        media_pat = re.compile(r'(?<="display_url":")[^"]+|(?<="video_url":")[^"]+')
+        MEDIA_PAT = re.compile(r'(?<="display_url":")[^"]+|(?<="video_url":")[^"]+')
         for post in posts:
-            self.logger.progress(self.NAME, 'parsing posts', post_num, self.size_of(posts))
+            self.logger.progress(self.NAME, 'parsing posts', post_num, len(posts))
             self.logger.log(2, self.NAME, 'parsing post', f'/p/{post}')
-            content = self.extract_by_regex(media_pat, f'{self.BASE_URL}p/{post}/?__a=1')
-            for url in content:
+            for url in self.extract_by_regex(MEDIA_PAT, urljoin(self.BASE_URL, f'p/{post}/?__a=1')):
                 self.collect(url, f'{self.username}_{self.parser.extract_filename(url)}')
             post_num += 1
             sleep(self.args['delay'])
@@ -204,7 +206,6 @@ class InstagramGoblin(MetaGoblin):
             self.get_stories(self.STORIES_REEL_ID_URL.format(quote('{{"reel_ids":[],' \
             '"tag_names":[],"location_ids":[],"highlight_reel_ids":["{}"],' \
             '"precomposed_overlay":false}}'.format('","'.join(str(x) for x in ids_chunk)), safe='"')))
-
 
     def run(self):
         self.authenticate(self.args['login'])

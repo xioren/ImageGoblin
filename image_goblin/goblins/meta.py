@@ -101,7 +101,7 @@ class MetaGoblin:
         self.collection.clear()
 
     def size_of(self, iterable):
-        '''get size of list or set'''
+        '''get size of a set'''
         return sum(1 for _ in iterable)
 
     def unzip(data):
@@ -227,7 +227,7 @@ class MetaGoblin:
             self.collection.add(f'{self.parser.finalize(url)}-break-{filename}')
 
     def loot(self, save_loc=None, timeout=0):
-        '''retrieve collected urls'''
+        '''retrieve resources from collected urls'''
         failed = loot_tally = 0
         file = 1
         timed_out = False

@@ -12,13 +12,13 @@ class Parser:
     QUALITY_PAT = re.compile(r'q((ua)?li?ty)?=\d+')
     FILETYPE_PAT = re.compile(r'(?<=\.)[A-Za-z0-9]+$', flags=re.IGNORECASE)
     CROPPING_PATS = (
-        re.compile(r'[@\-_/]?((\d{3,4}x(\d{3,4})?|(\d{3,4})?x\d{3,4}))'), # 000x000
-        re.compile(r'[\-_](large|profile)|(large|profile)[\-_]'),
-        re.compile(r'(?<=/)c_.+?/v1/'), # cloudfront
+        re.compile(r'[\-_]?(?<![a-z])((x+)?-?l(arge)?|profile)(?![a-z])[\-_]?', flags=re.IGNORECASE),
+        re.compile(r'[@\-_/]\d+x(\d+)?(?![a-z\d])'), # 000x000
         re.compile(r'expanded_[a-z]+/'),
-        re.compile(r'(\.|-)\d+w'), # -000w
-        re.compile(r'-e\d+(?=\.)'),
+        re.compile(r'(?<=/)c_.+?/v1/'), # cloudfront
         re.compile(r'/v/\d/.+\.webp$'),
+        re.compile(r'-e\d+(?=\.)'),
+        re.compile(r'(\.|-)\d+w'), # -000w
         re.compile(r'@\d+x')
     )
 
@@ -43,14 +43,11 @@ class Parser:
 
         def parse_elements(self):
             '''extract and sort all elements from an html source'''
-            elements = re.finditer(self.ELEMENT_PAT, self.html)
-            for element in elements:
-                element = element.group()
+            for element in [e.group() for e in re.finditer(self.ELEMENT_PAT, self.html)]:
                 tag = re.search(self.TAG_PAT, element).group()
                 if tag not in self.elements:
                     self.elements[tag] = {}
-                attributes = re.finditer(self.ATTRIBUTE_PAT, element)
-                for attribute in attributes:
+                for attribute in re.finditer(self.ATTRIBUTE_PAT, element):
                     attr, value = attribute.group().split('="')
                     if attr not in self.elements[tag]:
                         self.elements[tag][attr] = [value]
@@ -63,10 +60,8 @@ class Parser:
 
     def extract_filename(self, url):
         '''extracts filename from url'''
-        try:
-            return re.sub(r'\..+$', '', re.search(self.FILENAME_PAT, self.dequery(url)).group())
-        except AttributeError as e:
-            return 'image'
+        filename = re.search(self.FILENAME_PAT, self.dequery(url))
+        return re.sub(r'\..+$', '', filename.group()) if filename else 'image'
 
     def decrop(self, url):
         '''removes common cropping from url'''
@@ -88,10 +83,8 @@ class Parser:
 
     def filetype(self, url):
         '''extract file type'''
-        type = re.search(self.FILETYPE_PAT, self.dequery(url))
-        if not type:
-            return 'jpeg'
-        return type.group().replace('jpg', 'jpeg')
+        filetype = re.search(self.FILETYPE_PAT, self.dequery(url))
+        return filetype.group().replace('jpg', 'jpeg') if filetype else 'jpeg'
 
     def add_scheme(self, url):
         '''checks for and adds scheme'''
@@ -149,6 +142,8 @@ class Parser:
             url = url.replace('.th', '').replace('.md', '')
         elif 'imx.to' in url:
             url = url.replace('/t/', '/i/')
+        elif 'i.mdel.net' in url:
+            url = url.replace('.jpg', '-orig.jpg')
         elif 'pimpandhost' in url:
             url = url.replace('_s', '').replace('_m', '')
         elif 'pinimg' in url:
