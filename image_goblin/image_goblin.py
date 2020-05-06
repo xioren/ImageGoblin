@@ -2,7 +2,7 @@
 from sys import exit
 from argparse import ArgumentParser
 
-from dispatcher import Dispatcher
+from dispatching import Dispatcher
 
 
 parser = ArgumentParser()
@@ -43,41 +43,17 @@ parser.add_argument('-s', '--silent', help='suppress output', action='store_true
 
 parser.add_argument('--step', help='iteration step size (n)', type=int, default=1)
 
-parser.add_argument('target', nargs='?', help='webpage or image url')
+parser.add_argument('targets', nargs='?', help='webpage or image url')
 
 parser.add_argument('-t', '--timeout', help='iteration timeout threshold (n)', type=int, default=5)
 
 parser.add_argument('-v', '--verbose', help='output error messages for debugging', action='store_true')
 
-args = parser.parse_args()
-
-args_dict = {
-    'delay': args.delay,
-    'feed': args.feed,
-    'force': args.force,
-    'format': args.format,
-    'greedy': args.greedy,
-    'list': args.list,
-    'local': args.local,
-    'login': args.login,
-    'mask': args.mask,
-    'mode': args.mode,
-    'noclean': args.noclean,
-    'noskip': args.noskip,
-    'nodl': args.nodl,
-    'nosort': args.nosort,
-    'noup': args.noup,
-    'posts': args.posts,
-    'silent': args.silent,
-    'step': args.step,
-    'targets': args.target,
-    'timeout': args.timeout,
-    'verbose': args.verbose
-    }
+args = vars(parser.parse_args())
 
 if __name__ == '__main__':
     try:
-        Dispatcher(args_dict).dispatch()
+        Dispatcher(args).dispatch()
     except KeyboardInterrupt:
         print('\n-----exiting-----')
         exit(130)

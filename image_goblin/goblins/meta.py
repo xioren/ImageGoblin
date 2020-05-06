@@ -34,7 +34,7 @@ class MetaGoblin:
         self.headers = {'User-Agent': user_agent,
                         'Accept-Encoding': 'gzip'}
         self.collection = set()
-        self.looted = set()
+        self.looted = []
         self.make_dirs(self.path_main)
         self.logger = Logger(self.args['verbose'], self.args['silent'])
         self.parser = Parser(self.args['targets'][self.ID][0], self.args['format'])
@@ -125,6 +125,7 @@ class MetaGoblin:
             return urlopen(request, timeout=20)
         except HTTPError as e:
             self.logger.log(2, self.NAME, e, url)
+            # servers sometimes return 502 when requesting large files, retrying usually works.
             if e.code == 502:
                 return self.retry(url, n+1, data)
         except (URLError, CertificateError) as e:
@@ -163,9 +164,9 @@ class MetaGoblin:
     def retry(self, url, n, data=None, path=None):
         '''retry connection after a socket timeout'''
         if n > 5:
-            self.logger.log(1, self.NAME, timeout, f'aborting after {n} retries')
+            self.logger.log(2, self.NAME, 'timed out', f'aborting after {n} retries')
             return None
-        self.logger.log(1, self.NAME, timeout, f'retry attempt {n}')
+        self.logger.log(2, self.NAME, 'timed out', f'retry attempt {n}')
         sleep(3)
         if path:
             return self.download(url, path, n)
@@ -228,7 +229,7 @@ class MetaGoblin:
 
     def loot(self, save_loc=None, timeout=0):
         '''retrieve resources from collected urls'''
-        failed = loot_tally = 0
+        failed = 0
         file = 1
         timed_out = False
         for item in self.collection:
@@ -254,11 +255,10 @@ class MetaGoblin:
             attempt = self.download(url, filepath)
             if attempt:
                 self.logger.log(2, self.NAME, 'looted', filename)
-                self.looted.add(filepath)
-                loot_tally += 1
+                self.looted.append(filepath)
                 failed = 0
             else:
                 failed += 1
             sleep(self.args['delay'])
-        self.logger.log(0, self.NAME, 'complete', f'{loot_tally} file(s) looted', clear=True)
+        self.logger.log(0, self.NAME, 'complete', f'{len(self.looted)} file(s) looted', clear=True)
         return timed_out

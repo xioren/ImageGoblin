@@ -201,4 +201,4 @@ goblins = {
     'yargici': (r'yargici\.[a-z]+', YargiciGoblin),
     'zalando': (r'zalando\.[a-z]+|ztat\.net|[A-Z0-9]+-[A-Z]\d{2}@\d', ZalandoGoblin),
     'zara': (r'zara\.[a-z]+', ZaraGoblin)
-    }
+}

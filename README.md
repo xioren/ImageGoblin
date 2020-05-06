@@ -1,7 +1,7 @@
 # ImageGoblin
 
-#### changelog v0.2.7:
-+ added progress bar
+#### changelog v0.2.8:
++ minor feature updates
 + bug fixes
 + misc code clean up and improvements
 
