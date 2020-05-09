@@ -38,7 +38,7 @@ class ImgurGoblin(MetaGoblin):
                 urls = [target]
             else:
                 urls = []
-                matches = self.extract_by_regex(r'(?<=image               :\s){[^\n]+}(?=,\n)', target)
+                matches = self.extract_by_regex(r'(?<=image               :\s){[^\n]+}(?=,\n)', self.clean(target))
                 for match in matches:
                     items = json.loads(match)
                     for item in items['album_images']['images']:
