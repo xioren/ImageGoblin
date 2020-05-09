@@ -4,13 +4,10 @@ import json
 from goblins.meta import MetaGoblin
 
 
-# NOTE: sign in gate bypass -> /embed?pub=true
-
-
 class ImgurGoblin(MetaGoblin):
     '''accepts:
         - image
-        - webpage*
+        - webpage
     '''
 
     NAME = 'imgur goblin'
@@ -27,8 +24,9 @@ class ImgurGoblin(MetaGoblin):
     def prep(self, url):
         '''upgrade image size'''
         filename  = self.parser.extract_filename(url)
+        ext = self.parser.extension(url)
         if len(filename) == 8:
-            url = f'{self.BASE_URL}{filename[:-1]}.jpg'
+            url = f'{self.BASE_URL}{filename[:-1]}.{ext}'.replace('jpeg', 'jpg')
         return url.replace('m.imgur', 'i.imgur')
 
     def run(self):

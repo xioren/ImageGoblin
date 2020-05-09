@@ -4,7 +4,7 @@ from goblins.meta import MetaGoblin
 
 # TODO:
 #   - implement natural sorting
-#   - add webpage mode
+#   - add webpage handling
 
 class IteratorGoblin(MetaGoblin):
     '''accepts:
@@ -33,6 +33,7 @@ class IteratorGoblin(MetaGoblin):
             self.collect(f'{base}{str(n).zfill(len(iterable))}{end}')
 
     def increment_iterable(self, iterable):
+        '''increment the iterable by blocksize'''
         return str(self.isolate_iterable(iterable) + self.block_size).zfill(len(iterable))
 
     def iterate(self):
