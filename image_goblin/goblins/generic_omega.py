@@ -29,10 +29,10 @@ class OmegaGoblin(MetaGoblin):
         '''format a url either automatically or via user input modifier'''
         if self.args['format']:
             return self.parser.user_format(url)
-        elif not self.args['noup']:
-            return self.parser.auto_format(url)
-        else:
+        elif self.args['noup']:
             return url
+        else:
+            return self.parser.auto_format(url)
 
     def find_urls(self, url):
         '''find and collect urls'''
@@ -44,7 +44,7 @@ class OmegaGoblin(MetaGoblin):
                     if re.search(self.ATTR_PAT, attribute):
                         urls.extend(elements[tag][attribute])
         for url in urls:
-            self.collect(self.format(url))
+            self.collect(self.format(url.replace('\\', '').strip('. ')))
 
     def find_urls_greedy(self, url):
         '''greedily find and collect urls'''
@@ -54,7 +54,7 @@ class OmegaGoblin(MetaGoblin):
                 continue
             elif '.php?img=' in url:
                 url = url.split('.php?img=')[1]
-            self.collect(self.format(url.replace('\\', '').lstrip('.')))
+            self.collect(self.format(url.replace('\\', '').lstrip('. ')))
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting links')

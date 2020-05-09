@@ -216,7 +216,7 @@ class InstagramGoblin(MetaGoblin):
                 self.get_media([re.search(r'(?<=/p/)[^/]+', target).group()])
             else:
                 if self.args['mode'] == 'latest' or self.args['mode'] == 'recent':
-                    self.num_posts = 3
+                    self.num_posts = 6
                 self.get_initial_data()
                 if self.logged_in:
                     self.logger.log(1, self.NAME, 'collecting stories')

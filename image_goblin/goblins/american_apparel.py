@@ -13,14 +13,14 @@ class AmericanApparelGoblin(MetaGoblin):
     NAME = 'american apparel goblin'
     ID = 'americanapparel'
     URL_PAT = r'https?://cdn\d+\.bigcommerce\.com/[^/]+/images/stencil/[^/]+' \
-              r'/products/\d+/\d+/[a-z0-9]+_[a-z0-9]+_[^" ]+\.jpg'
+              r'/products/\d+/\d+/[a-z\d]+_[a-z\d]+_[^" ]+\.jpg'
 
     def __init__(self, args):
         super().__init__(args)
 
     def split_url(self, url):
         '''split url into base, end and sub out cropping'''
-        return re.split(r'_(\d{2})?(?=_)', re.sub(r'(?<=stencil/)[^/]+', 'original', url), 1)
+        return re.split(r'_(0\d)?(?=_)', re.sub(r'(?<=stencil/)[^/]+', 'original', url), 1)
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting links')

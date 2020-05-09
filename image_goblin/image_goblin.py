@@ -5,7 +5,7 @@ from argparse import ArgumentParser
 from dispatching import Dispatcher
 
 
-parser = ArgumentParser()
+parser = ArgumentParser(usage='goblin [URL] [OPTIONS]')
 
 parser.add_argument('-d', '--delay', help='request delay, default: 0', type=float, default=0)
 
@@ -43,17 +43,21 @@ parser.add_argument('-s', '--silent', help='suppress output', action='store_true
 
 parser.add_argument('--step', help='iteration step size (n)', type=int, default=1)
 
-parser.add_argument('targets', nargs='?', help='webpage or image url')
-
 parser.add_argument('-t', '--timeout', help='iteration timeout threshold (n)', type=int, default=5)
+
+parser.add_argument('url', nargs='?', help='webpage or image url')
 
 parser.add_argument('-v', '--verbose', help='output error messages for debugging', action='store_true')
 
 args = vars(parser.parse_args())
+
+if not args['url'] and not args['feed'] and not args['local']:
+    parser.print_help()
+    exit(22) # invalid argument
 
 if __name__ == '__main__':
     try:
         Dispatcher(args).dispatch()
     except KeyboardInterrupt:
         print('\n-----exiting-----')
-        exit(130)
+        exit(125) # operation cancelled

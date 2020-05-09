@@ -22,7 +22,6 @@ class Dispatcher:
 
     def dispatch(self):
         '''identify and deploy goblins'''
-        url_assignment = {}
         if self.args['list']:
             for key in goblins:
                 print(key)
@@ -34,17 +33,11 @@ class Dispatcher:
             goblin = goblins['hungry'][1]
             urls = goblin().run()
         else:
-            if not self.args['targets']:
-                self.logger.log(0, self.NAME, 'ERROR', 'input not understood')
-                return None
-            urls = [self.args['targets']]
+            urls = [self.args['url']]
+        url_assignment = {}
         for url in urls:
-            if url == '' or url == '\n':
-                continue
             if self.args['force']:
                 key = self.args['force']
-            elif self.args['greedy']:
-                key = 'generic'
             else:
                 key = self.identify(url)
             if key in url_assignment:

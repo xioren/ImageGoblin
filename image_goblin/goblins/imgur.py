@@ -4,6 +4,9 @@ import json
 from goblins.meta import MetaGoblin
 
 
+# NOTE: sign in gate bypass -> /embed?pub=true
+
+
 class ImgurGoblin(MetaGoblin):
     '''accepts:
         - image
@@ -12,14 +15,20 @@ class ImgurGoblin(MetaGoblin):
 
     NAME = 'imgur goblin'
     ID = 'imgur'
+    BASE_URL = 'https://i.imgur.com/'
 
     def __init__(self, args):
         super().__init__(args)
 
+
+    def clean(self, url):
+        return re.sub(r'#.+$', '', self.parser.dequery(url))
+
     def prep(self, url):
         '''upgrade image size'''
-        if len(self.parser.extract_filename(url)) == 8:
-            url = url.replace('b.', '.')
+        filename  = self.parser.extract_filename(url)
+        if len(filename) == 8:
+            url = f'{BASE_URL}{filename[:-1]}.jpg'
         return url.replace('m.imgur', 'i.imgur')
 
     def run(self):
@@ -29,14 +38,18 @@ class ImgurGoblin(MetaGoblin):
                 urls = [target]
             else:
                 urls = []
-                if 'gallery' in target:
-                    self.logger.log(1, self.NAME, 'WARNING', 'https://imgur.com/gallery/XXXXXXX urls not supported')
-                else:
-                    matches = self.extract_by_regex(r'(?<=image\s+:\s){[^\n]+}(?=,\n)', target)
+                matches = self.extract_by_regex(r'(?<=image               :\s){[^\n]+}(?=,\n)', target)
+                for match in matches:
+                    items = json.loads(match)
+                    for item in items['album_images']['images']:
+                        urls.append(f'{BASE_URL}{item["hash"]}{item["ext"]}')
+                if not urls: # sign in probably required -> try bypass
+                    matches = self.extract_by_regex(r'(?<=images            =\s){[^\n]+}(?=,\n)',
+                                                    f'{self.clean(target)}/embed?pub=true')
                     for match in matches:
                         items = json.loads(match)
-                        for item in items['album_images']['images']:
-                            urls.append(f'https://i.imgur.com/{item["hash"]}{item["ext"]}')
+                        for item in items['images']:
+                            urls.append(f'{BASE_URL}{item["hash"]}{item["ext"]}')
             for url in urls:
                 self.collect(self.prep(url))
         self.loot()

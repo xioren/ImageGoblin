@@ -1,4 +1,5 @@
 import re
+import mimetypes
 import urllib.parse
 
 from os.path import join, exists
@@ -7,10 +8,9 @@ from os.path import join, exists
 class Parser:
     '''generic url/html parsing and manipulation methods'''
 
-    FILENAME_PAT = re.compile(r'(?<=/)[^/]+$')
+    FILENAME_PAT = re.compile(r'(?<=/|\\)[^\\/]+$')
     QUERY_PAT = re.compile(r'[\?&][^" ]+$')
     QUALITY_PAT = re.compile(r'q((ua)?li?ty)?=\d+')
-    FILETYPE_PAT = re.compile(r'(?<=\.)[A-Za-z0-9]+$', flags=re.IGNORECASE)
     CROPPING_PATS = (
         re.compile(r'[\-_]?(?<![a-z])((x+)?-?l(arge)?|profile)(?![a-z])[\-_]?', flags=re.IGNORECASE),
         re.compile(r'[@\-_/]\d+x(\d+)?(?![a-z\d])'), # 000x000
@@ -23,8 +23,9 @@ class Parser:
     )
 
     def __init__(self, origin_url, user_formatting):
-        self.origin_url = origin_url
+        self.origin_url = self.add_scheme(self.dequery(origin_url))
         self.user_formatting = user_formatting
+        mimetypes.add_type('image/webp', '.webp')
 
 ####################################################################
 # sub classes
@@ -42,7 +43,7 @@ class Parser:
             self.elements = {}
 
         def parse_elements(self):
-            '''extract and sort all elements from an html source'''
+            '''extract all elements from an html source'''
             for element in [e.group() for e in re.finditer(self.ELEMENT_PAT, self.html)]:
                 tag = re.search(self.TAG_PAT, element).group()
                 if tag not in self.elements:
@@ -59,12 +60,12 @@ class Parser:
 ####################################################################
 
     def extract_filename(self, url):
-        '''extracts filename from url'''
+        '''extract filename from url'''
         filename = re.search(self.FILENAME_PAT, self.dequery(url))
         return re.sub(r'\..+$', '', filename.group()) if filename else 'image'
 
     def decrop(self, url):
-        '''removes common cropping from url'''
+        '''remove common cropping from url'''
         for pat in self.CROPPING_PATS:
             url = re.sub(pat, '', url)
         return url
@@ -74,17 +75,20 @@ class Parser:
         return re.sub(self.QUERY_PAT, '', url)
 
     def sanitize(self, url):
-        '''combines dequery and decrop'''
+        '''combine dequery and decrop'''
         return self.decrop(self.dequery(url))
 
     def strip_attribute(self, url):
         '''strip attribute from url'''
         return re.sub('[^"]+"', '', url)
 
-    def filetype(self, url):
-        '''extract file type'''
-        filetype = re.search(self.FILETYPE_PAT, self.dequery(url))
-        return filetype.group().replace('jpg', 'jpeg') if filetype else 'jpeg'
+    def extension(self, url):
+        '''extract file extension from url'''
+        # NOTE: unused backup for servers who do not list mimetype in headers
+        ext = mimetypes.guess_type(self.dequery(url))[0]
+        if ext:
+            return ext.split('/')[1]
+        return 'jpeg'
 
     def add_scheme(self, url):
         '''checks for and adds scheme'''
@@ -96,19 +100,22 @@ class Parser:
         return url
 
     def finalize(self, url):
-        '''prepare a url for an http request'''
+        '''prepare a url for an http request
+        - adds missing scheme
+        - expands relative urls
+        - unquotes quoated urls
+        '''
         if '/' not in url:
-            url = self.add_scheme(self.dequery(self.origin_url)) + url
+            url = f'{self.origin_url}{url}'
         else:
-            url = urllib.parse.urljoin(self.add_scheme(self.origin_url),
-                                       self.add_scheme(url))
+            url = urllib.parse.urljoin(self.origin_url, self.add_scheme(url))
         return urllib.parse.unquote(url)
 
-    def make_unique(self, path, filename):
-        '''make filename unique'''
+    def make_unique(self, path):
+        '''make filepath unique'''
         n = 1
         while True:
-            new_path = join(path, f'({n}).'.join(filename.split('.')))
+            new_path = join(path, f'({n}).'.join(path.split('.')))
             if exists(new_path):
                 n += 1
             else:

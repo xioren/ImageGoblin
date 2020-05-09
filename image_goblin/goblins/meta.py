@@ -75,7 +75,7 @@ class MetaGoblin:
                         # NOTE: no sense in continuing if the download dirs fail to make
                         # may change approach in future, exit for now
                         self.logger.log(0, self.NAME, e, 'exiting')
-                        exit(1)
+                        exit(5) # input/output error
 
     def cleanup(self, path):
         '''cleanup small unwanted files (icons, thumbnails, etc...)
@@ -83,11 +83,12 @@ class MetaGoblin:
         '''
         if not self.args['nodl'] and not self.args['noclean']:
             for path in self.looted:
-                if os.path.getsize(path) < 50000:
-                    try:
-                        os.remove(path)
-                    except OSError as e:
-                        self.logger.log(2, self.NAME, e, path)
+                if os.path.exists(path):
+                    if os.path.getsize(path) < 50000:
+                        try:
+                            os.remove(path)
+                        except OSError as e:
+                            self.logger.log(2, self.NAME, e, path)
 
     def toggle_collecton_type(self):
         '''toggle collection type between list and set'''
@@ -99,10 +100,6 @@ class MetaGoblin:
     def new_collection(self):
         '''initialize a new collection'''
         self.collection.clear()
-
-    def size_of(self, iterable):
-        '''get size of a set'''
-        return sum(1 for _ in iterable)
 
     def unzip(data):
         '''gzip decompression'''
@@ -135,8 +132,8 @@ class MetaGoblin:
 
     def extend_cookie(self, cookie, value):
         '''add to or update a cookie'''
-        if not self.headers.get(cookie):
-            self.headers.update({cookie: value})
+        if cookie not in self.headers:
+            self.headers[cookie] = value
         else:
             values = set(self.headers[cookie].split('; '))
             values.add(value)
@@ -154,12 +151,16 @@ class MetaGoblin:
         '''download web content'''
         response = self.make_request(url)
         if response:
-            try:
-                with open(path, 'wb') as file:
-                    copyfileobj(response, file, DEFAULT_BUFFER_SIZE)
-            except timeout:
-                return self.retry(url, n, path=path)
-            return True
+            ext = response.info()['Content-Type'] or 'image/jpeg'
+            path = self.check_filepath(f'{path}.{ext.split("/")[1]}')
+            if path:
+                try:
+                    with open(path, 'wb') as file:
+                        copyfileobj(response, file, DEFAULT_BUFFER_SIZE)
+                except timeout:
+                    return self.retry(url, n, path=path)
+                self.looted.append(path)
+                return True
 
     def retry(self, url, n, data=None, path=None):
         '''retry connection after a socket timeout'''
@@ -174,7 +175,7 @@ class MetaGoblin:
             return self.make_request(url, n, data)
 
     def write_file(self, data, path, iter=False):
-        '''write to disk'''
+        '''write to text file'''
         # QUESTION: is this used? keep if so?
         try:
             with open(path, 'w') as file:
@@ -186,7 +187,7 @@ class MetaGoblin:
             self.logger.log(2, self.NAME, e, path)
 
     def read_file(self, path, iter=False):
-        '''read from disk'''
+        '''read from text file'''
         try:
             with open(path, 'r') as file:
                 if iter:
@@ -203,11 +204,12 @@ class MetaGoblin:
             html_parser = self.parser.GoblinHTMLParser(response.content)
             html_parser.parse_elements()
             if tag and attr:
-                return html_parser.elements[tag][attr]
+                return html_parser.elements.get(tag).get(attr)
+            elif tag:
+                return html_parser.elements.get(tag)
             else:
                 return html_parser.elements
-        else:
-            return ''
+        return ''
 
     def extract_by_regex(self, pattern, url):
         '''extract from html by regex'''
@@ -215,6 +217,16 @@ class MetaGoblin:
             return {match.group().replace('\\', '') for match in re.finditer(pattern, self.get(url).content)}
         except TypeError:
             return ''
+
+    def check_filepath(self, path):
+        '''check if filepath exists and either skip or make unique if necessary'''
+        if os.path.exists(path):
+            if self.args['noskip']:
+                path = self.parser.make_unique(path)
+            else:
+                self.logger.log(2, self.NAME, 'file exists', self.parser.extract_filename(path))
+                return None
+        return path
 
     def collect(self, url, filename='', clean=False):
         '''finalize and add urls to the collection'''
@@ -230,7 +242,7 @@ class MetaGoblin:
     def loot(self, save_loc=None, timeout=0):
         '''retrieve resources from collected urls'''
         failed = 0
-        file = 1
+        file = 1 # tracking for progress bar
         timed_out = False
         for item in self.collection:
             if timeout and failed >= timeout:
@@ -240,22 +252,14 @@ class MetaGoblin:
             if self.args['nodl']:
                 print(url, end='\n\n')
                 continue
-            self.logger.progress(self.NAME, 'looting files', file, self.size_of(self.collection))
+            self.logger.progress(self.NAME, 'looting', file, len(self.collection))
             file += 1
             if not save_loc:
                 save_loc = self.path_main
-            ftype = self.parser.filetype(url)
-            filepath = os.path.join(save_loc, f'{filename}.{ftype}')
-            if os.path.exists(filepath):
-                if self.args['noskip']:
-                    filepath = self.parser.make_unique(save_loc, f'{filename}.{ftype}')
-                else:
-                    self.logger.log(2, self.NAME, 'file exists', filename)
-                    continue
+            filepath = os.path.join(save_loc, filename)
             attempt = self.download(url, filepath)
             if attempt:
                 self.logger.log(2, self.NAME, 'looted', filename)
-                self.looted.append(filepath)
                 failed = 0
             else:
                 failed += 1

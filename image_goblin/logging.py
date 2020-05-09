@@ -24,5 +24,5 @@ class Logger:
     def progress(self, caller, msg, current, total):
         '''progress bar'''
         if not self.verbose and not self.silent:
-            bar =  '#' * (floor(current/total * 20) % 21)
+            bar =  '#' * floor(current/total * 20)
             print(f'[{caller}] <{msg}> [{bar.ljust(20, " ")}] {current} of {total}', end='\r')

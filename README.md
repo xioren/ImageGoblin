@@ -1,7 +1,8 @@
 # ImageGoblin
 
-#### changelog v0.2.8:
-+ minor feature updates
+#### changelog v0.2.9:
++ changed extension identification from regex to header mimetypes
++ improved imgur compatibility
 + bug fixes
 + misc code clean up and improvements
 
@@ -38,7 +39,7 @@
   goblin https://website.com/uploads/image_01.jpg?size=small --format sub size=\w+ size=large'
   ```
 
-+ *iterate:* when provided a url to a single image url, the program will try to download that image and all other images with the same url structure that are on the server (but not necessarily displayed on the website). the iterable needs to be surrounded by '#' on either side when input to indicate the portion of the url to be iterated. use the --step flag to set step size (default 1); negative values will iterate down.
++ *iterate:* when provided a url to a single image url, the program will try to download that image and all other images with the same url structure that are on the server (but not necessarily displayed on the website). the iterable needs to be surrounded by '#' on either side when input to indicate the portion of the url to be iterated. use the --step argument to set step size (default 1); negative values will iterate down.
 
   *example:*
 
@@ -58,7 +59,7 @@
 
   etc...
 
-+ *instagram:* input an instagram page url, username, or post. this goblin will scrape the entire profile by default. if only the username is passed, it is necessary to --force instagram in order to match the correct goblin. stories require the user to be logged in to instagram; pass the --login flag to do so. the number of posts to retrieve can also be specified with --posts n (n < 100). finally, if 'latest' or 'recent' are passed as the --mode argument, the program will only retrieve the main stories (if --login flag is used) and the three most recent posts.
++ *instagram:* input an instagram page or post url, or a username. this goblin will scrape the entire profile by default. if only the username is passed, it is necessary to --force instagram in order to match the correct goblin. stories require the user to be logged in to instagram; pass the --login flag to do so. the number of posts to retrieve can also be specified with --posts n (n < 100). finally, if 'latest' or 'recent' are passed as the --mode argument, the program will only retrieve the main stories (if --login flag is used) and the six most recent posts.
 
     *examples:*
 
@@ -70,7 +71,7 @@
     goblin https://www.instagram.com/p/post
     ```
 
-+ *feed:* using the feed flag, you can accumulate urls by inputting them one by one. this is useful for accumulating urls as you find them while browsing the web, and downloading all at once. try it :)
++ *feed:* using the feed flag, you can accumulate urls by inputting them one by one. this is useful for accumulating urls as you find them while browsing the web, and downloading all at once. press "enter" with an empty input when finished. try it :)
 
 #### Misc:
   + this program has only been tested on linux but should work on windows/mac as well.
