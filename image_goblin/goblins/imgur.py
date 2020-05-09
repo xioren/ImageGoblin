@@ -28,7 +28,7 @@ class ImgurGoblin(MetaGoblin):
         '''upgrade image size'''
         filename  = self.parser.extract_filename(url)
         if len(filename) == 8:
-            url = f'{BASE_URL}{filename[:-1]}.jpg'
+            url = f'{self.BASE_URL}{filename[:-1]}.jpg'
         return url.replace('m.imgur', 'i.imgur')
 
     def run(self):
@@ -42,14 +42,14 @@ class ImgurGoblin(MetaGoblin):
                 for match in matches:
                     items = json.loads(match)
                     for item in items['album_images']['images']:
-                        urls.append(f'{BASE_URL}{item["hash"]}{item["ext"]}')
+                        urls.append(f'{self.BASE_URL}{item["hash"]}{item["ext"]}')
                 if not urls: # sign in probably required -> try bypass
                     matches = self.extract_by_regex(r'(?<=images            =\s){[^\n]+}(?=,\n)',
                                                     f'{self.clean(target)}/embed?pub=true')
                     for match in matches:
                         items = json.loads(match)
                         for item in items['images']:
-                            urls.append(f'{BASE_URL}{item["hash"]}{item["ext"]}')
+                            urls.append(f'{self.BASE_URL}{item["hash"]}{item["ext"]}')
             for url in urls:
                 self.collect(self.prep(url))
         self.loot()
