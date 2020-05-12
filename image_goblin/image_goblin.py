@@ -11,7 +11,7 @@ parser.add_argument('-d', '--delay', help='request delay, default: 0', type=floa
 
 parser.add_argument('--feed', help='input urls one at a time', action='store_true')
 
-parser.add_argument('--filename', help='specify filename to use', type=str, default='')
+parser.add_argument('-n', '--filename', help='specify filename to use', type=str, default='')
 
 parser.add_argument('--force', help='force a specific goblin')
 

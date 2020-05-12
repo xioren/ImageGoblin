@@ -2,7 +2,8 @@
 
 #### changelog v0.3.0:
 + improvements to link identification
-+ temporary suspension of gzip handling until a better is implemented.
++ improvements to relative url handling
++ better handling of gzip encoded data
 + bug fixes
 + misc code clean up and improvements
 
@@ -47,7 +48,7 @@
   goblin https://website.com/uploads/image_#01#.jpg --timeout 10 --delay 3
   ```
 
-  the program will then iterate through and download all images it can find with that url structure on the server.
+  the program will then iterate through and download all images it can find with that url structure on the server. if you pass the string _iter_ to the filename argument (literally: --filename iter), the iterable will be used as the filename.
 
   * https://website.com/uploads/image_01.jpg
   * https://website.com/uploads/image_02.jpg

@@ -106,9 +106,9 @@ class Parser:
         - unquote quoted urls
         '''
         if '/' not in url: # just a filename
-            url = f'{self.origin_url.rstrip('/')}/{url}'
+            url = f'{self.origin_url.rstrip("/")}/{url}'
         elif re.search(r'(?:/?[^/\.]+\.[^/]*(?=/))', url): # absolute path
-            url = self.add_scheme(url.lstrip('/'))
+            url = url.lstrip('/')
         else:
             url = urllib.parse.urljoin(self.origin_url, url)
         return urllib.parse.unquote(url)

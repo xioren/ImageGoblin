@@ -4,14 +4,14 @@ import re
 from sys import exit
 from time import sleep
 from socket import timeout
-from gzip import decompress
 from shutil import copyfileobj
 from ssl import CertificateError
-from io import DEFAULT_BUFFER_SIZE
 from http.client import InvalidURL
 from urllib.parse import urlencode
+from gzip import decompress, GzipFile
 from urllib.request import urlopen, Request
 from urllib.error import HTTPError, URLError
+from io import DEFAULT_BUFFER_SIZE, BufferedReader
 
 from parsing import Parser
 from logging import Logger
@@ -32,8 +32,8 @@ class MetaGoblin:
             user_agent = 'Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101 Firefox/68.0'
         else:
             user_agent = f'ImageGoblin/{__version__}'
-        self.headers = {'User-Agent': user_agent}
-                        # 'Accept-Encoding': 'gzip'}
+        self.headers = {'User-Agent': user_agent,
+                        'Accept-Encoding': 'gzip'}
         self.collection = set()
         self.looted = []
         self.make_dirs(self.path_main)
@@ -51,7 +51,10 @@ class MetaGoblin:
         def __init__(self, object):
             self.code = object.code if object else ''
             self.info = object.info().as_string() if object else ''
-            self.content = object.read().decode('utf-8', 'ignore') if object else '{}'
+            if object.info().get('content-encoding') == 'gzip':
+                self.content = MetaGoblin.unzip(object.read()).decode('utf-8', 'ignore') if object else '{}'
+            else:
+                self.content = object.read().decode('utf-8', 'ignore') if object else '{}'
 
     class Post:
         '''wrapper for http.client.HTTPResponse'''
@@ -59,7 +62,10 @@ class MetaGoblin:
         def __init__(self, object):
             self.code = object.code if object else ''
             self.info = object.info().as_string() if object else ''
-            self.content = object.read().decode('utf-8', 'ignore') if object else '{}'
+            if object.info().get('content-encoding') == 'gzip':
+                self.content = MetaGoblin.unzip(object.read()).decode('utf-8', 'ignore') if object else '{}'
+            else:
+                self.content = object.read().decode('utf-8', 'ignore') if object else '{}'
 
 ####################################################################
 # methods
@@ -106,10 +112,7 @@ class MetaGoblin:
         '''gzip decompression'''
         try:
             return decompress(data)
-        except OSError:
-            return data
         except EOFError:
-            # OPTIMIZE: return something other than empty bytes?
             return b''
 
     def make_request(self, url, n=0, data=None):
@@ -152,9 +155,11 @@ class MetaGoblin:
         '''download web content'''
         response = self.make_request(url)
         if response:
-            ext = response.info()['Content-Type'] or 'image/jpeg'
+            ext = response.info().get('content-type') or 'image/jpeg'
             path = self.check_filepath(f'{path}.{ext.split("/")[1]}')
             if path:
+                if response.info().get('content-encoding') == 'gzip':
+                    response = GzipFile(fileobj=BufferedReader(response))
                 try:
                     with open(path, 'wb') as file:
                         copyfileobj(response, file, DEFAULT_BUFFER_SIZE)
