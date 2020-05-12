@@ -45,27 +45,22 @@ class MetaGoblin:
 # sub classes
 ####################################################################
 
-    class Get:
+    class ParsedRequest:
         '''wrapper for http.client.HTTPResponse'''
 
         def __init__(self, object):
-            self.code = object.code if object else ''
-            self.info = object.info().as_string() if object else ''
-            if object.info().get('content-encoding') == 'gzip':
-                self.content = MetaGoblin.unzip(object.read()).decode('utf-8', 'ignore') if object else '{}'
+            if object:
+                self.code = object.code
+                # QUESTION: keep as string?
+                self.info = object.info().as_string()
+                if object.info().get('content-encoding') == 'gzip':
+                    self.content = MetaGoblin.unzip(object.read()).decode('utf-8', 'ignore')
+                else:
+                    self.content = object.read().decode('utf-8', 'ignore')
             else:
-                self.content = object.read().decode('utf-8', 'ignore') if object else '{}'
-
-    class Post:
-        '''wrapper for http.client.HTTPResponse'''
-
-        def __init__(self, object):
-            self.code = object.code if object else ''
-            self.info = object.info().as_string() if object else ''
-            if object.info().get('content-encoding') == 'gzip':
-                self.content = MetaGoblin.unzip(object.read()).decode('utf-8', 'ignore') if object else '{}'
-            else:
-                self.content = object.read().decode('utf-8', 'ignore') if object else '{}'
+                self.code = ''
+                self.info = ''
+                self.content = '{}'
 
 ####################################################################
 # methods
@@ -84,14 +79,14 @@ class MetaGoblin:
                         self.logger.log(0, self.NAME, e, 'exiting')
                         exit(5) # input/output error
 
-    def cleanup(self, path):
+    def cleanup(self, path, threshold=50000):
         '''cleanup small unwanted files (icons, thumbnails, etc...)
-        default 50kb threshold
+        # default 50kb threshold
         '''
         if not self.args['nodl'] and not self.args['noclean']:
             for path in self.looted:
                 if os.path.exists(path):
-                    if os.path.getsize(path) < 50000:
+                    if os.path.getsize(path) < threshold:
                         try:
                             os.remove(path)
                         except OSError as e:
@@ -145,11 +140,11 @@ class MetaGoblin:
 
     def get(self, url):
         '''make a get request'''
-        return self.Get(self.make_request(url))
+        return self.ParsedRequest(self.make_request(url))
 
     def post(self, url, data):
         '''make a post request'''
-        return self.Post(self.make_request(url, data=urlencode(data).encode()))
+        return self.ParsedRequest(self.make_request(url, data=urlencode(data).encode()))
 
     def download(self, url, path, n=0):
         '''download web content'''
@@ -242,6 +237,7 @@ class MetaGoblin:
             filename = self.parser.extract_filename(url)
         elif '.' in filename: # remove extension
             filename = filename.split('.')[0]
+        # add to collection as hashable string
         if type(self.collection) == list:
             self.collection.append(f'{self.parser.finalize(url)}-break-{filename}')
         else:
@@ -261,7 +257,6 @@ class MetaGoblin:
                 print(url, end='\n\n')
                 continue
             self.logger.progress(self.NAME, 'looting', file, len(self.collection))
-            file += 1
             if not save_loc:
                 save_loc = self.path_main
             filepath = os.path.join(save_loc, filename)
@@ -271,6 +266,7 @@ class MetaGoblin:
                 failed = 0
             else:
                 failed += 1
+            file += 1
             sleep(self.args['delay'])
         self.logger.log(0, self.NAME, 'complete', f'{len(self.looted)} file(s) looted', clear=True)
         return timed_out

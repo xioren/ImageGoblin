@@ -91,7 +91,7 @@ class Parser:
         return 'jpeg'
 
     def add_scheme(self, url):
-        '''checks for and adds scheme'''
+        '''checks for and adds https scheme'''
         if not urllib.parse.urlparse(url)[0]:
             if url.startswith('.') or url.startswith('/'):
                 pass

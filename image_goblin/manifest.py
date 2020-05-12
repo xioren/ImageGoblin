@@ -72,6 +72,7 @@ from goblins.savagex import SavageXGoblin
 from goblins.shopbop import ShopbopGoblin
 from goblins.shopify import ShopifyGoblin
 from goblins.simone_perele import SimonePereleGoblin
+from goblins.skatie import SkatieGoblin
 from goblins.skin import SkinGoblin
 from goblins.springfield import SpringfieldGoblin
 from goblins.ssense import SsenseGoblin
@@ -175,6 +176,7 @@ goblins = {
     'shopbop': (r'shopbop(\.[a-z]+|/)', ShopbopGoblin),
     'shopify': ('#####', ShopifyGoblin),
     'simoneperele': (r'simone-?perele\.[a-z]+', SimonePereleGoblin),
+    'skatie': (r'skatie\.[a-z]+', SkatieGoblin),
     'skin': (r'skinworldwide\.[a-z]+', SkinGoblin),
     'springfield': (r'myspringfield\.[a-z]+', SpringfieldGoblin),
     'ssense': (r'ssense(media)?', SsenseGoblin),

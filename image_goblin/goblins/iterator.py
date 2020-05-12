@@ -1,5 +1,3 @@
-import re
-
 from goblins.meta import MetaGoblin
 
 # TODO:
@@ -20,7 +18,7 @@ class IteratorGoblin(MetaGoblin):
 
     def isolate_parts(self, url):
         '''seperate url into base, iterable, end'''
-        return re.split('#', url)
+        return url.split('#')
 
     def isolate_iterable(self, url):
         '''isolate iterable from url'''
@@ -40,23 +38,20 @@ class IteratorGoblin(MetaGoblin):
         '''increment the iterable by blocksize'''
         return str(self.isolate_iterable(iterable) + self.block_size).zfill(len(iterable))
 
-    def iterate(self):
+    def run(self):
         '''main iteration method'''
-        self.toggle_collecton_type()
+        self.toggle_collecton_type() # convert collection to list so that links are sorted
         round = 1
         base, iterable, end = self.isolate_parts(self.args['targets'][self.ID][0])
         while True:
             self.logger.log(1, self.NAME, 'iterating', f'round {round}')
             self.generate_urls(base, iterable, end)
-            timeout = self.loot(timeout=self.args['timeout'])
-            if timeout:
-                self.logger.log(1, self.NAME, 'timeout', f'after {self.args["timeout"]} attempts')
+            timedout = self.loot(timeout=self.args['timeout'])
+            if timedout:
+                self.logger.log(1, self.NAME, 'timedout', f'after {self.args["timeout"]} attempts')
                 return None
             else:
                 round += 1
                 iterable = self.increment_iterable(iterable)
                 self.new_collection()
                 self.looted.clear()
-
-    def run(self):
-        self.iterate()

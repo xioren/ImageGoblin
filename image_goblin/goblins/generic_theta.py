@@ -28,6 +28,7 @@ class ThetaGoblin(MetaGoblin):
         - hanne bloch
         - kiki de montparnasse
         - lounge
+        - skatie
         - skin
         - the great eros
         - triangl

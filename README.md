@@ -4,6 +4,8 @@
 + improvements to link identification
 + improvements to relative url handling
 + better handling of gzip encoded data
++ new goblin
++ more imgur improvements
 + bug fixes
 + misc code clean up and improvements
 

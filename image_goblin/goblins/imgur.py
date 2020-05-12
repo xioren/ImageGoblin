@@ -35,16 +35,23 @@ class ImgurGoblin(MetaGoblin):
         for target in self.args['targets'][self.ID]:
             if 'i.imgur' in target or 'm.imgur' in target:
                 urls = [target]
+            elif '/r/' in target:
+                urls = []
+                matches = self.extract_by_regex(r'(?<=image\s{15}:\s){[^\n]+}(?=,\n)',
+                                                self.clean(target))
+                for match in matches:
+                    items = json.loads(match)
+                    urls.append(f'{self.BASE_URL}{items["hash"]}{items["ext"]}')
             else:
                 urls = []
-                matches = self.extract_by_regex(r'(?<=image               :\s){[^\n]+}(?=,\n)',
+                matches = self.extract_by_regex(r'(?<=image\s{15}:\s){[^\n]+}(?=,\n)',
                                                 self.clean(target))
                 for match in matches:
                     items = json.loads(match)
                     for item in items['album_images']['images']:
                         urls.append(f'{self.BASE_URL}{item["hash"]}{item["ext"]}')
                 if not urls: # sign in probably required -> try bypass
-                    matches = self.extract_by_regex(r'(?<=images            =\s){[^\n]+}(?=,\n)',
+                    matches = self.extract_by_regex(r'(?<=images\s{12}=\s){[^\n]+}(?=,\n)',
                                                     f'{self.clean(target)}/embed?pub=true')
                     for match in matches:
                         items = json.loads(match)
