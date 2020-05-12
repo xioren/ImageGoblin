@@ -134,7 +134,7 @@ class InstagramGoblin(MetaGoblin):
     def get_initial_data(self):
         '''make initial request to recieve necessary variables'''
         self.extend_cookie('Cookie', 'ig_pr=1')
-        response = json.loads(re.search(r'(?<=sharedData\s=\s){[^;]+',
+        response = json.loads(re.search(r'(?<=sharedData\s=\s){.+?}(?=;)',
                                         self.get(urljoin(self.BASE_URL, self.username)).content).group())
         self.user_id = response['entry_data']['ProfilePage'][0]['graphql']['user']['id']
         self.rhx_gis = response.get('rhx_gis', '3c7ca9dcefcf966d11dacf1f151335e8')

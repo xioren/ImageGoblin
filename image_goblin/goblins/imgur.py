@@ -19,13 +19,14 @@ class ImgurGoblin(MetaGoblin):
 
 
     def clean(self, url):
-        return re.sub(r'#.+$', '', self.parser.dequery(url))
+        return re.sub(r'(/embed|#).+$', '', self.parser.dequery(url))
 
     def prep(self, url):
         '''upgrade image size'''
         filename  = self.parser.extract_filename(url)
         ext = self.parser.extension(url)
         if len(filename) == 8:
+            # IDEA: could skip the len check and just return url[:7]
             url = f'{self.BASE_URL}{filename[:-1]}.{ext}'.replace('jpeg', 'jpg')
         return url.replace('m.imgur', 'i.imgur')
 
@@ -36,7 +37,8 @@ class ImgurGoblin(MetaGoblin):
                 urls = [target]
             else:
                 urls = []
-                matches = self.extract_by_regex(r'(?<=image               :\s){[^\n]+}(?=,\n)', self.clean(target))
+                matches = self.extract_by_regex(r'(?<=image               :\s){[^\n]+}(?=,\n)',
+                                                self.clean(target))
                 for match in matches:
                     items = json.loads(match)
                     for item in items['album_images']['images']:

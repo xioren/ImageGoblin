@@ -9,7 +9,7 @@ class Parser:
     '''generic url/html parsing and manipulation methods'''
 
     FILENAME_PAT = re.compile(r'(?<=/|\\)[^\\/]+$')
-    QUERY_PAT = re.compile(r'[\?&][^" ]+$')
+    QUERY_PAT = re.compile(r'[\?&][^"\s]+$')
     QUALITY_PAT = re.compile(r'q((ua)?li?ty)?=\d+')
     CROPPING_PATS = (
         re.compile(r'[\-_]?(?<![a-z])((x+)?-?l(arge)?|profile)(?![a-z])[\-_]?', flags=re.IGNORECASE),
@@ -33,7 +33,7 @@ class Parser:
 
     class GoblinHTMLParser:
 
-        ELEMENT_PAT = re.compile(r'<[a-z]+ [^>]+>')
+        ELEMENT_PAT = re.compile(r'<[a-z]+\s[^>]+>')
         TAG_PAT = re.compile(r'(?<=<)[a-z\-]+')
         ATTRIBUTE_PAT = re.compile(r'[a-z\d\-]+="[^"]+')
 
@@ -80,11 +80,11 @@ class Parser:
 
     def strip_attribute(self, url):
         '''strip attribute from url'''
+        # QUESTION: is this used?
         return re.sub('[^"]+"', '', url)
 
     def extension(self, url):
         '''extract file extension from url'''
-        # NOTE: unused backup for servers who do not list mimetype in headers
         ext = mimetypes.guess_type(self.dequery(url))[0]
         if ext:
             return ext.split('/')[1]
@@ -101,14 +101,16 @@ class Parser:
 
     def finalize(self, url):
         '''prepare a url for an http request
-        - adds missing scheme
-        - expands relative urls
-        - unquotes quoated urls
+        - add missing scheme
+        - expand relative urls
+        - unquote quoted urls
         '''
-        if '/' not in url:
-            url = f'{self.origin_url}{url}'
+        if '/' not in url: # just a filename
+            url = f'{self.origin_url.rstrip('/')}/{url}'
+        elif re.search(r'(?:/?[^/\.]+\.[^/]*(?=/))', url): # absolute path
+            url = self.add_scheme(url.lstrip('/'))
         else:
-            url = urllib.parse.urljoin(self.origin_url, self.add_scheme(url))
+            url = urllib.parse.urljoin(self.origin_url, url)
         return urllib.parse.unquote(url)
 
     def make_unique(self, path):
@@ -123,11 +125,12 @@ class Parser:
 
     def user_format(self, url):
         '''add, substitute, or remove elements from a url'''
-        if self.args['format'][0] == 'add':
-            return url + self.user_formatting[1]
-        elif self.args['format'][0] == 'sub':
+        if self.user_formatting[0] == 'add':
+            # QUESTION: add auto query formatting? use urlencode?
+            return self.dequery(url) + self.user_formatting[1]
+        elif self.user_formatting[0] == 'sub':
             return re.sub(fr'{self.user_formatting[1]}', self.user_formatting[2], url)
-        elif self.args['format'][0] == 'rem':
+        elif self.user_formatting[0] == 'rem':
             return re.sub(fr'{self.user_formatting[1]}', '', url)
         else:
             return url

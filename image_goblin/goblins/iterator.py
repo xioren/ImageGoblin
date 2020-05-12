@@ -30,7 +30,11 @@ class IteratorGoblin(MetaGoblin):
         '''generate block of urls to iterate over'''
         stripped_iter = self.isolate_iterable(iterable)
         for n in range(stripped_iter, stripped_iter + self.block_size, self.args['step']):
-            self.collect(f'{base}{str(n).zfill(len(iterable))}{end}')
+            if self.args['filename'] == 'iter':
+                filename = str(n)
+            else:
+                filename = self.args['filename']
+            self.collect(f'{base}{str(n).zfill(len(iterable))}{end}', filename=filename)
 
     def increment_iterable(self, iterable):
         '''increment the iterable by blocksize'''
@@ -52,6 +56,7 @@ class IteratorGoblin(MetaGoblin):
                 round += 1
                 iterable = self.increment_iterable(iterable)
                 self.new_collection()
+                self.looted.clear()
 
     def run(self):
         self.iterate()

@@ -8,6 +8,7 @@ from gzip import decompress
 from shutil import copyfileobj
 from ssl import CertificateError
 from io import DEFAULT_BUFFER_SIZE
+from http.client import InvalidURL
 from urllib.parse import urlencode
 from urllib.request import urlopen, Request
 from urllib.error import HTTPError, URLError
@@ -31,8 +32,8 @@ class MetaGoblin:
             user_agent = 'Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101 Firefox/68.0'
         else:
             user_agent = f'ImageGoblin/{__version__}'
-        self.headers = {'User-Agent': user_agent,
-                        'Accept-Encoding': 'gzip'}
+        self.headers = {'User-Agent': user_agent}
+                        # 'Accept-Encoding': 'gzip'}
         self.collection = set()
         self.looted = []
         self.make_dirs(self.path_main)
@@ -50,7 +51,7 @@ class MetaGoblin:
         def __init__(self, object):
             self.code = object.code if object else ''
             self.info = object.info().as_string() if object else ''
-            self.content = MetaGoblin.unzip(object.read()).decode('utf-8', 'ignore') if object else '{}'
+            self.content = object.read().decode('utf-8', 'ignore') if object else '{}'
 
     class Post:
         '''wrapper for http.client.HTTPResponse'''
@@ -58,7 +59,7 @@ class MetaGoblin:
         def __init__(self, object):
             self.code = object.code if object else ''
             self.info = object.info().as_string() if object else ''
-            self.content = MetaGoblin.unzip(object.read()).decode('utf-8', 'ignore') if object else '{}'
+            self.content = object.read().decode('utf-8', 'ignore') if object else '{}'
 
 ####################################################################
 # methods
@@ -125,7 +126,7 @@ class MetaGoblin:
             # servers sometimes return 502 when requesting large files, retrying usually works.
             if e.code == 502:
                 return self.retry(url, n+1, data)
-        except (URLError, CertificateError) as e:
+        except (URLError, CertificateError, UnicodeEncodeError, InvalidURL) as e:
             self.logger.log(2, self.NAME, e, url)
         except timeout:
             return self.retry(url, n+1, data)

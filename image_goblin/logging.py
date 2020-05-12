@@ -9,20 +9,23 @@ class Logger:
         self.silent = silent
 
     def log(self, level, caller, msg, info='', clear=False):
-        '''logging messages'''
+        '''logging messages
+        - level 0: basic
+        - level 1: normal
+        - level 2: verbose
+        '''
         if clear:
             print(' ' * get_terminal_size().columns, end='\r')
-        if level == 0: # basic output
+        if level == 1 and self.silent:
+            pass
+        elif level == 2 and not self.verbose or self.silent:
+            pass
+        else:
             print(f'[{caller}] <{msg}> {info}')
-        elif level == 1: # normal output
-            if not self.silent:
-                print(f'[{caller}] <{msg}> {info}')
-        elif level == 2: # verbose output
-            if self.verbose and not self.silent:
-                print(f'[{caller}] <{msg}> {info}')
 
     def progress(self, caller, msg, current, total):
         '''progress bar'''
         if not self.verbose and not self.silent:
             bar =  '#' * floor(current/total * 20)
+            # QUESTION: add clear here?
             print(f'[{caller}] <{msg}> [{bar.ljust(20, " ")}] {current} of {total}', end='\r')

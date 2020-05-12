@@ -11,6 +11,8 @@ parser.add_argument('-d', '--delay', help='request delay, default: 0', type=floa
 
 parser.add_argument('--feed', help='input urls one at a time', action='store_true')
 
+parser.add_argument('--filename', help='specify filename to use', type=str, default='')
+
 parser.add_argument('--force', help='force a specific goblin')
 
 parser.add_argument('-f', '--format', nargs='+', help='formatting modifier (action modifier[ modifier])')
@@ -51,7 +53,7 @@ parser.add_argument('-v', '--verbose', help='output error messages for debugging
 
 args = vars(parser.parse_args())
 
-if not args['url'] and not args['feed'] and not args['local']:
+if not (args['url'] or args['feed'] or args['local'] or args['list']):
     parser.print_help()
     exit(22) # invalid argument
 

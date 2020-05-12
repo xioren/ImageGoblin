@@ -1,8 +1,8 @@
 # ImageGoblin
 
-#### changelog v0.2.9:
-+ changed extension identification from regex to header mimetypes
-+ improved imgur compatibility
+#### changelog v0.3.0:
++ improvements to link identification
++ temporary suspension of gzip handling until a better is implemented.
 + bug fixes
 + misc code clean up and improvements
 
