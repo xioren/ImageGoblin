@@ -42,7 +42,7 @@
   goblin https://website.com/uploads/image_01.jpg?size=small --format sub size=\w+ size=large'
   ```
 
-+ *iterate:* when provided a url to a single image url, the program will try to download that image and all other images with the same url structure that are on the server (but not necessarily displayed on the website). the iterable needs to be surrounded by '#' on either side when input to indicate the portion of the url to be iterated. use the --step argument to set step size (default 1); negative values will iterate down.
++ *iterate:* when provided a url to a single image url, the program will try to download that image and all other images with the same url structure that are on the server (but not necessarily displayed on the website). the iterable needs to be surrounded by '#' on either side when input to indicate the portion of the url to be iterated. use the --step argument to set step size (default 1); negative values will iterate down. if the string _iter_ is passed to the filename argument (literally: --filename iter), the iterable will be used as the filename.
 
   *example:*
 
@@ -50,7 +50,7 @@
   goblin https://website.com/uploads/image_#01#.jpg --timeout 10 --delay 3
   ```
 
-  the program will then iterate through and download all images it can find with that url structure on the server. if you pass the string _iter_ to the filename argument (literally: --filename iter), the iterable will be used as the filename.
+  the program will then iterate through and download all images it can find with that url structure on the server.
 
   * https://website.com/uploads/image_01.jpg
   * https://website.com/uploads/image_02.jpg
