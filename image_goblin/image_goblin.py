@@ -11,7 +11,7 @@ parser.add_argument('-d', '--delay', help='request delay, default: 0', type=floa
 
 parser.add_argument('--feed', help='input urls one at a time', action='store_true')
 
-parser.add_argument('-n', '--filename', help='specify filename to use', type=str, default='')
+parser.add_argument('--filename', help='specify filename to use', type=str, default='')
 
 parser.add_argument('--force', help='force a specific goblin')
 
@@ -27,7 +27,7 @@ parser.add_argument('--login', help='log in to instagram', action='store_true')
 
 parser.add_argument('--mask', help='use a common user agent header', action='store_true')
 
-parser.add_argument('-m', '--mode', help='mode of operation')
+parser.add_argument('-m', '--mode', help='goblin dependant mode setting')
 
 parser.add_argument('--noclean', help='do not remove small files', action='store_true')
 
@@ -39,7 +39,7 @@ parser.add_argument('--nosort', help='download directly to current directory, wi
 
 parser.add_argument('--noup', help='do not remove cropping from urls', action='store_true')
 
-parser.add_argument('--posts', help='number of instagram posts (n) to fetch (optional, n<100)', type=int, default=100)
+parser.add_argument('--posts', help='number of instagram posts (n<100) to fetch', type=int, default=100)
 
 parser.add_argument('-s', '--silent', help='suppress output', action='store_true')
 
@@ -49,13 +49,15 @@ parser.add_argument('-t', '--timeout', help='iteration timeout threshold (n)', t
 
 parser.add_argument('url', nargs='?', help='webpage or image url')
 
-parser.add_argument('-v', '--verbose', help='output error messages for debugging', action='store_true')
+parser.add_argument('-v', '--verbose', help='verbose output', action='store_true')
 
 args = vars(parser.parse_args())
+
 
 if not (args['url'] or args['feed'] or args['local'] or args['list']):
     parser.print_help()
     exit(22) # invalid argument
+
 
 if __name__ == '__main__':
     try:

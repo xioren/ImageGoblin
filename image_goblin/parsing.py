@@ -107,9 +107,9 @@ class Parser:
         '''
         if '/' not in url: # just a filename
             url = f'{self.origin_url.rstrip("/")}/{url}'
-        elif re.search(r'(?:/?[^/\.]+\.[^/]*(?=/))', url): # absolute path
+        elif re.search(r'(?:/?[^/\.]+\.[^/]+(?=/))', url): # absolute path
             url = url.lstrip('/')
-        else:
+        else: # relative path
             url = urllib.parse.urljoin(self.origin_url, url)
         return urllib.parse.unquote(url)
 

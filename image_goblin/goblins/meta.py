@@ -135,7 +135,7 @@ class MetaGoblin:
             return self.retry(url, n+1, data)
 
     def extend_cookie(self, cookie, value):
-        '''add to or update a cookie'''
+        '''add or extend a cookie'''
         if cookie not in self.headers:
             self.headers[cookie] = value
         else:
@@ -240,6 +240,8 @@ class MetaGoblin:
             url = self.parser.sanitize(url)
         if not filename:
             filename = self.parser.extract_filename(url)
+        elif '.' in filename: # remove extension
+            filename = filename.split('.')[0]
         if type(self.collection) == list:
             self.collection.append(f'{self.parser.finalize(url)}-break-{filename}')
         else:
