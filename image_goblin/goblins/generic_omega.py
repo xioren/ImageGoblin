@@ -13,7 +13,7 @@ class OmegaGoblin(MetaGoblin):
     NAME = 'generic goblin'
     ID = 'generic'
     FILETYPES = r'\.(jpe?g|png|gif|mp4|web[pm]|tiff?|mov|svg|bmp|exif)'
-    URL_PAT = re.compile(fr'(https?://)?[^"\n \';]+{FILETYPES}([\?&][^" ]+$)?',
+    URL_PAT = re.compile(fr'(https?://)?[^"\n\s\';{{}}]+{FILETYPES}(\?[^"\s]+)?',
                          flags=re.IGNORECASE)
     FILTER_PAT = re.compile(r'\.(js|css|pdf|php|html)|(fav)?icon|logo|menu',
                             flags=re.IGNORECASE)
@@ -44,7 +44,7 @@ class OmegaGoblin(MetaGoblin):
                     if re.search(self.ATTR_PAT, attribute):
                         urls.extend(elements[tag][attribute])
         for url in urls:
-            self.collect(self.format(url.replace('\\', '').lstrip('. ')), filename=self.args['filename'])
+            self.collect(self.format(url.replace('\\', '')), filename=self.args['filename'])
 
     def find_urls_greedy(self, url):
         '''greedily find and collect urls'''
@@ -54,7 +54,7 @@ class OmegaGoblin(MetaGoblin):
                 continue
             elif '.php?img=' in url:
                 url = url.split('.php?img=')[1]
-            self.collect(self.format(url.replace('\\', '').lstrip('. ')), filename=self.args['filename'])
+            self.collect(self.format(url), filename=self.args['filename'])
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting links')

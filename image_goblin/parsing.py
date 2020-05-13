@@ -111,7 +111,7 @@ class Parser:
             url = url.lstrip('/')
         else: # relative path
             url = urllib.parse.urljoin(self.origin_url, url)
-        return urllib.parse.unquote(url)
+        return urllib.parse.unquote(url.replace('amp;', ''))
 
     def make_unique(self, path):
         '''make filepath unique'''

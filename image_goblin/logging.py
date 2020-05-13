@@ -15,7 +15,10 @@ class Logger:
         - level 2: verbose
         '''
         if clear:
-            print(' ' * get_terminal_size().columns, end='\r')
+            try:
+                print(' ' * get_terminal_size().columns, end='\r')
+            except OSError: # ioctl error when redirecting output, such as to a text file.
+                pass
         if level == 1 and self.silent:
             pass
         elif level == 2 and not self.verbose or self.silent:

@@ -27,9 +27,9 @@
   ```
   goblin https://www.website.com/pages/somewebpage.html
 
-  goblin https://www.website.com/files/cropped/image.jpg --force goblin
+  goblin https://www.website.com/files/cropped/image.jpg --verbose
 
-  goblin --local urls.txt --silent
+  goblin --local urls.txt
   ```
 
 + *generic:* for any site without a specific goblin. by default, this mode will automatically try to remove common cropping. Using the '--format' option overrides this functionality and instead formats according to user input modifier(s). the usage format for this is '--format _mode_ _modifier_[ _replacement_]'. 'add _modifier_' will append the modifier to the end of the url; for example a query string. 'sub _modifier_ _replacement_' substitutes, while 'rem _modifier_' removes. using the --noup flag prevents any automatic manipulation of urls. you can also enforce greedy mode with --greedy; sometimes this will find more images.

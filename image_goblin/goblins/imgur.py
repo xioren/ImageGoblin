@@ -4,6 +4,9 @@ import json
 from goblins.meta import MetaGoblin
 
 
+# misc: '/noscript'
+
+
 class ImgurGoblin(MetaGoblin):
     '''accepts:
         - image

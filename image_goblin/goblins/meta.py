@@ -222,7 +222,7 @@ class MetaGoblin:
     def check_filepath(self, path):
         '''check if filepath exists and either skip or make unique if necessary'''
         if os.path.exists(path):
-            if self.args['noskip']:
+            if self.args['noskip'] or self.args['filename']:
                 path = self.parser.make_unique(path)
             else:
                 self.logger.log(2, self.NAME, 'file exists', self.parser.extract_filename(path))
