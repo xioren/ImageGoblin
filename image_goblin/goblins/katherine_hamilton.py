@@ -11,7 +11,7 @@ class KatherineHamiltonGoblin(MetaGoblin):
 
     NAME = 'katherine hamilton goblin'
     ID = 'katherinehamilton'
-    URL_PAT = r'https?://[^" \n]+\.jpg'
+    URL_PAT = r'https?://[^"\s\n]+\.jpg'
     MODIFIERS = ('', '-front', '-back', '-side', '-set', '-fton', '-open', '-fron-1')
 
     def __init__(self, args):
@@ -22,7 +22,7 @@ class KatherineHamiltonGoblin(MetaGoblin):
         for target in self.args['targets'][self.ID]:
             if '.jpg' in target:
                 urls = []
-                self.logger.log(1, self.NAME, 'WARNING', 'image urls not fully supported')
+                self.logger.log(2, self.NAME, 'WARNING', 'image urls not fully supported', once=True)
             else:
                 urls = self.extract_by_regex(self.URL_PAT, target)
             for url in urls:

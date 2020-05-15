@@ -28,7 +28,7 @@ class WolfordGoblin(MetaGoblin):
                 urls = [target]
             else:
                 urls = []
-                self.logger.log(1, self.NAME, 'WARNING', 'webpage urls not supported')
+                self.logger.log(2, self.NAME, 'WARNING', 'webpage urls not supported', once=True)
             for url in urls:
                 url = self.trim(url)
                 if 'Additional-Picture' in url:

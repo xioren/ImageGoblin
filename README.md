@@ -1,25 +1,19 @@
 # ImageGoblin
 
-#### changelog v0.3.0:
-+ improvements to link identification
-+ improvements to relative url handling
-+ better handling of gzip encoded data
-+ new goblin
-+ more imgur improvements
+#### changelog v0.3.1:
++ new goblins
++ added vs webpage support
 + bug fixes
 + misc code clean up and improvements
 
 ### This Program:
-
 + is a web scraping tool specifically for the discovery and retrieval of images on a web server, in the highest possible quality
 + is a work in progress
 
 ### Requirements
-
 + Python 3.6+
 
 ### Operation
-
 + *default*: inputting either a url or a text file containing urls (1 per line) will try to match the url(s) to a specific goblin. the goblin will download what images it can according to its rule set, in the highest possible quality. if no goblin is matched a generic goblin is used. if a text file is used, only the filename should be input using the --local argument and the text file should be placed in the same directory that the program will be ran from.
 
   *examples:*
@@ -83,3 +77,6 @@
   + all available goblins can be listed using '-l or --list'.
   + the --format input needs to be exact so make sure modifiers/spaces have not been erroneously added or left out.
   + if little or no (relevant) images are found then the page is probably generated dynamically with javascript which the program can not handle. you can also try with the --noup/--greedy handles.
+
+
+# PLEASE USE RESPONSIBLY :)

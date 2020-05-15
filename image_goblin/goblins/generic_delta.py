@@ -37,7 +37,7 @@ class DeltaGoblin(MetaGoblin):
             else:
                 if not self.ACCEPT_WEBPAGE:
                     urls = []
-                    self.logger.log(1, self.NAME, 'WARNING', 'webpage urls not supported')
+                    self.logger.log(2, self.NAME, 'WARNING', 'webpage urls not supported', once=True)
                 else:
                     urls = self.extract_by_regex(self.URL_PAT, target)
             for url in urls:

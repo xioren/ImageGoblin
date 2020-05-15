@@ -9,7 +9,7 @@ class FlickrGoblin(MetaGoblin):
 
     NAME = 'flickr goblin'
     ID = 'flickr'
-    URL_PAT = r'live\.staticflickr.com\\/\d+\\/\d+_[a-z0-9]+_o\.jpg'
+    URL_PAT = r'live\.staticflickr\.com[\\/\d]+_[a-z\d]+_o\.jpg'
 
     def __init__(self, args):
         super().__init__(args)
@@ -20,7 +20,7 @@ class FlickrGoblin(MetaGoblin):
             if 'staticflickr' in target:
                 urls = [target]
             else:
-                urls = self.extract_by_regex(FlickrGoblin.URL_PAT, target)
+                urls = self.extract_by_regex(self.URL_PAT, target)
             for url in urls:
                 self.collect(url)
         self.loot()

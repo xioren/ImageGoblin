@@ -27,10 +27,10 @@ class BehanceGoblin(MetaGoblin):
         for target in self.args['targets'][self.ID]:
             if 'mir-s3-cdn' in target:
                 urls = [target]
-                self.logger.log(1, self.NAME, 'WARNING', 'image urls not fully supported')
+                self.logger.log(2, self.NAME, 'WARNING', 'image urls not fully supported', once=True)
             else:
                 urls = []
-                self.logger.log(1, self.NAME, 'WARNING', 'webpage urls not supported')
+                self.logger.log(2, self.NAME, 'WARNING', 'webpage urls not supported', once=True)
             for url in urls:
                 for size in self.SIZES:
                     new_url = self.fit(url, size)

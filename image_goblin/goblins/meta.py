@@ -111,7 +111,7 @@ class MetaGoblin:
             return b''
 
     def make_request(self, url, n=0, data=None):
-        '''make a web request'''
+        '''make an http request'''
         try:
             request = Request(self.parser.add_scheme(url), data, self.headers)
         except ValueError as e:

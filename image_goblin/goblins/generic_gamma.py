@@ -23,7 +23,7 @@ class GammaGoblin(MetaGoblin):
         - womens secret
     '''
 
-    URL_PAT = r'[^" ;]+demandware[^" ;]+\.jpg'
+    URL_PAT = r'[^"\s;]+demandware[^"\s;]+\.jpg'
 
     def __init__(self, args):
         super().__init__(args)

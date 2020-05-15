@@ -11,7 +11,7 @@ class MangoGoblin(MetaGoblin):
 
     NAME = 'mango goblin'
     ID = 'mango'
-    URL_PAT = r'https?://st\.mngbcn\.com[^"\? ]+\.jpg'
+    URL_PAT = r'https?://st\.mngbcn\.com[^"\?\s]+\.jpg'
     QUERY = '?qlt=100'
     MODIFIERS = ('', '_R', '_D1', '_D2', '_D3', '_D4', '_D5', '_D6')
     URL_BASE = 'https://st.mngbcn.com/rcs/pics/static/'

@@ -23,7 +23,7 @@ class AlphaGoblin(MetaGoblin):
         - watercult
     '''
 
-    URL_PAT = r'https?:[^" \n]+media\\?/catalog[^" \n]+\.jpe?g'
+    URL_PAT = r'https?:[^"\s\n]+media\\?/catalog[^"\s\n]+\.jpe?g'
 
     def __init__(self, args):
         super().__init__(args)
@@ -37,12 +37,12 @@ class AlphaGoblin(MetaGoblin):
         for target in self.args['targets'][self.ID]:
             if 'media/catalog' in target:
                 if not self.ACCEPT_IMAGE:
-                    self.logger.log(1, self.NAME, 'WARNING', 'image urls not fully supported')
+                    self.logger.log(2, self.NAME, 'WARNING', 'image urls not fully supported', once=True)
                 urls = self.generate_urls(target)
             else:
                 if not self.ACCEPT_WEBPAGE:
                     urls = []
-                    self.logger.log(1, self.NAME, 'WARNING', 'webpage urls not supported')
+                    self.logger.log(2, self.NAME, 'WARNING', 'webpage urls not supported', once=True)
                 else:
                     urls = self.generate_urls(target, False)
             for url in urls:

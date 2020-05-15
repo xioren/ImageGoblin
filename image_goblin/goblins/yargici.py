@@ -9,7 +9,7 @@ class YargiciGoblin(EpsilonGoblin):
     ID = 'yargici'
     MOD_PAT = r'\d{8}'
     URL_END = '_0.jpeg'
-    URL_PAT = r'https://img-incommerce-yargici\.mncdn[^" ]+\.jpg'
+    URL_PAT = r'https://img-incommerce-yargici\.mncdn[^"\s]+\.jpg'
 
     def __init__(self, args):
         super().__init__(args)

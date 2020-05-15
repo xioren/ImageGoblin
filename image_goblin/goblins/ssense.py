@@ -11,7 +11,7 @@ class SsenseGoblin(MetaGoblin):
 
     NAME = 'ssense goblin'
     ID = 'ssense'
-    URL_PAT = r'https?://(img\.ssensemedia|res\.cloudinary)\.com/(images?|ssenseweb)/[^" ]+'
+    URL_PAT = r'https?://(img\.ssensemedia|res\.cloudinary)\.com/(images?|ssenseweb)/[^"\s]+'
 
     def __init__(self, args):
         super().__init__(args)

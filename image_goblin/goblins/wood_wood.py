@@ -10,7 +10,7 @@ class WoodWoodGoblin(MetaGoblin):
 
     NAME = 'wood wood goblin'
     ID = 'woodwood'
-    # URL_PAT = r'https?://www\.woodwood\.com/shared/[^" ]+\.jpg'
+    # URL_PAT = r'https?://www\.woodwood\.com/shared/[^"\s]+\.jpg'
 
     def __init__(self, args):
         super().__init__(args)
@@ -30,7 +30,7 @@ class WoodWoodGoblin(MetaGoblin):
                 urls = [target]
             else:
                 urls = []
-                self.logger.log(1, self.NAME, 'WARNING', 'webpage urls not supported')
+                self.logger.log(2, self.NAME, 'WARNING', 'webpage urls not supported', once=True)
             for url in urls:
                 id, image_num = self.extract_id(url)
                 filename = self.upscale(url)

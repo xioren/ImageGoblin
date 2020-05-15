@@ -7,7 +7,7 @@ class KotonGoblin(EpsilonGoblin):
     ID = 'koton'
     MOD_PAT = r'G\d+_zoom\d'
     URL_END = '_V01.jpg'
-    URL_PAT = r'https?://ktnimg\.mncdn[^" ]+zoom\d_V01\.jpg'
+    URL_PAT = r'https?://ktnimg\.mncdn[^"\s]+zoom\d_V01\.jpg'
 
     def __init__(self, args):
         super().__init__(args)

@@ -13,7 +13,7 @@ class AmericanApparelGoblin(MetaGoblin):
     NAME = 'american apparel goblin'
     ID = 'americanapparel'
     URL_PAT = r'https?://cdn\d+\.bigcommerce\.com/[^/]+/images/stencil/[^/]+' \
-              r'/products/\d+/\d+/[a-z\d]+_[a-z\d]+_[^" ]+\.jpg'
+              r'/products/\d+/\d+/[a-z\d]+_[a-z\d]+_[^"\s]+\.jpg'
 
     def __init__(self, args):
         super().__init__(args)

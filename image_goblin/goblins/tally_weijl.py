@@ -11,7 +11,7 @@ class TallyWeijlGoblin(MetaGoblin):
 
     NAME = 'tally weijl goblin'
     ID = 'tallyweijl'
-    URL_PAT = r'https?://www\.tally\-weijl\.com/img/[^" ]+\.jpg'
+    URL_PAT = r'https?://www\.tally\-weijl\.com/img/[^"\s]+\.jpg'
 
     def __init__(self, args):
         super().__init__(args)
@@ -21,7 +21,7 @@ class TallyWeijlGoblin(MetaGoblin):
         for target in self.args['targets'][self.ID]:
             if '/img/' in target:
                 urls = [target]
-                self.logger.log(1, self.NAME, 'WARNING', 'image urls not fully supported')
+                self.logger.log(2, self.NAME, 'WARNING', 'image urls not fully supported', once=True)
             else:
                 urls = self.extract_by_regex(self.URL_PAT, target)
             for url in urls:

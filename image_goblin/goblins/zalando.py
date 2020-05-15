@@ -14,7 +14,7 @@ class ZalandoGoblin(MetaGoblin):
 
     NAME = 'zalando goblin'
     ID = 'zalando'
-    ID_PAT = re.compile(r'[A-Z0-9]+-[A-Z0-9]{3}(?![\-\w])')
+    ID_PAT = re.compile(r'[A-Z\d]+-[A-Z\d]{3}(?![\-\w])')
 
     def __init__(self, args):
         super().__init__(args)

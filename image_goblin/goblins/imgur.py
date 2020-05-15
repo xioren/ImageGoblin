@@ -50,7 +50,10 @@ class ImgurGoblin(MetaGoblin):
                 matches = self.extract_by_regex(r'(?<=image\s{15}:\s){[^\n]+}(?=,\n)',
                                                 self.clean(target))
                 for match in matches:
-                    items = json.loads(match)
+                    try:
+                        items = json.loads(match)
+                    except json.JSONDecodeError:
+                        items = json.loads(self.parser.make_json_safe(match))
                     for item in items['album_images']['images']:
                         urls.append(f'{self.BASE_URL}{item["hash"]}{item["ext"]}')
                 if not urls: # sign in probably required -> try bypass

@@ -19,6 +19,7 @@ from goblins.c_and_a import CAGoblin
 from goblins.calvin_klein import CalvinKleinGoblin
 from goblins.caroswim import CaroSwimGoblin
 from goblins.cecilie_copenhagen import CecilieGoblin
+from goblins.deviant_art import DeviantArtGoblin
 from goblins.dolls_kill import DollsKillGoblin
 from goblins.dora_larsen import DoraLarsenGoblin
 from goblins.else_lingerie import ElseGoblin
@@ -51,6 +52,7 @@ from goblins.katherine_hamilton import KatherineHamiltonGoblin
 from goblins.kiki_de_montparnasse import KikiDeMontparnasseGoblin
 from goblins.koton import KotonGoblin
 from goblins.le_petit_trou import LePetitTrouGoblin
+from goblins.listal import ListalGoblin
 from goblins.livy import LivyGoblin
 from goblins.lounge import LoungeGoblin
 from goblins.maison_lejaby import MaisonLejabyGoblin
@@ -123,6 +125,7 @@ goblins = {
     'calvinklein': (r'calvinklein(eu)?(\.[a-z]+|/)', CalvinKleinGoblin),
     'caroswim': (r'caroswim\.[a-z]+', CaroSwimGoblin),
     'ceciliecopenhagen': (r'ceciliecopenhagen\.[a-z]+', CecilieGoblin),
+    'deviantart': (r'images-wixmp|deviantart\.[a-z]', DeviantArtGoblin),
     'dollskill': (r'dollskill\.[a-z]+', DollsKillGoblin),
     'doralarsen': (r'doralarsen\.[a-z]+', DoraLarsenGoblin),
     'else': (r'elselingerie\.[a-z]+', ElseGoblin),
@@ -155,6 +158,7 @@ goblins = {
     'kikidemontparnasse': (r'kikidm\.[a-z]+', KikiDeMontparnasseGoblin),
     'koton': (r'koton\.[a-z]+|ktnimg', KotonGoblin),
     'lepetittrou': (r'(le-petit-trou|shoplo)\.[a-z]+', LePetitTrouGoblin),
+    'listal': (r'lis(tal|img)\.[a-z]+', ListalGoblin),
     'livy': (r'li-vy\.[a-z]+', LivyGoblin),
     'lounge': (r'loungeunderwear\.[a-z]+', LoungeGoblin),
     'maisonclose': (r'maison-close\.[a-z]+', MaisonCloseGoblin),

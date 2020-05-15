@@ -7,8 +7,9 @@ class Logger:
     def __init__(self, verbose, silent):
         self.verbose = verbose
         self.silent = silent
+        self.logged = [] # keep track of log once logs
 
-    def log(self, level, caller, msg, info='', clear=False):
+    def log(self, level, caller, msg, info='', clear=False, once=False):
         '''logging messages
         - level 0: basic
         - level 1: normal
@@ -24,7 +25,11 @@ class Logger:
         elif level == 2 and not self.verbose or self.silent:
             pass
         else:
-            print(f'[{caller}] <{msg}> {info}')
+            output = f'[{caller}] <{msg}> {info}'
+            if output not in self.logged:
+                print(output)
+                if once:
+                    self.logged.append(output)
 
     def progress(self, caller, msg, current, total):
         '''progress bar'''

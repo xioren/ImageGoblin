@@ -13,7 +13,7 @@ class TrendyolGoblin(MetaGoblin):
 
     NAME = 'trandyol goblin'
     ID = 'trendyol'
-    URL_PAT = r'https?://(img-trendyol\.mncdn|cdn\.dsmcdn)\.com/[^" ,]+\d_org(_zoom)?\.jpg'
+    URL_PAT = r'https?://(img-trendyol\.mncdn|cdn\.dsmcdn)\.com/[^"\s,]+\d_org(_zoom)?\.jpg'
 
     def __init__(self, args):
         super().__init__(args)

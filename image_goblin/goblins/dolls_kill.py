@@ -11,7 +11,7 @@ class DollsKillGoblin(MetaGoblin):
 
     NAME = 'dolls kill goblin'
     ID = 'dollskill'
-    URL_PAT = r'img src="https?://media\.dollskill\.com[^" \']+\-\d+\.jpe?g'
+    URL_PAT = r'img\ssrc="https?://media\.dollskill\.com[^"\s\']+\-\d+\.jpe?g'
 
     def __init__(self, args):
         super().__init__(args)
@@ -21,7 +21,7 @@ class DollsKillGoblin(MetaGoblin):
         for target in self.args['targets'][self.ID]:
             if 'media.dollskill' in target:
                 urls = [target]
-                self.logger.log(1, self.NAME, 'WARNING', 'image urls not fully supported')
+                self.logger.log(2, self.NAME, 'WARNING', 'image urls not fully supported', once=True)
             else:
                 urls = self.extract_by_regex(self.URL_PAT, target)
             for url in urls:

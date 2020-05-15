@@ -11,7 +11,7 @@ class SavageXGoblin(MetaGoblin):
 
     NAME = 'savagex goblin'
     ID = 'savagex'
-    URL_PAT = r'https?://[^" \n]+\d-800x800\.jpg'
+    URL_PAT = r'https?://[^"\s\n]+\d-800x800\.jpg'
 
     def __init__(self, args):
         super().__init__(args)

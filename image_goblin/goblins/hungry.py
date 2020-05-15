@@ -1,13 +1,16 @@
-from goblins.meta import MetaGoblin
+from logging import Logger
 
 
-class HungryGoblin(MetaGoblin):
+logger = Logger(False, False)
+
+
+class HungryGoblin:
 
     NAME = 'hungry goblin'
 
     def __init__(self):
         self.meal = set()
-        print(f'[{self.NAME}] <deployed>')
+        logger.log(0, self.NAME, 'deployed')
 
     def run(self):
         while True:
@@ -15,4 +18,5 @@ class HungryGoblin(MetaGoblin):
             if bite == '':
                 break
             self.meal.add(bite)
+        logger.log(0, self.NAME, 'digesting')
         return self.meal

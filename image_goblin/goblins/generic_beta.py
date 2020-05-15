@@ -22,7 +22,7 @@ class BetaGoblin(MetaGoblin):
         - urban outfitters
     '''
 
-    URL_PAT = fr'https?://[a-z0-9\-]+\.scene7\.com/is/image/[A-Za-z]+/\w+(_\w+)?_\w+'
+    URL_PAT = fr'https?://[a-z\d\-]+\.scene7\.com/is/image/[A-Za-z]+/\w+(_\w+)?_\w+'
     QUERY = '?fmt=jpeg&qlt=100&scl=1'
 
     def __init__(self, args):
@@ -46,8 +46,7 @@ class BetaGoblin(MetaGoblin):
                     urls = self.extract_by_regex(self.URL_PAT, target)
                 else:
                     urls = []
-                    if not self.args['silent']:
-                        print(f'[{self.NAME}] <WARNING> webpage urls not supported')
+                    self.logger.log(2, self.NAME, 'WARNING', 'webpage urls not supported', once=True)
             for url in urls:
                 id = self.extract_id(url)
                 self.url_base = self.extract_base(url)

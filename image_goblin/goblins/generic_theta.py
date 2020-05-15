@@ -36,7 +36,7 @@ class ThetaGoblin(MetaGoblin):
         - vitamin a
     '''
 
-    URL_PAT = r'cdn\.shopify\.com/s/files/[^" \n]+((\w+-)+)?\d+x(\d+)?[^" \n]+'
+    URL_PAT = r'cdn\.shopify\.com/s/files/[^"\s\n]+((\w+-)+)?\d+x(\d+)?[^"\s\n]+'
 
     def __init__(self, args):
         super().__init__(args)
@@ -50,7 +50,7 @@ class ThetaGoblin(MetaGoblin):
         for target in self.args['targets'][self.ID]:
             if 'cdn.shopify' in target:
                 urls = [target]
-                self.logger.log(1, self.NAME, 'WARNING', 'image urls not fully supported')
+                self.logger.log(2, self.NAME, 'WARNING', 'image urls not fully supported', once=True)
             else:
                 urls = self.extract_by_regex(self.URL_PAT, target)
             for url in urls:

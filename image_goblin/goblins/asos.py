@@ -23,17 +23,17 @@ class ASOSGoblin(MetaGoblin):
 
     def extract_id(self, url):
         '''extract image id from url'''
-        id = re.search(r'\d+(?=-[0-9])', url) or re.search(r'(?<=/)\d{2,}', url)
+        id = re.search(r'\d+(?=-\d)', url) or re.search(r'(?<=/)\d{2,}', url)
         return id.group()
 
     def extract_color(self, url):
         '''extract color from url'''
         if 'asos.com' in url:
-            color = re.search(r'(?<=clr=)[a-z0-9]+', url) \
-                    or re.search(r'(?<=-1-)[a-z0-9]+', self.get(url).content)
+            color = re.search(r'(?<=clr=)[a-z\s]+', url) \
+                    or re.search(r'(?<=-1-)[a-z\s]+', self.get(url).content)
         else:
-            color = re.search(r'(?<=-1-)[a-z0-9]+', url) \
-                    or re.search(r'(?<!/\d/\d)/[a-z0-9]+(?=/[^/]+$)', url)
+            color = re.search(r'(?<=-1-)[a-z\d]+', url) \
+                    or re.search(r'(?<!/\d/\d)/[a-z\s]+(?=/[^/]+$)', url)
         return color.group().lstrip('/') if color else ''
 
     def form_url(self, id):

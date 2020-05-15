@@ -10,7 +10,7 @@ class MissguidedGoblin(MetaGoblin):
 
     NAME = 'missguided goblin'
     ID = 'missguided'
-    URL_PAT = r'https?://media\.missguided\.com[^" ]+_\d{2}\.jpg'
+    URL_PAT = r'https?://media\.missguided\.com[^"\s]+_\d{2}\.jpg'
 
     def __init__(self, args):
         super().__init__(args)
@@ -25,9 +25,9 @@ class MissguidedGoblin(MetaGoblin):
             if 'media.missguided' in target:
                 urls = [target]
             else:
-                # NOTE: currently throws 405 error. apparently very strict bot/vpn prevention.
+                # BUG: currently throws 405 error. apparently very strict bot/vpn prevention.
                 urls = []
-                self.logger.log(1, self.NAME, 'WARNING', 'webpage urls not supported')
+                self.logger.log(2, self.NAME, 'WARNING', 'webpage urls not supported', once=True)
             for url in urls:
                 id = self.extract_id(url)
                 for n in range(1, 6):

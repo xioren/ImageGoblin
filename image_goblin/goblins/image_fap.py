@@ -10,7 +10,7 @@ class ImageFapGoblin(MetaGoblin):
 
     NAME = 'image fap goblin'
     ID = 'imagefap'
-    URL_PAT = re.compile(r'https?://cdn\.imagefap\.com/images/full/[^" <]+')
+    URL_PAT = re.compile(r'https?://cdn\.imagefap\.com/images/full/[^"\s<]+')
 
     def __init__(self, args):
         super().__init__(args)
@@ -20,7 +20,7 @@ class ImageFapGoblin(MetaGoblin):
         for target in self.args['targets'][self.ID]:
             if 'cdn.imagefap' in target:
                 urls = [target]
-                self.logger.log(1, self.NAME, 'WARNING', 'image urls not supported')
+                self.logger.log(2, self.NAME, 'WARNING', 'image urls not supported', once=True)
             else:
                 urls = []
                 links = self.extract_by_tag(f'{self.parser.dequery(target)}?view=2', 'a', 'href')

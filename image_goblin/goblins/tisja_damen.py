@@ -11,7 +11,7 @@ class TisjaDamenGoblin(MetaGoblin):
 
     NAME = 'tisja damen goblin'
     ID = 'tisjadamen'
-    URL_PAT = r'/images/magictoolbox_cache/[^" ]+\.jpg'
+    URL_PAT = r'/images/magictoolbox_cache/[^"\s]+\.jpg'
 
     def __init__(self, args):
         super().__init__(args)
@@ -25,7 +25,7 @@ class TisjaDamenGoblin(MetaGoblin):
         for target in self.args['targets'][self.ID]:
             if 'images' in target:
                 urls = [target]
-                self.logger.log(1, self.NAME, 'WARNING', 'image urls not fully supported')
+                self.logger.log(2, self.NAME, 'WARNING', 'image urls not fully supported', once=True)
             else:
                 urls = self.extract_by_regex(self.URL_PAT, target)
             for url in urls:

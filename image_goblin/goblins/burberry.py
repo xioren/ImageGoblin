@@ -11,7 +11,7 @@ class BurberryGoblin(MetaGoblin):
 
     NAME = 'burberry goblin'
     ID = 'burberry'
-    URL_PAT = r'https?://assets\.burberry\.com/is/image/Burberryltd/[^" ]+'
+    URL_PAT = r'https?://assets\.burberry\.com/is/image/Burberryltd/[^"\s]+'
 
     def __init__(self, args):
         super().__init__(args)
@@ -21,7 +21,7 @@ class BurberryGoblin(MetaGoblin):
         for target in self.args['targets'][self.ID]:
             if 'assets.burberry' in target:
                 urls = [target]
-                self.logger.log(1, self.NAME, 'WARNING', 'image urls not fully supported')
+                self.logger.log(2, self.NAME, 'WARNING', 'image urls not fully supported', once=True)
             else:
                 urls = self.extract_by_regex(self.URL_PAT, target)
             for url in urls:

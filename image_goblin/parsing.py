@@ -123,8 +123,13 @@ class Parser:
             else:
                 return new_path
 
+    def make_json_safe(self, text):
+        '''fix improper use of double quotes in JSON'''
+        # IDEA: consider central json handler/decode method
+        return re.sub(r'(?<![{,\[:])"(?![},\]:])', '\'', text)
+
     def user_format(self, url):
-        '''add, substitute, or remove elements from a url'''
+        '''add, substitute, or remove arbitrary elements from a url'''
         if self.user_formatting[0] == 'add':
             # QUESTION: add auto query formatting? use urlencode?
             return self.dequery(url) + self.user_formatting[1]
@@ -168,7 +173,7 @@ class Parser:
             url += '?format=original'
         elif 'tumblr' in url:
             if '.gif' in url:
-                url = re.sub(r'\d+(?=\.gif)', '500', url)
+                url = re.sub(r'\d+(?=\.gif)', '540', url)
             else:
                 url = re.sub(r'\d+(?=\.jpg)', '1280', url)
         elif 'wix' in url:

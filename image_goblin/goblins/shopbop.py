@@ -11,7 +11,7 @@ class ShopbopGoblin(MetaGoblin):
 
     NAME = 'shopbop goblin'
     ID = 'shopbop'
-    URL_PAT = r'https?://[a-z\-\.]+amazon\.com[^" ]+\.jpg'
+    URL_PAT = r'https?://[a-z\-\.]+amazon\.com[^"\s]+\.jpg'
 
     def __init__(self, args):
         super().__init__(args)
