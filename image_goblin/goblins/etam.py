@@ -9,6 +9,7 @@ class EtamGoblin(GammaGoblin):
     IMG_PAT = r'\d+_[a-z\d]\.jpg'
     ITER_PAT = r'_[a-z\d](?=\.jpg)'
     URL_BASE = 'https://www.etam.com/on/demandware.static/-/Sites-ELIN-master/default/'
+    QUERY = ''
 
     def __init__(self, args):
         super().__init__(args)

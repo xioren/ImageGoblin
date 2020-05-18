@@ -25,14 +25,18 @@ class MangoGoblin(MetaGoblin):
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting links')
+
         for target in self.args['targets'][self.ID]:
             if 'mngbcn' in target:
                 urls = [target]
             else:
-                urls = self.extract_by_regex(self.URL_PAT, target)
+                urls = self.parser.extract_by_regex(self.get(target).content, self.URL_PAT)
+
             for url in urls:
                 t, id = self.extract_id(url)
+
                 self.collect(f'{self.URL_BASE}{t}/fotos/outfit/S20/{id}-99999999_01.jpg{self.QUERY}')
                 for mod in self.MODIFIERS:
                     self.collect(f'{self.URL_BASE}{t}/fotos/S20/{id}{mod}.jpg{self.QUERY}')
+
         self.loot()

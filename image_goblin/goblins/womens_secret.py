@@ -9,6 +9,7 @@ class WomensSecretGoblin(GammaGoblin):
     IMG_PAT = r'P_[A-Z\d]+\.jpg'
     ITER_PAT = r'[A-Z\d]{2}(?=\.)'
     URL_BASE = 'https://womensecret.com/on/demandware.static/-/Sites-gc-ws-master-catalog/default/images/hi-res/'
+    QUERY = ''
 
     def __init__(self, args):
         super().__init__(args)

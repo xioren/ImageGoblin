@@ -15,4 +15,4 @@ class BikiniLoversGoblin(AlphaGoblin):
         if image:
             return [url]
         else:
-            return self.extract_by_regex(self.URL_PAT, url)
+            return self.parser.extract_by_regex(self.get(url).content, self.URL_PAT)

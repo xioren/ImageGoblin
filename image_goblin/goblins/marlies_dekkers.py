@@ -9,6 +9,7 @@ class MarliesDekkersGoblin(GammaGoblin):
     IMG_PAT = r'\d+_\d_lb_\w+\.jpg'
     ITER_PAT = r'\d_lb_[bf]'
     URL_BASE = 'https://www.marliesdekkers.com/on/demandware.static/-/Sites-Master/default/'
-
+    QUERY = ''
+    
     def __init__(self, args):
         super().__init__(args)

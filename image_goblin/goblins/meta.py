@@ -1,5 +1,6 @@
 import os
 import re
+import http.cookiejar
 
 from sys import exit
 from time import sleep
@@ -19,11 +20,13 @@ from version import __version__
 
 
 class MetaGoblin:
-    '''base goblin inherited by all other goblins'''
+    '''generic utility goblin inherited by all other goblins'''
 
     def __init__(self, args):
         super().__init__()
         self.args = args
+        self.collection = set()
+        self.looted = []
         if self.args['nosort']:
             self.path_main = os.getcwd()
         else:
@@ -34,11 +37,13 @@ class MetaGoblin:
             user_agent = f'ImageGoblin/{__version__}'
         self.headers = {'User-Agent': user_agent,
                         'Accept-Encoding': 'gzip'}
-        self.collection = set()
-        self.looted = []
+
         self.make_dirs(self.path_main)
+
         self.logger = Logger(self.args['verbose'], self.args['silent'])
         self.parser = Parser(self.args['targets'][self.ID][0], self.args['format'])
+        self.cj = http.cookiejar.CookieJar()
+
         self.logger.log(0, self.NAME, 'deployed')
 
 ####################################################################
@@ -52,11 +57,17 @@ class MetaGoblin:
             if object:
                 self.code = object.code
                 # QUESTION: keep as string?
-                self.info = object.info().as_string()
-                if object.info().get('content-encoding') == 'gzip':
-                    self.content = MetaGoblin.unzip(object.read()).decode('utf-8', 'ignore')
-                else:
-                    self.content = object.read().decode('utf-8', 'ignore')
+                self.info = object.info()
+                # TEMP: implement real retry handling
+                for _ in range(5):
+                    try:
+                        if object.info().get('content-encoding') == 'gzip':
+                            self.content = MetaGoblin.unzip(object.read()).decode('utf-8', 'ignore')
+                        else:
+                            self.content = object.read().decode('utf-8', 'ignore')
+                        break
+                    except timeout:
+                        sleep(2)
             else:
                 self.code = ''
                 self.info = ''
@@ -94,7 +105,7 @@ class MetaGoblin:
 
     def toggle_collecton_type(self):
         '''toggle collection type between list and set'''
-        if type(self.collection) == list:
+        if isinstance(self.collection, list):
             self.collection = set()
         else:
             self.collection = []
@@ -110,15 +121,19 @@ class MetaGoblin:
         except EOFError:
             return b''
 
-    def make_request(self, url, n=0, data=None):
+    def make_request(self, url, n=0, data=None, set_cookies=False):
         '''make an http request'''
         try:
             request = Request(self.parser.add_scheme(url), data, self.headers)
         except ValueError as e:
             self.logger.log(2, self.NAME, e, url)
             return None
+
         try:
-            return urlopen(request, timeout=20)
+            response = urlopen(request, timeout=20)
+            if set_cookies:
+                self.cj.extract_cookies(response, request)
+            return response
         except HTTPError as e:
             self.logger.log(2, self.NAME, e, url)
             # servers sometimes return 502 when requesting large files, retrying usually works.
@@ -129,6 +144,17 @@ class MetaGoblin:
         except timeout:
             return self.retry(url, n+1, data)
 
+    def extract_cookie(self, name):
+        '''return a cookie from the cookie jar'''
+        for cookie in self.cj:
+            if cookie.name == name:
+                return cookie.value
+
+    def set_cookies(self):
+        '''parse reponse headers and set cookies'''
+        for cookie in self.cj:
+            self.extend_cookie('Cookie', f'{cookie.name}={cookie.value}')
+
     def extend_cookie(self, cookie, value):
         '''add or extend a cookie'''
         if cookie not in self.headers:
@@ -138,13 +164,15 @@ class MetaGoblin:
             values.add(value)
             self.headers[cookie] = '; '.join(values)
 
-    def get(self, url):
+    def get(self, url, set_cookies=False):
         '''make a get request'''
-        return self.ParsedRequest(self.make_request(url))
+        return self.ParsedRequest(self.make_request(url, set_cookies=set_cookies))
 
-    def post(self, url, data):
+    def post(self, url, data, set_cookies=False):
         '''make a post request'''
-        return self.ParsedRequest(self.make_request(url, data=urlencode(data).encode()))
+        if isinstance(data, dict):
+            data = urlencode(data)
+        return self.ParsedRequest(self.make_request(url, data=data.encode(), set_cookies=set_cookies))
 
     def download(self, url, path, n=0):
         '''download web content'''
@@ -169,7 +197,9 @@ class MetaGoblin:
             self.logger.log(2, self.NAME, 'timed out', f'aborting after {n} retries')
             return None
         self.logger.log(2, self.NAME, 'timed out', f'retry attempt {n}')
+
         sleep(3)
+
         if path:
             return self.download(url, path, n)
         else:
@@ -198,27 +228,6 @@ class MetaGoblin:
         except OSError as e:
             self.logger.log(2, self.NAME, e, path)
 
-    def extract_by_tag(self, url, tag=None, attr=None):
-        '''extract from html by tag'''
-        response = self.get(url)
-        if response:
-            html_parser = self.parser.GoblinHTMLParser(response.content)
-            html_parser.parse_elements()
-            if tag and attr:
-                return html_parser.elements.get(tag).get(attr)
-            elif tag:
-                return html_parser.elements.get(tag)
-            else:
-                return html_parser.elements
-        return ''
-
-    def extract_by_regex(self, pattern, url):
-        '''extract from html by regex'''
-        try:
-            return {match.group().replace('\\', '') for match in re.finditer(pattern, self.get(url).content)}
-        except TypeError:
-            return ''
-
     def check_filepath(self, path):
         '''check if filepath exists and either skip or make unique if necessary'''
         if os.path.exists(path):
@@ -227,18 +236,23 @@ class MetaGoblin:
             else:
                 self.logger.log(2, self.NAME, 'file exists', self.parser.extract_filename(path))
                 return None
+
         return path
 
     def collect(self, url, filename='', clean=False):
         '''finalize and add urls to the collection'''
+        if self.parser.filter(url):
+            return None
+
         if clean:
             url = self.parser.sanitize(url)
         if not filename:
             filename = self.parser.extract_filename(url)
         elif '.' in filename: # remove extension
             filename = filename.split('.')[0]
+
         # add to collection as hashable string
-        if type(self.collection) == list:
+        if isinstance(self.collection, list):
             self.collection.append(f'{self.parser.finalize(url)}-break-{filename}')
         else:
             self.collection.add(f'{self.parser.finalize(url)}-break-{filename}')
@@ -248,18 +262,24 @@ class MetaGoblin:
         failed = 0
         file = 1 # tracking for progress bar
         timed_out = False
+
         for item in self.collection:
             if timeout and failed >= timeout:
                 timed_out = True
                 break
+
             url, filename = item.split('-break-')
+
             if self.args['nodl']:
                 print(url, end='\n\n')
                 continue
+
             self.logger.progress(self.NAME, 'looting', file, len(self.collection))
+
             if not save_loc:
                 save_loc = self.path_main
             filepath = os.path.join(save_loc, filename)
+
             attempt = self.download(url, filepath)
             if attempt:
                 self.logger.log(2, self.NAME, 'looted', filename)
@@ -268,5 +288,7 @@ class MetaGoblin:
                 failed += 1
             file += 1
             sleep(self.args['delay'])
+
         self.logger.log(0, self.NAME, 'complete', f'{len(self.looted)} file(s) looted', clear=True)
+
         return timed_out

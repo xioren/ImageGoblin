@@ -10,7 +10,9 @@ class MissguidedGoblin(MetaGoblin):
 
     NAME = 'missguided goblin'
     ID = 'missguided'
-    URL_PAT = r'https?://media\.missguided\.com[^"\s]+_\d{2}\.jpg'
+    URL_BASE = 'https://media.missguided.com/i/missguided/'
+    # URL_PAT = r'https?://media\.missguided\.com[^"\s]+_\d{2}\.jpg'
+    QUERY = '?fmt=jpeg&qlty=100'
 
     def __init__(self, args):
         super().__init__(args)
@@ -21,16 +23,23 @@ class MissguidedGoblin(MetaGoblin):
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting links')
+
         for target in self.args['targets'][self.ID]:
             if 'media.missguided' in target:
                 urls = [target]
             else:
-                # BUG: currently throws 405 error. apparently very strict bot/vpn prevention.
+                # BUG: currently throws 405 error. requires cookie uuid values. unknown how they are generated.
                 urls = []
                 self.logger.log(2, self.NAME, 'WARNING', 'webpage urls not supported', once=True)
+
             for url in urls:
                 id = self.extract_id(url)
+
                 for n in range(1, 6):
-                    self.collect(f'https://media.missguided.com/i/missguided/{id}_0{n}')
+                    if self.args['mode'] == 'png':
+                        self.collect(f'{self.URL_BASE}{id}_0{n}{self.QUERY}')
+                    else:
+                        self.collect(f'{self.URL_BASE}{id}_0{n}?fmt=png')
+
         self.loot()
         self.cleanup(self.path_main)

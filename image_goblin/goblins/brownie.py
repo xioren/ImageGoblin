@@ -22,13 +22,15 @@ class BrownieGoblin(MetaGoblin):
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting links')
+
         for target in self.args['targets'][self.ID]:
             if '.jpg' in target:
                 urls = [target]
                 self.logger.log(2, self.NAME, 'WARNING', 'image urls not fully supported', once=True)
             else:
-                urls = self.extract_by_regex(self.URL_PAT, target)
+                urls = self.parser.extract_by_regex(self.get(target).content, self.URL_PAT)
+
             for url in urls:
-                id = self.extract_id(url)
-                self.collect(url.replace('-thickbox_default', ''), filename=id)
+                self.collect(url.replace('-thickbox_default', ''), filename=self.extract_id(url))
+
         self.loot()

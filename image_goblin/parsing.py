@@ -1,4 +1,5 @@
 import re
+import json
 import mimetypes
 import urllib.parse
 
@@ -11,6 +12,8 @@ class Parser:
     FILENAME_PAT = re.compile(r'(?<=/|\\)[^\\/]+$')
     QUERY_PAT = re.compile(r'[\?&][^"\s]+$')
     QUALITY_PAT = re.compile(r'q((ua)?li?ty)?=\d+')
+    FILTER_PAT = re.compile(r'(?:\.(js|css|pdf|php|html)|(fav)?icon|logo|menu|svg\+xml)',
+                            flags=re.IGNORECASE)
     CROPPING_PATS = (
         re.compile(r'[\-_]?(?<![a-z])((x+)?-?l(arge)?|profile)(?![a-z])[\-_]?', flags=re.IGNORECASE),
         re.compile(r'[@\-_/]\d+x(\d+)?(?![a-z\d])'), # 000x000
@@ -48,6 +51,7 @@ class Parser:
                 tag = re.search(self.TAG_PAT, element).group()
                 if tag not in self.elements:
                     self.elements[tag] = {}
+
                 for attribute in re.finditer(self.ATTRIBUTE_PAT, element):
                     attr, value = attribute.group().split('="')
                     if attr not in self.elements[tag]:
@@ -58,6 +62,29 @@ class Parser:
 ####################################################################
 # methods
 ####################################################################
+
+    def extract_by_tag(self, html, tags=None):
+        '''extract from html by tag'''
+        if html:
+            html_parser = self.GoblinHTMLParser(html)
+            html_parser.parse_elements()
+
+            if tags:
+                urls = []
+                for tag in tags:
+                    urls.extend(html_parser.elements.get(tag).get(tags[tag]))
+                return urls
+            else:
+                return html_parser.elements
+
+        return ''
+
+    def extract_by_regex(self, html, pattern):
+        '''extract from html by regex'''
+        try:
+            return {match.group().replace('\\', '') for match in re.finditer(pattern, html)}
+        except TypeError:
+            return ''
 
     def extract_filename(self, url):
         '''extract filename from url'''
@@ -111,7 +138,8 @@ class Parser:
             url = url.lstrip('/')
         else: # relative path
             url = urllib.parse.urljoin(self.origin_url, url)
-        return urllib.parse.unquote(url.replace('amp;', ''))
+
+        return urllib.parse.unquote((url.replace('amp;', ''))).replace(' ', '%20')
 
     def make_unique(self, path):
         '''make filepath unique'''
@@ -123,10 +151,22 @@ class Parser:
             else:
                 return new_path
 
-    def make_json_safe(self, text):
-        '''fix improper use of double quotes in JSON'''
-        # IDEA: consider central json handler/decode method
-        return re.sub(r'(?<![{,\[:])"(?![},\]:])', '\'', text)
+    def filter(self, url):
+        '''filter unwanted urls'''
+        if re.search(self.FILTER_PAT, url):
+            return True
+        return False
+
+    def load_json(self, json_string):
+        '''load JSON and if necessary fix improper use of delimiters'''
+        # IDEA: add debug log level 3
+        try:
+            return json.loads(json_string)
+        except json.JSONDecodeError:
+            try:
+                return json.loads(re.sub(r'(?<![{,\[:])"(?![},\]:])', '\'', json_string))
+            except json.JSONDecodeError:
+                return '{}'
 
     def user_format(self, url):
         '''add, substitute, or remove arbitrary elements from a url'''
@@ -144,6 +184,7 @@ class Parser:
         '''attempt to upscale common url formats'''
         quality = re.search(self.QUALITY_PAT, url)
         url = self.sanitize(url)
+
         if 'acidimg' in url:
             url = url.replace('small', 'big')
         elif 'imagetwist' in url:
@@ -178,6 +219,8 @@ class Parser:
                 url = re.sub(r'\d+(?=\.jpg)', '1280', url)
         elif 'wix' in url:
             url = re.sub(r'(?<=\.jpg).+$', '', url)
+
         if quality:
             url += '?{}'.format(re.sub(r'\d+', '100', quality.group()))
+
         return url

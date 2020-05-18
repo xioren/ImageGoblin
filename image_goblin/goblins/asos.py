@@ -24,6 +24,7 @@ class ASOSGoblin(MetaGoblin):
     def extract_id(self, url):
         '''extract image id from url'''
         id = re.search(r'\d+(?=-\d)', url) or re.search(r'(?<=/)\d{2,}', url)
+
         return id.group()
 
     def extract_color(self, url):
@@ -34,6 +35,7 @@ class ASOSGoblin(MetaGoblin):
         else:
             color = re.search(r'(?<=-1-)[a-z\d]+', url) \
                     or re.search(r'(?<!/\d/\d)/[a-z\s]+(?=/[^/]+$)', url)
+
         return color.group().lstrip('/') if color else ''
 
     def form_url(self, id):
@@ -42,11 +44,14 @@ class ASOSGoblin(MetaGoblin):
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting links')
+
         for target in self.args['targets'][self.ID]:
             color = self.extract_color(target)
             id = self.extract_id(target)
+
             if color:
                 self.collect(self.form_url(f'{id}-1-{color}'))
             for n in range(2, 5):
                 self.collect(self.form_url(f'{id}-{n}'))
+
         self.loot()

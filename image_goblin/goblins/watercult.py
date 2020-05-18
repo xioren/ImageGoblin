@@ -18,4 +18,4 @@ class WatercultGoblin(AlphaGoblin):
             url_base = re.sub(r'-\d(_\d)?\.jpg', '', url)
             return [f'{url_base}-{n}.jpg' for n in (1, 2, 3, 9)]
         else:
-            return self.extract_by_regex(self.URL_PAT, url)
+            return self.parser.extract_by_regex(self.get(url).content, self.URL_PAT)

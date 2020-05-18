@@ -18,5 +18,6 @@ class HungryGoblin:
             if bite == '':
                 break
             self.meal.add(bite)
+
         logger.log(0, self.NAME, 'digesting')
         return self.meal

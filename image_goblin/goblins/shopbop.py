@@ -22,13 +22,17 @@ class ShopbopGoblin(MetaGoblin):
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting links')
+
         for target in self.args['targets'][self.ID]:
             if 'amazon' in target:
                 urls = [target]
             else:
-                urls = self.extract_by_regex(self.URL_PAT, target)
+                urls = self.parser.extract_by_regex(self.get(target).content, self.URL_PAT)
+
             for url in urls:
                 url = self.prep(url)
+
                 for n in range(1, 7):
                     self.collect(re.sub(r'q\d', f'q{n}', url))
+
         self.loot()

@@ -18,12 +18,15 @@ class BurberryGoblin(MetaGoblin):
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting links')
+
         for target in self.args['targets'][self.ID]:
             if 'assets.burberry' in target:
                 urls = [target]
                 self.logger.log(2, self.NAME, 'WARNING', 'image urls not fully supported', once=True)
             else:
-                urls = self.extract_by_regex(self.URL_PAT, target)
+                urls = self.parser.extract_by_regex(self.get(target).content, self.URL_PAT)
+
             for url in urls:
                 self.collect(f'{self.parser.dequery(url)}?scl=1')
+
         self.loot()

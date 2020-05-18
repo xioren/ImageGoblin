@@ -3,6 +3,7 @@ import re
 from goblins.meta import MetaGoblin
 
 # NOTE: scaling with q=100 gives higher resolution; investigate.
+# TODO: this could really use a better approach
 
 class GammaGoblin(MetaGoblin):
     '''handles: Demandware
@@ -14,15 +15,19 @@ class GammaGoblin(MetaGoblin):
     generic backend for:
         - boux avenue
         - etam
+        - intimissimi
         - jennyfer
         - livy
         - marlies dekkers
         - sandro
         - springfield
+        - tezenis
         - vila
         - womens secret
     '''
 
+    NAME = 'gamma goblin'
+    ID = 'gamma'
     URL_PAT = r'[^"\s;]+demandware[^"\s;]+\.jpg'
 
     def __init__(self, args):
@@ -38,15 +43,19 @@ class GammaGoblin(MetaGoblin):
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting links')
+
         for target in self.args['targets'][self.ID]:
             if 'demandware' in target:
                 urls = [target]
             else:
-                urls = self.extract_by_regex(self.URL_PAT, target)
+                urls = self.parser.extract_by_regex(self.get(target).content, self.URL_PAT)
+
             for url in urls:
                 if not re.search(f'(?:{self.IMG_PAT})', url):
                     continue
+
                 id, url_end = self.extract_parts(self.isolate(url))
                 for mod in self.MODIFIERS:
-                    self.collect(f'{self.URL_BASE}{id}{mod}{self.parser.dequery(url_end)}')
+                    self.collect(f'{self.URL_BASE}{id}{mod}{self.parser.dequery(url_end)}{self.QUERY}')
+
         self.loot()

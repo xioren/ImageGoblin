@@ -1,8 +1,9 @@
 # ImageGoblin
 
-#### changelog v0.3.1:
-+ new goblins
-+ added vs webpage support
+#### changelog v0.3.2:
++ major ongoing shift for applicable sites from html parsing to api integration.
++ improvements to code clarity
++ new goblin
 + bug fixes
 + misc code clean up and improvements
 
@@ -79,4 +80,4 @@
   + if little or no (relevant) images are found then the page is probably generated dynamically with javascript which the program can not handle. you can also try with the --noup/--greedy handles.
 
 
-# PLEASE USE RESPONSIBLY :)
+#### PLEASE USE RESPONSIBLY :)

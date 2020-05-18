@@ -3,6 +3,9 @@ import re
 from goblins.meta import MetaGoblin
 
 
+# NOTE: 1 = highes res jpeg | 36 = lower res png
+
+
 class DollsKillGoblin(MetaGoblin):
     '''accepts:
         - image*
@@ -18,12 +21,18 @@ class DollsKillGoblin(MetaGoblin):
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting links')
+
         for target in self.args['targets'][self.ID]:
             if 'media.dollskill' in target:
                 urls = [target]
                 self.logger.log(2, self.NAME, 'WARNING', 'image urls not fully supported', once=True)
             else:
-                urls = self.extract_by_regex(self.URL_PAT, target)
+                urls = self.parser.extract_by_regex(self.get(target).content, self.URL_PAT)
+
             for url in urls:
-                self.collect(re.sub(r'\d+\.jpg', '1.jpeg', url).replace('img src="', ''))
+                if self.args['mode'] == 'png':
+                    self.collect(f'{url.split("-")[0]}-36.png'.replace('img src="', ''))
+                else:
+                    self.collect(f'{url.split("-")[0]}-1.jpeg'.replace('img src="', ''))
+
         self.loot()

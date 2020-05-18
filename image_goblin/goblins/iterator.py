@@ -27,11 +27,13 @@ class IteratorGoblin(MetaGoblin):
     def generate_urls(self, base, iterable, end):
         '''generate block of urls to iterate over'''
         stripped_iter = self.isolate_iterable(iterable)
+
         for n in range(stripped_iter, stripped_iter + self.block_size, self.args['step']):
             if self.args['filename'] == 'iter':
                 filename = str(n)
             else:
                 filename = self.args['filename']
+
             self.collect(f'{base}{str(n).zfill(len(iterable))}{end}', filename=filename)
 
     def increment_iterable(self, iterable):
@@ -43,9 +45,11 @@ class IteratorGoblin(MetaGoblin):
         self.toggle_collecton_type() # convert collection to list so that links are sorted
         round = 1
         base, iterable, end = self.isolate_parts(self.args['targets'][self.ID][0])
+
         while True:
-            self.logger.log(1, self.NAME, 'iterating', f'round: {round} iter: {iterable}')
+            self.logger.log(1, self.NAME, 'iterating', f'round: {round} n: {iterable}')
             self.generate_urls(base, iterable, end)
+
             timedout = self.loot(timeout=self.args['timeout'])
             if timedout:
                 self.logger.log(1, self.NAME, 'timed out', f'after {self.args["timeout"]} attempts')

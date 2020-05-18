@@ -9,6 +9,7 @@ class VilaGoblin(GammaGoblin):
     IMG_PAT = r'\w+ProductLarge\.jpg'
     ITER_PAT = r'_00\d'
     URL_BASE = 'https://www.vila.com/on/demandware.static/-/Sites-pim-catalog/default/pim-static/large/'
+    QUERY = ''
 
     def __init__(self, args):
         super().__init__(args)

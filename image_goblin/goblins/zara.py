@@ -1,12 +1,44 @@
-from goblins.generic_delta import DeltaGoblin
+import re
 
+from goblins.meta import MetaGoblin
 
-class ZaraGoblin(DeltaGoblin):
+# NOTE: used to use Inditex Group API
+
+class ZaraGoblin(MetaGoblin):
+    '''accepts:
+        - image
+        - webpage
+    '''
 
     NAME = 'zara goblin'
     ID = 'zara'
     SIZE = 0
-    ACCEPT_WEBPAGE = True
+    # API_URL = 'https://www.zara.com/itxrest/1/catalog/store/11719/category/0/product/{}/detail' -> returns empty legacy response
+    # URL_BASE = 'https://static.zara.net/photos'
+    URL_PAT = r'https?://static[^"]+_\d_\d_\d\.jpe?g'
+    MODIFIERS = [f'_{j}_{k}_' for j in range(1, 7) for k in range(1, 15)]
 
     def __init__(self, args):
         super().__init__(args)
+
+    def trim(self, url):
+        '''remove cropping from query string'''
+        return re.sub(r'&imwidth=\d+', '', url)
+
+    def run(self):
+        self.logger.log(1, self.NAME, 'collecting links')
+
+        for target in self.args['targets'][self.ID]:
+            if 'static' in target:
+                urls = []
+                url_base, url_end = re.split(r'_\d_\d_\d+', target)
+
+                for mod in self.MODIFIERS:
+                    urls.append(f'{url_base}{mod}{self.SIZE}{self.trim(url_end)}')
+            else:
+                urls = self.parser.extract_by_regex(self.get(target).content, self.URL_PAT)
+
+            for url in urls:
+                self.collect(re.sub(r'w/\d+/', '', url))
+
+        self.loot()

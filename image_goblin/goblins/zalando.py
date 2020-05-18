@@ -23,6 +23,7 @@ class ZalandoGoblin(MetaGoblin):
         '''form url from filename'''
         compounded = f'{filename[:2]}/{filename[2:4]}/{filename[4:6]}/{filename[6:8]}/' \
                      f'{filename[8]}{filename[10]}/{filename[11:13]}/{filename}'
+
         return f'https://mosaic01.ztat.net/vgs/media/original/{compounded}.jpg'
 
     def extract_id(self, url):
@@ -32,9 +33,12 @@ class ZalandoGoblin(MetaGoblin):
     def run(self):
         self.toggle_collecton_type()
         self.logger.log(1, self.NAME, 'collecting links')
+
         for target in self.args['targets'][self.ID]:
             self.new_collection()
             id = self.extract_id(target)
+
             for n in range(1, 50):
                 self.collect(self.form_url(f'{id}@{n}'))
+
             self.loot(timeout=8)

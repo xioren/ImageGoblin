@@ -22,13 +22,17 @@ class SsenseGoblin(MetaGoblin):
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting links')
+
         for target in self.args['targets'][self.ID]:
             if 'img.ssensemedia' in target or 'res.cloudinary' in target:
                 urls = [target]
             else:
-                urls = self.extract_by_regex(self.URL_PAT, target)
+                urls = self.parser.extract_by_regex(self.get(target).content, self.URL_PAT)
+
             for url in urls:
                 id = self.extract_id(url)
+
                 for n in range(6):
                     self.collect(f'https://img.ssensemedia.com/images/{id}_{n}/{id}_{n}.jpg')
+
         self.loot()

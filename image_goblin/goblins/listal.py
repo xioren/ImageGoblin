@@ -27,6 +27,7 @@ class ListalGoblin(MetaGoblin):
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting links')
+
         for target in self.args['targets'][self.ID]:
             if 'lisimg' in target:
                 urls = [target]
@@ -37,14 +38,17 @@ class ListalGoblin(MetaGoblin):
                     urls.append(f'https://iv1.lisimg.com/image/{self.extract_id(target)}/36800full.jpg')
                 else:
                     profile_url = f'{self.BASE_URL}{self.extract_name(target)}/'
-                    urls.extend(self.extract_by_regex(self.URL_PAT, f'{profile_url}pictures/'))
+                    urls.extend(self.parser.extract_by_regex(self.get(f'{profile_url}pictures/').content, self.URL_PAT))
                     n = 2
+
                     while True:
-                        page_urls = self.extract_by_regex(self.URL_PAT, f'{profile_url}pictures/{n}')
+                        page_urls = self.parser.extract_by_regex(self.get(f'{profile_url}pictures/{n}').content, self.URL_PAT)
                         if not page_urls:
                             break
                         urls.extend(page_urls)
                         n += 1
+
             for url in urls:
                 self.collect(re.sub(r'\d+full', '3800full', url), filename=self.extract_id(url))
+
         self.loot()

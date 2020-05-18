@@ -15,6 +15,9 @@ class EpsilonGoblin(MetaGoblin):
         - yargici
     '''
 
+    NAME = 'epsilon goblin'
+    ID = 'epsilon'
+
     def __init__(self, args):
         super().__init__(args)
 
@@ -24,14 +27,18 @@ class EpsilonGoblin(MetaGoblin):
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting links')
+
         for target in self.args['targets'][self.ID]:
             if 'mncdn' in target:
                 urls = [target]
             else:
-                urls = self.extract_by_regex(self.URL_PAT, target)
+                urls = self.parser.extract_by_regex(self.get(target).content, self.URL_PAT)
+
             for url in urls:
                 url_base, _ = re.split(self.MOD_PAT, self.trim_url(url))
+
                 self.generate_modifiers(url)
                 for mod in self.modifiers:
                     self.collect(f'{url_base}{mod}{self.URL_END}')
+
         self.loot()

@@ -18,13 +18,17 @@ class MaisonLejabyGoblin(MetaGoblin):
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting links')
+
         for target in self.args['targets'][self.ID]:
             if 'phototheque' in target:
                 urls = [target]
             else:
-                urls = self.extract_by_regex(self.URL_PAT, target)
+                urls = self.parser.extract_by_regex(self.get(target).content, self.URL_PAT)
+
             for url in urls:
                 url_base = re.sub(r'[A-Z](\.[A-Z\d]+)?\.jpg', '', url).replace('medium', 'large')
+
                 for mod in ('A', 'B', 'C', 'D', 'E', 'F'):
                     self.collect(f'{url_base}{mod}.jpg')
+
         self.loot()

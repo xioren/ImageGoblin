@@ -6,6 +6,7 @@ from goblins.anthropologie import AnthropologieGoblin
 from goblins.asos import ASOSGoblin
 from goblins.bamba_swim import BambaSwimGoblin
 from goblins.behance import BehanceGoblin
+from goblins.bellazon import BellazonGoblin
 from goblins.bershka import BershkaGoblin
 from goblins.bikini_lovers import BikiniLoversGoblin
 from goblins.bluebella import BlueBellaGoblin
@@ -112,6 +113,7 @@ goblins = {
     'asos': (r'asos(-media)?\.[a-z]+', ASOSGoblin),
     'bambaswim': (r'bambaswim\.[a-z]+', BambaSwimGoblin),
     'behance': (r'behance\.[a-z]+|mir\-s3\-cdn', BehanceGoblin),
+    'bellazon': (r'bellazon\.[a-z]', BellazonGoblin),
     'bershka': (r'bershka\.[a-z]+', BershkaGoblin),
     'bikinilovers': (r'bikinilovers\.[a-z]+', BikiniLoversGoblin),
     'bluebella': (r'bluebella\.[a-z]+', BlueBellaGoblin),

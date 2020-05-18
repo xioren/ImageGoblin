@@ -3,6 +3,9 @@ import re
 from goblins.generic_alpha import AlphaGoblin
 
 
+# NOTE: has an api, but doesn't seem to use it to deliver media
+
+
 class ReservedGoblin(AlphaGoblin):
 
     NAME = 'reserved goblin'

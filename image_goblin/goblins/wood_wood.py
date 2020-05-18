@@ -6,6 +6,7 @@ from goblins.meta import MetaGoblin
 class WoodWoodGoblin(MetaGoblin):
     '''accepts:
         - image
+        - webpage
     '''
 
     NAME = 'wood wood goblin'
@@ -25,16 +26,20 @@ class WoodWoodGoblin(MetaGoblin):
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting links')
+
         for target in self.args['targets'][self.ID]:
             if 'shared' in target:
                 urls = [target]
             else:
-                urls = []
-                self.logger.log(2, self.NAME, 'WARNING', 'webpage urls not supported', once=True)
+                self.headers.update({'Cookie': 'queue=1589683924; bbc=104.149.68.66'})
+                urls = self.parser.extract_by_regex(self.get(target).content, r'(?<="og:image" content=")[^"]+')
+
             for url in urls:
                 id, image_num = self.extract_id(url)
                 filename = self.upscale(url)
+
                 for n in range(int(image_num) - 6, int(image_num) + 7):
                     self.collect(f'https://www.woodwood.com/shared/{id}/{n}/{filename}.jpg',
                                  filename=filename.replace('1600x2400c', f'{id}-{n}'))
+
         self.loot()

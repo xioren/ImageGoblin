@@ -9,6 +9,13 @@ class Logger:
         self.silent = silent
         self.logged = [] # keep track of log once logs
 
+    def clear_line(self):
+        '''clear the current terminal line'''
+        try:
+            print(' ' * get_terminal_size().columns, end='\r')
+        except OSError: # ioctl error when redirecting output, such as to a text file.
+            pass
+
     def log(self, level, caller, msg, info='', clear=False, once=False):
         '''logging messages
         - level 0: basic
@@ -16,10 +23,7 @@ class Logger:
         - level 2: verbose
         '''
         if clear:
-            try:
-                print(' ' * get_terminal_size().columns, end='\r')
-            except OSError: # ioctl error when redirecting output, such as to a text file.
-                pass
+            self.clear_line()
         if level == 1 and self.silent:
             pass
         elif level == 2 and not self.verbose or self.silent:
@@ -34,6 +38,6 @@ class Logger:
     def progress(self, caller, msg, current, total):
         '''progress bar'''
         if not self.verbose and not self.silent:
+            self.clear_line()
             bar =  '#' * floor(current/total * 20)
-            # QUESTION: add clear here?
             print(f'[{caller}] <{msg}> [{bar.ljust(20, " ")}] {current} of {total}', end='\r')

@@ -24,13 +24,16 @@ class AmericanApparelGoblin(MetaGoblin):
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting links')
+
         for target in self.args['targets'][self.ID]:
             if 'bigcommerce' in target:
                 urls = [self.parser.dequery(target)]
             else:
-                urls = self.extract_by_regex(self.URL_PAT, target)
+                urls = self.parser.extract_by_regex(self.get(target).content, self.URL_PAT)
+
             for url in urls:
                 url_base, _, url_end = self.split_url(url)
                 for mod in ('', '01', '02', '03', '04'):
                     self.collect(f'{url_base}_{mod}{url_end}')
+
         self.loot()

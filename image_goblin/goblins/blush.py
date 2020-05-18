@@ -19,4 +19,4 @@ class BlushGoblin(AlphaGoblin):
         if image:
             return [f'{url[:-5]}{n}.jpg'for n in range(1, 10)]
         else:
-            return self.extract_by_regex(self.URL_PAT, url)
+            return self.parser.extract_by_regex(self.get(url).content, self.URL_PAT)
