@@ -248,8 +248,8 @@ class MetaGoblin:
             url = self.parser.sanitize(url)
         if not filename:
             filename = self.parser.extract_filename(url)
-        elif '.' in filename: # remove extension
-            filename = filename.split('.')[0]
+        elif self.parser.extension(filename): # remove extension
+            filename = '.'.join(filename.split('.')[:-1])
 
         # add to collection as hashable string
         if isinstance(self.collection, list):

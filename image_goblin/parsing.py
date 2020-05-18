@@ -115,7 +115,7 @@ class Parser:
         ext = mimetypes.guess_type(self.dequery(url))[0]
         if ext:
             return ext.split('/')[1]
-        return 'jpeg'
+        return ''
 
     def add_scheme(self, url):
         '''checks for and adds https scheme'''

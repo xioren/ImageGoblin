@@ -39,7 +39,7 @@ class InstagramGoblin(MetaGoblin):
 
     def extract_username(self, url):
         if '/p/' in url:
-            return re.search(r'(?<="alternateName":"@)[^"]+', self.get(url).content).group()
+            return json.loads(self.get(f'{url.rstrip("/")}/?__a=1').content)['graphql']['shortcode_media']['owner']['username']
         else:
             return re.search(r'(/?[^/]+/?)$', url).group().strip('/')
 

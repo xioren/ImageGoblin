@@ -65,12 +65,16 @@ class IotaGoblin(MetaGoblin):
                 init_response = self.get(target, set_cookies=True)
                 self.set_auth_tokens(json.loads(unquote(self.extract_cookie('urbn_auth_payload'))))
 
-                self.headers.update({'Accept': 'application/json',
-                                     'x-urbn-site-id': self.extract_cookie('siteId'),
-                                     'x-urbn-channel': 'web',
-                                     'x-urbn-currency': self.extract_cookie('urbn_currency'),
-                                     'x-urbn-language': init_response.info['locale'].replace('_', '-'),
-                                     'authorization': f'Bearer {self.auth_token}'})
+                self.headers.update(
+                    {
+                        'Accept': 'application/json',
+                        'x-urbn-site-id': self.extract_cookie('siteId'),
+                        'x-urbn-channel': 'web',
+                        'x-urbn-currency': self.extract_cookie('urbn_currency'),
+                        'x-urbn-language': init_response.info['locale'].replace('_', '-'),
+                        'authorization': f'Bearer {self.auth_token}'
+                    }
+                )
 
                 response = json.loads(self.get(self.API_URL.format(self.extract_product(target))).content)
 
