@@ -58,96 +58,20 @@ class MetaGoblin:
             if object:
                 self.code = object.code
                 self.info = object.info()
-                try:
-                    if object.info().get('content-encoding') == 'gzip':
-                        self.content = MetaGoblin.unzip(object.read()).decode('utf-8', 'ignore')
-                    else:
-                        self.content = object.read().decode('utf-8', 'ignore')
-                    break
-                except timeout:
-                    return 1
+                # TEMP: implement real retry handling
+                for _ in range(5):
+                    try:
+                        if object.info().get('content-encoding') == 'gzip':
+                            self.content = MetaGoblin.unzip(object.read()).decode('utf-8', 'ignore')
+                        else:
+                            self.content = object.read().decode('utf-8', 'ignore')
+                        break
+                    except timeout:
+                        sleep(2)
             else:
                 self.code = ''
                 self.info = ''
                 self.content = '{}'
-
-    class HTTPHandler:
-
-        def __init__(self, func, *args, **kwargs):
-            self.fun = func
-            self.args = args
-            self.kwargs = kwargs
-
-        def make_request(self, url, data=None, store_cookies=False):
-            '''make an http request'''
-            try:
-                request = Request(self.parser.add_scheme(url), data, self.headers)
-            except ValueError as e:
-                self.logger.log(2, self.NAME, e, url)
-                return None
-
-            try:
-                response = urlopen(request, timeout=20)
-                if store_cookies:
-                    self.cookie_jar.extract_cookies(response, request)
-                return response
-            except HTTPError as e:
-                self.logger.log(2, self.NAME, e, url)
-                # servers sometimes return 502 when requesting large files, retrying usually works.
-                if e.code == 502:
-                    return 1
-            except (URLError, UnicodeEncodeError, InvalidURL) as e:
-                self.logger.log(2, self.NAME, e, url)
-            except (timeout, CertificateError):
-                return 1
-
-        def get(self, response):
-            '''make a get request'''
-            return ParsedRequest(response)
-
-        def post(self, request):
-            '''make a post request'''
-            return ParsedRequest(response))
-
-        def download(self, response):
-            '''download web content'''
-            if response:
-                filepath = self.check_ext(filepath, response.info().get('content-type'))
-                if os.path.exists(filepath):
-                    return None
-
-                if response.info().get('content-encoding') == 'gzip':
-                    response = GzipFile(fileobj=BufferedReader(response))
-
-                try:
-                    with open(filepath, 'wb') as file:
-                        copyfileobj(response, file, DEFAULT_BUFFER_SIZE)
-                except timeout:
-                    return 1
-
-                self.looted.append(filepath)
-                return True
-
-        def retry(self, func, *args, **kwargs):
-            '''retry request after a socket timeout'''
-            for n in range(1, 6):
-                self.logger.log(2, self.NAME, 'timed out', f'retry attempt {n}')
-                attempt = func(*args, *kwargs)
-                if attempt:
-                    return attempt
-            self.logger.log(2, self.NAME, 'timed out', f'aborting after 5 retries')
-            return None
-
-        def coordinator(self):
-            request = self.make_request(*self.args, **self.kwargs)
-            if request = 1:
-                request = self.retry(self.make_request, request)
-
-            attempt = self.func(request)
-            if attempt = 1:
-                attempt = self.retry(self.func, request)
-
-            return attempt
 
 ####################################################################
 # methods
@@ -214,11 +138,11 @@ class MetaGoblin:
             self.logger.log(2, self.NAME, e, url)
             # servers sometimes return 502 when requesting large files, retrying usually works.
             if e.code == 502:
-                return 1
+                return self.retry(url, n+1, data)
         except (URLError, UnicodeEncodeError, InvalidURL) as e:
             self.logger.log(2, self.NAME, e, url)
         except (timeout, CertificateError):
-            return 1
+            return self.retry(url, n+1, data)
 
     def cookie_value(self, name):
         '''return the value of a cookie from the cookie jar'''
@@ -242,46 +166,48 @@ class MetaGoblin:
 
     def get(self, url, store_cookies=False):
         '''make a get request'''
-        return HTTPHandler(get, url, store_cookies=False)
-        # return self.ParsedRequest(self.make_request(url, store_cookies=store_cookies))
+        return self.ParsedRequest(self.make_request(url, store_cookies=store_cookies))
 
     def post(self, url, data, store_cookies=False):
         '''make a post request'''
-        return HTTPHandler(post, url, data, store_cookies=False)
-        # if isinstance(data, dict):
-        #     data = urlencode(data)
-        # return self.ParsedRequest(self.make_request(url, data=data.encode(), store_cookies=store_cookies))
+        if isinstance(data, dict):
+            data = urlencode(data)
+        return self.ParsedRequest(self.make_request(url, data=data.encode(), store_cookies=store_cookies))
 
-    def download(self, url, filepath):
+    def download(self, url, filepath, n=0):
         '''download web content'''
-        # response = self.make_request(url)
-        #
-        # if response:
-        #     filepath = self.check_ext(filepath, response.info().get('content-type'))
-        #     if os.path.exists(filepath):
-        #         return None
-        #
-        #     if response.info().get('content-encoding') == 'gzip':
-        #         response = GzipFile(fileobj=BufferedReader(response))
-        #
-        #     try:
-        #         with open(filepath, 'wb') as file:
-        #             copyfileobj(response, file, DEFAULT_BUFFER_SIZE)
-        #     except timeout:
-        #         return self.retry(url, n, path=filepath)
-        #
-        #     self.looted.append(filepath)
-        #     return True
+        response = self.make_request(url)
 
-    def retry(self, func, *args, **kwargs):
-        '''retry request after a socket timeout'''
-        for n in range(1, 6):
-            self.logger.log(2, self.NAME, 'timed out', f'retry attempt {n}')
-            attempt = func(args, kwargs)
-            if attempt:
-                return attempt
-        self.logger.log(2, self.NAME, 'timed out', f'aborting after 5 retries')
-        return None
+        if response:
+            filepath = self.check_ext(filepath, response.info().get('content-type'))
+            if os.path.exists(filepath):
+                return None
+
+            if response.info().get('content-encoding') == 'gzip':
+                response = GzipFile(fileobj=BufferedReader(response))
+
+            try:
+                with open(filepath, 'wb') as file:
+                    copyfileobj(response, file, DEFAULT_BUFFER_SIZE)
+            except timeout:
+                return self.retry(url, n, path=path)
+
+            self.looted.append(filepath)
+            return True
+
+    def retry(self, url, n, data=None, path=None):
+        '''retry connection after a socket timeout'''
+        if n > 5:
+            self.logger.log(2, self.NAME, 'timed out', f'aborting after {n} retries')
+            return None
+        self.logger.log(2, self.NAME, 'timed out', f'retry attempt {n}')
+
+        sleep(3)
+
+        if path:
+            return self.download(url, path, n)
+        else:
+            return self.make_request(url, n, data)
 
     def write_file(self, data, path, iter=False):
         '''write to text file'''
