@@ -23,23 +23,23 @@ class MissguidedGoblin(MetaGoblin):
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting links')
+        urls = []
 
         for target in self.args['targets'][self.ID]:
             if 'media.missguided' in target:
-                urls = [target]
+                urls.append(target)
             else:
                 # BUG: currently throws 405 error. requires cookie uuid values. unknown how they are generated.
-                urls = []
                 self.logger.log(2, self.NAME, 'WARNING', 'webpage urls not supported', once=True)
 
-            for url in urls:
-                id = self.extract_id(url)
+        for url in urls:
+            id = self.extract_id(url)
 
-                for n in range(1, 6):
-                    if self.args['mode'] == 'png':
-                        self.collect(f'{self.URL_BASE}{id}_0{n}{self.QUERY}')
-                    else:
-                        self.collect(f'{self.URL_BASE}{id}_0{n}?fmt=png')
+            for n in range(1, 6):
+                if self.args['mode'] == 'png':
+                    self.collect(f'{self.URL_BASE}{id}_0{n}?fmt=png')
+                else:
+                    self.collect(f'{self.URL_BASE}{id}_0{n}{self.QUERY}')
 
         self.loot()
         self.cleanup(self.path_main)

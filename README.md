@@ -1,9 +1,7 @@
 # ImageGoblin
 
-#### changelog v0.3.2:
-+ major ongoing shift for applicable sites from html parsing to api integration.
-+ improvements to code clarity
-+ new goblin
+#### changelog v0.3.3:
++ added pinterest support
 + bug fixes
 + misc code clean up and improvements
 

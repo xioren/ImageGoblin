@@ -43,19 +43,20 @@ class GammaGoblin(MetaGoblin):
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting links')
+        urls - []
 
         for target in self.args['targets'][self.ID]:
             if 'demandware' in target:
-                urls = [target]
+                urls.append(target)
             else:
-                urls = self.parser.extract_by_regex(self.get(target).content, self.URL_PAT)
+                urls.extend(self.parser.extract_by_regex(self.get(target).content, self.URL_PAT))
 
-            for url in urls:
-                if not re.search(f'(?:{self.IMG_PAT})', url):
-                    continue
+        for url in urls:
+            if not re.search(f'(?:{self.IMG_PAT})', url):
+                continue
 
-                id, url_end = self.extract_parts(self.isolate(url))
-                for mod in self.MODIFIERS:
-                    self.collect(f'{self.URL_BASE}{id}{mod}{self.parser.dequery(url_end)}{self.QUERY}')
+            id, url_end = self.extract_parts(self.isolate(url))
+            for mod in self.MODIFIERS:
+                self.collect(f'{self.URL_BASE}{id}{mod}{self.parser.dequery(url_end)}{self.QUERY}')
 
         self.loot()

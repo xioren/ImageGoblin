@@ -27,13 +27,13 @@ class ListalGoblin(MetaGoblin):
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting links')
+        urls = []
 
         for target in self.args['targets'][self.ID]:
             if 'lisimg' in target:
-                urls = [target]
                 self.logger.log(2, self.NAME, 'WARNING', 'image urls not fully supported', once=True)
+                urls.append(target)
             else:
-                urls = []
                 if 'viewimage' in target:
                     urls.append(f'https://iv1.lisimg.com/image/{self.extract_id(target)}/36800full.jpg')
                 else:
@@ -48,7 +48,7 @@ class ListalGoblin(MetaGoblin):
                         urls.extend(page_urls)
                         n += 1
 
-            for url in urls:
-                self.collect(re.sub(r'\d+full', '3800full', url), filename=self.extract_id(url))
+        for url in urls:
+            self.collect(re.sub(r'\d+full', '3800full', url), filename=self.extract_id(url))
 
         self.loot()

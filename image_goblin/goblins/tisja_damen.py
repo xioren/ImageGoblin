@@ -22,18 +22,19 @@ class TisjaDamenGoblin(MetaGoblin):
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting links')
+        urls = []
 
         for target in self.args['targets'][self.ID]:
             if 'images' in target:
-                urls = [target]
                 self.logger.log(2, self.NAME, 'WARNING', 'image urls not fully supported', once=True)
+                url.append(target)
             else:
-                urls = self.parser.extract_by_regex(self.get(target).content, self.URL_PAT)
+                urls.extend(self.parser.extract_by_regex(self.get(target).content, self.URL_PAT))
 
-            for url in urls:
-                image = self.trim(url)
+        for url in urls:
+            image = self.trim(url)
 
-                for n in range(1, 4):
-                    self.collect(f'https://tisjadamen.com/images/detailed/{n}/{image}')
+            for n in range(1, 4):
+                self.collect(f'https://tisjadamen.com/images/detailed/{n}/{image}')
 
         self.loot()

@@ -26,20 +26,21 @@ class WoodWoodGoblin(MetaGoblin):
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting links')
+        urls = []
 
         for target in self.args['targets'][self.ID]:
             if 'shared' in target:
-                urls = [target]
+                url.append(target)
             else:
                 self.headers.update({'Cookie': 'queue=1589683924; bbc=104.149.68.66'})
-                urls = self.parser.extract_by_regex(self.get(target).content, r'(?<="og:image" content=")[^"]+')
+                urls.extend(self.parser.extract_by_regex(self.get(target).content, r'(?<="og:image" content=")[^"]+'))
 
-            for url in urls:
-                id, image_num = self.extract_id(url)
-                filename = self.upscale(url)
+        for url in urls:
+            id, image_num = self.extract_id(url)
+            filename = self.upscale(url)
 
-                for n in range(int(image_num) - 6, int(image_num) + 7):
-                    self.collect(f'https://www.woodwood.com/shared/{id}/{n}/{filename}.jpg',
-                                 filename=filename.replace('1600x2400c', f'{id}-{n}'))
+            for n in range(int(image_num) - 6, int(image_num) + 7):
+                self.collect(f'https://www.woodwood.com/shared/{id}/{n}/{filename}.jpg',
+                             filename=filename.replace('1600x2400c', f'{id}-{n}'))
 
         self.loot()

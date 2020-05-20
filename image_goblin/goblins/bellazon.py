@@ -30,13 +30,13 @@ class BellazonGoblin(MetaGoblin):
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting links')
+        urls = []
 
         for target in self.args['targets'][self.ID]:
             if 'main/uploads' in target:
-                urls = [target]
                 self.logger.log(2, self.NAME, 'WARNING', 'image urls not fully supported', once=True)
+                urls.append(target)
             else:
-                urls = []
                 thread_url = f'{self.BASE_URL}main/topic/{self.extract_topic(target)}'
                 response = self.get(thread_url)
                 pages = int(re.search(r'(?<="pageEnd":\s)\d', response.content).group())
@@ -50,10 +50,10 @@ class BellazonGoblin(MetaGoblin):
                         urls.extend(self.parser.extract_by_tag(response.content, {'img': 'src'}))
                         urls.extend(self.parser.extract_by_regex(response.content, self.URL_PAT))
 
-            for url in urls:
-                if '.thumb' in url:
-                    continue
-                self.collect(self.parser.auto_format(url), filename=self.extract_filename(url))
+        for url in urls:
+            if '.thumb' in url:
+                continue
+            self.collect(self.parser.auto_format(url), filename=self.extract_filename(url))
 
         self.loot()
         self.cleanup(self.path_main)

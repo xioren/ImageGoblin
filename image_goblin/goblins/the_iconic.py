@@ -22,17 +22,18 @@ class TheIconicGoblin(MetaGoblin):
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting links')
+        urls = []
 
         for target in self.args['targets'][self.ID]:
             if 'img1' in target or 'static' in target:
-                urls = [target]
+                url.append(target)
             else:
-                urls = self.parser.extract_by_regex(self.get(target).content, self.URL_PAT)
+                urls.extend(self.parser.extract_by_regex(self.get(target).content, self.URL_PAT))
 
-            for url in urls:
-                id = self.extract_id(url)
+        for url in urls:
+            id = self.extract_id(url)
 
-                for n in range(1, 6):
-                    self.collect(f'https://static.theiconic.com.au/p/{id}{n}.jpg')
+            for n in range(1, 6):
+                self.collect(f'https://static.theiconic.com.au/p/{id}{n}.jpg')
 
         self.loot()

@@ -33,15 +33,13 @@ class DeltaGoblin(MetaGoblin):
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting links')
+        urls = []
 
         for target in self.args['targets'][self.ID]:
             if 'photos' in target:
-                urls = []
-
                 for mod in self.MODIFIERS:
                     urls.append(self.trim(re.sub(r'_\d+_\d+_\d+', mod, target)))
             else:
-                urls = []
                 response = json.loads(self.get(self.API_URL.format(self.extract_product_id(target))).content)
 
                 if response.get('bundleProductSummaries'):
@@ -59,7 +57,7 @@ class DeltaGoblin(MetaGoblin):
                             for media in xmediaitem['medias']:
                                 urls.append(f'{self.URL_BASE}{path}/{media["idMedia"]}{self.SIZE}.jpg')
 
-            for url in urls:
-                self.collect(url)
+        for url in urls:
+            self.collect(url)
 
         self.loot()

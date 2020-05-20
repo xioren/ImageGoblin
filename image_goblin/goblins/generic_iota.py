@@ -40,10 +40,12 @@ class IotaGoblin(MetaGoblin):
         return self.parser.dequery(url).rstrip('/').split('/')[-1]
 
     def set_auth_tokens(self, cookie):
+        '''extract auth and reauth tokens from response cookie'''
         self.auth_token = cookie['authToken']
         self.reauth_token = cookie['reauthToken']
 
     def reauthorize(self):
+        '''get new auth and reauth tokens'''
         auth_tokens = json.loads(self.post(self.AUTH_API_URL, data={"reauthToken": self.reauth_token}).content)
         self.set_auth_tokens(auth_tokens)
         self.headers.update({'authorization': f'Bearer {self.auth_token}'})
@@ -51,26 +53,25 @@ class IotaGoblin(MetaGoblin):
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting links')
+        urls = []
 
         for target in self.args['targets'][self.ID]:
             if 'scene7' in target:
-                urls = []
                 id = self.extract_id(self.parser.dequery(target))
                 self.url_base = self.extract_base(target)
 
                 for mod in self.MODIFIERS:
                     urls.append(f'{self.url_base}{id}{mod}{self.QUERY}')
             else:
-                urls = []
-                init_response = self.get(target, set_cookies=True)
-                self.set_auth_tokens(json.loads(unquote(self.extract_cookie('urbn_auth_payload'))))
+                init_response = self.get(target, store_cookies=True)
+                self.set_auth_tokens(json.loads(unquote(self.cookie_value('urbn_auth_payload'))))
 
                 self.headers.update(
                     {
                         'Accept': 'application/json',
-                        'x-urbn-site-id': self.extract_cookie('siteId'),
+                        'x-urbn-site-id': self.cookie_value('siteId'),
                         'x-urbn-channel': 'web',
-                        'x-urbn-currency': self.extract_cookie('urbn_currency'),
+                        'x-urbn-currency': self.cookie_value('urbn_currency'),
                         'x-urbn-language': init_response.info['locale'].replace('_', '-'),
                         'authorization': f'Bearer {self.auth_token}'
                     }
@@ -89,7 +90,7 @@ class IotaGoblin(MetaGoblin):
                         urls.append(f'{url}_{image}{self.QUERY}')
 
 
-            for url in urls:
-                self.collect(url)
+        for url in urls:
+            self.collect(url)
 
         self.loot()

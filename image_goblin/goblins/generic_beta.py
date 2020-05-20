@@ -37,23 +37,23 @@ class BetaGoblin(MetaGoblin):
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting links')
+        urls = []
 
         for target in self.args['targets'][self.ID]:
             if 'scene7' in target:
-                urls = [self.parser.dequery(target)]
+                urls.append(self.parser.dequery(target))
             else:
                 if self.ACCEPT_WEBPAGE:
-                    urls = self.parser.extract_by_regex(self.get(target).content, self.URL_PAT)
+                    urls.extend(self.parser.extract_by_regex(self.get(target).content, self.URL_PAT))
                 else:
-                    urls = []
                     self.logger.log(2, self.NAME, 'WARNING', 'webpage urls not supported', once=True)
 
-            for url in urls:
-                id = self.extract_id(url)
-                self.url_base = self.extract_base(url)
+        for url in urls:
+            id = self.extract_id(url)
+            self.url_base = self.extract_base(url)
 
-                for mod in self.MODIFIERS:
-                    self.collect(f'{self.url_base}{id}{mod}{self.QUERY}')
+            for mod in self.MODIFIERS:
+                self.collect(f'{self.url_base}{id}{mod}{self.QUERY}')
 
         self.loot()
         self.cleanup(self.path_main)

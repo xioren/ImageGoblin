@@ -1,7 +1,7 @@
 from logging import Logger
 
 
-logger = Logger(False, False)
+logger = Logger(False, False, False)
 
 
 class HungryGoblin:

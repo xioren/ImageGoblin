@@ -23,20 +23,21 @@ class WolfordGoblin(MetaGoblin):
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting links')
+        urls = []
 
         for target in self.args['targets'][self.ID]:
             if 'demandware' in target:
-                urls = [target]
+                url.append(target)
             else:
-                urls = self.parser.extract_by_regex(self.get(target).content, self.URL_PAT)
+                urls.extend(self.parser.extract_by_regex(self.get(target).content, self.URL_PAT))
 
-            for url in urls:
-                url = self.trim(url)
+        for url in urls:
+            url = self.trim(url)
 
-                if 'Additional-Picture' in url:
-                    for n in range(1, 4):
-                        self.collect(f'{url[:-5]}{n}.JPG')
-                else:
-                    self.collect(url)
+            if 'Additional-Picture' in url:
+                for n in range(1, 4):
+                    self.collect(f'{url[:-5]}{n}.JPG')
+            else:
+                self.collect(url)
 
         self.loot()

@@ -36,15 +36,16 @@ class EtaGoblin(MetaGoblin):
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting links')
+        urls = []
 
         for target in self.args['targets'][self.ID]:
             if '/i/' in target:
-                urls = [target]
+                urls.append(target)
             else:
-                urls = self.parser.extract_by_regex(self.get(target).content, self.URL_PAT)
+                urls.extend(self.parser.extract_by_regex(self.get(target).content, self.URL_PAT))
 
-            for url in urls:
-                for mod in self.MODIFIERS:
-                    self.collect(f'{self.trim(url)}{mod}.jpg{self.QUERY}')
+        for url in urls:
+            for mod in self.MODIFIERS:
+                self.collect(f'{self.trim(url)}{mod}.jpg{self.QUERY}')
 
         self.loot()

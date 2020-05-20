@@ -32,13 +32,13 @@ class FredericksGoblin(MetaGoblin):
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting links')
+        urls = []
 
         for target in self.args['targets'][self.ID]:
             if 'cloudfront' in target:
-                urls = [target]
                 self.logger.log(2, self.__str__(), 'WARNING', 'image urls not fully supported', once=True)
+                urls.append(target)
             else:
-                urls = []
                 response = ''
 
                 for _ in range(10):
@@ -51,7 +51,7 @@ class FredericksGoblin(MetaGoblin):
                     for image in response['product'][0]['displayMedia']:
                         urls.append(image['ref'])
 
-            for url in urls:
-                self.collect(re.sub(r'\.\d+w', '', url))
+        for url in urls:
+            self.collect(re.sub(r'\.\d+w', '', url))
 
         self.loot()

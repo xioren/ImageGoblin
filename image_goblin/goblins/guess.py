@@ -22,17 +22,18 @@ class GuessGoblin(MetaGoblin):
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting links')
+        urls = []
 
         for target in self.args['targets'][self.ID]:
             if 'guess-img' in target:
-                urls = [target]
+                url.append(target)
             else:
-                urls = self.parser.extract_by_regex(self.get(target).content, self.URL_PAT)
+                urls.extend(self.parser.extract_by_regex(self.get(target).content, self.URL_PAT))
 
-            for url in urls:
-                url_base = self.trim(url)
+        for url in urls:
+            url_base = self.trim(url)
 
-                for id in ('', '-ALT1', '-ALT2', '-ALT3', '-ALT4'):
-                    self.collect(f'{url_base}{id}')
+            for id in ('', '-ALT1', '-ALT2', '-ALT3', '-ALT4'):
+                self.collect(f'{url_base}{id}')
 
         self.loot()

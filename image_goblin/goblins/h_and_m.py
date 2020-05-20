@@ -13,6 +13,7 @@ class HMGoblin(MetaGoblin):
     NAME = 'h&m goblin'
     ID = 'handm'
     URL_PAT = r'source\[[\w\./]+\]'
+    FULLSIZE_URL = 'https://lp2.hm.com/hmgoepprod?set=quality[100],source[{}],origin[dam]&call=url[file:/product/zoom]'
 
     def __init__(self, args):
         super().__init__(args)
@@ -23,17 +24,17 @@ class HMGoblin(MetaGoblin):
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting links')
+        urls = []
 
         for target in self.args['targets'][self.ID]:
             if 'lp2.hm' in target:
-                urls = [target]
                 self.logger.log(2, self.NAME, 'WARNING', 'image urls not fully supported', once=True)
+                urls.append(target)
             else:
-                urls = self.parser.extract_by_regex(self.get(target).content, self.URL_PAT)
+                urls.extend(self.parser.extract_by_regex(self.get(target).content, self.URL_PAT))
 
-            for url in urls:
-                source = self.extract_source(url)
-                self.collect(f'https://lp2.hm.com/hmgoepprod?set=quality[100],source[{source}],origin[dam]&call=url[file:/product/zoom]',
-                             self.parser.extract_filename(source))
+        for url in urls:
+            source = self.extract_source(url)
+            self.collect(self.FULLSIZE_URL.format(source), filename=self.parser.extract_filename(source))
 
         self.loot()

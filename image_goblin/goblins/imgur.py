@@ -36,19 +36,17 @@ class ImgurGoblin(MetaGoblin):
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting links')
-
+        urls = []
         for target in self.args['targets'][self.ID]:
             if 'i.imgur' in target or 'm.imgur' in target:
-                urls = [target]
+                urls.append(target)
             elif '/r/' in target:
-                urls = []
                 matches = self.parser.extract_by_regex(self.get(self.clean(target)).content,
                                                        r'(?<=image\s{15}:\s){[^\n]+}(?=,\n)')
                 for match in matches:
                     items = self.parser.load_json(match)
                     urls.append(f'{self.BASE_URL}{items["hash"]}{items["ext"]}')
             else:
-                urls = []
                 matches = self.parser.extract_by_regex(self.get(self.clean(target)).content,
                                                        r'(?<=image\s{15}:\s){[^\n]+}(?=,\n)')
                 for match in matches:
@@ -66,7 +64,7 @@ class ImgurGoblin(MetaGoblin):
                         for item in items['images']:
                             urls.append(f'{self.BASE_URL}{item["hash"]}{item["ext"]}')
 
-            for url in urls:
-                self.collect(self.prep(url))
+        for url in urls:
+            self.collect(self.prep(url))
 
         self.loot()

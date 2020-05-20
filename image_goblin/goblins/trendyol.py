@@ -24,17 +24,18 @@ class TrendyolGoblin(MetaGoblin):
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting links')
+        urls = []
 
         for target in self.args['targets'][self.ID]:
             if 'img-trendyol' in target or 'cdn.dsmcdn' in target:
-                urls = [target]
+                url.append(target)
             else:
-                urls = self.parser.extract_by_regex(self.get(target).content, self.URL_PAT)
+                urls.extend(self.parser.extract_by_regex(self.get(target).content, self.URL_PAT))
 
-            for url in urls:
-                url_base = self.extract_base(url)
+        for url in urls:
+            url_base = self.extract_base(url)
 
-                for n in range(1, 16):
-                    self.collect(f'{url_base}{n}_org_zoom.jpg')
+            for n in range(1, 16):
+                self.collect(f'{url_base}{n}_org_zoom.jpg')
 
         self.loot()

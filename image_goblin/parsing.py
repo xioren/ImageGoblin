@@ -12,7 +12,7 @@ class Parser:
     FILENAME_PAT = re.compile(r'(?<=/|\\)[^\\/]+$')
     QUERY_PAT = re.compile(r'[\?&][^"\s]+$')
     QUALITY_PAT = re.compile(r'q((ua)?li?ty)?=\d+')
-    FILTER_PAT = re.compile(r'(?:\.(js|css|pdf|php|html)|(fav)?icon|logo|menu|svg\+xml)',
+    FILTER_PAT = re.compile(r'(?:\.(js|css|pdf|php|html)|favicon|svg\+xml)',
                             flags=re.IGNORECASE)
     CROPPING_PATS = (
         re.compile(r'[\-_]?(?<![a-z])((x+)?-?l(arge)?|profile)(?![a-z])[\-_]?', flags=re.IGNORECASE),
@@ -24,6 +24,8 @@ class Parser:
         re.compile(r'(\.|-)\d+w'), # -000w
         re.compile(r'@\d+x')
     )
+
+    MISC_REPLACEMENTS = {'amp;': '', ' ': '%20'}
 
     def __init__(self, origin_url, user_formatting):
         self.origin_url = self.add_scheme(self.dequery(origin_url))
@@ -99,7 +101,7 @@ class Parser:
 
     def dequery(self, url):
         '''remove query string from url'''
-        return re.sub(self.QUERY_PAT, '', url)
+        return url.split('?')[0]
 
     def sanitize(self, url):
         '''combine dequery and decrop'''
@@ -114,7 +116,7 @@ class Parser:
         '''extract file extension from url'''
         ext = mimetypes.guess_type(self.dequery(url))[0]
         if ext:
-            return ext.split('/')[1]
+            return f'.{ext.split("/")[1]}'
         return ''
 
     def add_scheme(self, url):
@@ -135,11 +137,14 @@ class Parser:
         if '/' not in url: # just a filename
             url = f'{self.origin_url.rstrip("/")}/{url}'
         elif re.search(r'(?:/?[^/\.]+\.[^/]+(?=/))', url): # absolute path
-            url = url.lstrip('/')
+            url = self.add_scheme(url.lstrip('/'))
         else: # relative path
             url = urllib.parse.urljoin(self.origin_url, url)
 
-        return urllib.parse.unquote((url.replace('amp;', ''))).replace(' ', '%20')
+        for key in self.MISC_REPLACEMENTS:
+            url = url.replace(key, self.MISC_REPLACEMENTS[key])
+
+        return urllib.parse.unquote(url)
 
     def make_unique(self, path):
         '''make filepath unique'''
@@ -202,8 +207,6 @@ class Parser:
             url = url.replace('.jpg', '-orig.jpg')
         elif 'pimpandhost' in url:
             url = url.replace('_s', '').replace('_m', '')
-        elif 'pinimg' in url:
-               url = re.sub(r'\.com/', '.com/originals/', url)
         elif 'pixhost' in url:
             url = re.sub(r't(?![a-z])', 'img', url.replace('thumb', 'image'))
         elif 'pixroute' in url:

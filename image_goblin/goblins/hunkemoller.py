@@ -35,20 +35,21 @@ class HunkemollerGoblin(MetaGoblin):
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting links')
+        urls = []
 
         for target in self.args['targets'][self.ID]:
             if re.search(self.URL_TYPES, target):
-                urls = [target]
+                urls.append(target)
             else:
-                urls = self.parser.extract_by_regex(self.get(target).content, self.URL_PAT)
+                urls.extend(self.parser.extract_by_regex(self.get(target).content, self.URL_PAT))
 
-            for url in urls:
-                if not re.search(self.IMG_PAT, url):
-                    continue
+        for url in urls:
+            if not re.search(self.IMG_PAT, url):
+                continue
 
-                id, url_end = self.extract_parts(self.isolate(url))
+            id, url_end = self.extract_parts(self.isolate(url))
 
-                for mod in self.MODIFIERS:
-                    self.collect(f'{self.URL_BASE}{id}{mod}{self.parser.dequery(url_end)}')
+            for mod in self.MODIFIERS:
+                self.collect(f'{self.URL_BASE}{id}{mod}{self.parser.dequery(url_end)}')
 
         self.loot()

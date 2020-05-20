@@ -1,4 +1,5 @@
 import re
+import json
 
 from goblins.meta import MetaGoblin
 
@@ -11,22 +12,29 @@ class YandyGoblin(MetaGoblin):
 
     NAME = 'yandy goblin'
     ID = 'yandy'
-    URL_PAT = r'https?://assets\.yandycdn\.com/Products/[^-]+-\d+\.jpg'
+    # URL_PAT = r'https?://assets\.yandycdn\.com/Products/[^-]+-\d+\.jpg'
+    API_URL = 'https://andromeda.yandy.com/api/v1.1'
 
     def __init__(self, args):
         super().__init__(args)
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting links')
+        urls = []
 
         for target in self.args['targets'][self.ID]:
             if 'assets.yandycdn' in target:
-                urls = [target]
+                parts = target.replace('https://', '').split('/')
+                urls.append(f'{parts[0]}/HiRez/{parts[2]}')
                 self.logger.log(2, self.NAME, 'WARNING', 'image urls not fully supported', once=True)
             else:
-                urls = self.parser.extract_by_regex(self.get(target).content, self.URL_PAT)
+                product_id = re.search(r'(?<=data-product-id=")[^"]+', self.get(target).content).group()
+                response = json.loads(self.get(f'{self.API_URL}/products/{product_id}/images').content)
 
-            for url in urls:
-                self.collect(url.replace('Products', 'HiRez'))
+                for image in response['data']:
+                    urls.append(image['hi_rez'])
+
+        for url in urls:
+            self.collect(url)
 
         self.loot()

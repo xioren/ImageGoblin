@@ -18,15 +18,16 @@ class PrettyLittleThingGoblin(MetaGoblin):
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting links')
+        urls = []
 
         for target in self.args['targets'][self.ID]:
             if 'cdn-img.prettylittlething' in target:
-                urls = [target]
                 self.logger.log(2, self.NAME, 'WARNING', 'image urls not fully supported', once=True)
+                urls.append(target)
             else:
-                urls = self.parser.extract_by_regex(self.get(target).content, self.URL_PAT)
+                urls.extend(self.parser.extract_by_regex(self.get(target).content, self.URL_PAT))
 
-            for url in urls:
-                self.collect(url, clean=True)
+        for url in urls:
+            self.collect(url, clean=True)
 
         self.loot()

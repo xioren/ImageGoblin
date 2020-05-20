@@ -27,18 +27,18 @@ class ZaraGoblin(MetaGoblin):
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting links')
+        urls = []
 
         for target in self.args['targets'][self.ID]:
             if 'static' in target:
-                urls = []
                 url_base, url_end = re.split(r'_\d_\d_\d+', target)
 
                 for mod in self.MODIFIERS:
                     urls.append(f'{url_base}{mod}{self.SIZE}{self.trim(url_end)}')
             else:
-                urls = self.parser.extract_by_regex(self.get(target).content, self.URL_PAT)
+                urls.extend(self.parser.extract_by_regex(self.get(target).content, self.URL_PAT))
 
-            for url in urls:
-                self.collect(re.sub(r'w/\d+/', '', url))
+        for url in urls:
+            self.collect(re.sub(r'w/\d+/', '', url))
 
         self.loot()

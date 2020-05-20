@@ -15,7 +15,7 @@ class AgentProvocateurGoblin(MetaGoblin):
     NAME = 'agent provocateur goblin'
     ID = 'agentprovocateur'
     API_URL = 'https://www.agentprovocateur.com/api/n/bundle'
-    BASE_URL = 'https://www.agentprovocateur.com/static/media/catalog'
+    BASE_URL = 'https://www.agentprovocateur.com'
 
     def __init__(self, args):
         super().__init__(args)
@@ -32,17 +32,16 @@ class AgentProvocateurGoblin(MetaGoblin):
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting links')
+        urls = []
 
         for target in self.args['targets'][self.ID]:
             if 'media/catalog' in target:
-                urls = []
                 base = self.isolate(target).split('_')[0]
 
                 for n in range(1, 6):
                     urls.append(f'{base}_ecom_{n}.jpg')
 
             else:
-                urls = []
                 self.headers.update({'Content-Type': 'application/json'})
                 POST_DATA = json.dumps(
                     {
@@ -97,9 +96,9 @@ class AgentProvocateurGoblin(MetaGoblin):
                 for entry in response['catalog']:
                     if 'media' in entry:
                         for image in entry['media']:
-                            urls.append(f'{self.BASE_URL}{image["image"]}')
+                            urls.append(f'{self.BASE_URL}/static/media/catalog{image["image"]}')
 
-            for url in urls:
-                self.collect(url)
+        for url in urls:
+            self.collect(url)
 
         self.loot()

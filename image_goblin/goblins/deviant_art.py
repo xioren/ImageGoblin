@@ -3,6 +3,9 @@ import re
 from goblins.meta import MetaGoblin
 
 
+# NOTE: unfinished
+
+
 class DeviantArtGoblin(MetaGoblin):
     '''accepts:
         - image
@@ -22,14 +25,15 @@ class DeviantArtGoblin(MetaGoblin):
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting links')
+        urls = []
 
         for target in self.args['targets'][self.ID]:
             if '.jpg' in target:
-                urls = [target]
+                urls.append(target)
             else:
-                urls = self.parser.extract_by_regex(self.get(target).content, self.URL_PAT)
+                urls.extend(self.parser.extract_by_regex(self.get(target).content, self.URL_PAT))
 
-            for url in urls:
-                self.collect(self.trim(url), filename=re.sub(r'_[a-z\d]+-pre', '', self.parser.extract_filename(url)))
+        for url in urls:
+            self.collect(self.trim(url), filename=re.sub(r'_[a-z\d]+-pre', '', self.parser.extract_filename(url)))
 
         self.loot()

@@ -17,18 +17,18 @@ class ImageFapGoblin(MetaGoblin):
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting links')
+        urls = []
 
         for target in self.args['targets'][self.ID]:
             if 'cdn.imagefap' in target:
-                urls = [target]
                 self.logger.log(2, self.NAME, 'WARNING', 'image urls not supported', once=True)
+                urls.append(target)
             else:
-                urls = []
                 for link in self.parser.extract_by_tag(self.get(f'{self.parser.dequery(target)}?view=2').content, {'a': 'href'}):
                     if '/photo/' in link:
                         urls.extend(self.parser.extract_by_regex(self.get(f'https://www.imagefap.com{link}').content, self.URL_PAT))
 
-            for url in urls:
-                self.collect(url)
+        for url in urls:
+            self.collect(url)
 
         self.loot()

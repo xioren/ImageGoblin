@@ -1,0 +1,77 @@
+import re
+import json
+
+from urllib.parse import quote
+
+from goblins.meta import MetaGoblin
+
+
+# NOTE: max page size == 250
+
+
+class PinterestGoblin(MetaGoblin):
+    '''accepts:
+        - image
+        - webpage
+    '''
+
+    NAME = 'pinterest goblin'
+    ID = 'pinterest'
+    BASE_URL = 'https://www.pinterest.com'
+    PIN_RESOURCE_API_URL = '/resource/PinResource/get/?source_url=/{}/&data={{"options":{{"id":"{}"}},"context":{{}}}}'
+    BOARD_RESOURCE_API_URL = '/resource/BoardResource/get/?source_url=/{}/&data={{"options":{{"username":"{}","slug":"{}"}},"context":{{}}}}'
+    BOARD_MEDIA_API_URL = '/resource/BoardFeedResource/get/?source_url=/{}/&data={{"options":{{"board_id":"{}","page_size":250}},"context":{{}}}}'
+    BOOKMARKED_BOARD_MEDIA_API_URL = '/resource/BoardFeedResource/get/?source_url=/{}/&data={{"options":{{"board_id":"{}","page_size":250,"bookmarks":["{}"]}},"context":{{}}}}'
+
+    def __init__(self, args):
+        super().__init__(args)
+
+    def extract_info_from_url(self, url):
+        '''extract board source url'''
+        path = "/".join(url.split("/")[-3:]).rstrip('/')
+        username, slug = path.split('/')
+        return path, username, slug
+
+    def extract_urls(self, json):
+        '''extract urls from json response'''
+        urls = []
+        for entry in json['resource_response']['data']:
+            if entry.get('images'):
+                urls.append(entry['images']['orig']['url'])
+        return urls
+
+    def run(self):
+        self.logger.log(1, self.NAME, 'collecting links')
+        urls = []
+
+        for target in self.args['targets'][self.ID]:
+            if 'i.pinimg' in target:
+                urls.append(target)
+            elif '/pin/' in target:
+                path, _, slug = self.extract_info_from_url(target)
+                response = json.loads(self.get('{}{}'.format(self.BASE_URL, self.PIN_RESOURCE_API_URL.format(path, slug))).content)
+                print(response['resource_response']['data']['images'])
+                urls.append(response['resource_response']['data']['images']['736x']['url'])
+            else:
+                path, username, slug = self.extract_info_from_url(target)
+
+                init_response = json.loads(self.get('{}{}'.format(self.BASE_URL, self.BOARD_RESOURCE_API_URL.format(path, username, slug))).content)
+                board_id = init_response['resource_response']['data']['id']
+                pin_count = int(init_response['resource_response']['data']['pin_count'])
+
+                media_response = json.loads(self.get('{}{}'.format(self.BASE_URL, self.BOARD_MEDIA_API_URL.format(path, board_id))).content)
+                bookmark = media_response['resource_response'].get('bookmark')
+                urls.extend(self.extract_urls(media_response))
+
+                if bookmark: # more images to load (page scroll)
+                    while True:
+                        media_response = json.loads(self.get('{}{}'.format(self.BASE_URL, self.BOOKMARKED_BOARD_MEDIA_API_URL.format(path, board_id, bookmark))).content)
+                        bookmark = media_response['resource_response'].get('bookmark')
+                        urls.extend(self.extract_urls(media_response))
+                        if not bookmark:
+                            break
+
+        for url in urls:
+            self.collect(re.sub(r'\d+x', 'originals', url))
+
+        self.loot()

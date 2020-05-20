@@ -28,7 +28,10 @@ class ZalandoGoblin(MetaGoblin):
 
     def extract_id(self, url):
         '''extract image id from url'''
-        return re.search(self.ID_PAT, self.parser.extract_filename(url).upper()).group()
+        id = re.search(self.ID_PAT, self.parser.extract_filename(url).upper())
+        if id:
+            return id.group()
+        return ''
 
     def run(self):
         self.toggle_collecton_type()
@@ -36,9 +39,13 @@ class ZalandoGoblin(MetaGoblin):
 
         for target in self.args['targets'][self.ID]:
             self.new_collection()
-            id = self.extract_id(target)
+            self.looted.clear()
 
-            for n in range(1, 50):
+            id = self.extract_id(target)
+            if not id:
+                continue
+
+            for n in range(1, 51):
                 self.collect(self.form_url(f'{id}@{n}'))
 
             self.loot(timeout=8)

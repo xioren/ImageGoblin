@@ -11,7 +11,7 @@ class Dispatcher:
 
     def __init__(self, args):
         self.args = args
-        self.logger = Logger(self.args['verbose'], self.args['silent'])
+        self.logger = Logger(self.args['verbose'], self.args['silent'], self.args['nodl'])
 
     def identify(self, url):
         '''match url to a specific goblin'''

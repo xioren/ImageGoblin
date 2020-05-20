@@ -35,22 +35,22 @@ class AlphaGoblin(MetaGoblin):
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting links')
+        urls = []
 
         for target in self.args['targets'][self.ID]:
             if 'media/catalog' in target:
                 if not self.ACCEPT_IMAGE:
                     self.logger.log(2, self.NAME, 'WARNING', 'image urls not fully supported', once=True)
 
-                urls = self.generate_urls(target)
+                urls.extend(self.generate_urls(target))
             else:
                 if not self.ACCEPT_WEBPAGE:
-                    urls = []
                     self.logger.log(2, self.NAME, 'WARNING', 'webpage urls not supported', once=True)
                 else:
-                    urls = self.generate_urls(target, False)
+                    urls.extend(self.generate_urls(target, False))
 
-            for url in urls:
-                self.collect(self.trim(url))
+        for url in urls:
+            self.collect(self.trim(url))
 
         self.loot()
         self.cleanup(self.path_main)

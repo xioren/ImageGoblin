@@ -27,18 +27,19 @@ class EpsilonGoblin(MetaGoblin):
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting links')
+        urls = []
 
         for target in self.args['targets'][self.ID]:
             if 'mncdn' in target:
-                urls = [target]
+                urls.append(target)
             else:
-                urls = self.parser.extract_by_regex(self.get(target).content, self.URL_PAT)
+                urls.extend(self.parser.extract_by_regex(self.get(target).content, self.URL_PAT))
 
-            for url in urls:
-                url_base, _ = re.split(self.MOD_PAT, self.trim_url(url))
+        for url in urls:
+            url_base, _ = re.split(self.MOD_PAT, self.trim_url(url))
 
-                self.generate_modifiers(url)
-                for mod in self.modifiers:
-                    self.collect(f'{url_base}{mod}{self.URL_END}')
+            self.generate_modifiers(url)
+            for mod in self.modifiers:
+                self.collect(f'{url_base}{mod}{self.URL_END}')
 
         self.loot()

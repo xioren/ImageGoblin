@@ -66,6 +66,7 @@ from goblins.nasty_gal import NastyGalGoblin
 from goblins.only import OnlyGoblin
 from goblins.only_hearts import OnlyHeartsGoblin
 from goblins.oysho import OyshoGoblin
+from goblins.pinterest import PinterestGoblin
 from goblins.prettylittlething import PrettyLittleThingGoblin
 from goblins.promise import PromiseGoblin
 from goblins.pull_and_bear import PullandBearGoblin
@@ -173,6 +174,7 @@ goblins = {
     'only': (r'only\.[a-z]+', OnlyGoblin),
     'onlyhearts': (r'onlyhearts\.[a-z]+', OnlyHeartsGoblin),
     'oysho': (r'oysho\.[a-z]+', OyshoGoblin),
+    'pinterest': (r'pin(terest|img)\.[a-z]+', PinterestGoblin),
     'prettylittlething': (r'prettylittlething\.[a-z]+', PrettyLittleThingGoblin),
     'promise': ('tienda.promise', PromiseGoblin),
     'pullandbear': (r'pullandbear\.[a-z]+', PullandBearGoblin),
