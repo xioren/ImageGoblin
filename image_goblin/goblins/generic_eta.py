@@ -35,7 +35,7 @@ class EtaGoblin(MetaGoblin):
         return re.search(self.URL_PAT, url).group().rstrip("_s/").replace('media.nastygal.com', 'i1.adis.ws')
 
     def run(self):
-        self.logger.log(1, self.NAME, 'collecting links')
+        self.logger.log(1, self.NAME, 'collecting urls')
         urls = []
 
         for target in self.args['targets'][self.ID]:

@@ -22,12 +22,12 @@ class WolfordGoblin(MetaGoblin):
         return re.sub(r'default/\w+/images', 'default/images', self.parser.dequery(url)).replace('dw/image/v2/BBCH_PRD/', '')
 
     def run(self):
-        self.logger.log(1, self.NAME, 'collecting links')
+        self.logger.log(1, self.NAME, 'collecting urls')
         urls = []
 
         for target in self.args['targets'][self.ID]:
             if 'demandware' in target:
-                url.append(target)
+                urls.append(target)
             else:
                 urls.extend(self.parser.extract_by_regex(self.get(target).content, self.URL_PAT))
 

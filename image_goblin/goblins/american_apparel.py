@@ -23,7 +23,7 @@ class AmericanApparelGoblin(MetaGoblin):
         return re.split(r'_(0\d)?(?=_)', re.sub(r'(?<=stencil/)[^/]+', 'original', url), 1)
 
     def run(self):
-        self.logger.log(1, self.NAME, 'collecting links')
+        self.logger.log(1, self.NAME, 'collecting urls')
         urls = []
 
         for target in self.args['targets'][self.ID]:

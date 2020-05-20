@@ -21,12 +21,12 @@ class ShopbopGoblin(MetaGoblin):
         return re.sub(r'._\w+(_\w+)?_\w+_', '', url).replace('m.media', 'images-na.ssl-images').replace('2-1', '2-0')
 
     def run(self):
-        self.logger.log(1, self.NAME, 'collecting links')
+        self.logger.log(1, self.NAME, 'collecting urls')
         urls = []
 
         for target in self.args['targets'][self.ID]:
             if 'amazon' in target:
-                url.append(target)
+                urls.append(target)
             else:
                 urls.extend(self.parser.extract_by_regex(self.get(target).content, self.URL_PAT))
 

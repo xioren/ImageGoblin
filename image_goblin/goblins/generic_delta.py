@@ -32,7 +32,7 @@ class DeltaGoblin(MetaGoblin):
         return re.search(r'(?<=/|p)\d+(?=\.|_)', url).group()
 
     def run(self):
-        self.logger.log(1, self.NAME, 'collecting links')
+        self.logger.log(1, self.NAME, 'collecting urls')
         urls = []
 
         for target in self.args['targets'][self.ID]:

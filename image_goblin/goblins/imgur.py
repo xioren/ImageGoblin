@@ -35,7 +35,7 @@ class ImgurGoblin(MetaGoblin):
         return url.replace('m.imgur', 'i.imgur')
 
     def run(self):
-        self.logger.log(1, self.NAME, 'collecting links')
+        self.logger.log(1, self.NAME, 'collecting urls')
         urls = []
         for target in self.args['targets'][self.ID]:
             if 'i.imgur' in target or 'm.imgur' in target:

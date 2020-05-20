@@ -1,0 +1,4 @@
+- add better exception handling for json key errors
+- handle iteration urls that contain #
+- better commenting
+- more verbosity

@@ -25,12 +25,12 @@ class WoodWoodGoblin(MetaGoblin):
         return re.sub(r'\d+x\d+c', '1600x2400c', self.parser.extract_filename(url))
 
     def run(self):
-        self.logger.log(1, self.NAME, 'collecting links')
+        self.logger.log(1, self.NAME, 'collecting urls')
         urls = []
 
         for target in self.args['targets'][self.ID]:
             if 'shared' in target:
-                url.append(target)
+                urls.append(target)
             else:
                 self.headers.update({'Cookie': 'queue=1589683924; bbc=104.149.68.66'})
                 urls.extend(self.parser.extract_by_regex(self.get(target).content, r'(?<="og:image" content=")[^"]+'))

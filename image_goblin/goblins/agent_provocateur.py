@@ -31,7 +31,7 @@ class AgentProvocateurGoblin(MetaGoblin):
         return url
 
     def run(self):
-        self.logger.log(1, self.NAME, 'collecting links')
+        self.logger.log(1, self.NAME, 'collecting urls')
         urls = []
 
         for target in self.args['targets'][self.ID]:
@@ -62,10 +62,11 @@ class AgentProvocateurGoblin(MetaGoblin):
 
                 response = json.loads(self.post(self.API_URL, data=POST_DATA).content)
 
-                for entry in response['catalog']:
-                    if 'media' in entry:
-                        for image in entry['media']:
-                            urls.append(f'{self.BASE_URL}/static/media/catalog{image["image"]}')
+                if response.get('catalog'):
+                    for entry in response['catalog']:
+                        if 'media' in entry:
+                            for image in entry['media']:
+                                urls.append(f'{self.BASE_URL}/static/media/catalog{image["image"]}')
 
         for url in urls:
             if 'flatshot' in url: # skip product images

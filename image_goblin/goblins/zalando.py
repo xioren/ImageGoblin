@@ -35,7 +35,7 @@ class ZalandoGoblin(MetaGoblin):
 
     def run(self):
         self.toggle_collecton_type()
-        self.logger.log(1, self.NAME, 'collecting links')
+        self.logger.log(1, self.NAME, 'collecting urls')
 
         for target in self.args['targets'][self.ID]:
             self.new_collection()

@@ -26,7 +26,7 @@ class ListalGoblin(MetaGoblin):
         return re.search(fr'(?<={self.BASE_URL})[\w\-]+', url).group()
 
     def run(self):
-        self.logger.log(1, self.NAME, 'collecting links')
+        self.logger.log(1, self.NAME, 'collecting urls')
         urls = []
 
         for target in self.args['targets'][self.ID]:

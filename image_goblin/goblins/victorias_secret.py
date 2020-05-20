@@ -23,7 +23,7 @@ class VictoriasSecretGoblin(MetaGoblin):
         super().__init__(args)
 
     def run(self):
-        self.logger.log(1, self.NAME, 'collecting links')
+        self.logger.log(1, self.NAME, 'collecting urls')
         urls = []
         if self.args['noup']:
             dimensions = 'p/760x1013'

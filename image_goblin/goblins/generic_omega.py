@@ -56,7 +56,7 @@ class OmegaGoblin(MetaGoblin):
             self.collect(self.format(url), filename=self.args['filename'])
 
     def run(self):
-        self.logger.log(1, self.NAME, 'collecting links')
+        self.logger.log(1, self.NAME, 'collecting urls')
 
         for target in self.args['targets'][self.ID]:
             if re.search(f'(?:{self.FILETYPES}|/upload/|/image/)', target, re.IGNORECASE):

@@ -17,7 +17,7 @@ class BurberryGoblin(MetaGoblin):
         super().__init__(args)
 
     def run(self):
-        self.logger.log(1, self.NAME, 'collecting links')
+        self.logger.log(1, self.NAME, 'collecting urls')
         urls = []
 
         for target in self.args['targets'][self.ID]:

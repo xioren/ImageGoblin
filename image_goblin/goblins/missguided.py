@@ -22,7 +22,7 @@ class MissguidedGoblin(MetaGoblin):
         return re.search(r'[A-Z\d]+', url).group().upper()
 
     def run(self):
-        self.logger.log(1, self.NAME, 'collecting links')
+        self.logger.log(1, self.NAME, 'collecting urls')
         urls = []
 
         for target in self.args['targets'][self.ID]:

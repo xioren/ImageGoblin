@@ -31,7 +31,7 @@ class FredericksGoblin(MetaGoblin):
         return re.search(r'(?<=com/).+', self.parser.dequery(url).rstrip('/')).group().replace('/', '%2F')
 
     def run(self):
-        self.logger.log(1, self.NAME, 'collecting links')
+        self.logger.log(1, self.NAME, 'collecting urls')
         urls = []
 
         for target in self.args['targets'][self.ID]:

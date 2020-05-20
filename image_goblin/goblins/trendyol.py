@@ -23,12 +23,12 @@ class TrendyolGoblin(MetaGoblin):
         return re.sub(r'\d+_[a-z]+(_[a-z]+)?\.jpg', '', url)
 
     def run(self):
-        self.logger.log(1, self.NAME, 'collecting links')
+        self.logger.log(1, self.NAME, 'collecting urls')
         urls = []
 
         for target in self.args['targets'][self.ID]:
             if 'img-trendyol' in target or 'cdn.dsmcdn' in target:
-                url.append(target)
+                urls.append(target)
             else:
                 urls.extend(self.parser.extract_by_regex(self.get(target).content, self.URL_PAT))
 

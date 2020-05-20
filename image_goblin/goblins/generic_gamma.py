@@ -42,8 +42,8 @@ class GammaGoblin(MetaGoblin):
         return re.search(r'(?<=/)[^/]+\.jpe?g', url).group()
 
     def run(self):
-        self.logger.log(1, self.NAME, 'collecting links')
-        urls - []
+        self.logger.log(1, self.NAME, 'collecting urls')
+        urls = []
 
         for target in self.args['targets'][self.ID]:
             if 'demandware' in target:

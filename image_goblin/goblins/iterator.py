@@ -42,7 +42,7 @@ class IteratorGoblin(MetaGoblin):
 
     def run(self):
         '''main iteration method'''
-        self.toggle_collecton_type() # convert collection to list so that links are sorted
+        self.toggle_collecton_type() # convert collection to list so that urls are ordered
         round = 1
         base, iterable, end = self.isolate_parts(self.args['targets'][self.ID][0])
 
