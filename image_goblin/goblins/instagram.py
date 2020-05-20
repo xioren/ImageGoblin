@@ -154,7 +154,7 @@ class InstagramGoblin(MetaGoblin):
         cursor = ''
         POST_PAT = re.compile(r'(?<="shortcode":")[^"]+')
 
-        self.logger.log(1, self.NAME, 'collecting posts')
+        self.logger.log(1, self.NAME, 'collecting posts', self.username)
 
         while True:
             variables = json.dumps(

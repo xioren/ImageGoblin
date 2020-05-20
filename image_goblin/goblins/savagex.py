@@ -38,7 +38,7 @@ class SavageXGoblin(MetaGoblin):
                 init_response = self.get(target, store_cookies=True)
                 self.set_cookies()
                 self.headers.update({'x-api-key': 'V0X9UnXkvO4vTk1gYHnpz7jQyAMO64Qp4ONV2ygu',
-                                     'x-tfg-storedomain':'www.savagex.com'})
+                                     'x-tfg-storedomain':'www.savagex.com'}) # does this change? can it be extracted from req url?
 
                 auth = self.get(self.API_AUTH_URL, store_cookies=True)
                 self.set_cookies()

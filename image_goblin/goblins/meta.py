@@ -138,7 +138,7 @@ class MetaGoblin:
             values.add(value)
             self.headers[cookie] = '; '.join(values)
 
-    def make_request(self, url, n=0, data=None, store_cookies=False):
+    def make_request(self, url, data=None, store_cookies=False, n=0):
         '''make an http request'''
         try:
             request = Request(self.parser.add_scheme(url), data, self.headers)
@@ -155,17 +155,17 @@ class MetaGoblin:
             self.logger.log(2, self.NAME, e, url)
             # servers sometimes return 502 when requesting large files, retrying usually works.
             if e.code == 502:
-                return self.retry(self.make_request, url, n, data)
-        except (URLError, UnicodeEncodeError, InvalidURL) as e:
+                return self.retry(self.make_request, url, data=data, store_cookies=store_cookies, n=n+1)
+        except (UnicodeEncodeError, InvalidURL, CertificateError) as e:
             self.logger.log(2, self.NAME, e, url)
-        except (timeout, CertificateError):
-            return self.retry(self.make_request, url, n, data)
+        except (timeout, URLError):
+            return self.retry(self.make_request, url, data=data, n=n+1)
 
     def get(self, url, store_cookies=False, n=0):
         '''make a get request'''
         response = self.ParsedRequest(self.make_request(url, store_cookies=store_cookies))
         if not response:
-            return retry(self.get, url, store_cookies=False, n=0)
+            return retry(self.get, url, store_cookies=False, n=n+1)
         return response
 
     def post(self, url, data, store_cookies=False, n=0):
@@ -174,7 +174,7 @@ class MetaGoblin:
             data = urlencode(data)
         response = self.ParsedRequest(self.make_request(url, data=data.encode(), store_cookies=store_cookies))
         if not response:
-            return retry(self.post, url, data, store_cookies=False, n=0)
+            return retry(self.post, url, data, store_cookies=False, n=n+1)
         return response
 
     def download(self, url, filepath, n=0):
@@ -193,19 +193,19 @@ class MetaGoblin:
                 with open(filepath, 'wb') as file:
                     copyfileobj(response, file, DEFAULT_BUFFER_SIZE)
             except timeout:
-                return self.retry(self.download, url, filepath, n=0)
+                return self.retry(self.download, url, filepath, n=n+1)
 
             self.looted.append(filepath)
             return True
 
     def retry(self, method, *args, **kwargs):
-        '''retry connection after a socket timeout'''
+        '''retry http operation after a socket timeout or server error'''
         if kwargs['n'] > 5:
-            self.logger.log(2, self.NAME, 'timed out', f'aborting after {kwargs["n"]} retries')
+            self.logger.log(2, self.NAME, 'server error', f'aborting after {kwargs["n"]} retries: {args[0]}')
             return None
-        self.logger.log(2, self.NAME, 'timed out', f'retry attempt {kwargs["n"]}')
 
-        sleep(3)
+        self.logger.log(2, self.NAME, 'server error', f'retry attempt {kwargs["n"]}: {args[0]}')
+        sleep(kwargs['n'])
 
         return method(*args, **kwargs)
 

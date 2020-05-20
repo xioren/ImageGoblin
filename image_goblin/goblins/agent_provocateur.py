@@ -40,7 +40,6 @@ class AgentProvocateurGoblin(MetaGoblin):
 
                 for n in range(1, 6):
                     urls.append(f'{base}_ecom_{n}.jpg')
-
             else:
                 self.headers.update({'Content-Type': 'application/json'})
                 POST_DATA = json.dumps(
@@ -53,7 +52,7 @@ class AgentProvocateurGoblin(MetaGoblin):
                                         [
                                             {
                                                 "path":f"/{self.extract_path(target)}",
-                                                "_reqId":2
+                                                "_reqId":0
                                             }
                                         ]
                                 }

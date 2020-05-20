@@ -9,8 +9,6 @@ from os.path import join, exists
 class Parser:
     '''generic url/html parsing and manipulation methods'''
 
-    FILENAME_PAT = re.compile(r'(?<=/|\\)[^\\/]+$')
-    QUERY_PAT = re.compile(r'[\?&][^"\s]+$')
     QUALITY_PAT = re.compile(r'q((ua)?li?ty)?=\d+')
     FILTER_PAT = re.compile(r'(?:\.(js|css|pdf|php|html)|favicon|svg\+xml)',
                             flags=re.IGNORECASE)
@@ -90,8 +88,9 @@ class Parser:
 
     def extract_filename(self, url):
         '''extract filename from url'''
-        filename = re.search(self.FILENAME_PAT, self.dequery(url))
-        return re.sub(r'\..+$', '', filename.group()) if filename else 'image'
+        filename = self.dequery(url).rstrip('/').split('/')[-1]
+        # mimetype identification always returns jpeg not jpg, so need to manually sub jpg out.
+        return filename.replace(self.extension(filename), '').replace('.jpg', '')
 
     def decrop(self, url):
         '''remove common cropping from url'''
