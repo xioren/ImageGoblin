@@ -48,36 +48,6 @@ class AgentProvocateurGoblin(MetaGoblin):
                         "requests":
                             [
                                 {
-                                    "action":"find",
-                                    "type":"block",
-                                    "filter":
-                                        {
-                                            "url":"page-header"
-                                        },
-                                    "verbosity":1,
-                                    "children":
-                                        [
-                                            {
-                                                "_reqId":0
-                                            }
-                                        ]
-                                },
-                                {
-                                    "action":"find",
-                                    "type":"block",
-                                    "filter":
-                                        {
-                                            "url":"page-footer"
-                                        },
-                                    "verbosity":1,
-                                    "children":
-                                        [
-                                            {
-                                                "_reqId":1
-                                            }
-                                        ]
-                                },
-                                {
                                     "action":"route",
                                      "children":
                                         [
@@ -99,6 +69,9 @@ class AgentProvocateurGoblin(MetaGoblin):
                             urls.append(f'{self.BASE_URL}/static/media/catalog{image["image"]}')
 
         for url in urls:
+            if 'flatshot' in url: # skip product images
+                continue
+
             self.collect(url)
 
         self.loot()

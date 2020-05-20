@@ -44,8 +44,9 @@ class Dispatcher:
 
         url_assignment = {}
 
+        # map urls to relevent goblins -> {goblin1: [urls][, goblin2: [urls]]...}
         for url in urls:
-            if url == '': # skip empty lines
+            if url == '': # skip empty entries
                 continue
             if self.args['force']:
                 key = self.args['force']

@@ -2,6 +2,7 @@
 
 #### changelog v0.3.3:
 + added pinterest support
++ more goblins shifted to native api use
 + bug fixes
 + misc code clean up and improvements
 
