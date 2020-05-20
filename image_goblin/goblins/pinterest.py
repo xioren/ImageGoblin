@@ -50,7 +50,6 @@ class PinterestGoblin(MetaGoblin):
             elif '/pin/' in target:
                 path, _, slug = self.extract_info_from_url(target)
                 response = json.loads(self.get('{}{}'.format(self.BASE_URL, self.PIN_RESOURCE_API_URL.format(path, slug))).content)
-                print(response['resource_response']['data']['images'])
                 urls.append(response['resource_response']['data']['images']['736x']['url'])
             else:
                 path, username, slug = self.extract_info_from_url(target)
