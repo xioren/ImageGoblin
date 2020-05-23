@@ -26,11 +26,11 @@ class ImgurGoblin(MetaGoblin):
     def prep(self, url):
         '''upgrade image size'''
         filename  = self.parser.extract_filename(url)
-        ext = self.parser.extension(url)
 
         if len(filename) == 8:
+            ext = self.parser.extension(url)
             # IDEA: could skip the len check and just return url[:7]
-            url = f'{self.BASE_URL}{filename[:-1]}.{ext}'.replace('jpeg', 'jpg')
+            url = f'{self.BASE_URL}{filename[:-1]}{ext}'.replace('jpeg', 'jpg')
 
         return url.replace('m.imgur', 'i.imgur')
 
@@ -44,14 +44,13 @@ class ImgurGoblin(MetaGoblin):
                 matches = self.parser.extract_by_regex(self.get(self.clean(target)).content,
                                                        r'(?<=image\s{15}:\s){[^\n]+}(?=,\n)')
                 for match in matches:
-                    items = self.parser.load_json(match)
-                    urls.append(f'{self.BASE_URL}{items["hash"]}{items["ext"]}')
+                    image = self.parser.load_json(match)
+                    urls.append(f'{self.BASE_URL}{image["hash"]}{image["ext"]}')
             else:
                 matches = self.parser.extract_by_regex(self.get(self.clean(target)).content,
                                                        r'(?<=image\s{15}:\s){[^\n]+}(?=,\n)')
                 for match in matches:
                     items = self.parser.load_json(match)
-
                     for image in items['album_images']['images']:
                         urls.append(f'{self.BASE_URL}{image["hash"]}{image["ext"]}')
 

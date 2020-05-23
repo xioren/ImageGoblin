@@ -67,11 +67,10 @@ class InstagramGoblin(MetaGoblin):
                 username = input(f'[{self.NAME}] username: ')
                 password = getpass(f'[{self.NAME}] password: ')
                 response = json.loads(self.post(self.LOGIN_URL, data={'username': username, 'password': password}, store_cookies=True).content)
-                del username, password
                 self.set_cookies()
+                del username, password
 
-                if response.get('authenticated'):
-                    # TODO: use set cookies instead of regex?
+                if 'authenticated' in response:
                     self.logged_in = True
                     self.logger.log(0, self.NAME, 'logged in')
                 elif 'checkpoint_url' in response:
@@ -96,8 +95,6 @@ class InstagramGoblin(MetaGoblin):
     def verify_account(self, checkpoint_url):
         '''complete security challenge to verify account'''
         # WARNING: untested
-        # QUESTION: are all these header updates necessary? test without. and
-        # should they be assigned to self.csrf_token?
         verify_url = urljoin(self.BASE_URL, checkpoint_url)
         response = self.get(verify_url, store_cookies=True)
         self.set_cookies()
