@@ -52,17 +52,18 @@ class ImgurGoblin(MetaGoblin):
                 for match in matches:
                     items = self.parser.load_json(match)
 
-                    for item in items['album_images']['images']:
-                        urls.append(f'{self.BASE_URL}{item["hash"]}{item["ext"]}')
+                    for image in items['album_images']['images']:
+                        urls.append(f'{self.BASE_URL}{image["hash"]}{image["ext"]}')
 
                 if not urls: # sign in probably required -> try bypass
+                    self.logger.log(2, self.NAME, 'attempting bypass')
                     matches = self.parser.extract_by_regex(self.get(f'{self.clean(target)}/embed?pub=true').content,
                                                            r'(?<=images\s{12}=\s){[^\n]+}(?=,\n)')
                     for match in matches:
                         items = self.parser.load_json(match)
 
-                        for item in items['images']:
-                            urls.append(f'{self.BASE_URL}{item["hash"]}{item["ext"]}')
+                        for image in items['images']:
+                            urls.append(f'{self.BASE_URL}{image["hash"]}{image["ext"]}')
 
         for url in urls:
             self.collect(self.prep(url))

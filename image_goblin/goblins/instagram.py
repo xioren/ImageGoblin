@@ -3,10 +3,13 @@ import re
 import json
 
 from time import sleep
-from hashlib import md5
 from getpass import getpass
 from urllib.parse import quote, urljoin
 from goblins.meta import MetaGoblin
+
+
+# NOTE: deprecated pagination /?__a=1
+
 
 class InstagramGoblin(MetaGoblin):
     '''code inspired by:
@@ -17,12 +20,14 @@ class InstagramGoblin(MetaGoblin):
 
     NAME = 'instagram goblin'
     ID = 'instagram'
-    BASE_URL = 'https://www.instagram.com/'
-    # NOTE: both 472f257a40c653c64c666ce877d59d2b and 42323d64886122307be10013ad2dcc44 work for media query_hash
-    MEDIA_URL = 'graphql/query/?query_hash=42323d64886122307be10013ad2dcc44&variables={}'
-    STORIES_URL = BASE_URL + 'graphql/query/?query_hash=45246d3fe16ccc6577e0bd297a5db1ab&variables={}'
-    STORIES_USER_ID_URL = BASE_URL + 'graphql/query/?query_hash=c9100bf9110dd6361671f113dd02e7d6&variables={}'
-    STORIES_REEL_ID_URL = BASE_URL + 'graphql/query/?query_hash=45246d3fe16ccc6577e0bd297a5db1ab&variables={}'
+    BASE_URL = 'https://www.instagram.com'
+    LOGOUT_URL = BASE_URL + '/accounts/logout/'
+    LOGIN_URL = BASE_URL + '/accounts/login/ajax/'
+    INFO_URL = BASE_URL + '/graphql/query/?query_hash=1451128a3ce596b72f20c738dc7f0f73&variables={}'
+    MEDIA_URL = BASE_URL + '/graphql/query/?query_hash=44efc15d3c13342d02df0b5a9fa3d33f&variables={}'
+    STORIES_URL = BASE_URL + '/graphql/query/?query_hash=45246d3fe16ccc6577e0bd297a5db1ab&variables={}'
+    STORIES_USER_ID_URL = BASE_URL + '/graphql/query/?query_hash=c9100bf9110dd6361671f113dd02e7d6&variables={}'
+    STORIES_REEL_ID_URL = BASE_URL + '/graphql/query/?query_hash=45246d3fe16ccc6577e0bd297a5db1ab&variables={}'
 
     def __init__(self, args):
         super().__init__(args)
@@ -39,9 +44,12 @@ class InstagramGoblin(MetaGoblin):
 
     def extract_username(self, url):
         if '/p/' in url:
-            return json.loads(self.get(f'{url.rstrip("/")}/?__a=1').content)['graphql']['shortcode_media']['owner']['username']
+            shortcode = url.rstrip('/').split('/')[-1]
+            variables = f'{{"shortcode":"{shortcode}","include_reel":true}}'
+            response = json.loads(self.get(self.INFO_URL.format(quote(variables, safe='"'))).content)
+            return response['data']['shortcode_media']['owner']['reel']['owner']['username']
         else:
-            return re.search(r'(/?[^/]+/?)$', url).group().strip('/')
+            return url.rstrip('/').split('/')[-1]
 
     def move_vid(self):
         '''move videos into seperate directory'''
@@ -49,41 +57,26 @@ class InstagramGoblin(MetaGoblin):
             if '.mp4' in file:
                 os.rename(os.path.join(self.insta_dir, file), os.path.join(self.vid_dir, file))
 
-    def extract_csrf_token(self, response):
-        if 'csrftoken' in response.info.as_string():
-            return re.search(r'(?<=csrftoken=)[^;]+', response.info.as_string()).group()
-        else:
-            data = json.loads(re.search(r'(?<=sharedData\s=\s){[^;]+',
-                                        response.content).group())
-            return data['config']['csrf_token']
-
-    def hash(self, string):
-        return md5(string.encode()).hexdigest()
-
     def authenticate(self, login):
         '''login to instagram or authenticate as guest'''
-        response = self.get(self.BASE_URL)
-        self.csrf_token = self.extract_csrf_token(response)
-        self.headers.update({'X-CSRFToken': self.csrf_token})
+        response = self.get(self.BASE_URL, store_cookies=True)
+        self.set_cookies()
 
         if login:
             while True:
                 username = input(f'[{self.NAME}] username: ')
                 password = getpass(f'[{self.NAME}] password: ')
-                response = self.post(urljoin(self.BASE_URL, 'accounts/login/ajax/'),
-                                     data={'username': username, 'password': password})
+                response = json.loads(self.post(self.LOGIN_URL, data={'username': username, 'password': password}, store_cookies=True).content)
                 del username, password
-                answer = json.loads(response.content)
+                self.set_cookies()
 
-                if answer.get('authenticated') and response.code == 200:
-                    self.extend_cookie('Cookie', re.search(r'sessionid=[^\n]+', response.info.as_string()).group())
-                    self.csrf_token = self.extract_csrf_token(response)
-                    self.headers.update({'X-CSRFToken': self.csrf_token})
+                if response.get('authenticated'):
+                    # TODO: use set cookies instead of regex?
                     self.logged_in = True
                     self.logger.log(0, self.NAME, 'logged in')
-                elif 'checkpoint_url' in answer:
+                elif 'checkpoint_url' in response:
                     self.logger.log(0, self.NAME, 'WARNING', 'account verification required')
-                    self.verify_account(answer.get('checkpoint_url'))
+                    self.verify_account(response['checkpoint_url'])
                 else:
                     self.logger.log(0, self.NAME, 'ERROR', 'login failed')
                     retry = input(f'[{self.NAME}] retry? (y/n): ')
@@ -93,8 +86,7 @@ class InstagramGoblin(MetaGoblin):
                 break
 
     def logout(self):
-        response = self.post(urljoin(self.BASE_URL, 'accounts/logout/'),
-                             data={'csrfmiddlewaretoken': self.csrf_token})
+        response = self.post(self.LOGOUT_URL, data={'csrfmiddlewaretoken': self.cookie_value("csrftoken")})
 
         if response.code == 200:
             self.logger.log(0, self.NAME, 'logged out')
@@ -107,24 +99,24 @@ class InstagramGoblin(MetaGoblin):
         # QUESTION: are all these header updates necessary? test without. and
         # should they be assigned to self.csrf_token?
         verify_url = urljoin(self.BASE_URL, checkpoint_url)
-        response = self.get(verify_url)
+        response = self.get(verify_url, store_cookies=True)
+        self.set_cookies()
 
         self.headers.update(
             {
-                'X-CSRFToken': self.extract_csrf_token(response),
                 'X-Instagram-AJAX': '1',
                 'Referer': verify_url
             }
         )
 
         mode = input(f'[{self.NAME}] receive code via (0 - sms, 1 - email): ')
-        challenge = self.post(verify_url, data= {'choice': mode})
-        self.headers.update({'X-CSRFToken': self.extract_csrf_token(challenge)})
+        challenge = self.post(verify_url, data= {'choice': mode}, store_cookies=True)
+        self.set_cookies()
 
         while True:
             code = int(input(f'[{self.NAME}] enter security code: '))
-            response = self.post(verify_url, data={'security_code': code})
-            self.headers.update({'X-CSRFToken': self.extract_csrf_token(response)})
+            response = self.post(verify_url, data={'security_code': code}, store_cookies=True)
+            self.set_cookies()
             answer = json.loads(response.content)
 
             if answer.get('status') == 'ok':
@@ -146,15 +138,16 @@ class InstagramGoblin(MetaGoblin):
                                         self.get(urljoin(self.BASE_URL, self.username)).content).group())
 
         self.user_id = response['entry_data']['ProfilePage'][0]['graphql']['user']['id']
-        self.rhx_gis = response.get('rhx_gis', '3c7ca9dcefcf966d11dacf1f151335e8')
+        # self.rhx_gis = response.get('rhx_gis', '3c7ca9dcefcf966d11dacf1f151335e8')
 
-    def get_posts(self):
-        '''parse instagram page for posts'''
-        posts = []
+    def parse_profile(self):
+        '''collect and parse instagram posts'''
+        # POST_PAT = re.compile(r'(?<="shortcode":")[^"]+')
         cursor = ''
-        POST_PAT = re.compile(r'(?<="shortcode":")[^"]+')
 
-        self.logger.log(1, self.NAME, 'collecting posts', self.username)
+        self.headers.update({'X-Requested-With': 'XMLHttpRequest'})
+
+        self.logger.log(1, self.NAME, 'parsing profile', self.username)
 
         while True:
             variables = json.dumps(
@@ -164,16 +157,16 @@ class InstagramGoblin(MetaGoblin):
                     'after': cursor
                 }
             )
-            self.headers.update(
-                {
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'X-Instagram-GIS': self.hash(f'{self.rhx_gis}:{self.csrf_token}:{self.headers["User-Agent"]}:{variables}')
-                }
-            )
 
-            response = self.get(self.BASE_URL + self.MEDIA_URL.format(quote(variables, safe='"')))
-            posts.extend([post.group() for post in re.finditer(POST_PAT, response.content)])
-            cursor = json.loads(response.content)['data']['user']['edge_owner_to_timeline_media']['page_info']['end_cursor']
+            response = json.loads(self.get(self.MEDIA_URL.format(quote(variables, safe='"'))).content)
+
+            for edge in response['data']['user']['edge_owner_to_timeline_media']['edges']:
+                self.extract_media(edge)
+                if edge['node'].get('edge_sidecar_to_children'): # post has multiple images/videos
+                    for inner_edge in edge['node']['edge_sidecar_to_children']['edges']:
+                        self.extract_media(inner_edge)
+
+            cursor = response['data']['user']['edge_owner_to_timeline_media']['page_info']['end_cursor']
 
             if not cursor or self.num_posts < 100:
                 # end of profile or user specified finite number of posts.
@@ -181,24 +174,13 @@ class InstagramGoblin(MetaGoblin):
 
             sleep(self.args['delay'])
 
-        return posts
-
-    def get_media(self, posts):
-        '''parses each post for media'''
-        post_num = 1
-        MEDIA_PAT = re.compile(r'(?<="display_url":")[^"]+|(?<="video_url":")[^"]+')
-
-        for post in posts:
-            self.logger.progress(self.NAME, 'parsing posts', post_num, len(posts))
-            self.logger.log(2, self.NAME, 'parsing post', f'/p/{post}')
-
-            for url in self.parser.extract_by_regex(self.get(urljoin(self.BASE_URL, f'p/{post}/?__a=1')).content, MEDIA_PAT):
-                self.collect(url, f'{self.username}_{self.parser.extract_filename(url)}')
-
-            post_num += 1
-            sleep(self.args['delay'])
-
-        self.logger.log(1, self.NAME, 'parsing complete', clear=True)
+    def extract_media(self, edge):
+        '''extract media from posts'''
+        image_url = edge['node']['display_url']
+        video_url = edge['node'].get('video_url')
+        self.collect(image_url, f'{self.username}_{self.parser.extract_filename(image_url)}')
+        if video_url:
+            self.collect(video_url, f'{self.username}_{self.parser.extract_filename(video_url)}')
 
     def get_stories(self, url):
         response = json.loads(self.get(url).content)
@@ -238,7 +220,7 @@ class InstagramGoblin(MetaGoblin):
             self.setup(target)
 
             if '/p/' in target:
-                self.get_media([re.search(r'(?<=/p/)[^/]+', target).group()])
+                self.logger.log(0, self.NAME, 'ERROR', 'post urls are temporarily disabled')
             else:
                 if self.args['mode'] == 'latest' or self.args['mode'] == 'recent':
                     self.num_posts = 6
@@ -250,8 +232,7 @@ class InstagramGoblin(MetaGoblin):
                     if self.args['mode'] != 'latest' and self.args['mode'] != 'recent':
                         self.get_highlight_stories()
 
-                posts = self.get_posts()
-                self.get_media(posts)
+                self.parse_profile()
 
             self.loot(save_loc=self.insta_dir)
             if not self.args['nodl']:

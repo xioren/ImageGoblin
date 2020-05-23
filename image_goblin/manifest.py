@@ -62,6 +62,7 @@ from goblins.mango import MangoGoblin
 from goblins.marlies_dekkers import MarliesDekkersGoblin
 from goblins.massimodutti import MassimoDuttiGoblin
 from goblins.missguided import MissguidedGoblin
+from goblins.missy_empire import MissyEmpireGoblin
 from goblins.nasty_gal import NastyGalGoblin
 from goblins.only import OnlyGoblin
 from goblins.only_hearts import OnlyHeartsGoblin
@@ -170,6 +171,7 @@ goblins = {
     'marliesdekkers': (r'marliesdekkers\.[a-z]+', MarliesDekkersGoblin),
     'massimodutti': (r'massimodutti\.[a-z]+', MassimoDuttiGoblin),
     'missguided': (r'missguided(us)?\.[a-z]+', MissguidedGoblin),
+    'missyempire': (r'missyempire\.[a-z]+', MissyEmpireGoblin),
     'nastygal': (r'nastygal\.[a-z]+', NastyGalGoblin),
     'only': (r'only\.[a-z]+', OnlyGoblin),
     'onlyhearts': (r'onlyhearts\.[a-z]+', OnlyHeartsGoblin),

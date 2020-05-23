@@ -64,7 +64,7 @@ class AgentProvocateurGoblin(MetaGoblin):
 
                 if response.get('catalog'):
                     for entry in response['catalog']:
-                        if 'media' in entry:
+                        if entry.get('media'):
                             for image in entry['media']:
                                 urls.append(f'{self.BASE_URL}/static/media/catalog{image["image"]}')
 

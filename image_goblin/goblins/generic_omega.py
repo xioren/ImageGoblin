@@ -14,8 +14,7 @@ class OmegaGoblin(MetaGoblin):
     ID = 'generic'
 
     FILETYPES = r'\.(jpe?g|png|gif|mp4|web[pm]|tiff?|mov|svg|bmp|exif)'
-    URL_PAT = re.compile(fr'(https?://)?[^"\n\s\';{{}}]+{FILETYPES}(\?[^"\s]+)?',
-                         flags=re.IGNORECASE)
+    URL_PAT = re.compile(fr'https?://[^"\n\s]+?{FILETYPES}(\?[^"\s\n]+)?', flags=re.IGNORECASE)
     ATTR_PAT = re.compile(r'(?:src(?![a-z])|data(?![a-z\-])|data-(src(?!set)|lazy|url|original)' \
                           r'|content(?![a-z\-])|hires(?![a-z\-]))')
     TAG_PAT = re.compile('(?:ima?ge?|video|source)')

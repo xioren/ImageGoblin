@@ -10,10 +10,10 @@ class Parser:
     '''generic url/html parsing and manipulation methods'''
 
     QUALITY_PAT = re.compile(r'q((ua)?li?ty)?=\d+')
-    FILTER_PAT = re.compile(r'(?:\.(js|css|pdf|php|html)|favicon|svg\+xml)',
-                            flags=re.IGNORECASE)
+    FILTER_PAT = re.compile(r'(?:\.(js|css|pdf|php|html)|favicon|svg\+xml)', flags=re.IGNORECASE)
+    MISC_REPLACEMENTS = {'amp;': '', ' ': '%20'}
     CROPPING_PATS = (
-        re.compile(r'[\-_]?(?<![a-z])((x+)?-?l(arge)?|profile)(?![a-z])[\-_]?', flags=re.IGNORECASE),
+        re.compile(r'[\-_]?(?<![a-z])((x+)?-?l(arge)?|profile|square)(?![a-z])[\-_/]?', flags=re.IGNORECASE),
         re.compile(r'[@\-_/]\d+x(\d+)?(?![a-z\d])'), # 000x000
         re.compile(r'expanded_[a-z]+/'),
         re.compile(r'(?<=/)c_.+?/v1/'), # cloudfront
@@ -22,8 +22,6 @@ class Parser:
         re.compile(r'(\.|-)\d+w'), # -000w
         re.compile(r'@\d+x')
     )
-
-    MISC_REPLACEMENTS = {'amp;': '', ' ': '%20'}
 
     def __init__(self, origin_url, user_formatting):
         self.origin_url = self.add_scheme(self.dequery(origin_url))

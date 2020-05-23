@@ -27,9 +27,13 @@ class PinterestGoblin(MetaGoblin):
         super().__init__(args)
 
     def extract_info_from_url(self, url):
-        '''extract board source url'''
-        path = "/".join(url.split("/")[-3:]).rstrip('/')
-        username, slug = path.split('/')
+        '''extract board source url, sername, and slug'''
+        url = url.rstrip('/').replace('//', '')
+        if url.count('/') == 2:
+            username, slug = url.split('/')[1:]
+        else:
+            username, slug = '', ''
+        path = f'{username}/{slug}'
         return path, username, slug
 
     def extract_urls(self, json):
@@ -49,26 +53,29 @@ class PinterestGoblin(MetaGoblin):
                 urls.append(target)
             elif '/pin/' in target:
                 path, _, slug = self.extract_info_from_url(target)
+
                 response = json.loads(self.get('{}{}'.format(self.BASE_URL, self.PIN_RESOURCE_API_URL.format(path, slug))).content)
                 urls.append(response['resource_response']['data']['images']['736x']['url'])
             else:
                 path, username, slug = self.extract_info_from_url(target)
+                if slug: # if no slug, probably only a profile url was entered
+                    init_response = json.loads(self.get('{}{}'.format(self.BASE_URL, self.BOARD_RESOURCE_API_URL.format(path, username, slug))).content)
+                    board_id = init_response['resource_response']['data']['id']
+                    # pin_count = int(init_response['resource_response']['data']['pin_count'])
 
-                init_response = json.loads(self.get('{}{}'.format(self.BASE_URL, self.BOARD_RESOURCE_API_URL.format(path, username, slug))).content)
-                board_id = init_response['resource_response']['data']['id']
-                pin_count = int(init_response['resource_response']['data']['pin_count'])
+                    media_response = json.loads(self.get('{}{}'.format(self.BASE_URL, self.BOARD_MEDIA_API_URL.format(path, board_id))).content)
+                    bookmark = media_response['resource_response'].get('bookmark')
+                    urls.extend(self.extract_urls(media_response))
 
-                media_response = json.loads(self.get('{}{}'.format(self.BASE_URL, self.BOARD_MEDIA_API_URL.format(path, board_id))).content)
-                bookmark = media_response['resource_response'].get('bookmark')
-                urls.extend(self.extract_urls(media_response))
-
-                if bookmark: # more images to load (page scroll)
-                    while True:
-                        media_response = json.loads(self.get('{}{}'.format(self.BASE_URL, self.BOOKMARKED_BOARD_MEDIA_API_URL.format(path, board_id, bookmark))).content)
-                        bookmark = media_response['resource_response'].get('bookmark')
-                        urls.extend(self.extract_urls(media_response))
-                        if not bookmark:
-                            break
+                    if bookmark: # more images to load (page scroll)
+                        while True:
+                            media_response = json.loads(self.get('{}{}'.format(self.BASE_URL, self.BOOKMARKED_BOARD_MEDIA_API_URL.format(path, board_id, bookmark))).content)
+                            bookmark = media_response['resource_response'].get('bookmark')
+                            urls.extend(self.extract_urls(media_response))
+                            if not bookmark:
+                                break
+                else:
+                    self.logger.log(2, self.NAME, 'no board found')
 
         for url in urls:
             self.collect(re.sub(r'\d+x', 'originals', url))

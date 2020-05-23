@@ -80,6 +80,7 @@ class IotaGoblin(MetaGoblin):
                 response = json.loads(self.get(self.API_URL.format(self.extract_product(target))).content)
 
                 if isinstance(response, dict) and response.get('code') == 'EXPIRED_TOKEN':
+                    self.logger.log(2, self.NAME, 'reauthorizing')
                     self.reauthorize()
                     response = json.loads(self.get(self.API_URL.format(self.extract_product(target))).content)
 

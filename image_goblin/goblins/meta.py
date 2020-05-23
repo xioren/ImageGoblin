@@ -134,11 +134,16 @@ class MetaGoblin:
         if cookie not in self.headers:
             self.headers[cookie] = value
         else:
-            values = set(self.headers[cookie].split('; '))
-            values.add(value)
-            self.headers[cookie] = '; '.join(values)
+            current_values = {}
+            new_key, new_val = value.split('=')
+            for item in self.headers[cookie].split('; '):
+                key, val = item.split('=')
+                current_values[key] = val
+            current_values[new_key] = new_val
+            cookie_string = '; '.join(f'{key}={value}' for key, value in current_values.items())
+            self.headers[cookie] = cookie_string
 
-    def make_request(self, url, data=None, store_cookies=False, n=0):
+    def make_request(self, url, data=None, store_cookies=False, attempt=0):
         '''make an http request'''
         try:
             request = Request(self.parser.add_scheme(url), data, self.headers)
@@ -155,29 +160,29 @@ class MetaGoblin:
             self.logger.log(2, self.NAME, e, url)
             # servers sometimes return 502 when requesting large files, retrying usually works.
             if e.code == 502:
-                return self.retry(self.make_request, url, data=data, store_cookies=store_cookies, n=n+1)
+                return self.retry(self.make_request, url, data=data, store_cookies=store_cookies, attempt=attempt+1)
         except (UnicodeEncodeError, InvalidURL, CertificateError) as e:
             self.logger.log(2, self.NAME, e, url)
         except (timeout, URLError):
-            return self.retry(self.make_request, url, data=data, n=n+1)
+            return self.retry(self.make_request, url, data=data, attempt=attempt+1)
 
-    def get(self, url, store_cookies=False, n=0):
+    def get(self, url, store_cookies=False, attempt=0):
         '''make a get request'''
         response = self.ParsedRequest(self.make_request(url, store_cookies=store_cookies))
         if not response:
-            return retry(self.get, url, store_cookies=False, n=n+1)
+            return retry(self.get, url, store_cookies=False, attempt=attempt+1)
         return response
 
-    def post(self, url, data, store_cookies=False, n=0):
+    def post(self, url, data, store_cookies=False, attempt=0):
         '''make a post request'''
         if isinstance(data, dict):
             data = urlencode(data)
         response = self.ParsedRequest(self.make_request(url, data=data.encode(), store_cookies=store_cookies))
         if not response:
-            return retry(self.post, url, data, store_cookies=False, n=n+1)
+            return retry(self.post, url, data, store_cookies=False, attempt=attempt+1)
         return response
 
-    def download(self, url, filepath, n=0):
+    def download(self, url, filepath, attempt=0):
         '''download web content'''
         response = self.make_request(url)
 
@@ -193,25 +198,25 @@ class MetaGoblin:
                 with open(filepath, 'wb') as file:
                     copyfileobj(response, file, DEFAULT_BUFFER_SIZE)
             except timeout:
-                return self.retry(self.download, url, filepath, n=n+1)
+                return self.retry(self.download, url, filepath, attempt=attempt+1)
 
             self.looted.append(filepath)
             return True
 
     def retry(self, method, *args, **kwargs):
         '''retry http operation after a socket timeout or server error'''
-        if kwargs['n'] > 5:
-            self.logger.log(2, self.NAME, 'server error', f'aborting after {kwargs["n"]} retries: {args[0]}')
+        if kwargs['attempt'] > 5:
+            self.logger.log(2, self.NAME, 'server error', f'aborting after {kwargs["attempt"]} retries: {args[0]}')
             return None
 
-        self.logger.log(2, self.NAME, 'server error', f'retry attempt {kwargs["n"]}: {args[0]}')
-        sleep(kwargs['n'])
+        self.logger.log(2, self.NAME, 'server error', f'retry attempt {kwargs["attempt"]}: {args[0]}')
+        sleep(kwargs['attempt'])
 
         return method(*args, **kwargs)
 
     def write_file(self, data, path, iter=False):
         '''write to text file'''
-        # QUESTION: is this used? keep if so?
+        # QUESTION: is this used? keep?
         try:
             with open(path, 'w') as file:
                 if iter:
@@ -232,10 +237,10 @@ class MetaGoblin:
         except OSError as e:
             self.logger.log(2, self.NAME, e, path)
 
-    def check_ext(self, filepath, ext):
+    def check_ext(self, filepath, mimetype):
         '''compare guessed extension to header content type and change if necessary'''
-        if ext: # from headers
-            ext = f'.{ext.split("/")[1]}'
+        if '/' in mimetype and mimetype not in ('binary/octet-stream'):
+            ext = f'.{mimetype.split("/")[1]}'
             guessed_ext = self.parser.extension(filepath)
 
             if guessed_ext and guessed_ext != ext:

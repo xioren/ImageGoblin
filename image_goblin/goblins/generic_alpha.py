@@ -15,6 +15,7 @@ class AlphaGoblin(MetaGoblin):
         - bikini lovers
         - blush
         - maison close
+        - missy empire
         - only hearts
         - promise
         - reserved
@@ -24,7 +25,7 @@ class AlphaGoblin(MetaGoblin):
 
     NAME = 'alpha goblin'
     ID = 'alpha'
-    URL_PAT = r'https?:[^"\s\n]+media\\?/catalog[^"\s\n]+\.jpe?g'
+    URL_PAT = r'https?:[^"\s\n]+media\\?/catalog/product/[^"\s\n]+\.jpe?g'
 
     def __init__(self, args):
         super().__init__(args)
