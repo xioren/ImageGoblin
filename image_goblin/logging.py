@@ -38,7 +38,7 @@ class Logger:
 
     def progress(self, caller, msg, current, total):
         '''progress bar'''
-        if not self.verbose and not self.silent and not self.nodl:
+        if not (self.verbose or self.silent or self.nodl):
             self.clear_line()
             bar =  '#' * floor(current/total * 20)
             print(f'[{caller}] <{msg}> [{bar.ljust(20, " ")}] {current} of {total}', end='\r')

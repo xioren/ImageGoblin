@@ -10,6 +10,6 @@ class JennyferGoblin(GammaGoblin):
     ITER_PAT = r'_\d+'
     URL_BASE = 'https://www.jennyfer.com/on/demandware.static/-/Sites-jennyfer-catalog-master/default/images/'
     QUERY = ''
-    
+
     def __init__(self, args):
         super().__init__(args)

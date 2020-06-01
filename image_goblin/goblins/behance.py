@@ -30,9 +30,10 @@ class BehanceGoblin(MetaGoblin):
 
                 response = json.loads(self.get(target).content)
 
-                for module in response['view']['project']['modules']:
-                    if module.get('sizes'):
-                        urls.append(module['sizes']['original'])
+                if 'view' in response:
+                    for module in response['view']['project']['modules']:
+                        if 'sizes' in module:
+                            urls.append(module['sizes']['original'])
 
         for url in urls:
             self.collect(url)

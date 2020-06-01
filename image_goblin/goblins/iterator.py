@@ -20,15 +20,17 @@ class IteratorGoblin(MetaGoblin):
         '''seperate url into base, iterable, end'''
         return url.split('#')
 
-    def isolate_iterable(self, url):
-        '''isolate iterable from url'''
-        return int(url.lstrip('0'))
+    def isolate_iterable(self, full_iterable):
+        '''isolate iterable portion from string containing leading zeros'''
+        if all(n == '0' for n in full_iterable):
+            return 0
+        return int(full_iterable.lstrip('0'))
 
-    def generate_urls(self, base, iterable, end):
+    def generate_block(self, base, iterable, end):
         '''generate block of urls to iterate over'''
         stripped_iter = self.isolate_iterable(iterable)
 
-        for n in range(stripped_iter, stripped_iter + self.block_size, self.args['step']):
+        for n in range(stripped_iter, stripped_iter + self.block_size + 1, self.args['step']):
             if self.args['filename'] == 'iter':
                 filename = str(n)
             else:
@@ -47,8 +49,8 @@ class IteratorGoblin(MetaGoblin):
         base, iterable, end = self.isolate_parts(self.args['targets'][self.ID][0])
 
         while True:
-            self.logger.log(1, self.NAME, 'iterating', f'round: {round} n: {iterable}')
-            self.generate_urls(base, iterable, end)
+            self.logger.log(1, self.NAME, 'iterating', f'round: {round} block: {iterable}-{self.isolate_iterable(iterable)+self.block_size}')
+            self.generate_block(base, iterable, end)
 
             timedout = self.loot(timeout=self.args['timeout'])
             if timedout:
@@ -58,4 +60,3 @@ class IteratorGoblin(MetaGoblin):
                 round += 1
                 iterable = self.increment_iterable(iterable)
                 self.new_collection()
-                self.looted.clear()

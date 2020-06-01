@@ -1,5 +1,3 @@
-import json
-
 from goblins.generic_delta import DeltaGoblin
 
 

@@ -1,3 +1,6 @@
+import re
+import json
+
 from goblins.meta import MetaGoblin
 
 
@@ -9,10 +12,15 @@ class FlickrGoblin(MetaGoblin):
 
     NAME = 'flickr goblin'
     ID = 'flickr'
-    URL_PAT = r'live\.staticflickr\.com[\\/\d]+_[a-z\d]+_o\.jpg'
+    API_URL = 'https://api.flickr.com/services/rest?extras=url_o&photo_id={}&method=flickr.photos.getInfo&csrf=&api_key=28113eec9eec551a14495a6659dec19d&format=json&hermes=1&hermesClient=1&nojsoncallback=1'
+    # URL_PAT = r'live\.staticflickr\.com[\\/\d]+_[a-z\d]+_o\.jpg'
 
     def __init__(self, args):
         super().__init__(args)
+
+    def extract_id(self, url):
+        '''extract image id from url'''
+        return re.search(r'(?<=photos/)\w+/\d+', url).group().split('/')[1]
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting urls')
@@ -22,7 +30,11 @@ class FlickrGoblin(MetaGoblin):
             if 'staticflickr' in target:
                 urls.append(target)
             else:
-                urls.extend(self.parser.extract_by_regex(self.get(target).content, self.URL_PAT))
+                image_id = self.extract_id(target)
+                response = json.loads(self.get(self.API_URL.format(image_id)).content)
+
+                if 'photo' in response:
+                    urls.append(response['photo']['url_o'])
 
         for url in urls:
             self.collect(url)

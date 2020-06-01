@@ -4,6 +4,7 @@ from goblins.meta import MetaGoblin
 
 
 # misc: '/noscript'
+# misc '/embed?pub=true' \s{12}=
 
 
 class ImgurGoblin(MetaGoblin):
@@ -60,8 +61,8 @@ class ImgurGoblin(MetaGoblin):
                 if not urls: # sign in probably required -> try bypass
                     self.logger.log(1, self.NAME, 'attempting bypass')
                     if '/a/' in target:
-                        matches = self.parser.extract_by_regex(self.get(f'{self.clean(target)}/embed?pub=true').content,
-                                                               r'(?<=images\s{12}=\s){[^\n]+}(?=,\n)')
+                        matches = self.parser.extract_by_regex(self.get(f'{self.clean(target)}/embed').content,
+                                                               r'(?<=images\s{6}:\s){[^\n]+}(?=,\n)')
                         for match in matches:
                             items = self.parser.load_json(match)
 

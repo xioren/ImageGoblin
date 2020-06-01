@@ -10,13 +10,14 @@ class Parser:
     '''generic url/html parsing and manipulation methods'''
 
     QUALITY_PAT = re.compile(r'q((ua)?li?ty)?=\d+')
-    FILTER_PAT = re.compile(r'(?:\.(js|css|pdf|php|html)|favicon|svg\+xml)', flags=re.IGNORECASE)
-    MISC_REPLACEMENTS = {'amp;': '', ' ': '%20'}
+    FILTER_PAT = re.compile(r'(?:\.(js|css|pdf|php|html)|favicon|svg\+xml|[{}])', flags=re.IGNORECASE)
+    MISC_REPLACEMENTS = {'amp;': ''}
+    ABSOLUTE_PAT = r'(?:/?[^/\.]+\.[^/]+(?=/))'
     CROPPING_PATS = (
-        re.compile(r'[\-_]?(?<![a-z])((x+)?-?l(arge)?|profile|square)(?![a-z])[\-_/]?', flags=re.IGNORECASE),
+        re.compile(r'[\-_]?(?<![a-z])((x+)?-?l(arge)?(?!\w|-\w)|profile|square)(?![a-z])[\-_/]?', flags=re.IGNORECASE),
         re.compile(r'[@\-_/]\d+x(\d+)?(?![a-z\d])'), # 000x000
         re.compile(r'expanded_[a-z]+/'),
-        re.compile(r'(?<=/)c_.+?/v1/'), # cloudfront
+        re.compile(r'(?<=/)[a-z]_.+?/v\d/'), # cloudfront
         re.compile(r'/v/\d/.+\.webp$'),
         re.compile(r'-e\d+(?=\.)'),
         re.compile(r'(\.|-)\d+w'), # -000w
@@ -87,8 +88,7 @@ class Parser:
     def extract_filename(self, url):
         '''extract filename from url'''
         filename = self.dequery(url).rstrip('/').split('/')[-1]
-        # mimetype identification always returns jpeg not jpg, so need to manually sub jpg out.
-        return filename.replace(self.extension(filename), '').replace('.jpg', '')
+        return re.sub(r'\.\w{,4}$', '', filename)
 
     def decrop(self, url):
         '''remove common cropping from url'''
@@ -129,19 +129,16 @@ class Parser:
         '''prepare a url for an http request
         - add missing scheme
         - expand relative urls
-        - unquote quoted urls
+        - unquote urls
         '''
         if '/' not in url: # just a filename
             url = f'{self.origin_url.rstrip("/")}/{url}'
-        elif re.search(r'(?:/?[^/\.]+\.[^/]+(?=/))', url): # absolute path
+        elif re.search(self.ABSOLUTE_PAT, url): # absolute path
             url = self.add_scheme(url.lstrip('/'))
         else: # relative path
             url = urllib.parse.urljoin(self.origin_url, url)
 
-        for key in self.MISC_REPLACEMENTS:
-            url = url.replace(key, self.MISC_REPLACEMENTS[key])
-
-        return urllib.parse.unquote(url)
+        return urllib.parse.unquote(url).replace(' ', '%3D')
 
     def make_unique(self, path):
         '''make filepath unique'''

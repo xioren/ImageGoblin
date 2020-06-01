@@ -23,9 +23,9 @@ class InstagramGoblin(MetaGoblin):
     BASE_URL = 'https://www.instagram.com'
     LOGOUT_URL = BASE_URL + '/accounts/logout/'
     LOGIN_URL = BASE_URL + '/accounts/login/ajax/'
-    INFO_URL = BASE_URL + '/graphql/query/?query_hash=1451128a3ce596b72f20c738dc7f0f73&variables={}'
+    SEARCH_URL = BASE_URL + '/web/search/topsearch/?query='
+    POST_URL = BASE_URL + '/graphql/query/?query_hash=1451128a3ce596b72f20c738dc7f0f73&variables={}'
     MEDIA_URL = BASE_URL + '/graphql/query/?query_hash=44efc15d3c13342d02df0b5a9fa3d33f&variables={}'
-    STORIES_URL = BASE_URL + '/graphql/query/?query_hash=45246d3fe16ccc6577e0bd297a5db1ab&variables={}'
     STORIES_USER_ID_URL = BASE_URL + '/graphql/query/?query_hash=c9100bf9110dd6361671f113dd02e7d6&variables={}'
     STORIES_REEL_ID_URL = BASE_URL + '/graphql/query/?query_hash=45246d3fe16ccc6577e0bd297a5db1ab&variables={}'
 
@@ -46,7 +46,7 @@ class InstagramGoblin(MetaGoblin):
         if '/p/' in url:
             shortcode = url.rstrip('/').split('/')[-1]
             variables = f'{{"shortcode":"{shortcode}","include_reel":true}}'
-            response = json.loads(self.get(self.INFO_URL.format(quote(variables, safe='"'))).content)
+            response = json.loads(self.get(self.POST_URL.format(quote(variables, safe='"'))).content)
             return response['data']['shortcode_media']['owner']['reel']['owner']['username']
         else:
             return url.rstrip('/').split('/')[-1]
@@ -130,12 +130,30 @@ class InstagramGoblin(MetaGoblin):
 
     def get_initial_data(self):
         '''make initial request to recieve necessary variables'''
+        # WARNING: deprecated
         self.extend_cookie('Cookie', 'ig_pr=1')
-        response = json.loads(re.search(r'(?<=sharedData\s=\s){.+?}(?=;)',
-                                        self.get(urljoin(self.BASE_URL, self.username)).content).group())
+        response = self.get(urljoin(self.BASE_URL, self.username)).content
+        if response:
+            data = json.loads(re.search(r'(?<=sharedData\s=\s){.+?}(?=;)', response).group())
 
-        self.user_id = response['entry_data']['ProfilePage'][0]['graphql']['user']['id']
-        # self.rhx_gis = response.get('rhx_gis', '3c7ca9dcefcf966d11dacf1f151335e8')
+            if data['entry_data'].get('ProfilePage'):
+                self.user_id = data['entry_data']['ProfilePage'][0]['graphql']['user']['id']
+                # self.rhx_gis = response.get('rhx_gis', '3c7ca9dcefcf966d11dacf1f151335e8')
+                return True
+        self.logger.log(2, self.NAME, 'ERROR', 'failed to get user id')
+        return False
+
+    def get_user_id(self):
+        '''make initial request to obtain user id'''
+        # NOTE: temporary workaround
+        response = json.loads(self.get(f'{self.SEARCH_URL}{self.username}').content)
+
+        if response:
+            self.user_id = response['users'][0]['user']['pk']
+            return True
+
+        self.logger.log(2, self.NAME, 'ERROR', 'failed to get user id')
+        return False
 
     def parse_profile(self):
         '''collect and parse instagram posts'''
@@ -159,7 +177,7 @@ class InstagramGoblin(MetaGoblin):
 
             for edge in response['data']['user']['edge_owner_to_timeline_media']['edges']:
                 self.extract_media(edge)
-                if edge['node'].get('edge_sidecar_to_children'): # post has multiple images/videos
+                if 'edge_sidecar_to_children' in edge['node']: # post has multiple images/videos
                     for inner_edge in edge['node']['edge_sidecar_to_children']['edges']:
                         self.extract_media(inner_edge)
 
@@ -169,7 +187,7 @@ class InstagramGoblin(MetaGoblin):
                 # end of profile or user specified finite number of posts.
                 break
 
-            sleep(self.args['delay'])
+            sleep(self.delay)
 
     def extract_media(self, edge):
         '''extract media from posts'''
@@ -192,7 +210,8 @@ class InstagramGoblin(MetaGoblin):
                     self.collect(url, f'{self.username}_{self.parser.extract_filename(url)}')
 
     def get_main_stories(self):
-        self.get_stories(self.STORIES_URL.format(quote('{{"reel_ids":["{}"],"tag_names":[],' \
+        # QUESTION: POST URL??
+        self.get_stories(self.POST_URL.format(quote('{{"reel_ids":["{}"],"tag_names":[],' \
         '"location_ids":[],"highlight_reel_ids":[],"precomposed_overlay":false}}'.format(self.user_id), safe='"')))
 
     def get_highlight_stories(self):
@@ -210,29 +229,34 @@ class InstagramGoblin(MetaGoblin):
             '"precomposed_overlay":false}}'.format('","'.join(str(x) for x in ids_chunk)), safe='"')))
 
     def run(self):
+        # QUESTION: can authentication and user id aquisition happen with same request?
         self.authenticate(self.args['login'])
 
         for target in self.args['targets'][self.ID]:
-            self.new_collection()
-            self.setup(target)
-
-            if '/p/' in target:
-                self.logger.log(0, self.NAME, 'ERROR', 'post urls are temporarily disabled')
+            if 'cdninstagram' in target:
+                self.collect(target)
+                self.loot()
             else:
-                if self.args['mode'] == 'latest' or self.args['mode'] == 'recent':
-                    self.num_posts = 6
-                self.get_initial_data()
+                self.new_collection()
+                self.setup(target)
+                if '/p/' in target:
+                    self.logger.log(0, self.NAME, 'ERROR', 'post urls are temporarily disabled')
+                else:
+                    if self.args['mode'] == 'latest' or self.args['mode'] == 'recent':
+                        self.num_posts = 6
+                    retrieved_data = self.get_user_id()
 
-                if self.logged_in:
-                    self.logger.log(1, self.NAME, 'collecting stories')
-                    self.get_main_stories()
-                    if self.args['mode'] != 'latest' and self.args['mode'] != 'recent':
-                        self.get_highlight_stories()
+                    if retrieved_data:
+                        if self.logged_in:
+                            self.logger.log(1, self.NAME, 'collecting stories')
+                            self.get_main_stories()
+                            if self.args['mode'] != 'latest' and self.args['mode'] != 'recent':
+                                self.get_highlight_stories()
 
-                self.parse_profile()
+                        self.parse_profile()
 
-            self.loot(save_loc=self.insta_dir)
-            if not self.args['nodl']:
-                self.move_vid()
+                self.loot(save_loc=self.insta_dir)
+                if not self.args['nodl']:
+                    self.move_vid()
         if self.logged_in:
             self.logout()

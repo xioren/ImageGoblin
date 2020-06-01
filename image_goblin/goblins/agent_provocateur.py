@@ -62,9 +62,9 @@ class AgentProvocateurGoblin(MetaGoblin):
 
                 response = json.loads(self.post(self.API_URL, data=POST_DATA).content)
 
-                if response.get('catalog'):
+                if 'catalog' in response:
                     for entry in response['catalog']:
-                        if entry.get('media'):
+                        if 'media' in entry:
                             for image in entry['media']:
                                 urls.append(f'{self.BASE_URL}/static/media/catalog{image["image"]}')
 

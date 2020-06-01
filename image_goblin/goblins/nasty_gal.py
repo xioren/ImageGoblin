@@ -1,5 +1,6 @@
 from goblins.generic_eta import EtaGoblin
 
+
 class NastyGalGoblin(EtaGoblin):
 
     NAME = 'nasty gal goblin'

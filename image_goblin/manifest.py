@@ -33,6 +33,7 @@ from goblins.fleur_du_mal import FleurDuMalGoblin
 from goblins.flickr import FlickrGoblin
 from goblins.for_love_and_lemons import ForLoveAndLemonsGoblin
 from goblins.fortnight import FortnightGoblin
+from goblins.francina import FrancinaGoblin
 from goblins.fredericks import FredericksGoblin
 from goblins.free_people import FreePeopleGoblin
 from goblins.generic_omega import OmegaGoblin
@@ -60,9 +61,12 @@ from goblins.maison_lejaby import MaisonLejabyGoblin
 from goblins.maison_close import MaisonCloseGoblin
 from goblins.mango import MangoGoblin
 from goblins.marlies_dekkers import MarliesDekkersGoblin
+from goblins.marilyn import MarilynGoblin
 from goblins.massimodutti import MassimoDuttiGoblin
+from goblins.mgm import MGMGoblin
 from goblins.missguided import MissguidedGoblin
 from goblins.missy_empire import MissyEmpireGoblin
+from goblins.monster import MonsterGoblin
 from goblins.nasty_gal import NastyGalGoblin
 from goblins.only import OnlyGoblin
 from goblins.only_hearts import OnlyHeartsGoblin
@@ -74,6 +78,7 @@ from goblins.pull_and_bear import PullandBearGoblin
 from goblins.reserved import ReservedGoblin
 from goblins.sandro import SandroGoblin
 from goblins.savagex import SavageXGoblin
+from goblins.select import SelectGoblin
 from goblins.shopbop import ShopbopGoblin
 from goblins.shopify import ShopifyGoblin
 from goblins.simone_perele import SimonePereleGoblin
@@ -86,6 +91,7 @@ from goblins.tally_weijl import TallyWeijlGoblin
 from goblins.tezenis import TezenisGoblin
 from goblins.the_great_eros import TheGreatErosGoblin
 from goblins.the_iconic import TheIconicGoblin
+from goblins.the_society import TheSocietyGoblin
 from goblins.tisja_damen import TisjaDamenGoblin
 from goblins.tommy_hilfiger import TommyHilfigerGoblin
 from goblins.topshop import TopshopGoblin
@@ -141,6 +147,7 @@ goblins = {
     'fleurdumal': (r'fleurdumal\.[a-z]+', FleurDuMalGoblin),
     'flickr': (r'flickr\.[a-z]+', FlickrGoblin),
     'fredericks': (r'fredericks(\.[a-z]+|/)', FredericksGoblin),
+    'francina': (r'francinamodels\.[a-z]+', FrancinaGoblin),
     'forloveandlemons': (r'forloveandlemons\.[a-z]+', ForLoveAndLemonsGoblin),
     'fortnight': (r'fortnightlingerie\.[a-z]+', FortnightGoblin),
     'freepeople': (r'freepeople(\.[a-z]+|/)', FreePeopleGoblin),
@@ -169,9 +176,12 @@ goblins = {
     'maisonlejaby': (r'maisonlejaby\.[a-z]+', MaisonLejabyGoblin),
     'mango': (r'mango\.[a-z]+|mngbcn', MangoGoblin),
     'marliesdekkers': (r'marliesdekkers\.[a-z]+', MarliesDekkersGoblin),
+    'marilyn': (r'booker-marilyn|marilynagency\.[a-z]+', MarilynGoblin),
     'massimodutti': (r'massimodutti\.[a-z]+', MassimoDuttiGoblin),
+    'mgm': (r'strg\.global|mgm-models\.[a-z]+', MGMGoblin),
     'missguided': (r'missguided(us)?\.[a-z]+', MissguidedGoblin),
     'missyempire': (r'missyempire\.[a-z]+', MissyEmpireGoblin),
+    'monster': (r'monster-mgmt\.[a-z]+', MonsterGoblin),
     'nastygal': (r'nastygal\.[a-z]+', NastyGalGoblin),
     'only': (r'only\.[a-z]+', OnlyGoblin),
     'onlyhearts': (r'onlyhearts\.[a-z]+', OnlyHeartsGoblin),
@@ -182,6 +192,7 @@ goblins = {
     'pullandbear': (r'pullandbear\.[a-z]+', PullandBearGoblin),
     'reserved': (r'reserved\.[a-z]+', ReservedGoblin),
     'sandro': (r'sandro-paris\.[a-z]+', SandroGoblin),
+    'select': (r'select\.solarnet|selectmodel\.[a-z]+', SelectGoblin),
     'savagex': (r'savagex\.[a-z]+', SavageXGoblin),
     'shopbop': (r'shopbop(\.[a-z]+|/)', ShopbopGoblin),
     'shopify': ('#####', ShopifyGoblin),
@@ -195,6 +206,7 @@ goblins = {
     'tezenis': (r'(calzedonia|tezenis)\.[a-z]+', TezenisGoblin),
     'thegreateros': (r'thegreateros\.[a-z]+', TheGreatErosGoblin),
     'theiconic': (r'theiconic\.[a-z]+', TheIconicGoblin),
+    'thesociety': (r'(media\.)?thesocietymanagement\.[a-z]+', TheSocietyGoblin),
     'tommyhilfiger':(r'tommy-europe|shoptommy|tommy\.[a-z]+', TommyHilfigerGoblin),
     'tisjadamen': (r'tisjadamen\.[a-z]+', TisjaDamenGoblin),
     'topshop': (r'topshop\.[a-z]+', TopshopGoblin),

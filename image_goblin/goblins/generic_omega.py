@@ -17,7 +17,7 @@ class OmegaGoblin(MetaGoblin):
     URL_PAT = re.compile(fr'https?://[^"\n\s]+?{FILETYPES}(\?[^"\s\n]+)?', flags=re.IGNORECASE)
     ATTR_PAT = re.compile(r'(?:src(?![a-z])|data(?![a-z\-])|data-(src(?!set)|lazy|url|original)' \
                           r'|content(?![a-z\-])|hires(?![a-z\-]))')
-    TAG_PAT = re.compile('(?:ima?ge?|video|source)')
+    TAG_PAT = re.compile('(?:a(?![a-z])|ima?ge?|video|source|div)')
 
     def __init__(self, args):
         super().__init__(args)
@@ -37,9 +37,9 @@ class OmegaGoblin(MetaGoblin):
         elements = self.parser.extract_by_tag(self.get(url).content)
 
         for tag in elements:
-            if re.search(self.TAG_PAT, tag):
+            if re.match(self.TAG_PAT, tag):
                 for attribute in elements[tag]:
-                    if re.search(self.ATTR_PAT, attribute):
+                    if re.match(self.ATTR_PAT, attribute):
                         urls.extend(elements[tag][attribute])
 
         for url in urls:

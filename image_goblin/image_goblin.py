@@ -7,7 +7,7 @@ from dispatching import Dispatcher
 
 parser = ArgumentParser(usage='goblin [URL] [OPTIONS]')
 
-parser.add_argument('-d', '--delay', help='request delay, default: 0', type=float, default=0)
+parser.add_argument('-d', '--delay', help='request delay ("rand" for randomized delay), default: 0', default=0)
 
 parser.add_argument('--feed', help='input urls one at a time', action='store_true')
 
@@ -63,5 +63,5 @@ if __name__ == '__main__':
     try:
         Dispatcher(args).dispatch()
     except KeyboardInterrupt:
-        print('\n-----exiting-----')
+        print('\n<-----exiting----->')
         exit(125) # operation cancelled

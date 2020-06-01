@@ -1,6 +1,9 @@
 from goblins.generic_gamma import GammaGoblin
 
 
+# NOTE: https://womensecret.com/on/demandware.store/Sites-WS-Site/es_ES/GTM-GetProductJSON?pid=
+
+
 class WomensSecretGoblin(GammaGoblin):
 
     NAME = 'womens secret goblin'

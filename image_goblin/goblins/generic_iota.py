@@ -39,17 +39,16 @@ class IotaGoblin(MetaGoblin):
         '''extract product from url'''
         return self.parser.dequery(url).rstrip('/').split('/')[-1]
 
-    def set_auth_tokens(self, cookie):
+    def set_auth_tokens(self, tokens):
         '''extract auth and reauth tokens from response cookie'''
-        self.auth_token = cookie['authToken']
-        self.reauth_token = cookie['reauthToken']
+        self.auth_token = tokens['authToken']
+        self.reauth_token = tokens['reauthToken']
 
     def reauthorize(self):
         '''get new auth and reauth tokens'''
         auth_tokens = json.loads(self.post(self.AUTH_API_URL, data={"reauthToken": self.reauth_token}).content)
         self.set_auth_tokens(auth_tokens)
         self.headers.update({'authorization': f'Bearer {self.auth_token}'})
-
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting urls')
