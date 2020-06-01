@@ -1,3 +1,4 @@
 - add better exception handling for json key errors
 - handle iteration urls that contain #
 - more verbose logging and commenting
+- pixiv and danbooru

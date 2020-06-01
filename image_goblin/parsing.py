@@ -10,7 +10,7 @@ class Parser:
     '''generic url/html parsing and manipulation methods'''
 
     QUALITY_PAT = re.compile(r'q((ua)?li?ty)?=\d+')
-    FILTER_PAT = re.compile(r'(?:\.(js|css|pdf|php|html)|favicon|svg\+xml|[{}])', flags=re.IGNORECASE)
+    FILTER_PAT = re.compile(r'(?:\.(js|css|pdf|php|html)|favicon|svg\+xml|[{}]|\+[\w\.]+\+)', flags=re.IGNORECASE)
     MISC_REPLACEMENTS = {'amp;': ''}
     ABSOLUTE_PAT = r'(?:/?[^/\.]+\.[^/]+(?=/))'
     CROPPING_PATS = (
