@@ -48,4 +48,4 @@ class ZalandoGoblin(MetaGoblin):
             for n in range(1, 51):
                 self.collect(self.form_url(f'{id}@{n}'))
 
-            self.loot(timeout=8)
+            self.loot(timeout=12)

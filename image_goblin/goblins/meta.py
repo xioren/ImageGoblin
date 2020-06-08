@@ -190,9 +190,10 @@ class MetaGoblin:
         '''download web content'''
         filename = f'{self.parser.extract_filename(filepath)}{self.parser.extension(filepath)}'
 
-        if int(response.info().get('Content-Length', 0)) < self.MIN_SIZE:
-            self.logger.log(2, self.NAME, 'skipping small file', filename)
-            return None
+        if 'Content-Length' in response.info():
+            if int(response.info()['Content-Length']) < self.MIN_SIZE:
+                self.logger.log(2, self.NAME, 'skipping small file', filename)
+                return None
 
         filepath = self.check_ext(filepath, response.info().get('Content-Type'))
         if os.path.exists(filepath):
