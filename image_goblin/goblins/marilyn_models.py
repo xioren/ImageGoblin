@@ -45,7 +45,9 @@ class MarilynGoblin(MetaGoblin):
 
                     response = json.loads(self.get(f'{self.API_URL}/media/1/{model_id}/{item}').content)
                     for item in response:
-                        urls.append(f'{self.IMAGE_URL}/{model_id}/{item["url"]}')
+                        urls.append(f'{self.IMAGE_URL}/{model_id}/{item.get("url", "")}')
+
+            self.delay()
 
         for url in urls:
             self.collect(url.replace('.jpg', '_M.JPG'))

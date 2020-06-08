@@ -3,6 +3,7 @@ from logging import Logger
 
 logger = Logger(False, False, False)
 
+# IDEA: add keep flag for exporting links to txt
 
 class HungryGoblin:
 

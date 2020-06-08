@@ -34,6 +34,8 @@ class YandyGoblin(MetaGoblin):
                 for image in response['data']:
                     urls.append(image['hi_rez'])
 
+            self.delay()
+
         for url in urls:
             self.collect(url)
 

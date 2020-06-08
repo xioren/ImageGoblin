@@ -42,31 +42,14 @@ class AgentProvocateurGoblin(MetaGoblin):
                     urls.append(f'{base}_ecom_{n}.jpg')
             else:
                 self.headers.update({'Content-Type': 'application/json'})
-                POST_DATA = json.dumps(
-                    {
-                        "requests":
-                            [
-                                {
-                                    "action":"route",
-                                     "children":
-                                        [
-                                            {
-                                                "path":f"/{self.extract_path(target)}",
-                                                "_reqId":0
-                                            }
-                                        ]
-                                }
-                            ]
-                        }
-                    )
-
+                POST_DATA = json.dumps({"requests":[{"action":"route","children":[{"path":f"/{self.extract_path(target)}","_reqId":0}]}]})
                 response = json.loads(self.post(self.API_URL, data=POST_DATA).content)
 
-                if 'catalog' in response:
-                    for entry in response['catalog']:
-                        if 'media' in entry:
-                            for image in entry['media']:
-                                urls.append(f'{self.BASE_URL}/static/media/catalog{image["image"]}')
+                for entry in response.get('catalog', ''):
+                    for image in entry.get('media', ''):
+                        urls.append(f'{self.BASE_URL}/static/media/catalog{image["image"]}')
+
+            self.delay()
 
         for url in urls:
             if 'flatshot' in url: # skip product images

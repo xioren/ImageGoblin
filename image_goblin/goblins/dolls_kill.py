@@ -1,3 +1,5 @@
+from time import sleep
+
 from goblins.meta import MetaGoblin
 
 
@@ -27,6 +29,8 @@ class DollsKillGoblin(MetaGoblin):
                 urls.append(target)
             else:
                 urls.extend(self.parser.extract_by_regex(self.get(target).content, self.URL_PAT))
+
+            sleep(self.delay)
 
         for url in urls:
             if self.args['mode'] == 'png':

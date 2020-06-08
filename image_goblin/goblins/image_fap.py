@@ -28,6 +28,8 @@ class ImageFapGoblin(MetaGoblin):
                     if '/photo/' in link:
                         urls.extend(self.parser.extract_by_regex(self.get(f'https://www.imagefap.com{link}').content, self.URL_PAT))
 
+            self.delay()
+
         for url in urls:
             self.collect(url)
 

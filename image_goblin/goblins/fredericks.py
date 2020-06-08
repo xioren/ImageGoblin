@@ -1,8 +1,6 @@
 import re
 import json
 
-from time import sleep
-
 from goblins.meta import MetaGoblin
 
 
@@ -47,9 +45,11 @@ class FredericksGoblin(MetaGoblin):
                     except json.decoder.JSONDecodeError:
                         sleep(3)
 
-                if response:
-                    for image in response['product'][0]['displayMedia']:
+                if 'product' in response:
+                    for image in response['product'][0].get('displayMedia', ''):
                         urls.append(image['ref'])
+
+            self.delay()
 
         for url in urls:
             self.collect(re.sub(r'\.\d+w', '', url))

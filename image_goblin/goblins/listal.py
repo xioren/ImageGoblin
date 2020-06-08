@@ -48,6 +48,8 @@ class ListalGoblin(MetaGoblin):
                         urls.extend(page_urls)
                         n += 1
 
+            self.delay()
+
         for url in urls:
             self.collect(re.sub(r'\d+full', '3800full', url), filename=self.extract_id(url))
 

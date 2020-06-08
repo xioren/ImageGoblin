@@ -2,7 +2,6 @@ import os
 import re
 import json
 
-from time import sleep
 from getpass import getpass
 from urllib.parse import quote, urljoin
 from goblins.meta import MetaGoblin
@@ -136,7 +135,7 @@ class InstagramGoblin(MetaGoblin):
         if response:
             data = json.loads(re.search(r'(?<=sharedData\s=\s){.+?}(?=;)', response).group())
 
-            if data['entry_data'].get('ProfilePage'):
+            if 'entry_data' in data:
                 self.user_id = data['entry_data']['ProfilePage'][0]['graphql']['user']['id']
                 # self.rhx_gis = response.get('rhx_gis', '3c7ca9dcefcf966d11dacf1f151335e8')
                 return True
@@ -145,10 +144,9 @@ class InstagramGoblin(MetaGoblin):
 
     def get_user_id(self):
         '''make initial request to obtain user id'''
-        # NOTE: temporary workaround
         response = json.loads(self.get(f'{self.SEARCH_URL}{self.username}').content)
 
-        if response:
+        if 'users' in response and response['users']:
             self.user_id = response['users'][0]['user']['pk']
             return True
 
@@ -174,12 +172,12 @@ class InstagramGoblin(MetaGoblin):
             )
 
             response = json.loads(self.get(self.MEDIA_URL.format(quote(variables, safe='"'))).content)
-
-            for edge in response['data']['user']['edge_owner_to_timeline_media']['edges']:
-                self.extract_media(edge)
-                if 'edge_sidecar_to_children' in edge['node']: # post has multiple images/videos
-                    for inner_edge in edge['node']['edge_sidecar_to_children']['edges']:
-                        self.extract_media(inner_edge)
+            if 'data' in response:
+                for edge in response['data']['user']['edge_owner_to_timeline_media'].get('edges', ''):
+                    self.extract_media(edge)
+                    if 'edge_sidecar_to_children' in edge.get('node', ''): # post has multiple images/videos
+                        for inner_edge in edge['node']['edge_sidecar_to_children'].get('edges', ''):
+                            self.extract_media(inner_edge)
 
             cursor = response['data']['user']['edge_owner_to_timeline_media']['page_info']['end_cursor']
 
@@ -187,10 +185,10 @@ class InstagramGoblin(MetaGoblin):
                 # end of profile or user specified finite number of posts.
                 break
 
-            sleep(self.delay)
+            self.delay()
 
     def extract_media(self, edge):
-        '''extract media from posts'''
+        '''extract media from json'''
         image_url = edge['node']['display_url']
         video_url = edge['node'].get('video_url')
         self.collect(image_url, f'{self.username}_{self.parser.extract_filename(image_url)}')
@@ -200,8 +198,8 @@ class InstagramGoblin(MetaGoblin):
     def get_stories(self, url):
         response = json.loads(self.get(url).content)
 
-        for reel_media in response['data']['reels_media']:
-            for item in reel_media['items']:
+        for reel_media in response['data'].get('reels_media', ''):
+            for item in reel_media.get('items', ''):
                 url = item['display_url']
                 self.collect(url, f'{self.username}_{self.parser.extract_filename(url)}')
 

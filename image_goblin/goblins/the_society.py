@@ -45,6 +45,8 @@ class TheSocietyGoblin(MetaGoblin):
                 if 'video' in response['books']:
                     urls.extend(self.extract_images(response['books']['video'], key='video'))
 
+            self.delay()
+
         for url in urls:
             self.collect(url)
 

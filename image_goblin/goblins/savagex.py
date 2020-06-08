@@ -19,10 +19,6 @@ class SavageXGoblin(MetaGoblin):
     def __init__(self, args):
         super().__init__(args)
 
-    def strip(self, url):
-        '''strip end of url and return the base'''
-        return re.sub(r'(LAYDOWN|\d)\-\d+x\d+\.jpg', '', url)
-
     def product_id(self, url):
         '''extract product id from url'''
         return self.parser.dequery(url).split('-')[-1]
@@ -46,6 +42,8 @@ class SavageXGoblin(MetaGoblin):
 
                 response = json.loads(self.get(f'{self.API_URL}/products/{self.product_id(target)}').content)
                 urls.extend(response['image_view_list'])
+
+        self.delay()
 
         for url in urls:
             if 'laydown' in url or 'LAYDOWN' in url: # skip product images

@@ -32,6 +32,8 @@ class TrendyolGoblin(MetaGoblin):
             else:
                 urls.extend(self.parser.extract_by_regex(self.get(target).content, self.URL_PAT))
 
+            self.delay()
+
         for url in urls:
             url_base = self.extract_base(url)
 

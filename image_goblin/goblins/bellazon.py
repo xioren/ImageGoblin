@@ -50,10 +50,11 @@ class BellazonGoblin(MetaGoblin):
                         urls.extend(self.parser.extract_by_tag(response.content, {'img': 'src'}))
                         urls.extend(self.parser.extract_by_regex(response.content, self.URL_PAT))
 
+            self.delay()
+
         for url in urls:
             if '.thumb' in url:
                 continue
             self.collect(self.parser.auto_format(url), filename=self.extract_filename(url))
 
         self.loot()
-        self.cleanup(self.path_main)

@@ -32,6 +32,8 @@ class AmericanApparelGoblin(MetaGoblin):
             else:
                 urls.extend(self.parser.extract_by_regex(self.get(target).content, self.URL_PAT))
 
+            self.delay()
+
         for url in urls:
             url_base, _, url_end = self.split_url(url)
             for mod in ('', '01', '02', '03', '04'):

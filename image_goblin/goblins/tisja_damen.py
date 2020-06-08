@@ -31,6 +31,8 @@ class TisjaDamenGoblin(MetaGoblin):
             else:
                 urls.extend(self.parser.extract_by_regex(self.get(target).content, self.URL_PAT))
 
+            self.delay()
+
         for url in urls:
             image = self.trim(url)
 

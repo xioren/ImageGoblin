@@ -1,5 +1,6 @@
 from goblins.generic_theta import ThetaGoblin
 
+# NOTE: collections use amazonaws and the filenames are horrendous.
 
 class ForLoveAndLemonsGoblin(ThetaGoblin):
 

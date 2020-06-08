@@ -38,10 +38,13 @@ class VictoriasSecretGoblin(MetaGoblin):
                 # NOTE: version is there too if needed; might always be V6.
                 for path in self.parser.extract_by_regex(self.get(target).content, r'(?<="path":")page/[^"]+'):
                     response = json.loads(self.get(f'{self.API_URL_BASE}/products/v6/{path}').content)
-                    for product in response['product']['purchasableImages']:
-                        for choice in product['choices']:
-                            for image in choice['images']:
-                                urls.append(f'{self.URL_BASE}/p/{dimensions}/{image["image"]}.jpg')
+                    if 'product' in response:
+                        for product in response['product'].get('purchasableImages', ''):
+                            for choice in product.get('choices', ''):
+                                for image in choice.get('images', ''):
+                                    urls.append(f'{self.URL_BASE}/p/{dimensions}/{image["image"]}.jpg')
+
+            self.delay()
 
         for url in urls:
             if '_OF_' in url: # skip product images

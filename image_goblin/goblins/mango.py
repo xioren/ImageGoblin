@@ -55,6 +55,8 @@ class MangoGoblin(MetaGoblin):
                         for image in images:
                             urls.append(f'{self.IMAGE_URL}{image["url"]}')
 
+            self.delay()
+
         for url in urls:
             self.collect(f'{self.parser.dequery(url)}{self.QUERY}')
 

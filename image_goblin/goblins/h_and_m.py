@@ -33,6 +33,8 @@ class HMGoblin(MetaGoblin):
             else:
                 urls.extend(self.parser.extract_by_regex(self.get(target).content, self.URL_PAT))
 
+            self.delay()
+
         for url in urls:
             source = self.extract_source(url)
             self.collect(self.FULLSIZE_URL.format(source), filename=self.parser.extract_filename(source))

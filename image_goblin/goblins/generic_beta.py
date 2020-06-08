@@ -48,6 +48,8 @@ class BetaGoblin(MetaGoblin):
                 else:
                     self.logger.log(2, self.NAME, 'WARNING', 'webpage urls not supported', once=True)
 
+            self.delay()
+
         for url in urls:
             id = self.extract_id(url)
             self.url_base = self.extract_base(url)
@@ -56,4 +58,3 @@ class BetaGoblin(MetaGoblin):
                 self.collect(f'{self.url_base}{id}{mod}{self.QUERY}')
 
         self.loot()
-        self.cleanup(self.path_main)

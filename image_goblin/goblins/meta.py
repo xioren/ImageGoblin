@@ -23,13 +23,18 @@ class MetaGoblin:
     '''generic utility goblin inherited by all other goblins'''
 
     def __init__(self, args):
+        self.MIN_SIZE = args['minsize']
+
         self.args = args
         self.collection = set()
         self.looted = []
+
         if self.args['nosort']:
             self.path_main = os.getcwd()
         else:
             self.path_main = os.path.join(os.getcwd(), 'goblin_loot', self.NAME.replace(' ', '_'))
+        self.make_dirs(self.path_main)
+
         if self.args['mask']:
             user_agent = 'Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101 Firefox/68.0'
         else:
@@ -38,23 +43,12 @@ class MetaGoblin:
                         'Accept': '*/*',
                         'Accept-Encoding': 'gzip'}
 
-        self.make_dirs(self.path_main)
 
         self.cookie_jar = CookieJar()
         self.logger = Logger(self.args['verbose'], self.args['silent'], self.args['nodl'])
         self.parser = Parser(self.args['targets'][self.ID][0], self.args['format'])
 
         self.logger.log(1, self.NAME, 'deployed')
-
-    ####################################################################
-    # properties
-    ####################################################################
-
-    @property
-    def delay(self):
-        if self.args['delay'] == 'rand':
-            return randint(0, 10)
-        return int(self.args['delay'])
 
     ####################################################################
     # sub classes
@@ -64,7 +58,7 @@ class MetaGoblin:
         '''wrapper for http.client.HTTPResponse'''
 
         def __init__(self, response, *args, **kwargs):
-            if object:
+            if response:
                 self.code = response.code
                 self.info = response.info()
                 if response.info().get('Content-Encoding') == 'gzip':
@@ -80,6 +74,15 @@ class MetaGoblin:
     # methods
     ####################################################################
 
+    def delay(self, override=None):
+        '''central delay method'''
+        if override:
+            sleep(override)
+        elif self.args['delay'] == 'rand':
+            sleep(randint(0, 10))
+        else:
+            sleep(int(self.args['delay']))
+
     def make_dirs(self, *paths):
         '''creates directories'''
         if not self.args['nodl']:
@@ -92,19 +95,6 @@ class MetaGoblin:
                         # may change approach in future, exit for now
                         self.logger.log(1, self.NAME, e, 'exiting')
                         exit(5) # input/output error
-
-    def cleanup(self, path, threshold=50000):
-        '''cleanup small unwanted files (icons, thumbnails, etc...)
-        # default 50kb threshold
-        '''
-        if not self.args['nodl'] and not self.args['noclean']:
-            for path in self.looted:
-                if os.path.exists(path):
-                    if os.path.getsize(path) < threshold:
-                        try:
-                            os.remove(path)
-                        except OSError as e:
-                            self.logger.log(2, self.NAME, e, path)
 
     def toggle_collecton_type(self):
         '''toggle collection type between list and set'''
@@ -152,7 +142,7 @@ class MetaGoblin:
             cookie_string = '; '.join(f'{key}={value}' for key, value in current_values.items())
             self.headers[cookie] = cookie_string
 
-    def request_handler(self, method, *args, **kwargs):
+    def request_handler(self, method, *args, attempt=0, **kwargs):
         '''make an http request'''
         try:
             request = Request(self.parser.add_scheme(args[0]), kwargs['data'], self.headers)
@@ -167,57 +157,67 @@ class MetaGoblin:
                 return method(response, *args, **kwargs)
         except HTTPError as e:
             self.logger.log(2, self.NAME, e, args[0])
-            # servers sometimes return 502 when requesting large files, retrying usually works.
             if e.code == 502:
-                return self.retry(self.request_handler, *args, **kwargs)
+                # servers sometimes return 502 when requesting large files, retrying usually works.
+                return self.retry(method, attempt=attempt+1, *args, **kwargs)
         except (timeout, URLError):
-            return self.retry(self.request_handler, *args, **kwargs)
+            return self.retry(method, attempt=attempt+1, *args, **kwargs)
         except Exception as e:
             # NOTE: too many possible exceptions to catch individually -> use catchall
             self.logger.log(2, self.NAME, e, args[0])
 
-    def get(self, url, store_cookies=False, attempt=0):
+    def get(self, url, store_cookies=False):
         '''make a get request'''
-        return self.request_handler(self.ParsedResponse, url, data=None, store_cookies=store_cookies)
+        response = self.request_handler(self.ParsedResponse, url, data=None, store_cookies=store_cookies)
+        if not response:
+            return self.ParsedResponse(None)
+        return response
 
-    def post(self, url, data, store_cookies=False, attempt=0):
+    def post(self, url, data, store_cookies=False):
         '''make a post request'''
         if isinstance(data, dict):
             data = urlencode(data)
-        return self.request_handler(self.ParsedResponse, url, data=data.encode(), store_cookies=store_cookies)
+        response = self.request_handler(self.ParsedResponse, url, data=data.encode(), store_cookies=store_cookies)
+        if not response:
+            return self.ParsedResponse(None)
+        return response
 
-    def download(self, url, filepath, attempt=0):
+    def download(self, url, filepath):
         '''downloader front end'''
-        return self.request_handler(self.downloader, url, filepath, data=None, attempt=attempt, store_cookies=False)
+        return self.request_handler(self.downloader, url, filepath, data=None, store_cookies=False)
 
-    def downloader(self, response, *args, **kwargs):
+    def downloader(self, response, _, filepath, *args, **kwargs):
         '''download web content'''
-        if response.info().get('Content-Length') == '0':
-            pass
-        else:
-            filepath = self.check_ext(args[1], response.info().get('Content-Type'))
-            if os.path.exists(filepath):
-                self.logger.log(2, self.NAME, 'file exists', self.parser.extract_filename(filepath))
-                return None
+        filename = f'{self.parser.extract_filename(filepath)}{self.parser.extension(filepath)}'
 
-            if response.info().get('Content-Encoding') == 'gzip':
-                response = GzipFile(fileobj=BufferedReader(response))
-            with open(filepath, 'wb') as file:
-                copyfileobj(response, file, DEFAULT_BUFFER_SIZE)
+        if int(response.info().get('Content-Length', 0)) < self.MIN_SIZE:
+            self.logger.log(2, self.NAME, 'skipping small file', filename)
+            return None
 
-            self.looted.append(filepath)
-            return True
+        filepath = self.check_ext(filepath, response.info().get('Content-Type'))
+        if os.path.exists(filepath):
+            self.logger.log(2, self.NAME, 'file exists', filename)
+            return None
+
+        if response.info().get('Content-Encoding') == 'gzip':
+            response = GzipFile(fileobj=BufferedReader(response))
+
+        with open(filepath, 'wb') as file:
+            copyfileobj(response, file, DEFAULT_BUFFER_SIZE)
+        self.looted.append(filepath)
+
+        return True
 
     def retry(self, method, *args, **kwargs):
         '''retry http operation after a socket timeout or server error'''
         if kwargs['attempt'] > 5:
-            self.logger.log(2, self.NAME, 'server error', f'aborting after {kwargs["attempt"]} retries: {args[1]}')
+            self.logger.log(2, self.NAME, 'server error', f'aborting after 5 retries: {args[1]}')
             return None
 
         self.logger.log(2, self.NAME, 'server error', f'retry attempt {kwargs["attempt"]}: {args[1]}')
-        sleep(kwargs['attempt'])
+        self.delay(kwargs['attempt'])
 
-        return method(*args, **kwargs)
+        return self.request_handler(method, *args, **kwargs)
 
     def write_file(self, data, path, iter=False):
         '''write to a text file'''
@@ -244,7 +244,7 @@ class MetaGoblin:
 
     def check_ext(self, filepath, mimetype):
         '''compare guessed extension to header content type and change if necessary'''
-        if mimetype and '/' in mimetype and mimetype not in ('binary/octet-stream'):
+        if mimetype and '/' in mimetype and mimetype != 'binary/octet-stream':
             ext = f'.{mimetype.split(";")[0].split("/")[1]}'
             guessed_ext = self.parser.extension(filepath)
 
@@ -266,7 +266,7 @@ class MetaGoblin:
             filename = self.parser.extract_filename(url)
         ext = self.parser.extension(url)
 
-        # add to collection as hashable string
+        # add url and filename to collection as hashable string
         if isinstance(self.collection, list):
             self.collection.append(f'{self.parser.finalize(url)}-break-{filename}{ext}')
         else:
@@ -299,7 +299,7 @@ class MetaGoblin:
                 if self.args['noskip'] or self.args['filename']:
                     filepath = self.parser.make_unique(filepath)
                 else:
-                    self.logger.log(2, self.NAME, 'file exists', self.parser.extract_filename(filepath))
+                    self.logger.log(2, self.NAME, 'file exists', filename)
                     continue
 
             attempt = self.download(url, filepath)
@@ -310,7 +310,7 @@ class MetaGoblin:
                 failed += 1
 
             file += 1
-            sleep(self.delay)
+            self.delay()
 
         if self.args['nodl']:
             self.logger.log(1, self.NAME, 'info', f'{len(self.collection)} urls(s) collected', clear=True)

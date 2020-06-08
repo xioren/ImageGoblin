@@ -33,6 +33,8 @@ class CAGoblin(MetaGoblin):
             else:
                 urls.extend(self.parser.extract_by_regex(self.get(target).content, self.URL_PAT))
 
+            self.delay()
+
         for url in urls:
             id = self.extract_id(url)
             for n in range(1, 6):

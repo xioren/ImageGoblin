@@ -1,4 +1,3 @@
-import re
 import json
 
 from goblins.meta import MetaGoblin
@@ -30,10 +29,12 @@ class FrancinaGoblin(MetaGoblin):
 
             response = json.loads(self.get(f'{self.API_URL}/{model_id}').content)
 
-            if 'ActiveBook' in response:
-                for page in response['ActiveBook']['Pages']:
-                    urls.append(page['Picture']['URL'])
             # NOTE: video book present in json but not used
+            if 'ActiveBook' in response:
+                for page in response['ActiveBook'].get('Pages', ''):
+                    urls.append(page['Picture']['URL'])
+
+            self.delay()
 
         for url in urls:
             self.collect(url)

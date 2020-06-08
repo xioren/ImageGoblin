@@ -35,6 +35,8 @@ class WoodWoodGoblin(MetaGoblin):
                 self.headers.update({'Cookie': 'queue=1589683924; bbc=104.149.68.66'})
                 urls.extend(self.parser.extract_by_regex(self.get(target).content, r'(?<="og:image" content=")[^"]+'))
 
+            self.delay()
+
         for url in urls:
             id, image_num = self.extract_id(url)
             filename = self.upscale(url)

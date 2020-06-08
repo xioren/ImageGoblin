@@ -28,6 +28,7 @@ class ThetaGoblin(MetaGoblin):
         - hanne bloch
         - kiki de montparnasse
         - lounge
+        - par femme
         - skatie
         - skin
         - the great eros
@@ -58,6 +59,8 @@ class ThetaGoblin(MetaGoblin):
             else:
                 urls.extend(self.parser.extract_by_regex(self.get(target).content, self.URL_PAT))
 
+            self.delay()
+
         for url in urls:
             if self.args['noup']:
                 self.collect(url, clean=True)
@@ -65,4 +68,3 @@ class ThetaGoblin(MetaGoblin):
                 self.collect(self.trim(url), clean=True)
 
         self.loot()
-        self.cleanup(self.path_main)

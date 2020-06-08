@@ -42,20 +42,20 @@ class DeltaGoblin(MetaGoblin):
             else:
                 response = json.loads(self.get(self.API_URL.format(self.extract_product_id(target))).content)
 
-                if response.get('bundleProductSummaries'):
-                    for xmedia in response['bundleProductSummaries'][0]['detail']['xmedia']:
-                        path = xmedia['path']
-
-                        for xmediaitem in xmedia['xmediaItems']:
-                            for media in xmediaitem['medias']:
-                                urls.append(f'{self.URL_BASE}{path}/{media["idMedia"]}{self.SIZE}.jpg')
+                # QUESTION: is it always either or? is the else portion always present?
+                if 'bundleProductSummaries' in response and response['bundleProductSummaries']:
+                    xmedias = response['bundleProductSummaries'][0]['detail']['xmedia']
                 else:
-                    for xmedia in response['detail']['xmedia']:
-                        path = xmedia['path']
+                    xmedias = response['detail']['xmedia']
 
-                        for xmediaitem in xmedia['xmediaItems']:
-                            for media in xmediaitem['medias']:
-                                urls.append(f'{self.URL_BASE}{path}/{media["idMedia"]}{self.SIZE}.jpg')
+                for xmedia in xmedias:
+                    path = xmedia['path']
+
+                    for xmediaitem in xmedia.get('xmediaItems', ''):
+                        for media in xmediaitem.get('medias', ''):
+                            urls.append(f'{self.URL_BASE}{path}/{media["idMedia"]}{self.SIZE}.jpg')
+
+            self.delay()
 
         for url in urls:
             self.collect(url)

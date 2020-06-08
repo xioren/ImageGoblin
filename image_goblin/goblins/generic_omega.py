@@ -14,7 +14,7 @@ class OmegaGoblin(MetaGoblin):
     ID = 'generic'
 
     FILETYPES = r'\.(jpe?g|png|gif|mp4|web[pm]|tiff?|mov|svg|bmp|exif)'
-    URL_PAT = re.compile(fr'https?://[^"\n\s]+?{FILETYPES}(\?[^"\s\n]+)?', flags=re.IGNORECASE)
+    URL_PAT = re.compile(fr'[^"\n\s]+?{FILETYPES}(\?[^"\s\n]+)?', flags=re.IGNORECASE)
     ATTR_PAT = re.compile(r'(?:src(?![a-z])|data(?![a-z\-])|data-(src(?!set)|lazy|url|original)' \
                           r'|content(?![a-z\-])|hires(?![a-z\-]))')
     TAG_PAT = re.compile('(?:a(?![a-z])|ima?ge?|video|source|div)')
@@ -23,7 +23,7 @@ class OmegaGoblin(MetaGoblin):
         super().__init__(args)
 
     def format(self, url):
-        '''format a url either automatically or via user input modifier'''
+        '''format a url either automatically or via user input'''
         if self.args['format']:
             return self.parser.user_format(url)
         elif self.args['noup']:
@@ -66,5 +66,6 @@ class OmegaGoblin(MetaGoblin):
                 else:
                     self.find_urls(target)
 
+            self.delay()
+
         self.loot()
-        self.cleanup(self.path_main)

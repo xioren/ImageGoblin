@@ -36,6 +36,8 @@ class FlickrGoblin(MetaGoblin):
                 if 'photo' in response:
                     urls.append(response['photo']['url_o'])
 
+            self.delay()
+
         for url in urls:
             self.collect(url)
 

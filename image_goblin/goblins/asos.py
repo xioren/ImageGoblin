@@ -1,7 +1,5 @@
 import re
-import os
 
-from time import sleep
 from goblins.meta import MetaGoblin
 
 # alternate scaled query: '?wid=2239&hei=2857&size=2239,2857&qlt=100'
@@ -53,5 +51,7 @@ class ASOSGoblin(MetaGoblin):
                 self.collect(self.form_url(f'{id}-1-{color}'))
             for n in range(2, 5):
                 self.collect(self.form_url(f'{id}-{n}'))
+
+            self.delay()
 
         self.loot()

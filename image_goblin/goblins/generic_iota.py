@@ -83,11 +83,14 @@ class IotaGoblin(MetaGoblin):
                     self.reauthorize()
                     response = json.loads(self.get(self.API_URL.format(self.extract_product(target))).content)
 
-                for slice in response[0]['skuInfo']['primarySlice']['sliceItems']:
-                    url = '_'.join(slice['swatchUrl'].split('_')[:-1])
+                if response[0] and 'skuInfo' in response[0]:
+                    for slice in response[0]['skuInfo']['primarySlice']['sliceItems']:
+                        url = '_'.join(slice['swatchUrl'].split('_')[:-1])
 
-                    for image in slice['images']:
-                        urls.append(f'{url}_{image}{self.QUERY}')
+                        for image in slice.get('images', ''):
+                            urls.append(f'{url}_{image}{self.QUERY}')
+
+            self.delay()
 
 
         for url in urls:

@@ -26,6 +26,8 @@ class MaisonLejabyGoblin(MetaGoblin):
             else:
                 urls.extend(self.parser.extract_by_regex(self.get(target).content, self.URL_PAT))
 
+            self.delay()
+
         for url in urls:
             url_base = re.sub(r'[A-Z](\.[A-Z\d]+)?\.jpg', '', url).replace('medium', 'large')
 

@@ -44,6 +44,8 @@ class EtaGoblin(MetaGoblin):
             else:
                 urls.extend(self.parser.extract_by_regex(self.get(target).content, self.URL_PAT))
 
+            self.delay()
+
         for url in urls:
             for mod in self.MODIFIERS:
                 self.collect(f'{self.trim(url)}{mod}.jpg{self.QUERY}')

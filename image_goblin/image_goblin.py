@@ -27,6 +27,8 @@ parser.add_argument('--login', help='log in to instagram', action='store_true')
 
 parser.add_argument('--mask', help='use a common user agent header', action='store_true')
 
+parser.add_argument('--minsize', help='minimum filesize to download (in bytes)', type=int, default=50000)
+
 parser.add_argument('-m', '--mode', help='goblin dependant mode setting')
 
 parser.add_argument('--noclean', help='do not remove small files', action='store_true')

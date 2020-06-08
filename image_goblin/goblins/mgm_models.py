@@ -9,7 +9,7 @@ class MGMGoblin(MetaGoblin):
         - webpage
     '''
 
-    NAME = 'mgm goblin'
+    NAME = 'mgm models goblin'
     ID = 'mgm'
     API_URL = 'https://www.mgm-models.de/api'
     CDN_URL = 'https://strg.global'
@@ -24,7 +24,7 @@ class MGMGoblin(MetaGoblin):
 
     def extract_images(self, images):
         '''extract images from json object'''
-        return [f'{self.CDN_URL}/{image["url"]}' for image in images]
+        return [f'{self.CDN_URL}/{image.get("url", "")}' for image in images]
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting urls')
@@ -40,10 +40,12 @@ class MGMGoblin(MetaGoblin):
                 response = json.loads(self.get(f'{self.API_URL}/models/{model}').content)
 
                 for section in ('images', 'polaroids', 'setcardImages'):
-                    urls.extend(self.extract_images(response[section]))
+                    urls.extend(self.extract_images(response.get(section, {})))
 
-                for video in response['videos']:
+                for video in response.get('videos', ''):
                     self.logger.log(1, self.NAME, 'video url', f'https://player.vimeo.com/video/{video["url"]}')
+
+            self.delay()
 
         for url in urls:
             self.collect(url.replace('%SIZE%', self.SIZE))

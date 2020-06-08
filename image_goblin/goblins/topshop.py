@@ -44,6 +44,8 @@ class TopshopGoblin(MetaGoblin):
                     if asset['assetType'] == 'IMAGE_LARGE':
                         urls.append(asset['url'])
 
+            self.delay()
+
         for url in urls:
             self.collect(f'{self.parser.dequery(url)}{self.QUERY}')
 

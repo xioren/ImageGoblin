@@ -1,7 +1,10 @@
 # ImageGoblin
 
-#### changelog v0.3.5:
-+ instagram fixes
+#### changelog v0.3.6:
++ improved http request handling
++ added minsize option. originally small files were cleaned removed after completion. this now happens when making a request by checking content length header.
++ more imgur fixes
++ better json handling
 + new goblins
 + bug fixes
 + misc code clean up and improvements
@@ -56,7 +59,7 @@
 
   etc...
 
-+ *instagram:* input an instagram page url or a username. this goblin will scrape the entire profile by default. if only the username is passed, it is necessary to --force instagram in order to match the correct goblin. stories require the user to be logged in to instagram; pass the --login flag to do so. the number of posts to retrieve can also be specified with --posts n (n < 100). finally, if 'latest' or 'recent' are passed as the --mode argument, the program will only retrieve the main stories (if --login flag is used) and the six most recent posts. note, this is likely to get your account suspended.
++ *instagram:* input an instagram page url or a username. this goblin will scrape the entire profile by default. if only the username is passed, it is necessary to --force instagram in order to match the correct goblin. stories require the user to be logged in to instagram; pass the --login flag to do so. the number of posts to retrieve can also be specified with --posts n (n < 100). finally, if 'latest' or 'recent' are passed as the --mode argument, the program will only retrieve the main stories (if logged in) and the six most recent posts. note, this is likely to get your account suspended. out of an abundance of caution it might be a good idea to use a random delay, especially when logged in. (note this will significantly increase amount of time to complete)
 
     *examples:*
 

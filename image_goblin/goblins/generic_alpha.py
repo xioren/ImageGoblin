@@ -14,6 +14,7 @@ class AlphaGoblin(MetaGoblin):
         - ami clubwear
         - bikini lovers
         - blush
+        - chantelle
         - maison close
         - missy empire
         - only hearts
@@ -50,8 +51,9 @@ class AlphaGoblin(MetaGoblin):
                 else:
                     urls.extend(self.generate_urls(target, False))
 
+            self.delay()
+
         for url in urls:
             self.collect(self.trim(url))
 
         self.loot()
-        self.cleanup(self.path_main)

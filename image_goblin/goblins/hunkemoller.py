@@ -43,6 +43,8 @@ class HunkemollerGoblin(MetaGoblin):
             else:
                 urls.extend(self.parser.extract_by_regex(self.get(target).content, self.URL_PAT))
 
+            self.delay()
+
         for url in urls:
             if not re.search(self.IMG_PAT, url):
                 continue

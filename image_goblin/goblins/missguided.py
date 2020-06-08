@@ -32,6 +32,8 @@ class MissguidedGoblin(MetaGoblin):
                 # BUG: currently throws 405 error. requires cookie uuid values. unknown how they are generated.
                 self.logger.log(2, self.NAME, 'WARNING', 'webpage urls not supported', once=True)
 
+            self.delay()
+
         for url in urls:
             id = self.extract_id(url)
 
@@ -42,4 +44,3 @@ class MissguidedGoblin(MetaGoblin):
                     self.collect(f'{self.URL_BASE}{id}_0{n}{self.QUERY}')
 
         self.loot()
-        self.cleanup(self.path_main)

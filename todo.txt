@@ -1,4 +1,6 @@
-- add better exception handling for json key errors
+- add better exception handling for json key errors (ongoing)
 - handle iteration urls that contain #
 - more verbose logging and commenting
-- pixiv and danbooru
+- pixiv and danbooru?
+- path argument?
+- decrop queries instead of removing all together

@@ -7,14 +7,14 @@ from os.path import join, exists
 
 
 class Parser:
-    '''generic url/html parsing and manipulation methods'''
+    '''generic url/html parsing and manipulation utilities'''
 
     QUALITY_PAT = re.compile(r'q((ua)?li?ty)?=\d+')
-    FILTER_PAT = re.compile(r'(?:\.(js|css|pdf|php|html)|favicon|svg\+xml|[{}]|\+[\w\.]+\+)', flags=re.IGNORECASE)
+    FILTER_PAT = re.compile(r'(?:\.(js|css|pdf|php|html)|favicon|\+xml|[{}]|\+[\w\.]+\+)', flags=re.IGNORECASE)
     MISC_REPLACEMENTS = {'amp;': ''}
     ABSOLUTE_PAT = r'(?:/?[^/\.]+\.[^/]+(?=/))'
     CROPPING_PATS = (
-        re.compile(r'[\-_]?(?<![a-z])((x+)?-?l(arge)?(?!\w|-\w)|profile|square)(?![a-z])[\-_/]?', flags=re.IGNORECASE),
+        re.compile(r'[\-_]?((x+)?-?(?<!\w)l(arge)?(?!\w)|profile|square)(?![\w])[\-_/]?', flags=re.IGNORECASE),
         re.compile(r'[@\-_/]\d+x(\d+)?(?![a-z\d])'), # 000x000
         re.compile(r'expanded_[a-z]+/'),
         re.compile(r'(?<=/)[a-z]_.+?/v\d/'), # cloudfront
@@ -41,7 +41,6 @@ class Parser:
 
         def __init__(self, content):
             self.html = content
-            self.attributes = {}
             self.elements = {}
 
         def parse_elements(self):
@@ -62,7 +61,7 @@ class Parser:
 # methods
 ####################################################################
 
-    def extract_by_tag(self, html, tags=None):
+    def extract_by_tag(self, html, tags:'[(tag,attr)]'=None):
         '''extract from html by tag'''
         if html:
             html_parser = self.GoblinHTMLParser(html)
@@ -70,8 +69,10 @@ class Parser:
 
             if tags:
                 urls = []
-                for tag in tags:
-                    urls.extend(html_parser.elements.get(tag).get(tags[tag]))
+                for item in tags:
+                    tag, attr = item
+                    if tag in html_parser.elements:
+                        urls.extend(html_parser.elements[tag].get(attr))
                 return urls
             else:
                 return html_parser.elements
@@ -104,10 +105,13 @@ class Parser:
         '''combine dequery and decrop'''
         return self.decrop(self.dequery(url))
 
-    def strip_attribute(self, url):
-        '''strip attribute from url'''
-        # QUESTION: is this used?
-        return re.sub('[^"]+"', '', url)
+    def make_url_safe(self, url):
+        '''quote control characters in url (filename portion only)'''
+        # NOTE: some morons have both quoted and unquoted control characters in the same url,
+        # easiest approach --> just unquote then requote all filenames.
+        filename = self.extract_filename(url)
+
+        return url.replace(filename, urllib.parse.quote(urllib.parse.unquote(filename)))
 
     def extension(self, url):
         '''extract file extension from url'''
@@ -129,16 +133,14 @@ class Parser:
         '''prepare a url for an http request
         - add missing scheme
         - expand relative urls
-        - unquote urls
+        - handle control characters
         '''
-        if '/' not in url: # just a filename
-            url = f'{self.origin_url.rstrip("/")}/{url}'
-        elif re.search(self.ABSOLUTE_PAT, url): # absolute path
+        if re.search(self.ABSOLUTE_PAT, url): # absolute path
             url = self.add_scheme(url.lstrip('/'))
         else: # relative path
             url = urllib.parse.urljoin(self.origin_url, url)
 
-        return urllib.parse.unquote(url).replace(' ', '%3D')
+        return self.make_url_safe(url)
 
     def make_unique(self, path):
         '''make filepath unique'''
@@ -156,16 +158,22 @@ class Parser:
             return True
         return False
 
-    def load_json(self, json_string):
-        '''load JSON and if necessary fix improper use of delimiters'''
-        # IDEA: add debug log level 3
+    def safe_load_json(self, json_string):
+        '''load JSON safely and if necessary fix improper use of delimiters (*cough* imgur)'''
+        if not json_string:
+            return {}
         try:
             return json.loads(json_string)
         except json.JSONDecodeError:
+            json_string = json_string.replace('\n', '').replace('\.', '.')
+            values = re.finditer(r'(?<=:").+?(?="(,"|}))', json_string)
+            for val in values:
+                val = val.group()
+                json_string = json_string.replace(val, val.replace('"', "'"))
             try:
-                return json.loads(re.sub(r'(?<![{,\[:])"(?![},\]:])', '\'', json_string))
+                return json.loads(json_string)
             except json.JSONDecodeError:
-                return '{}'
+                return {}
 
     def user_format(self, url):
         '''add, substitute, or remove arbitrary elements from a url'''

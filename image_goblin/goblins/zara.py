@@ -38,6 +38,8 @@ class ZaraGoblin(MetaGoblin):
             else:
                 urls.extend(self.parser.extract_by_regex(self.get(target).content, self.URL_PAT))
 
+            self.delay()
+
         for url in urls:
             self.collect(re.sub(r'w/\d+/', '', url))
 

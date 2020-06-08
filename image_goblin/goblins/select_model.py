@@ -54,16 +54,18 @@ class SelectGoblin(MetaGoblin):
 
                 response = json.loads(self.post(self.API_URL, data=query).content)
 
-                for image in response['data']['solarnetModel']['portfolio']:
-                    urls.append(image['url'])
+                for image in response['data']['solarnetModel'].get('portfolio', ''):
+                    urls.append(image.get('url', ''))
 
-                if response['data']['solarnetModel']['polaroids']:
+                if response['data']['solarnetModel'].get('polaroids'):
                     for image in response['data']['solarnetModel']['polaroids']:
                         urls.append(image['url'])
 
-                if response['data']['solarnetModel']['videos']:
+                if response['data']['solarnetModel'].get('videos'):
                     for video in response['data']['solarnetModel']['videos']:
                         urls.append(video['url'])
+
+            self.delay()
 
         for url in urls:
             self.collect(url.replace('expanded_medium/', ''))
