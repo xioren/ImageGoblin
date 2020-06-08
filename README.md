@@ -2,7 +2,7 @@
 
 #### changelog v0.3.6:
 + improved http request handling
-+ added minsize option. originally small files were cleaned removed after completion. this now happens when making a request by checking content length header.
++ added minsize option. originally small files were removed after completion. this now happens when making a request, prior to downloading by checking content length header.
 + more imgur fixes
 + better json handling
 + new goblins
