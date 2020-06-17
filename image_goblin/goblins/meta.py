@@ -1,13 +1,12 @@
 import os
-import re
 
 from sys import exit
 from time import sleep
 from random import randint
 from socket import timeout
-from shutil import copyfileobj
 from contextlib import closing
 from urllib.parse import urlencode
+from shutil import copyfileobj, move
 from http.cookiejar import CookieJar
 from gzip import decompress, GzipFile
 from urllib.request import urlopen, Request
@@ -31,6 +30,8 @@ class MetaGoblin:
 
         if self.args['nosort']:
             self.path_main = os.getcwd()
+        elif self.args['dir']:
+            self.path_main = os.path.join(os.getcwd(), '_'.join(self.args['dir']))
         else:
             self.path_main = os.path.join(os.getcwd(), 'goblin_loot', self.NAME.replace(' ', '_'))
         self.make_dirs(self.path_main)
@@ -78,10 +79,20 @@ class MetaGoblin:
         '''central delay method'''
         if override:
             sleep(override)
-        elif self.args['delay'] == 'rand':
+        elif self.args['delay'] == -1:
             sleep(randint(0, 10))
         else:
-            sleep(int(self.args['delay']))
+            sleep(self.args['delay'])
+
+    def move_vid(self, path=None):
+        '''move mp4 files into seperate directory'''
+        if not path:
+            path = self.path_main
+        vid_dir = os.path.join(path, 'vid')
+        self.make_dirs(vid_dir)
+        for file in os.listdir(path):
+            if '.mp4' in file:
+                move(os.path.join(path, file), vid_dir)
 
     def make_dirs(self, *paths):
         '''creates directories'''
@@ -91,7 +102,7 @@ class MetaGoblin:
                     try:
                         os.makedirs(path)
                     except OSError as e:
-                        # NOTE: no sense in continuing if the download dirs fail to make
+                        # NOTE: no sense in continuing if the download dir fails to make
                         # may change approach in future, exit for now
                         self.logger.log(1, self.NAME, e, 'exiting')
                         exit(5) # input/output error
@@ -159,9 +170,9 @@ class MetaGoblin:
             self.logger.log(2, self.NAME, e, args[0])
             if e.code == 502:
                 # servers sometimes return 502 when requesting large files, retrying usually works.
-                return self.retry(method, attempt=attempt+1, *args, **kwargs)
+                return self.retry(method, *args, attempt=attempt+1, **kwargs)
         except (timeout, URLError):
-            return self.retry(method, attempt=attempt+1, *args, **kwargs)
+            return self.retry(method, *args, attempt=attempt+1, **kwargs)
         except Exception as e:
             # NOTE: too many possible exceptions to catch individually -> use catchall
             self.logger.log(2, self.NAME, e, args[0])
@@ -212,23 +223,23 @@ class MetaGoblin:
     def retry(self, method, *args, **kwargs):
         '''retry http operation after a socket timeout or server error'''
         if kwargs['attempt'] > 5:
-            self.logger.log(2, self.NAME, 'server error', f'aborting after 5 retries: {args[1]}')
+            self.logger.log(2, self.NAME, 'server error', f'aborting after 5 attempts: {args[0]}')
             return None
 
-        self.logger.log(2, self.NAME, 'server error', f'retry attempt {kwargs["attempt"]}: {args[1]}')
+        self.logger.log(2, self.NAME, 'server error', f'retry attempt {kwargs["attempt"]}: {args[0]}')
         self.delay(kwargs['attempt'])
 
         return self.request_handler(method, *args, **kwargs)
 
-    def write_file(self, data, path, iter=False):
+    def write_file(self, content, path, iter=False):
         '''write to a text file'''
         # QUESTION: is this used? keep?
         try:
             with open(path, 'w') as file:
                 if iter:
-                    file.write('\n'.join(data))
+                    file.write('\n'.join(content))
                 else:
-                    file.write(data)
+                    file.write(content)
         except OSError as e:
             self.logger.log(2, self.NAME, e, path)
 
@@ -245,13 +256,14 @@ class MetaGoblin:
 
     def check_ext(self, filepath, mimetype):
         '''compare guessed extension to header content type and change if necessary'''
-        if mimetype and '/' in mimetype and mimetype != 'binary/octet-stream':
-            ext = f'.{mimetype.split(";")[0].split("/")[1]}'
+        if mimetype and '/' in mimetype and 'octet-stream' not in mimetype:
+            ext = f'.{mimetype.split(";")[0].split("/")[1]}'.replace('svg+xml', 'svg')
             guessed_ext = self.parser.extension(filepath)
 
             if guessed_ext and guessed_ext != ext:
                 filepath = filepath.replace(guessed_ext, ext)
             elif not guessed_ext:
+                # BUG: can cause duplicate extension in some cases
                 filepath = f'{filepath}{ext}'
 
         return filepath
@@ -263,7 +275,9 @@ class MetaGoblin:
 
         if clean:
             url = self.parser.sanitize(url)
-        if not filename:
+        if self.args['filename']:
+            filename = self.args['filename']
+        elif not filename:
             filename = self.parser.extract_filename(url)
         ext = self.parser.extension(url)
 

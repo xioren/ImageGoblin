@@ -1,4 +1,3 @@
-import re
 import json
 
 from goblins.meta import MetaGoblin
@@ -20,7 +19,7 @@ class FlickrGoblin(MetaGoblin):
 
     def extract_id(self, url):
         '''extract image id from url'''
-        return re.search(r'(?<=photos/)\w+/\d+', url).group().split('/')[1]
+        return self.parser.safe_search(r'(?<=photos/)\w+/\d+', url).split('/')[1]
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting urls')

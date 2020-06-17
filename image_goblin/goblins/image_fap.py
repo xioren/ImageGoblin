@@ -1,5 +1,3 @@
-import re
-
 from goblins.meta import MetaGoblin
 
 
@@ -10,7 +8,7 @@ class ImageFapGoblin(MetaGoblin):
 
     NAME = 'image fap goblin'
     ID = 'imagefap'
-    URL_PAT = re.compile(r'https?://cdn\.imagefap\.com/images/full/[^"\s<]+')
+    URL_PAT = r'https?://cdn\.imagefap\.com/images/full/[^"\s<]+'
 
     def __init__(self, args):
         super().__init__(args)

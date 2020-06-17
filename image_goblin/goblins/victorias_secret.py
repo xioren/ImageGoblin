@@ -1,4 +1,4 @@
-import re
+from re import sub
 import json
 
 from goblins.meta import MetaGoblin
@@ -33,7 +33,7 @@ class VictoriasSecretGoblin(MetaGoblin):
         for target in self.args['targets'][self.ID]:
             if '/p/' in target:
                 self.logger.log(2, self.NAME, 'WARNING', 'image urls not fully supported', once=True)
-                urls.append(re.sub(r'p/\d+x\d+', dimensions, target.replace('dm.', 'www.')))
+                urls.append(sub(r'p/\d+x\d+', dimensions, target.replace('dm.', 'www.')))
             else:
                 # NOTE: version is there too if needed; might always be V6.
                 for path in self.parser.extract_by_regex(self.get(target).content, r'(?<="path":")page/[^"]+'):

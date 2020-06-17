@@ -1,5 +1,6 @@
-import re
 import json
+
+from re import sub
 
 from goblins.meta import MetaGoblin
 
@@ -26,10 +27,10 @@ class DeltaGoblin(MetaGoblin):
 
     def trim(self, url):
         '''remove cropping from query string'''
-        return re.sub(r'&imwidth=\d+', '', url)
+        return sub(r'&imwidth=\d+', '', url)
 
     def extract_product_id(self, url):
-        return re.search(r'(?<=/|p)\d+(?=\.|_)', url).group()
+        return self.parser.safe_search(r'(?<=/|p)\d+(?=\.|_)', url)
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting urls')
@@ -38,7 +39,7 @@ class DeltaGoblin(MetaGoblin):
         for target in self.args['targets'][self.ID]:
             if 'photos' in target:
                 for mod in self.MODIFIERS:
-                    urls.append(self.trim(re.sub(r'_\d+_\d+_\d+', mod, target)))
+                    urls.append(self.trim(sub(r'_\d+_\d+_\d+', mod, target)))
             else:
                 response = json.loads(self.get(self.API_URL.format(self.extract_product_id(target))).content)
 

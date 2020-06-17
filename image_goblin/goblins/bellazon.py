@@ -1,5 +1,3 @@
-import re
-
 from goblins.meta import MetaGoblin
 
 
@@ -26,7 +24,7 @@ class BellazonGoblin(MetaGoblin):
 
     def extract_topic(self, url):
         '''extract thread topic'''
-        return re.search(fr'(?<=topic/)[^/]+', url).group()
+        return self.parser.safe_search(fr'(?<=topic/)[^/]+', url)
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting urls')
@@ -39,7 +37,7 @@ class BellazonGoblin(MetaGoblin):
             else:
                 thread_url = f'{self.BASE_URL}main/topic/{self.extract_topic(target)}'
                 response = self.get(thread_url)
-                pages = int(re.search(r'(?<="pageEnd":\s)\d', response.content).group())
+                pages = int(self.parser.safe_search(r'(?<="pageEnd":\s)\d', response.content))
 
                 urls.extend(self.parser.extract_by_tag(response.content, {'img': 'src'})) # third party hosts
                 urls.extend(self.parser.extract_by_regex(response.content, self.URL_PAT)) # bellazon hosted

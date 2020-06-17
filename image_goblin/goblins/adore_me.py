@@ -1,5 +1,6 @@
-import re
 import json
+
+from re import sub
 
 from goblins.meta import MetaGoblin
 
@@ -41,6 +42,6 @@ class AdoreMeGoblin(MetaGoblin):
             self.delay()
 
         for url in urls:
-            self.collect(re.sub(r'(?<=resize/)[^/]+', '0', url), filename=re.search(r'[^/]+(?=/full)', url).group())
+            self.collect(sub(r'(?<=resize/)[^/]+', '0', url), filename=self.parser.safe_search(r'[^/]+(?=/full)', url))
 
         self.loot()

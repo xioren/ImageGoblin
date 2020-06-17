@@ -1,4 +1,3 @@
-import re
 import json
 
 from goblins.meta import MetaGoblin
@@ -20,9 +19,9 @@ class MarilynGoblin(MetaGoblin):
 
     def extract_info(self, url):
         '''extract model, portfolio and polaroid ids'''
-        model_id = re.search(r'(?<="id":")\d+', url).group()
-        portfolio_id = re.search(r'(?<="portfolioID":")\d+', url).group()
-        polaroid_id = re.search(r'(?<="polaID":")\d+', url).group()
+        model_id = self.parser.safe_search(r'(?<="id":")\d+', url)
+        portfolio_id = self.parser.safe_search(r'(?<="portfolioID":")\d+', url)
+        polaroid_id = self.parser.safe_search(r'(?<="polaID":")\d+', url)
         return model_id, portfolio_id, polaroid_id
 
     def run(self):

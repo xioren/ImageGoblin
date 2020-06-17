@@ -1,4 +1,4 @@
-import re
+from re import sub
 
 from goblins.meta import MetaGoblin
 
@@ -31,7 +31,7 @@ class KatherineHamiltonGoblin(MetaGoblin):
             self.delay()
 
         for url in urls:
-            url = re.sub(r'(-front|-back)?(\d+x\d+)?\.jpg', '', url).strip('-')
+            url = sub(r'(-front|-back)?(\d+x\d+)?\.jpg', '', url).strip('-')
 
             for mod in self.MODIFIERS:
                 self.collect(f'{url}{mod}.jpg')

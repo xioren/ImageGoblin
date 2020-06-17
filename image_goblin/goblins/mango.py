@@ -1,4 +1,3 @@
-import re
 import json
 
 from goblins.meta import MetaGoblin
@@ -24,11 +23,11 @@ class MangoGoblin(MetaGoblin):
 
     def extract_id(self, url):
         '''extract image id and T number from url'''
-        return re.search(r'T\d', url).group(), re.search(r'\d+_\d+', url).group()
+        return self.parser.safe_search(r'T\d', url), self.parser.safe_search(r'\d+_\d+', url)
 
     def extract_product(self, url):
         '''extract product id from url'''
-        return re.search(r'(?<=_)\d+(?=\.)', url).group()
+        return self.parser.safe_search(r'(?<=_)\d+(?=\.)', url)
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting urls')

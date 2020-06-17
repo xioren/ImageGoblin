@@ -1,6 +1,6 @@
-import re
 import json
 
+from re import sub
 from urllib.parse import quote
 
 from goblins.meta import MetaGoblin
@@ -86,6 +86,6 @@ class PinterestGoblin(MetaGoblin):
             self.delay()
 
         for url in urls:
-            self.collect(re.sub(r'\d+x', 'originals', url))
+            self.collect(sub(r'\d+x', 'originals', url))
 
         self.loot()

@@ -1,5 +1,3 @@
-import re
-
 from goblins.meta import MetaGoblin
 
 # NOTE: removing origin works in some cases, are there different origins?
@@ -20,7 +18,7 @@ class HMGoblin(MetaGoblin):
 
     def extract_source(self, url):
         '''extract source path from url'''
-        return re.search(r'source\[[\w\./]+\]', url).group().replace('source[', '').rstrip(']')
+        return self.parser.safe_search(r'source\[[\w\./]+\]', url).replace('source[', '').rstrip(']')
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting urls')

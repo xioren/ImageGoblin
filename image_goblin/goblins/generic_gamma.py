@@ -14,6 +14,7 @@ class GammaGoblin(MetaGoblin):
         - webpage
     generic backend for:
         - boux avenue
+        - envii
         - etam
         - intimissimi
         - jennyfer
@@ -39,7 +40,7 @@ class GammaGoblin(MetaGoblin):
 
     def isolate(self, url):
         '''isolate the end of the url'''
-        return re.search(r'(?<=/)[^/]+\.jpe?g', url).group()
+        return self.parser.safe_search(r'(?<=/)[^/]+\.jpe?g', url)
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting urls')

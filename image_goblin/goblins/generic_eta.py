@@ -1,5 +1,3 @@
-import re
-
 from goblins.meta import MetaGoblin
 
 
@@ -32,7 +30,7 @@ class EtaGoblin(MetaGoblin):
 
     def trim(self, url):
         '''trim the url down'''
-        return re.search(self.URL_PAT, url).group().rstrip("_s/").replace('media.nastygal.com', 'i1.adis.ws')
+        return self.parser.safe_search(self.URL_PAT, url).rstrip("_s/").replace('media.nastygal.com', 'i1.adis.ws')
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting urls')

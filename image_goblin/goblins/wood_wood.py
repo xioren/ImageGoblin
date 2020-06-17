@@ -1,4 +1,4 @@
-import re
+from re import sub
 
 from goblins.meta import MetaGoblin
 
@@ -18,11 +18,11 @@ class WoodWoodGoblin(MetaGoblin):
 
     def extract_id(self, url):
         '''extract image id from url'''
-        return re.search(r'/\d+/\d+/', url).group().strip('/').split('/')
+        return self.parser.safe_search(r'/\d+/\d+/', url).strip('/').split('/')
 
     def upscale(self, url):
         '''sub in higher resolution cropping and return filename'''
-        return re.sub(r'\d+x\d+c', '1600x2400c', self.parser.extract_filename(url))
+        return sub(r'\d+x\d+c', '1600x2400c', self.parser.extract_filename(url))
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting urls')

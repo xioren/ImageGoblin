@@ -10,8 +10,8 @@ class Parser:
     '''generic url/html parsing and manipulation utilities'''
 
     QUALITY_PAT = re.compile(r'q((ua)?li?ty)?=\d+')
-    FILTER_PAT = re.compile(r'(?:\.(js|css|pdf|php|html)|favicon|\+xml|[{}]|\+[\w\.]+\+)', flags=re.IGNORECASE)
-    MISC_REPLACEMENTS = {'amp;': ''}
+    FILTER_PAT = re.compile(r'(?:\.(js|css|pdf|php|html|svg(\+xml)?)|favicon|[{}]|\+[\w\.]+\+)', flags=re.IGNORECASE)
+    MISC_REPLACEMENTS = {'amp;': '', 'background-image:url(': ''}
     ABSOLUTE_PAT = r'(?:/?[^/\.]+\.[^/]+(?=/))'
     CROPPING_PATS = (
         re.compile(r'[\-_]?((x+)?-?(?<!\w)l(arge)?(?!\w)|profile|square)(?![\w])[\-_/]?', flags=re.IGNORECASE),
@@ -34,6 +34,7 @@ class Parser:
 ####################################################################
 
     class GoblinHTMLParser:
+        '''html tag parser'''
 
         ELEMENT_PAT = re.compile(r'<[a-z]+\s[^>]+>')
         TAG_PAT = re.compile(r'(?<=<)[a-z\-]+')
@@ -117,7 +118,7 @@ class Parser:
         '''extract file extension from url'''
         ext = mimetypes.guess_type(self.dequery(url))[0]
         if ext:
-            return f'.{ext.split("/")[1]}'
+            return f'.{ext.split("/")[1]}'.replace('svg+xml', 'svg')
         return ''
 
     def add_scheme(self, url):
@@ -140,7 +141,10 @@ class Parser:
         else: # relative path
             url = urllib.parse.urljoin(self.origin_url, url)
 
-        return self.make_url_safe(url)
+        for item in self.MISC_REPLACEMENTS:
+            url = url.replace(item, self.MISC_REPLACEMENTS[item])
+
+        return self.make_url_safe(url).rstrip(')')
 
     def make_unique(self, path):
         '''make filepath unique'''
@@ -152,6 +156,14 @@ class Parser:
             else:
                 return new_path
 
+    def safe_search(self, pat, string):
+        '''safely make one line regex searches'''
+        # QUESTION: keep?
+        match = re.search(pat, string)
+        if match:
+            return match.group()
+        return ''
+
     def filter(self, url):
         '''filter unwanted urls'''
         if re.search(self.FILTER_PAT, url):
@@ -159,7 +171,7 @@ class Parser:
         return False
 
     def safe_load_json(self, json_string):
-        '''load JSON safely and if necessary fix improper use of delimiters (*cough* imgur)'''
+        '''load JSON safely and if necessary fix improper use of double quote delimiters (*cough* imgur)'''
         if not json_string:
             return {}
         try:

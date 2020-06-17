@@ -1,4 +1,4 @@
-import re
+from re import sub
 
 from goblins.meta import MetaGoblin
 
@@ -20,7 +20,7 @@ class TrendyolGoblin(MetaGoblin):
 
     def extract_base(self, url):
         '''extract base of url'''
-        return re.sub(r'\d+_[a-z]+(_[a-z]+)?\.jpg', '', url)
+        return sub(r'\d+_[a-z]+(_[a-z]+)?\.jpg', '', url)
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting urls')

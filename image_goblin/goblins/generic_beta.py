@@ -1,4 +1,4 @@
-import re
+from re import sub
 
 from goblins.meta import MetaGoblin
 
@@ -29,11 +29,11 @@ class BetaGoblin(MetaGoblin):
 
     def extract_id(self, url):
         '''extract image id from url'''
-        return re.search(r'\w+(_\w+)?(?=_\w+)', url).group()
+        return self.parser.safe_search(r'\w+(_\w+)?(?=_\w+)', url)
 
     def extract_base(self, url):
         '''extract url base'''
-        return re.sub(r'(?<=/)[^/]+$', '', url)
+        return sub(r'(?<=/)[^/]+$', '', url)
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting urls')

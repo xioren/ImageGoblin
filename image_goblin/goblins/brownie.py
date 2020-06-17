@@ -1,8 +1,7 @@
-import re
-
 from goblins.meta import MetaGoblin
 
 # BUG: currently getting gzip EOF errors
+# NOTE: same as kitess
 
 class BrownieGoblin(MetaGoblin):
     '''accepts:
@@ -13,12 +12,13 @@ class BrownieGoblin(MetaGoblin):
     NAME = 'brownie goblin'
     ID = 'brownie'
     URL_PAT = r'https?://www\.browniespain\.com/\d+-thickbox_default/[a-z\d\-]+\.jpg'
+    URL_BASE = 'https://www.browniespain.com'
 
     def __init__(self, args):
         super().__init__(args)
 
     def extract_id(self, url):
-        return re.search(r'(?<=\.com/)\d+', url).group()
+        return self.parser.safe_search(r'(?<=\.com/)\d+', url)
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting urls')
@@ -34,6 +34,7 @@ class BrownieGoblin(MetaGoblin):
             self.delay()
 
         for url in urls:
-            self.collect(url.replace('-thickbox_default', ''), filename=self.extract_id(url))
+            id = self.extract_id(url)
+            self.collect(f'{self.URL_BASE}/{id}/{id}.jpg')
 
         self.loot()

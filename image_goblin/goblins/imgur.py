@@ -1,10 +1,9 @@
-import re
+from re import sub
 
 from goblins.meta import MetaGoblin
 
 
 # misc: '/noscript'
-# misc '/embed?pub=true' \s{12}=
 
 
 class ImgurGoblin(MetaGoblin):
@@ -22,7 +21,7 @@ class ImgurGoblin(MetaGoblin):
 
 
     def trim(self, url):
-        return re.sub(r'(/embed|#).?$', '', self.parser.dequery(url))
+        return sub(r'(/embed|#).?$', '', self.parser.dequery(url))
 
     def upgrade(self, url):
         '''upgrade image size'''
@@ -59,7 +58,7 @@ class ImgurGoblin(MetaGoblin):
                         urls.append(f'{self.BASE_URL}{items["hash"]}{items["ext"]}')
 
                 if not urls: # sign in probably required -> try bypass
-                    self.logger.log(1, self.NAME, 'attempting bypass')
+                    self.logger.log(1, self.NAME, 'bypassing sign in gate')
 
                     if '/a/' in target:
                         matches = self.parser.extract_by_regex(self.get(f'{self.trim(target)}/embed').content,
@@ -71,9 +70,9 @@ class ImgurGoblin(MetaGoblin):
                                 urls.append(f'{self.BASE_URL}{item["hash"]}{item["ext"]}')
                     else:
                         response = self.get(target)
-                        urls.append(re.search(r'(?<=og:image"\s{13}content=")[^"\?]+', response.content).group())
+                        urls.append(self.parser.safe_search(r'og:image"\s+content="[^"\?]+', response.content).split('="')[-1])
                         if 'og:video' in response.content:
-                            urls.append(re.search(r'(?<=og:video"\s{13}content=")[^"\?]+', response.content).group())
+                            urls.append(self.parser.safe_search(r'og:video"\s+content="[^"\?]+', response.content).split('="')[-1])
 
             self.delay()
 

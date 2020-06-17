@@ -1,5 +1,6 @@
-import re
 import json
+
+from re import sub
 
 from goblins.meta import MetaGoblin
 
@@ -23,7 +24,7 @@ class BehanceGoblin(MetaGoblin):
         for target in self.args['targets'][self.ID]:
             if 'mir-s3-cdn' in target:
                 self.logger.log(2, self.NAME, 'WARNING', 'image urls not fully supported', once=True)
-                urls.append(re.sub(r'(?<=modules/)[^/]+', 'source', target))
+                urls.append(sub(r'(?<=modules/)[^/]+', 'source', target))
             else:
                 self.headers.update({'X-Requested-With': 'XMLHttpRequest',
                                      'Cookie': 'ilo0=true'})

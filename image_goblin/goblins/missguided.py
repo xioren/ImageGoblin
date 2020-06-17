@@ -1,5 +1,3 @@
-import re
-
 from goblins.meta import MetaGoblin
 
 
@@ -19,7 +17,7 @@ class MissguidedGoblin(MetaGoblin):
 
     def extract_id(self, url):
         '''extract image id from url'''
-        return re.search(r'[A-Z\d]+', url).group().upper()
+        return self.parser.safe_search(r'[A-Z\d]+', url).upper()
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting urls')

@@ -1,4 +1,4 @@
-import re
+from re import sub
 
 from goblins.meta import MetaGoblin
 
@@ -11,6 +11,7 @@ class ThetaGoblin(MetaGoblin):
         - image*
         - webpage
     generic back-end for:
+        - arnhem
         - bamba swim
         - bluebella
         - bordelle
@@ -46,7 +47,7 @@ class ThetaGoblin(MetaGoblin):
 
     def trim(self, url):
         '''remove variant hash'''
-        return re.sub(r'_[a-z\d]+(\-[a-z\d]+){4}', '', url)
+        return sub(r'_[a-z\d]+(\-[a-z\d]+){4}', '', url)
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting urls')
@@ -62,6 +63,7 @@ class ThetaGoblin(MetaGoblin):
             self.delay()
 
         for url in urls:
+            url = url.replace('_small', '').replace('_grande', '')
             if self.args['noup']:
                 self.collect(url, clean=True)
             else:

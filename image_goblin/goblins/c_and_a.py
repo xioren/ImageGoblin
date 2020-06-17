@@ -1,5 +1,3 @@
-import re
-
 from goblins.meta import MetaGoblin
 
 
@@ -19,10 +17,6 @@ class CAGoblin(MetaGoblin):
     def __init__(self, args):
         super().__init__(args)
 
-    def extract_id(self, url):
-        '''extract image id from url'''
-        return re.search(r'/\d+-\d+', url).group()
-
     def run(self):
         self.logger.log(1, self.NAME, 'collecting urls')
         urls = []
@@ -36,7 +30,7 @@ class CAGoblin(MetaGoblin):
             self.delay()
 
         for url in urls:
-            id = self.extract_id(url)
+            id = self.parser.safe_search(r'/\d+-\d+', url)
             for n in range(1, 6):
                 self.collect(f'https://www.c-and-a.com/productimages/q_100{id}-0{n}.jpg')
 

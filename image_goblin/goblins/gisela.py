@@ -1,4 +1,3 @@
-import re
 import json
 
 from goblins.meta import MetaGoblin
@@ -19,7 +18,7 @@ class GiselaGoblin(MetaGoblin):
         super().__init__(args)
 
     def extract_slug(self, url):
-        return re.search(r'[\w\-]+(?=.html)', url).group()
+        return self.parser.safe_search(r'[\w\-]+(?=.html)', url)
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting urls')

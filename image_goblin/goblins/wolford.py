@@ -1,4 +1,4 @@
-import re
+from re import sub
 
 from goblins.generic_omega import MetaGoblin
 
@@ -19,7 +19,7 @@ class WolfordGoblin(MetaGoblin):
 
     def trim(self, url):
         '''strip cropping from url'''
-        return re.sub(r'default/\w+/images', 'default/images', self.parser.dequery(url)).replace('dw/image/v2/BBCH_PRD/', '')
+        return sub(r'default/\w+/images', 'default/images', self.parser.dequery(url)).replace('dw/image/v2/BBCH_PRD/', '')
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting urls')

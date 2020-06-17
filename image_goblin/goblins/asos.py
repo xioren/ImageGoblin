@@ -1,5 +1,3 @@
-import re
-
 from goblins.meta import MetaGoblin
 
 # alternate scaled query: '?wid=2239&hei=2857&size=2239,2857&qlt=100'
@@ -21,20 +19,18 @@ class ASOSGoblin(MetaGoblin):
 
     def extract_id(self, url):
         '''extract image id from url'''
-        id = re.search(r'\d+(?=-\d)', url) or re.search(r'(?<=/)\d{2,}', url)
-
-        return id.group()
+        return self.parser.safe_search(r'\d+(?=-\d)', url) or self.parser.safe_search(r'(?<=/)\d{2,}', url)
 
     def extract_color(self, url):
         '''extract color from url'''
         if 'asos.com' in url:
-            color = re.search(r'(?<=clr=)[a-z\s]+', url) \
-                    or re.search(r'(?<=-1-)[a-z\s]+', self.get(url).content)
+            color = self.parser.safe_search(r'(?<=clr=)[a-z\s]+', url) \
+                    or self.parser.safe_search(r'(?<=-1-)[a-z\s]+', self.get(url).content)
         else:
-            color = re.search(r'(?<=-1-)[a-z\d]+', url) \
-                    or re.search(r'(?<!/\d/\d)/[a-z\s]+(?=/[^/]+$)', url)
+            color = self.parser.safe_search(r'(?<=-1-)[a-z\d]+', url) \
+                    or self.parser.safe_search(r'(?<!/\d/\d)/[a-z\s]+(?=/[^/]+$)', url)
 
-        return color.group().lstrip('/') if color else ''
+        return color.lstrip('/')
 
     def form_url(self, id):
         '''generate a url from an image id'''

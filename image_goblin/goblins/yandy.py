@@ -1,4 +1,3 @@
-import re
 import json
 
 from goblins.meta import MetaGoblin
@@ -28,7 +27,7 @@ class YandyGoblin(MetaGoblin):
                 urls.append(f'{parts[0]}/HiRez/{parts[2]}')
                 self.logger.log(2, self.NAME, 'WARNING', 'image urls not fully supported', once=True)
             else:
-                product_id = re.search(r'(?<=data-product-id=")[^"]+', self.get(target).content).group()
+                product_id = self.parser.safe_search(r'(?<=data-product-id=")[^"]+', self.get(target).content)
                 response = json.loads(self.get(f'{self.API_URL}/products/{product_id}/images').content)
 
                 for image in response['data']:

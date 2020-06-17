@@ -1,4 +1,3 @@
-import re
 import json
 
 from goblins.meta import MetaGoblin
@@ -19,8 +18,7 @@ class TheSocietyGoblin(MetaGoblin):
 
     def extract_info(self, url):
         '''extract model division and id'''
-        info = re.search(r'[a-z]+/\d+(?=-)', url).group()
-        return info.split('/')
+        return self.parser.safe_search(r'[a-z]+/\d+(?=-)', url).split('/')
 
     def extract_images(self, images, key='src_hd'):
         '''extract images from json object'''

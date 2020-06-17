@@ -1,4 +1,4 @@
-import re
+from re import sub
 
 from goblins.meta import MetaGoblin
 
@@ -22,18 +22,19 @@ class AlphaGoblin(MetaGoblin):
         - reserved
         - simone perele
         - watercult
+        - vince camuto
     '''
 
     NAME = 'alpha goblin'
     ID = 'alpha'
-    URL_PAT = r'https?:[^"\s\n]+media\\?/catalog/product/[^"\s\n]+\.jpe?g'
+    URL_PAT = r'https?:[^"\s\n]+media\\?/catalog\\?/product\\?/[^"\s\n]+\.jpe?g'
 
     def __init__(self, args):
         super().__init__(args)
 
     def trim(self, url):
         '''remove cropping from url'''
-        return re.sub(r'/(custom_)?cache.*?(?=/\w/\w/)', '', url)
+        return sub(r'/(custom_)?cache.*?(?=/\w/\w/)', '', url)
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting urls')

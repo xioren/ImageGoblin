@@ -1,6 +1,6 @@
-import re
 import json
 
+from re import sub
 from urllib.parse import unquote
 
 from goblins.meta import MetaGoblin
@@ -20,8 +20,8 @@ class IotaGoblin(MetaGoblin):
         - urban outfitters
     '''
 
-    NAME = 'Iota goblin'
-    ID = 'Iota'
+    NAME = 'iota goblin'
+    ID = 'iota'
     QUERY = '?fmt=jpeg&qlt=100&scl=1'
 
     def __init__(self, args):
@@ -29,11 +29,11 @@ class IotaGoblin(MetaGoblin):
 
     def extract_id(self, url):
         '''extract image id from url'''
-        return re.search(r'\w+(_\w+)?(?=_\w+)', url).group()
+        return self.parser.safe_search(r'\w+(_\w+)?(?=_\w+)', url)
 
     def extract_base(self, url):
         '''extract url base'''
-        return re.sub(r'(?<=/)[^/]+$', '', url)
+        return sub(r'(?<=/)[^/]+$', '', url)
 
     def extract_product(self, url):
         '''extract product from url'''

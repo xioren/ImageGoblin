@@ -1,5 +1,3 @@
-import re
-
 from goblins.meta import MetaGoblin
 
 
@@ -14,7 +12,7 @@ class ZalandoGoblin(MetaGoblin):
 
     NAME = 'zalando goblin'
     ID = 'zalando'
-    ID_PAT = re.compile(r'[A-Z\d]+-[A-Z\d]{3}(?![\-\w])')
+    ID_PAT = r'[A-Z\d]+-[A-Z\d]{3}(?![\-\w])'
 
     def __init__(self, args):
         super().__init__(args)
@@ -28,10 +26,7 @@ class ZalandoGoblin(MetaGoblin):
 
     def extract_id(self, url):
         '''extract image id from url'''
-        id = re.search(self.ID_PAT, self.parser.extract_filename(url).upper())
-        if id:
-            return id.group()
-        return ''
+        return self.parser.safe_search(self.ID_PAT, self.parser.extract_filename(url).upper())
 
     def run(self):
         self.toggle_collecton_type()

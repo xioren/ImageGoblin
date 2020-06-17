@@ -1,5 +1,3 @@
-import re
-
 from goblins.meta import MetaGoblin
 
 
@@ -18,7 +16,7 @@ class TisjaDamenGoblin(MetaGoblin):
 
     def trim(self, url):
         '''seperate image from rest url'''
-        return re.search(r'(?<=/)[^/]+$', url).group()
+        return self.parser.safe_search(r'(?<=/)[^/]+$', url)
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting urls')

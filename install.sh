@@ -8,7 +8,7 @@
 
 if [ $1 ] && [ $1 == 'u' ]
 then
-    rm /usr/local/bin/goblin && echo symlink removed
+    rm /usr/local/bin/image-goblin && echo symlink removed
 else
-    ln -s "$PWD"/image_goblin/image_goblin.py /usr/local/bin/goblin && echo symlink created at /usr/local/bin/goblin
+    ln -s "$PWD"/image_goblin/image_goblin.py /usr/local/bin/image-goblin && echo symlink created at /usr/local/bin/image-goblin
 fi

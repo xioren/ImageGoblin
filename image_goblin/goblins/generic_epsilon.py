@@ -2,7 +2,7 @@ import re
 
 from goblins.meta import MetaGoblin
 
-# NOTE: may work for trendyol
+# NOTE: may work for trendyol and penti
 
 class EpsilonGoblin(MetaGoblin):
     '''handles: Medianova CDN
@@ -12,6 +12,7 @@ class EpsilonGoblin(MetaGoblin):
         - webpage
     generic back-end for:
         - koton
+        - lc waikiki
         - yargici
     '''
 
@@ -23,7 +24,7 @@ class EpsilonGoblin(MetaGoblin):
 
     def trim_url(self, url):
         '''remove cropping from url'''
-        return re.sub(r'mnresize/\d+/\d+', '', url).replace('Thumbs', 'Originals')
+        return re.sub(r'mnresize/\d+/(\d+|-)//?', '', url).replace('Thumbs', 'Originals')
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting urls')

@@ -4,6 +4,7 @@ from goblins.american_apparel import AmericanApparelGoblin
 from goblins.ami_clubwear import AMIGoblin
 from goblins.ann_summers import AnnSummersGoblin
 from goblins.anthropologie import AnthropologieGoblin
+from goblins.arnhem import ArnhemGoblin
 from goblins.asos import ASOSGoblin
 from goblins.bamba_swim import BambaSwimGoblin
 from goblins.behance import BehanceGoblin
@@ -26,6 +27,7 @@ from goblins.deviant_art import DeviantArtGoblin
 from goblins.dolls_kill import DollsKillGoblin
 from goblins.dora_larsen import DoraLarsenGoblin
 from goblins.else_lingerie import ElseGoblin
+from goblins.envii import EnviiGoblin
 from goblins.esprit import EspritGoblin
 from goblins.etam import EtamGoblin
 from goblins.fae import FaeGoblin
@@ -55,7 +57,9 @@ from goblins.iterator import IteratorGoblin
 from goblins.jennyfer import JennyferGoblin
 from goblins.katherine_hamilton import KatherineHamiltonGoblin
 from goblins.kiki_de_montparnasse import KikiDeMontparnasseGoblin
+from goblins.kitess import KitessGoblin
 from goblins.koton import KotonGoblin
+from goblins.lc_waikiki import LcWaikikiGoblin
 from goblins.le_petit_trou import LePetitTrouGoblin
 from goblins.listal import ListalGoblin
 from goblins.livy import LivyGoblin
@@ -71,6 +75,7 @@ from goblins.missguided import MissguidedGoblin
 from goblins.missy_empire import MissyEmpireGoblin
 from goblins.monster_management import MonsterGoblin
 from goblins.nasty_gal import NastyGalGoblin
+from goblins.nelly import NellyGoblin
 from goblins.only import OnlyGoblin
 from goblins.only_hearts import OnlyHeartsGoblin
 from goblins.oysho import OyshoGoblin
@@ -97,6 +102,7 @@ from goblins.tezenis import TezenisGoblin
 from goblins.the_great_eros import TheGreatErosGoblin
 from goblins.the_iconic import TheIconicGoblin
 from goblins.the_society import TheSocietyGoblin
+from goblins.tiktok import TikTokGoblin
 from goblins.tisja_damen import TisjaDamenGoblin
 from goblins.tommy_hilfiger import TommyHilfigerGoblin
 from goblins.topshop import TopshopGoblin
@@ -106,6 +112,7 @@ from goblins.underprotection import UnderprotectionGoblin
 from goblins.urban_outfitters import UrbanOutfittersGoblin
 from goblins.victorias_secret import VictoriasSecretGoblin
 from goblins.vila import VilaGoblin
+from goblins.vince_camuto import VinceCamutoGoblin
 from goblins.vitamin_a import VitaminAGoblin
 from goblins.watercult import WatercultGoblin
 from goblins.wolford import WolfordGoblin
@@ -124,6 +131,7 @@ goblins = {
     'amiclubwear': (r'amiclubwear\.[a-z]+', AMIGoblin),
     'annsummers': (r'annsummers(\.[a-z]+|/)', AnnSummersGoblin),
     'anthropologie': (r'anthropologie(\.[a-z]+|/)', AnthropologieGoblin),
+    'arnhem': (r'arnhem\.[a-z]+', ArnhemGoblin),
     'asos': (r'asos(-media)?\.[a-z]+', ASOSGoblin),
     'bambaswim': (r'bambaswim\.[a-z]+', BambaSwimGoblin),
     'behance': (r'behance\.[a-z]+|mir\-s3\-cdn', BehanceGoblin),
@@ -146,6 +154,7 @@ goblins = {
     'dollskill': (r'dollskill\.[a-z]+', DollsKillGoblin),
     'doralarsen': (r'doralarsen\.[a-z]+', DoraLarsenGoblin),
     'else': (r'elselingerie\.[a-z]+', ElseGoblin),
+    'envii': (r'envii\.[a-z]+', EnviiGoblin),
     'esprit': (r'esprit\.[a-z]+', EspritGoblin),
     'etam': (r'etam\.[a-z]+', EtamGoblin),
     'fae': (r'fae.house\.[a-z]+', FaeGoblin),
@@ -175,7 +184,9 @@ goblins = {
     'jennyfer': (r'jennyfer\.[a-z]+', JennyferGoblin),
     'katherinehamilton': (r'katherinehamilton\.[a-z]+', KatherineHamiltonGoblin),
     'kikidemontparnasse': (r'kikidm\.[a-z]+', KikiDeMontparnasseGoblin),
+    'kitess': (r'kitess-clothing\.[a-z]+', KitessGoblin),
     'koton': (r'koton\.[a-z]+|ktnimg', KotonGoblin),
+    'lcwaikiki': (r'lcwaikiki\.[a-z]+', LcWaikikiGoblin),
     'lepetittrou': (r'(le-petit-trou|shoplo)\.[a-z]+', LePetitTrouGoblin),
     'listal': (r'lis(tal|img)\.[a-z]+', ListalGoblin),
     'livy': (r'li-vy\.[a-z]+', LivyGoblin),
@@ -191,6 +202,7 @@ goblins = {
     'missyempire': (r'missyempire\.[a-z]+', MissyEmpireGoblin),
     'monster': (r'monster-mgmt\.[a-z]+', MonsterGoblin),
     'nastygal': (r'nastygal\.[a-z]+', NastyGalGoblin),
+    'nelly': (r'nelly\.[a-z]+|nlyscandinavia', NellyGoblin),
     'only': (r'only\.[a-z]+', OnlyGoblin),
     'onlyhearts': (r'onlyhearts\.[a-z]+', OnlyHeartsGoblin),
     'oysho': (r'oysho\.[a-z]+', OyshoGoblin),
@@ -218,6 +230,7 @@ goblins = {
     'theiconic': (r'theiconic\.[a-z]+', TheIconicGoblin),
     'thesociety': (r'(media\.)?thesocietymanagement\.[a-z]+', TheSocietyGoblin),
     'tommyhilfiger':(r'tommy-europe|shoptommy|tommy\.[a-z]+', TommyHilfigerGoblin),
+    'tiktok': (r'tiktok\.[a-z]+', TikTokGoblin),
     'tisjadamen': (r'tisjadamen\.[a-z]+', TisjaDamenGoblin),
     'topshop': (r'topshop\.[a-z]+', TopshopGoblin),
     'trendyol': (r'trendyol\.[a-z]+', TrendyolGoblin),
@@ -226,6 +239,7 @@ goblins = {
     'urbanoutfitters':(r'urbanoutfitters(eu)?(\.[a-z]+|/)', UrbanOutfittersGoblin),
     'victoriassecret': (r'victoriassecret\.[a-z]+', VictoriasSecretGoblin),
     'vila': (r'vila\.[a-z]+', VilaGoblin),
+    'vincecamuto': (r'vincecamuto\.[a-z]+', VinceCamutoGoblin),
     'vitamina': (r'vitaminaswim\.[a-z]+', VitaminAGoblin),
     'watercult': (r'watercult\.[a-z]+', WatercultGoblin),
     'wolford': (r'wolfordshop\.[a-z]+', WolfordGoblin),

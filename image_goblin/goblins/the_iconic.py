@@ -1,5 +1,3 @@
-import re
-
 from goblins.meta import MetaGoblin
 
 
@@ -18,7 +16,7 @@ class TheIconicGoblin(MetaGoblin):
 
     def extract_id(self, url):
         '''extract image id from url'''
-        return re.search(r'\d+-\d+-', url).group()
+        return self.parser.safe_search(r'\d+-\d+-', url)
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting urls')

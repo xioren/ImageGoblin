@@ -1,5 +1,6 @@
-import re
 import json
+
+from re import sub
 
 from goblins.meta import MetaGoblin
 
@@ -49,6 +50,6 @@ class SavageXGoblin(MetaGoblin):
             if 'laydown' in url or 'LAYDOWN' in url: # skip product images
                 continue
 
-            self.collect(re.sub(r'\d+x\d+', '1600x1600', url))
+            self.collect(sub(r'\d+x\d+', '1600x1600', url))
 
         self.loot()

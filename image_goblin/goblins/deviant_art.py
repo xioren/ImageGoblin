@@ -1,6 +1,4 @@
-import re
-
-from time import sleep
+from re import sub
 
 from goblins.meta import MetaGoblin
 
@@ -23,7 +21,7 @@ class DeviantArtGoblin(MetaGoblin):
 
     def trim(self, url):
         '''remove cropping'''
-        return re.sub(r'/v1/[^\?]+(?=\?)', '', url)
+        return sub(r'/v1/[^\?]+(?=\?)', '', url)
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting urls')
@@ -35,9 +33,9 @@ class DeviantArtGoblin(MetaGoblin):
             else:
                 urls.extend(self.parser.extract_by_regex(self.get(target).content, self.URL_PAT))
 
-            sleep(self.delay)
+            self.delay()
 
         for url in urls:
-            self.collect(self.trim(url), filename=re.sub(r'_[a-z\d]+-pre', '', self.parser.extract_filename(url)))
+            self.collect(self.trim(url), filename=sub(r'_[a-z\d]+-pre', '', self.parser.extract_filename(url)))
 
         self.loot()

@@ -1,5 +1,3 @@
-import re
-
 from goblins.generic_alpha import AlphaGoblin
 
 
@@ -20,6 +18,6 @@ class ReservedGoblin(AlphaGoblin):
         if image:
             return [f'{url[:-5]}{n}.jpg'for n in range(1, 5)]
         else:
-            filename = re.search(r'[a-z\d]{5}-[a-z\d]{3}', url).group().upper()
+            filename = self.parser.safe_search(r'[a-z\d]{5}-[a-z\d]{3}', url).upper()
             return ['https://www.reserved.com/media/catalog/product' \
                     f'/{filename[0]}/{filename[1]}/{filename}-00{n}.jpg' for n in range(1, 5)]

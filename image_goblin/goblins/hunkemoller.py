@@ -31,7 +31,7 @@ class HunkemollerGoblin(MetaGoblin):
 
     def isolate(self, url):
         '''isolate the end of the url'''
-        return re.search(r'(?<=/)[^/]+\.jpe?g', url).group()
+        return self.parser.safe_search(r'(?<=/)[^/]+\.jpe?g', url)
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting urls')
@@ -46,7 +46,7 @@ class HunkemollerGoblin(MetaGoblin):
             self.delay()
 
         for url in urls:
-            if not re.search(self.IMG_PAT, url):
+            if not re.search(f'(?:{self.IMG_PAT})', url):
                 continue
 
             id, url_end = self.extract_parts(self.isolate(url))

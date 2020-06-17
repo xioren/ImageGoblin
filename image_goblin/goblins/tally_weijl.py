@@ -1,4 +1,4 @@
-import re
+from re import sub
 
 from goblins.meta import MetaGoblin
 
@@ -30,6 +30,6 @@ class TallyWeijlGoblin(MetaGoblin):
             self.delay()
 
         for url in urls:
-            self.collect(re.sub(r'img/\d+/\d+', 'img/1800/1800', url))
+            self.collect(sub(r'img/\d+/\d+', 'img/1800/1800', url))
 
         self.loot()

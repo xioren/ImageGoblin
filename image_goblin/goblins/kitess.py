@@ -1,30 +1,30 @@
 from goblins.meta import MetaGoblin
 
+# NOTE: same as brownie
 
-class GettyGoblin(MetaGoblin):
+class KitessGoblin(MetaGoblin):
     '''accepts:
         - image*
         - webpage
     '''
 
-    NAME = 'getty goblin'
-    ID = 'getty'
-    URL_PAT = r'https?://[^"]+id\d+'
+    NAME = 'kitess goblin'
+    ID = 'kitess'
+    URL_PAT = r'https?://kitess-clothing\.com/\d+-thickbox_default/[a-z\d\-]+\.jpg'
+    URL_BASE = 'https://kitess-clothing.com'
 
     def __init__(self, args):
         super().__init__(args)
 
-    def upgrade(self, image):
-        '''sub in higher resolution cropping'''
-        id = self.parser.safe_search(r'id\d+', image)
-        return f'https://media.gettyimages.com/photos/picture-{id}?s=2048x2048'
+    def extract_id(self, url):
+        return self.parser.safe_search(r'(?<=\.com/)\d+', url)
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting urls')
         urls = []
 
         for target in self.args['targets'][self.ID]:
-            if 'media' in target:
+            if '.jpg' in target:
                 self.logger.log(2, self.NAME, 'WARNING', 'image urls not fully supported', once=True)
                 urls.append(target)
             else:
@@ -33,6 +33,7 @@ class GettyGoblin(MetaGoblin):
             self.delay()
 
         for url in urls:
-            self.collect(self.upgrade(url))
+            id = self.extract_id(url)
+            self.collect(f'{self.URL_BASE}/{id}/{id}.jpg')
 
         self.loot()

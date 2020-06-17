@@ -1,5 +1,3 @@
-import re
-
 from goblins.meta import MetaGoblin
 
 
@@ -18,7 +16,7 @@ class ShopbopGoblin(MetaGoblin):
 
     def prep(self, url):
         '''prepare the url by removing cropping and mobile elements'''
-        return re.sub(r'._\w+(_\w+)?_\w+_', '', url).replace('m.media', 'images-na.ssl-images').replace('2-1', '2-0')
+        return sub(r'._\w+(_\w+)?_\w+_', '', url).replace('m.media', 'images-na.ssl-images').replace('2-1', '2-0')
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting urls')
@@ -36,6 +34,6 @@ class ShopbopGoblin(MetaGoblin):
             url = self.prep(url)
 
             for n in range(1, 7):
-                self.collect(re.sub(r'q\d', f'q{n}', url))
+                self.collect(sub(r'q\d', f'q{n}', url))
 
         self.loot()

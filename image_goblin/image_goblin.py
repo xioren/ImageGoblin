@@ -7,7 +7,9 @@ from dispatching import Dispatcher
 
 parser = ArgumentParser(usage='goblin [URL] [OPTIONS]')
 
-parser.add_argument('-d', '--delay', help='request delay ("rand" for randomized delay), default: 0', default=0)
+parser.add_argument('-d', '--delay', help='integer delay ("-1" for randomized delay), default: 0', type=int, default=0)
+
+parser.add_argument('--dir', nargs='+', help='specify name for the download directory (not path)', type=str, default='')
 
 parser.add_argument('--feed', help='input urls one at a time', action='store_true')
 
