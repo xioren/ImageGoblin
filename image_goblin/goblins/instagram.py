@@ -6,31 +6,7 @@ from getpass import getpass
 from urllib.parse import quote, urljoin
 from goblins.meta import MetaGoblin
 
-
 # NOTE: deprecated pagination /?__a=1
-# X-IG-WWW-Claim: --> from x-ig-set-www-claim
-# X-Instagram-AJAX: dcecc28ca49b
-
-# ASAkvg_yZqsjHZuiIAmSMeK_sRuuZ6Y296sSqpjr7AKyQdGO0OjEZDfWsTy9MCHjzp-itP2PSmC04imd5wYlDHhC3K2q49aYeDEl4umGwyNfb8ilh5stZWuzLVEJRHQGCbNcLlE
-
-# /accounts/get_encrypted_credentials/ --> {payload:hash}
-
-# new get reels ids ?query_hash=d4d88dc1500312af6f937f7b804c68c3&variables=%7B%22user_id%22%3A%227212904642%22%2C%22include_chaining%22%3Atrue%2C%22include_reel%22%3Atrue%2C%22include_suggested_users%22%3Afalse%2C%22include_logged_out_extras%22%3Afalse%2C%22include_highlight_reels%22%3Atrue%2C%22include_live_status%22%3Atrue%7D
-# reel id is user id
-# ?query_hash=0a85e6ea60a4c99edc58ab2f3d17cfdf&variables=%7B%22reel_ids%22%3A%5B%22366023131%22%5D%2C%22tag_names%22%3A%5B%5D%2C%22location_ids%22%3A%5B%5D%2C%22highlight_reel_ids%22%3A%5B%5D%2C%22precomposed_overlay%22%3Afalse%2C%22show_story_viewer_list%22%3Atrue%2C%22story_viewer_fetch_count%22%3A50%2C%22story_viewer_cursor%22%3A%22%22%2C%22stories_video_dash_manifest%22%3Afalse%7D
-# ?query_hash=0a85e6ea60a4c99edc58ab2f3d17cfdf&variables=%7B%22reel_ids%22%3A%5B%5D%2C%22tag_names%22%3A%5B%5D%2C%22location_ids%22%3A%5B%5D%2C%22highlight_reel_ids%22%3A%5B%2217889062968305938%22%2C%2218012611854209447%22%2C%2218077855212095143%22%5D%2C%22precomposed_overlay%22%3Afalse%2C%22show_story_viewer_list%22%3Atrue%2C%22story_viewer_fetch_count%22%3A50%2C%22story_viewer_cursor%22%3A%22%22%2C%22stories_video_dash_manifest%22%3Afalse%7D
-
-# maybe private: https://www.instagram.com/graphql/query/?query_hash=7c8a1055f69ff97dc201e752cf6f0093&variables=%7B%22id%22%3A%227212904642%22%2C%22first%22%3A12%2C%22after%22%3A%22QVFCVnI2RmZXR1czVzBxOVBPbWRDNjl0SFJSSTNGLVlsSVRGM2JFQzJuQjdUU1pjeXV0UTNpMm9sWVZDU0NjUS1mZk5BbUUwMUpiZnRlbmdYYTJqNXpEeA%3D%3D%22%7D
-
-# 11909475752:Lo6RQeRETk2oCH:18
-# userid:hash:n
-
-# username: jose.is.fine20
-# enc_password: # PWD_INSTAGRAM_BROWSER:10:1591821285:AXlQAI2HiRKjJxxJLs6yrbtq7V+dTMV8NqzqnF9tS+qtXIsEPKQ/C6njn3Oj36+dHWkQSeQNlZL0jXPGN7jW4gF8oBd4Uh5FanLr+5HzgP1f3jpy5yvuRMQrNTRGb2pJL3Hi4rlxUXqA3DHogKaszJmmyg==
-# queryParams: {}
-# optIntoOneTap: false
-
-
 
 class InstagramGoblin(MetaGoblin):
     '''code inspired by:
