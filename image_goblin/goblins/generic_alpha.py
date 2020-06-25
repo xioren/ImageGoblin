@@ -1,5 +1,3 @@
-from re import sub
-
 from goblins.meta import MetaGoblin
 
 # NOTE: stripping _d sometimes works; investigate.
@@ -14,6 +12,7 @@ class AlphaGoblin(MetaGoblin):
         - ami clubwear
         - bikini lovers
         - blush
+        - braboo
         - chantelle
         - maison close
         - missy empire
@@ -34,7 +33,7 @@ class AlphaGoblin(MetaGoblin):
 
     def trim(self, url):
         '''remove cropping from url'''
-        return sub(r'/(custom_)?cache.*?(?=/\w/\w/)', '', url)
+        return self.parser.regex_sub(r'/(custom_)?cache.*?(?=/\w/\w/)', '', url)
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting urls')

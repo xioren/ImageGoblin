@@ -1,6 +1,3 @@
-import json
-
-from re import sub
 from urllib.parse import unquote
 
 from goblins.meta import MetaGoblin
@@ -29,11 +26,11 @@ class IotaGoblin(MetaGoblin):
 
     def extract_id(self, url):
         '''extract image id from url'''
-        return self.parser.safe_search(r'\w+(_\w+)?(?=_\w+)', url)
+        return self.parser.regex_search(r'\w+(_\w+)?(?=_\w+)', url)
 
     def extract_base(self, url):
         '''extract url base'''
-        return sub(r'(?<=/)[^/]+$', '', url)
+        return self.parser.regex_sub(r'(?<=/)[^/]+$', '', url)
 
     def extract_product(self, url):
         '''extract product from url'''
@@ -46,7 +43,7 @@ class IotaGoblin(MetaGoblin):
 
     def reauthorize(self):
         '''get new auth and reauth tokens'''
-        auth_tokens = json.loads(self.post(self.AUTH_API_URL, data={"reauthToken": self.reauth_token}).content)
+        auth_tokens = self.parser.load_json(self.post(self.AUTH_API_URL, data={"reauthToken": self.reauth_token}).content)
         self.set_auth_tokens(auth_tokens)
         self.headers.update({'authorization': f'Bearer {self.auth_token}'})
 
@@ -63,7 +60,7 @@ class IotaGoblin(MetaGoblin):
                     urls.append(f'{self.url_base}{id}{mod}{self.QUERY}')
             else:
                 init_response = self.get(target, store_cookies=True)
-                self.set_auth_tokens(json.loads(unquote(self.cookie_value('urbn_auth_payload'))))
+                self.set_auth_tokens(self.parser.load_json(unquote(self.cookie_value('urbn_auth_payload'))))
 
                 self.headers.update(
                     {
@@ -76,12 +73,12 @@ class IotaGoblin(MetaGoblin):
                     }
                 )
 
-                response = json.loads(self.get(self.API_URL.format(self.extract_product(target))).content)
+                response = self.parser.load_json(self.get(self.API_URL.format(self.extract_product(target))).content)
 
                 if isinstance(response, dict) and response.get('code') == 'EXPIRED_TOKEN':
                     self.logger.log(2, self.NAME, 'reauthorizing')
                     self.reauthorize()
-                    response = json.loads(self.get(self.API_URL.format(self.extract_product(target))).content)
+                    response = self.parser.load_json(self.get(self.API_URL.format(self.extract_product(target))).content)
 
                 if response[0] and 'skuInfo' in response[0]:
                     for slice in response[0]['skuInfo']['primarySlice']['sliceItems']:

@@ -13,5 +13,4 @@ class KotonGoblin(EpsilonGoblin):
         super().__init__(args)
 
     def generate_modifiers(self, url):
-        self.modifiers = ('G01_zoom1', 'G02_zoom2', 'G03_zoom3', 'G04_zoom4',
-                          'G05_zoom5', 'G06_zoom6', 'G07_zoom7')
+        self.modifiers = [f'G0{n}_zoom{n}' for n in range(1, 8)]

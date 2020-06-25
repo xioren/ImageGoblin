@@ -8,13 +8,13 @@ class Logger:
         self.verbose = verbose
         self.silent = silent
         self.nodl = nodl
-        self.logged = [] # keep track of log once logs
+        self.logged = [] # NOTE: keep track of log once logs
 
     def clear_line(self):
         '''clear the current terminal line'''
         try:
             print(' ' * get_terminal_size().columns, end='\r')
-        except OSError: # ioctl error when redirecting output, such as to a text file.
+        except OSError: # NOTE: ioctl error when redirecting output
             pass
 
     def log(self, level, caller, msg, info='', clear=False, once=False):

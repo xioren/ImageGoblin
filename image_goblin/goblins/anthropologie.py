@@ -5,7 +5,7 @@ class AnthropologieGoblin(IotaGoblin):
 
     NAME = 'anthropologie goblin'
     ID = 'anthropologie'
-    MODIFIERS = ('_b', '_b2', '_b3', '_b4', '_b4', '_c', '_c2', '_c3', '_c4', '_c5')
+    MODIFIERS = [f'_{m}{n}' if n > 1 else f'_{m}' for n in range(1, 6) for m in ('b', 'c')]
     API_URL = 'https://www.anthropologie.com/api/catalog/v0/an-us/pools/US_DIRECT/products?slug={}&projection-slug=pdp'
     AUTH_API_URL = 'https://www.anthropologie.com/slipstream/api/token/v0/an-us/auth'
 

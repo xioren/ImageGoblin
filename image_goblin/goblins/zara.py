@@ -1,4 +1,4 @@
-import re
+from re import split
 
 from goblins.meta import MetaGoblin
 
@@ -23,7 +23,7 @@ class ZaraGoblin(MetaGoblin):
 
     def trim(self, url):
         '''remove cropping from query string'''
-        return re.sub(r'&imwidth=\d+', '', url)
+        return self.parser.regex_sub(r'&imwidth=\d+', '', url)
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting urls')
@@ -31,7 +31,7 @@ class ZaraGoblin(MetaGoblin):
 
         for target in self.args['targets'][self.ID]:
             if 'static' in target:
-                url_base, url_end = re.split(r'_\d_\d_\d+', target)
+                url_base, url_end = split(r'_\d_\d_\d+', target)
 
                 for mod in self.MODIFIERS:
                     urls.append(f'{url_base}{mod}{self.SIZE}{self.trim(url_end)}')
@@ -41,6 +41,6 @@ class ZaraGoblin(MetaGoblin):
             self.delay()
 
         for url in urls:
-            self.collect(re.sub(r'w/\d+/', '', url))
+            self.collect(self.parser.regex_sub(r'w/\d+/', '', url))
 
         self.loot()

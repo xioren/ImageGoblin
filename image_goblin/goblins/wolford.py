@@ -1,6 +1,4 @@
-from re import sub
-
-from goblins.generic_omega import MetaGoblin
+from goblins.meta import MetaGoblin
 
 # NOTE: can use gamma goblin but has no real conistancy with filenames or urls
 
@@ -19,7 +17,7 @@ class WolfordGoblin(MetaGoblin):
 
     def trim(self, url):
         '''strip cropping from url'''
-        return sub(r'default/\w+/images', 'default/images', self.parser.dequery(url)).replace('dw/image/v2/BBCH_PRD/', '')
+        return self.parser.regex_sub(r'default/\w+/images', 'default/images', self.parser.dequery(url)).replace('dw/image/v2/BBCH_PRD/', '')
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting urls')

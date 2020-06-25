@@ -30,7 +30,7 @@ class CAGoblin(MetaGoblin):
             self.delay()
 
         for url in urls:
-            id = self.parser.safe_search(r'/\d+-\d+', url)
+            id = self.parser.regex_search(r'/\d+-\d+', url)
             for n in range(1, 6):
                 self.collect(f'https://www.c-and-a.com/productimages/q_100{id}-0{n}.jpg')
 

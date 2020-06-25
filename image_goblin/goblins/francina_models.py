@@ -1,5 +1,3 @@
-import json
-
 from goblins.meta import MetaGoblin
 
 # NOTE: same as monster
@@ -27,7 +25,7 @@ class FrancinaGoblin(MetaGoblin):
         for target in self.args['targets'][self.ID]:
             model_id = self.extract_id(target)
 
-            response = json.loads(self.get(f'{self.API_URL}/{model_id}').content)
+            response = self.parser.load_json(self.get(f'{self.API_URL}/{model_id}').content)
 
             # NOTE: video book present in json but not used
             if 'ActiveBook' in response:

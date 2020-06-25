@@ -1,7 +1,3 @@
-import json
-
-from re import sub
-
 from goblins.meta import MetaGoblin
 
 
@@ -32,7 +28,7 @@ class AdoreMeGoblin(MetaGoblin):
                 self.logger.log(2, self.NAME, 'WARNING', 'image urls not fully supported', once=True)
             else:
                 slug = self.extract_slug(target)
-                response = json.loads(self.get(f'{self.API_URL}/{slug}').content)
+                response = self.parser.load_json(self.get(f'{self.API_URL}/{slug}').content)
 
                 # NOTE: other colors are located in related products
 
@@ -42,6 +38,6 @@ class AdoreMeGoblin(MetaGoblin):
             self.delay()
 
         for url in urls:
-            self.collect(sub(r'(?<=resize/)[^/]+', '0', url), filename=self.parser.safe_search(r'[^/]+(?=/full)', url))
+            self.collect(self.parser.regex_sub(r'(?<=resize/)[^/]+', '0', url), filename=self.parser.regex_search(r'[^/]+(?=/full)', url))
 
         self.loot()

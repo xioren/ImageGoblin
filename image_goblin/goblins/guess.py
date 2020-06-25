@@ -1,5 +1,3 @@
-from re import sub
-
 from goblins.meta import MetaGoblin
 
 
@@ -18,7 +16,7 @@ class GuessGoblin(MetaGoblin):
 
     def trim(self, url):
         '''decrop and return url base'''
-        return sub(r'(?<=upload/).+/v1/|-ALT\d', '', self.parser.dequery(url))
+        return self.parser.regex_sub(r'(?<=upload/).+/v1/|-ALT\d', '', self.parser.dequery(url))
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting urls')

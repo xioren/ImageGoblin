@@ -18,6 +18,6 @@ class ReservedGoblin(AlphaGoblin):
         if image:
             return [f'{url[:-5]}{n}.jpg'for n in range(1, 5)]
         else:
-            filename = self.parser.safe_search(r'[a-z\d]{5}-[a-z\d]{3}', url).upper()
+            filename = self.parser.regex_search(r'[a-z\d]{5}-[a-z\d]{3}', url).upper()
             return ['https://www.reserved.com/media/catalog/product' \
                     f'/{filename[0]}/{filename[1]}/{filename}-00{n}.jpg' for n in range(1, 5)]

@@ -1,7 +1,3 @@
-import json
-
-from re import sub
-
 from goblins.meta import MetaGoblin
 
 class ScoopGoblin(MetaGoblin):
@@ -19,7 +15,7 @@ class ScoopGoblin(MetaGoblin):
 
     def extract_slug(self, url):
         '''extract model slug from url'''
-        return self.parser.safe_search(r'(?<=model/)[^/]+', url)
+        return self.parser.regex_search(r'(?<=model/)[^/]+', url)
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting urls')
@@ -28,11 +24,11 @@ class ScoopGoblin(MetaGoblin):
         for target in self.args['targets'][self.ID]:
             if 'uploads/media' in target:
                 self.logger.log(2, self.NAME, 'WARNING', 'image urls not fully supported', once=True)
-                urls.append(sub(r'\d+x\d+', 'original', target))
+                urls.append(self.parser.regex_sub(r'\d+x\d+', 'original', target))
             else:
                 slug = self.extract_slug(target)
 
-                response = json.loads(self.post(self.API_URL, data={'slug': slug}).content)
+                response = self.parser.load_json(self.post(self.API_URL, data={'slug': slug}).content)
 
                 # NOTE: filename present but different than url media id
                 # NOTE: video book present in json but not used

@@ -1,12 +1,12 @@
-import json
-
 from time import time
+from json import dumps
 from os.path import join
 from getpass import getpass
 from urllib.parse import quote, urljoin
 from goblins.meta import MetaGoblin
 
 # NOTE: deprecated pagination /?__a=1
+# NOTE: ig_id
 
 class InstagramGoblin(MetaGoblin):
     '''code inspired by:
@@ -43,7 +43,7 @@ class InstagramGoblin(MetaGoblin):
         if '/p/' in url:
             shortcode = url.rstrip('/').split('/')[-1]
             variables = f'{{"shortcode":"{shortcode}","include_reel":true}}'
-            response = json.loads(self.get(self.POST_URL.format(quote(variables, safe='"'))).content)
+            response = self.parser.load_json(self.get(self.POST_URL.format(quote(variables, safe='"'))).content)
             return response['data']['shortcode_media']['owner']['reel']['owner']['username']
         else:
             return url.rstrip('/').split('/')[-1]
@@ -59,7 +59,9 @@ class InstagramGoblin(MetaGoblin):
                 username = input(f'[{self.NAME}] username: ')
                 password = getpass(f'[{self.NAME}] password: ')
                 formatted_password = f"#PWD_INSTAGRAM_BROWSER:0:{int(time())}:{password}"
-                response = json.loads(self.post(self.LOGIN_URL, data={'username': username, 'enc_password': formatted_password}, store_cookies=True).content)
+                response = self.parser.load_json(self.post(self.LOGIN_URL,
+                                                           data={'username': username, 'enc_password': formatted_password},
+                                                           store_cookies=True).content)
                 self.set_cookies()
                 del username, password
 
@@ -107,7 +109,7 @@ class InstagramGoblin(MetaGoblin):
             code = int(input(f'[{self.NAME}] enter security code: '))
             response = self.post(verify_url, data={'security_code': code}, store_cookies=True)
             self.set_cookies()
-            answer = json.loads(response.content)
+            answer = self.parser.load_json(response.content)
 
             if answer.get('status') == 'ok':
                 self.logged_in = True
@@ -127,7 +129,7 @@ class InstagramGoblin(MetaGoblin):
         self.extend_cookie('Cookie', 'ig_pr=1')
         response = self.get(urljoin(self.BASE_URL, self.username)).content
         if response:
-            data = json.loads(self.parser.safe_search(r'(?<=sharedData\s=\s){.+?}(?=;)', response))
+            data = self.parser.load_json(self.parser.regex_search(r'(?<=sharedData\s=\s){.+?}(?=;)', response))
 
             if 'entry_data' in data:
                 self.user_id = data['entry_data']['ProfilePage'][0]['graphql']['user']['id']
@@ -140,7 +142,7 @@ class InstagramGoblin(MetaGoblin):
         '''make initial request to obtain user id'''
         response = self.get(f'{self.SEARCH_URL}{self.username}')
         try:
-            response = json.loads(response.content)
+            response = self.parser.load_json(response.content)
         except:
             response = ''
 
@@ -161,7 +163,7 @@ class InstagramGoblin(MetaGoblin):
         self.logger.log(1, self.NAME, 'parsing profile', self.username)
 
         while True:
-            variables = json.dumps(
+            variables = dumps(
                 {
                     'id': self.user_id,
                     'first': self.num_posts,
@@ -169,7 +171,7 @@ class InstagramGoblin(MetaGoblin):
                 }
             )
 
-            response = json.loads(self.get(self.MEDIA_URL.format(quote(variables, safe='"'))).content)
+            response = self.parser.load_json(self.get(self.MEDIA_URL.format(quote(variables, safe='"'))).content)
             if 'data' in response:
                 for edge in response['data']['user']['edge_owner_to_timeline_media'].get('edges', ''):
                     self.extract_media(edge)
@@ -195,7 +197,7 @@ class InstagramGoblin(MetaGoblin):
 
     def get_stories(self, url):
         '''extract media from stories'''
-        response = json.loads(self.get(url).content)
+        response = self.parser.load_json(self.get(url).content)
 
         if 'data' in response:
             for reel_media in response['data'].get('reels_media', ''):
@@ -210,12 +212,17 @@ class InstagramGoblin(MetaGoblin):
 
     def get_main_stories(self):
         '''get main instagram stories'''
-        self.get_stories(self.STORIES_REELS_MEDIA_URL.format(quote('{{"reel_ids":["{}"],"tag_names":[],"location_ids":[],"highlight_reel_ids":[],"precomposed_overlay":false,"show_story_viewer_list":false,"stories_video_dash_manifest":false}}'.format(self.user_id), safe='"')))
+        self.get_stories(self.STORIES_REELS_MEDIA_URL.format(quote('{{"reel_ids":["{}"],"tag_names":[],"location_ids":[],' \
+                                                                   '"highlight_reel_ids":[],"precomposed_overlay":false,' \
+                                                                   '"show_story_viewer_list":false,"stories_video_dash_manifest":false}}'.format(self.user_id), safe='"')))
 
     def get_highlight_stories(self):
         '''get highlight instagram stories'''
         # NOTE: get highlight reels ids
-        response = json.loads(self.get(self.STORIES_REELS_IDS_URL.format(quote('{{"user_id":"{}","include_chaining":false,"include_reel":false,"include_suggested_users":false,"include_logged_out_extras":false,"include_highlight_reels":true,"include_live_status":true}}'.format(self.user_id), safe='"'))).content)
+        response = self.parser.load_json(self.get(self.STORIES_REELS_IDS_URL.format(quote('{{"user_id":"{}","include_chaining":false,' \
+                                                                                          '"include_reel":false,"include_suggested_users":false,' \
+                                                                                          '"include_logged_out_extras":false,"include_highlight_reels":true,' \
+                                                                                          '"include_live_status":true}}'.format(self.user_id), safe='"'))).content)
 
         if 'data' in response:
             higlight_reels_ids = [item['node']['id'] for item in response['data']['user']['edge_highlight_reels']['edges']]
@@ -224,7 +231,9 @@ class InstagramGoblin(MetaGoblin):
 
             # NOTE: get media from reels
             for ids_chunk in ids_chunks:
-                self.get_stories(self.STORIES_REELS_MEDIA_URL.format(quote('{{"reel_ids":[],"tag_names":[],"location_ids":[],"highlight_reel_ids":["{}"],"precomposed_overlay":false,"show_story_viewer_list":false,"stories_video_dash_manifest":false}}'.format('","'.join(str(x) for x in ids_chunk)), safe='"')))
+                self.get_stories(self.STORIES_REELS_MEDIA_URL.format(quote('{{"reel_ids":[],"tag_names":[],"location_ids":[],' \
+                                                                           '"highlight_reel_ids":["{}"],"precomposed_overlay":false,' \
+                                                                           '"show_story_viewer_list":false,"stories_video_dash_manifest":false}}'.format('","'.join(str(x) for x in ids_chunk)), safe='"')))
 
     def run(self):
         self.authenticate(self.args['login'])

@@ -1,5 +1,3 @@
-import json
-
 from goblins.meta import MetaGoblin
 
 
@@ -19,9 +17,9 @@ class MarilynGoblin(MetaGoblin):
 
     def extract_info(self, url):
         '''extract model, portfolio and polaroid ids'''
-        model_id = self.parser.safe_search(r'(?<="id":")\d+', url)
-        portfolio_id = self.parser.safe_search(r'(?<="portfolioID":")\d+', url)
-        polaroid_id = self.parser.safe_search(r'(?<="polaID":")\d+', url)
+        model_id = self.parser.regex_search(r'(?<="id":")\d+', url)
+        portfolio_id = self.parser.regex_search(r'(?<="portfolioID":")\d+', url)
+        polaroid_id = self.parser.regex_search(r'(?<="polaID":")\d+', url)
         return model_id, portfolio_id, polaroid_id
 
     def run(self):
@@ -42,7 +40,7 @@ class MarilynGoblin(MetaGoblin):
                     if item == '0':
                         continue
 
-                    response = json.loads(self.get(f'{self.API_URL}/media/1/{model_id}/{item}').content)
+                    response = self.parser.load_json(self.get(f'{self.API_URL}/media/1/{model_id}/{item}').content)
                     for item in response:
                         urls.append(f'{self.IMAGE_URL}/{model_id}/{item.get("url", "")}')
 

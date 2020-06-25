@@ -6,7 +6,7 @@ class EnviiGoblin(GammaGoblin):
 
     NAME = 'envii goblin'
     ID = 'envii'
-    MODIFIERS = ('.jpg', '-2.jpg', '-3.jpg', '-4.jpg', '-5.jpg', '-6.jpg', '-7.jpg', '-8.jpg', '-9.jpg')
+    MODIFIERS = [f'-{n}.jpg' if n > 1 else '.jpg' for n in range(1, 10)]
     IMG_PAT = r'[A-Z]\d+-\d+(-\d)?\.jpg'
     ITER_PAT = r'-?\d?\.jpg'
     URL_BASE = 'https://www.envii.com/on/demandware.static/-/Sites-envii-master-catalogue/default/images/images/hi-res/'

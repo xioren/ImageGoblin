@@ -34,7 +34,7 @@ class NellyGoblin(MetaGoblin):
 
             if '/i/' not in target:
                 response = self.get(target).content
-                video_url = self.parser.safe_search(r'https://[^"]+/mp4_product_high', response)
+                video_url = self.parser.regex_search(r'https://[^"]+/mp4_product_high', response)
                 if video_url:
                     self.collect(video_url, filename=f'{id}_video50.mp4')
 

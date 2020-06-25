@@ -1,39 +1,41 @@
 # ImageGoblin
 
-#### changelog v0.3.7:
-+ basic tiktok functionality
+#### changelog v0.3.8:
++ added incomplete download handling
++ ongoing centralization of imports
 + new goblins
 + bug fixes
 + misc code clean up and improvements
 
 ### This Program:
 + is a web scraping tool specifically for the discovery and retrieval of images on a web server, in the highest possible quality
++ is designed according to my own personal needs
 + is a work in progress
 
 ### Requirements
 + Python 3.6+
 
 ### Operation
-+ *default*: inputting either a url or a text file containing urls (1 per line) will try to match the url(s) to a specific goblin. the goblin will download what images it can according to its rule set, in the highest possible quality. if no goblin is matched a generic goblin is used. if a text file is used as input, only the filename of the text file should be input using the --local argument and the text file should be placed in the same directory that the program will be ran from.
++ *default*: will try to match the input url(s) to a specific goblin. the matched goblin(s) will download what images they can according to their rule sets, in the highest possible quality. if no goblin is matched a generic goblin is used. if a text file is used as input, only the filename of the text file should be input using the --local argument and the text file should be placed in the same directory that the program will be ran from. it should contain 1 url per line.
 
   *examples:*
 
   ```
-  imagegoblin https://www.website.com/pages/somewebpage.html
+  image-goblin https://www.website.com/pages/somewebpage.html
 
-  imagegoblin https://www.website.com/files/cropped/image.jpg --verbose
+  image-goblin https://www.website.com/files/cropped/image-600x600.jpg --verbose
 
-  imagegoblin --local urls.txt
+  image-goblin --local urls.txt
   ```
 
-+ *generic:* for any site without a specific goblin. by default, this mode will automatically try to remove common cropping. using the '--format' option overrides this functionality and instead formats according to user input modifier(s). the usage format for this is '--format _mode_ _modifier_[ _replacement_]'. 'add _modifier_' will append the modifier to the end of the url; for example a query string. 'sub _modifier_ _replacement_' substitutes, while 'rem _modifier_' removes. using the --noup flag prevents any automatic manipulation of urls. you can also enforce greedy mode with --greedy; sometimes this will find more images.
++ *generic:* for any site without a specific goblin. by default, this goblin will automatically try to remove common cropping. using the '--format' option overrides this functionality and instead formats according to user input modifier(s). the usage format for this is '--format _mode_ _modifier_[ _replacement_]'. 'add _modifier_' will append the modifier to the end of the url; for example a query string. 'sub _modifier_ _replacement_' substitutes, while 'rem _modifier_' removes. the modifier can be a regular string or regex pattern. using the --noup flag prevents any automatic manipulation of urls. you can also enforce greedy mode with --greedy; sometimes this will find more images.
 
   *examples:*
 
   ```
-  imagegoblin https://website.com/pages/somewebpage.html -f rem -300x300
+  image-goblin https://website.com/pages/somewebpage.html -f rem -300x300
 
-  imagegoblin https://website.com/uploads/image_01.jpg?size=small --format sub size=\w+ size=large
+  image-goblin https://website.com/uploads/image_01.jpg?size=small --format sub size=\w+ size=large
   ```
 
 + *iterate:* when provided a url to a single image url, the program will try to download that image and all other images with the same url structure that are on the server (but not necessarily displayed on the website). the iterable needs to be surrounded by '#' on either side when input to indicate the portion of the url to be iterated. use the --step argument to set step size (default 1); negative values will iterate down.
@@ -41,7 +43,7 @@
   *example:*
 
   ```
-  imagegoblin https://website.com/uploads/image_#01#.jpg --timeout 10 --delay 3
+  image-goblin https://website.com/uploads/image_#01#.jpg --timeout 10 --delay 3
   ```
 
   the program will then iterate through and download all images it can find with that url structure on the server.
@@ -56,21 +58,22 @@
 
   etc...
 
-+ *instagram:* input an instagram page url or a username. this goblin will scrape the entire profile by default. if only the username is passed, it is necessary to --force instagram in order to match the correct goblin. stories require the user to be logged in; pass the --login flag to do so. the number of posts to retrieve can also be specified with --posts n (n < 100). finally, if 'latest' or 'recent' are passed as the --mode argument, the program will only retrieve the main stories (if logged in) and the six most recent posts. note, this is likely to get your account suspended. out of an abundance of caution it might be a good idea to use a random delay, especially when logged in. (note this will significantly increase amount of time to complete)
+### NOTE: instagram recently took the nuclear option and seemingly banned all non residential ips. currently logging in is required if you are using a vpn/proxy.
++ *instagram:* this goblin will scrape an entire profile by default. stories require the user to be logged in; pass the --login flag to do so. the number of posts to retrieve can also be specified with --posts n (n < 100). finally, if 'latest' or 'recent' are passed as the --mode argument, the program will only retrieve the main stories (if logged in) and the six most recent posts. note, using a scraper while logged in is likely to get your account suspended.
 
     *examples:*
 
     ```
-    imagegoblin https://www.instagram.com/username/ --mode recent --login
+    image-goblin https://www.instagram.com/username/ --mode recent --login
 
-    imagegoblin username --posts 30 --force instagram
+    image-goblin username --posts 30 --force instagram
     ```
 
 + *feed:* using the feed flag, you can accumulate urls by inputting them one by one. this is useful for accumulating urls as you find them while browsing the web, and downloading all at once. press "enter" with an empty input when finished. try it :)
 
 #### Misc:
   + this program has only been tested on linux but should work on windows/mac as well.
-  + the install script is optional and linux specific. it only serves to add a symlink to /usr/local/bin so that the program can be run from the shell with 'imagegoblin' instead of 'python3 /path/to/image_goblin.py'.
+  + the install script is optional and linux specific. it only serves to add a symlink to /usr/local/bin so that the program can be run from the shell with 'image-goblin' instead of 'python3 /path/to/image_goblin.py'.
   + use --nodl to view found urls instead of downloading them
   + a specific goblin can be forced using '--force _goblin_'.
   + all available goblins can be listed using '-l or --list'.

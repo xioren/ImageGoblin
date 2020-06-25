@@ -1,7 +1,3 @@
-import json
-
-from re import sub
-
 from goblins.meta import MetaGoblin
 
 
@@ -41,7 +37,7 @@ class SavageXGoblin(MetaGoblin):
                 auth = self.get(self.API_AUTH_URL, store_cookies=True)
                 self.set_cookies()
 
-                response = json.loads(self.get(f'{self.API_URL}/products/{self.product_id(target)}').content)
+                response = self.parser.load_json(self.get(f'{self.API_URL}/products/{self.product_id(target)}').content)
                 urls.extend(response['image_view_list'])
 
         self.delay()
@@ -50,6 +46,6 @@ class SavageXGoblin(MetaGoblin):
             if 'laydown' in url or 'LAYDOWN' in url: # skip product images
                 continue
 
-            self.collect(sub(r'\d+x\d+', '1600x1600', url))
+            self.collect(self.parser.regex_sub(r'\d+x\d+', '1600x1600', url))
 
         self.loot()

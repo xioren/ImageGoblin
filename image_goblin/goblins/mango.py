@@ -1,5 +1,3 @@
-import json
-
 from goblins.meta import MetaGoblin
 
 
@@ -23,11 +21,11 @@ class MangoGoblin(MetaGoblin):
 
     def extract_id(self, url):
         '''extract image id and T number from url'''
-        return self.parser.safe_search(r'T\d', url), self.parser.safe_search(r'\d+_\d+', url)
+        return self.parser.regex_search(r'T\d', url), self.parser.regex_search(r'\d+_\d+', url)
 
     def extract_product(self, url):
         '''extract product id from url'''
-        return self.parser.safe_search(r'(?<=_)\d+(?=\.)', url)
+        return self.parser.regex_search(r'(?<=_)\d+(?=\.)', url)
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting urls')
@@ -44,10 +42,10 @@ class MangoGoblin(MetaGoblin):
                 init_response = self.get(target, store_cookies=True)
                 self.set_cookies()
 
-                stock_id = json.loads(self.get(self.STOCK_ID_URL).content)['key']
+                stock_id = self.parser.load_json(self.get(self.STOCK_ID_URL).content)['key']
                 self.headers.update({'stock-id': stock_id})
 
-                response = json.loads(self.get(f'{self.API_URL}/{self.extract_product(target)}').content)
+                response = self.parser.load_json(self.get(f'{self.API_URL}/{self.extract_product(target)}').content)
 
                 for color in response['colors']['colors']:
                     for images in color['images']:

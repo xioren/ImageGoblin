@@ -16,7 +16,7 @@ class SsenseGoblin(MetaGoblin):
 
     def extract_id(self, url):
         '''extract image id from url'''
-        return self.parser.safe_search(r'[A-Z\d]+(?=_\d)', url)
+        return self.parser.regex_search(r'[A-Z\d]+(?=_\d)', url)
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting urls')

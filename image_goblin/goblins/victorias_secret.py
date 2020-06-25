@@ -1,6 +1,3 @@
-from re import sub
-import json
-
 from goblins.meta import MetaGoblin
 
 
@@ -33,11 +30,11 @@ class VictoriasSecretGoblin(MetaGoblin):
         for target in self.args['targets'][self.ID]:
             if '/p/' in target:
                 self.logger.log(2, self.NAME, 'WARNING', 'image urls not fully supported', once=True)
-                urls.append(sub(r'p/\d+x\d+', dimensions, target.replace('dm.', 'www.')))
+                urls.append(self.parser.regex_sub(r'p/\d+x\d+', dimensions, target.replace('dm.', 'www.')))
             else:
                 # NOTE: version is there too if needed; might always be V6.
                 for path in self.parser.extract_by_regex(self.get(target).content, r'(?<="path":")page/[^"]+'):
-                    response = json.loads(self.get(f'{self.API_URL_BASE}/products/v6/{path}').content)
+                    response = self.parser.load_json(self.get(f'{self.API_URL_BASE}/products/v6/{path}').content)
                     if 'product' in response:
                         for product in response['product'].get('purchasableImages', ''):
                             for choice in product.get('choices', ''):
@@ -47,9 +44,7 @@ class VictoriasSecretGoblin(MetaGoblin):
             self.delay()
 
         for url in urls:
-            if '_OF_' in url: # skip product images
-                continue
-
-            self.collect(url)
+            if '_OF_' not in url: # skip product images
+                self.collect(url)
 
         self.loot()

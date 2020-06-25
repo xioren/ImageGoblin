@@ -1,5 +1,3 @@
-import json
-
 from urllib.parse import quote_plus
 
 from goblins.meta import MetaGoblin
@@ -38,7 +36,7 @@ class TopshopGoblin(MetaGoblin):
                 path, brand_code = self.extract_info(target)
                 self.headers.update({'BRAND-CODE': brand_code})
 
-                response = json.loads(self.get(f'{self.API_URL}{quote_plus(f"/{path}")}').content)
+                response = self.parser.load_json(self.get(f'{self.API_URL}{quote_plus(f"/{path}")}').content)
 
                 for asset in response['assets']:
                     if asset['assetType'] == 'IMAGE_LARGE':

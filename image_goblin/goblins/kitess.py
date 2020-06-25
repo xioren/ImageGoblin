@@ -17,7 +17,7 @@ class KitessGoblin(MetaGoblin):
         super().__init__(args)
 
     def extract_id(self, url):
-        return self.parser.safe_search(r'(?<=\.com/)\d+', url)
+        return self.parser.regex_search(r'(?<=\.com/)\d+', url)
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting urls')

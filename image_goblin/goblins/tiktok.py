@@ -1,5 +1,3 @@
-import json
-
 from os.path import join
 
 from goblins.meta import MetaGoblin
@@ -7,8 +5,8 @@ from goblins.meta import MetaGoblin
 
 # QUESTION: what is secUid for?
 # TODO: handle single posts?
-# NOTE: remove watermark with "https://api2.musical.ly/aweme/v1/playwm/?video_id=" (untested)
-# NOTE: type=1 recent posts?
+# NOTE: remove watermark with "https://api2.musical.ly/aweme/v1/playwm/?video_id=" (doesnt seem to work)
+# QUESTION: type=1 recent posts?
 
 
 class TikTokGoblin(MetaGoblin):
@@ -26,14 +24,14 @@ class TikTokGoblin(MetaGoblin):
     def __init__(self, args):
         super().__init__(args)
         self.MIN_SIZE = 0
-        self.count = self.args['posts'] if self.args['posts'] < 99 else 99
+        self.count = self.args['posts'] if self.args['posts'] < 100 else 100
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting urls')
         urls = []
 
         for target in self.args['targets'][self.ID]:
-            username = self.parser.safe_search(r'(?<=@)[^/]+', url)
+            username = self.parser.regex_search(r'(?<=@)[^/]+', target)
             user_dir = join(self.path_main, username)
             self.make_dirs(user_dir)
 
@@ -41,28 +39,30 @@ class TikTokGoblin(MetaGoblin):
                 urls.append(target)
                 self.logger.log(2, self.NAME, 'WARNING', 'video urls not fully supported', once=True)
             else:
-                # get user id using username
-                response = json.loads(self.get(self.API_USER_URL.format(username)).content)
+                # NOTE: get user id using username
+                init_response = self.parser.load_json(self.get(self.API_USER_URL.format(username)).content)
 
-                if 'userInfo' in response:
-                    user_id = response['userInfo']['user']['id']
-                    urls.append(response['userInfo']['user']['avatarLarger'])
+                if 'userInfo' in init_response:
+                    user_id = init_response['userInfo']['user']['id']
+                    urls.append(init_response['userInfo']['user']['avatarLarger'])
 
                     max_cursor = 0
 
                     while True:
-                        # retrieve posts
-                        response = json.loads(self.get(self.API_ITEM_URL.format(self.count, user_id, max_cursor)).content)
+                        # NOTE: get posts
+                        response = self.parser.load_json(self.get(self.API_ITEM_URL.format(self.count, user_id, max_cursor)).content)
 
                         for item in response.get('items', ''):
-                            urls.append(item['video']['cover'])
-                            urls.append(item['video']['downloadAddr'])
+                            # NOTE: dynamicCover are moving webp images
+                            # NOTE: cover and originCover are often the same
+                            for key in ('cover', 'originCover', 'downloadAddr'):
+                                urls.append(item['video'][key])
 
-                        if not response.get('hasMore') or self.count < 99:
+                        if not response.get('hasMore') or self.count < 100:
                             break
 
                         max_cursor = response['maxCursor']
-                        # NOTE: fetching more only works when keeping min_cursor at 0
+                        # NOTE: fetching more only works when keeping min_cursor at 0 --> dont update
                         # min_cursor = response['minCursor']
 
                         self.delay()

@@ -1,5 +1,3 @@
-from re import sub
-
 from goblins.meta import MetaGoblin
 
 
@@ -30,6 +28,6 @@ class LePetitTrouGoblin(MetaGoblin):
             self.delay()
 
         for url in urls:
-            self.collect(sub(r'th\d+', 'orig', url))
+            self.collect(self.parser.regex_sub(r'th\d+', 'orig', url))
 
         self.loot()

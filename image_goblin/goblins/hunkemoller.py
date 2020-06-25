@@ -12,15 +12,15 @@ class HunkemollerGoblin(MetaGoblin):
 
     NAME = 'hunkemoller goblin'
     ID = 'hunkemoller'
-    MODIFIERS = ('_1', '_2', '_3', '_4', '_5')
+    MODIFIERS = [f'_{n}' for n in range(1, 6)]
     URL_BASE = 'https://images-hunkemoller.akamaized.net/original/'
 
     URL_TYPES = re.compile('(?:akamaized|img/hkm|demandware)')
     ITER_PAT= re.compile(r'_\d(?=\.jpg)')
     IMG_PAT = re.compile(r'(?:\d+_\d(_normal)?\.jpg)')
-    URL_PAT = re.compile(r'(?:https?://images-hunkemoller\.akamaized.net/[^"\s]+' \
+    URL_PAT = re.compile(r'https?://images-hunkemoller\.akamaized.net/[^"\s]+' \
                          r'|https?://hunkemoller\.[a-z]/media/img/hkm/[^"\s]+' \
-                         r'|https://www\.hunkemoller\.[^"\s]+demandware[^"\s]+)')
+                         r'|https://www\.hunkemoller\.[^"\s]+demandware[^"\s]+')
 
     def __init__(self, args):
         super().__init__(args)
@@ -31,7 +31,7 @@ class HunkemollerGoblin(MetaGoblin):
 
     def isolate(self, url):
         '''isolate the end of the url'''
-        return self.parser.safe_search(r'(?<=/)[^/]+\.jpe?g', url)
+        return self.parser.regex_search(r'(?<=/)[^/]+\.jpe?g', url)
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting urls')
@@ -46,7 +46,8 @@ class HunkemollerGoblin(MetaGoblin):
             self.delay()
 
         for url in urls:
-            if not re.search(f'(?:{self.IMG_PAT})', url):
+            # NOTE: finds way too many urls. consider new approach.
+            if not re.search(self.IMG_PAT, url):
                 continue
 
             id, url_end = self.extract_parts(self.isolate(url))

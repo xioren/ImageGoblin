@@ -7,8 +7,7 @@ class CalvinKleinGoblin(BetaGoblin):
     ID = 'calvinklein'
     ACCEPT_WEBPAGE = True
     QUERY = '?fmt=jpeg&qlt=100&scl=1.4'
-    MODIFIERS = ('_main', '_alternate1', '_alternate2', '_alternate3',
-                 '_alternate4', 'alternate5')
+    MODIFIERS = [f'_alternate1{n}' if n > 0 else '_main' for n in range(6)]
 
     def __init__(self, args):
         super().__init__(args)

@@ -1,5 +1,3 @@
-from re import sub
-
 from goblins.meta import MetaGoblin
 
 # TODO: add site specific iteration and scannable flag
@@ -27,11 +25,14 @@ class ThetaGoblin(MetaGoblin):
         - for love and lemons
         - fortnight
         - hanne bloch
+        - juillet
         - kiki de montparnasse
         - lounge
         - par femme
+        - seamless basic
         - skatie
         - skin
+        - sommer swim
         - the great eros
         - triangl
         - underprotection
@@ -40,14 +41,14 @@ class ThetaGoblin(MetaGoblin):
 
     NAME = 'theta goblin'
     ID = 'theta'
-    URL_PAT = r'cdn\.shopify\.com/s/files/[^"\s\n]+((\w+-)+)?\d+x(\d+)?[^"\s\n]+'
+    URL_PAT = r'cdn\.shopify\.com/s/files/[^"\s\n]+'
 
     def __init__(self, args):
         super().__init__(args)
 
     def trim(self, url):
         '''remove variant hash'''
-        return sub(r'_[a-z\d]+(\-[a-z\d]+){4}', '', url)
+        return self.parser.regex_sub(r'_[a-z\d]+(\-[a-z\d]+){4}', '', url)
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting urls')
@@ -64,9 +65,8 @@ class ThetaGoblin(MetaGoblin):
 
         for url in urls:
             url = url.replace('_small', '').replace('_grande', '')
-            if self.args['noup']:
-                self.collect(url, clean=True)
-            else:
-                self.collect(self.trim(url), clean=True)
+            # NOTE: collect both the url as is and the de-hashed url if hash is present
+            self.collect(url, clean=True)
+            self.collect(self.trim(url), clean=True)
 
         self.loot()

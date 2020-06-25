@@ -16,6 +16,7 @@ from goblins.blush import BlushGoblin
 from goblins.boohoo import BoohooGoblin
 from goblins.bordelle import BordelleGoblin
 from goblins.boux_avenue import BouxAvenueGoblin
+from goblins.braboo import BrabooGoblin
 from goblins.brownie import BrownieGoblin
 from goblins.burberry import BurberryGoblin
 from goblins.c_and_a import CAGoblin
@@ -33,6 +34,7 @@ from goblins.etam import EtamGoblin
 from goblins.fae import FaeGoblin
 from goblins.faithfull_the_brand import FaithfullTheBrandGoblin
 from goblins.fashion_nova import FashionNovaGoblin
+from goblins.five_preview import FivePreviewGoblin
 from goblins.fleur_du_mal import FleurDuMalGoblin
 from goblins.flickr import FlickrGoblin
 from goblins.for_love_and_lemons import ForLoveAndLemonsGoblin
@@ -42,6 +44,7 @@ from goblins.fredericks import FredericksGoblin
 from goblins.free_people import FreePeopleGoblin
 from goblins.generic_omega import OmegaGoblin
 from goblins.getty import GettyGoblin
+from goblins.giphy import GiphyGoblin
 from goblins.gisela import GiselaGoblin
 from goblins.guess import GuessGoblin
 from goblins.h_and_m import HMGoblin
@@ -55,6 +58,7 @@ from goblins.instagram import InstagramGoblin
 from goblins.intimissimi import IntimissimiGoblin
 from goblins.iterator import IteratorGoblin
 from goblins.jennyfer import JennyferGoblin
+from goblins.juillet import JuilletGoblin
 from goblins.katherine_hamilton import KatherineHamiltonGoblin
 from goblins.kiki_de_montparnasse import KikiDeMontparnasseGoblin
 from goblins.kitess import KitessGoblin
@@ -76,24 +80,30 @@ from goblins.missy_empire import MissyEmpireGoblin
 from goblins.monster_management import MonsterGoblin
 from goblins.nasty_gal import NastyGalGoblin
 from goblins.nelly import NellyGoblin
+from goblins.new_york_models import NewYorkModelsGoblin
 from goblins.only import OnlyGoblin
 from goblins.only_hearts import OnlyHeartsGoblin
 from goblins.oysho import OyshoGoblin
 from goblins.par_femme import ParFemmeGoblin
+from goblins.perilla import PerillaGoblin
 from goblins.pinterest import PinterestGoblin
 from goblins.prettylittlething import PrettyLittleThingGoblin
 from goblins.promise import PromiseGoblin
 from goblins.pull_and_bear import PullandBearGoblin
+from goblins.red_gifs import RedGifsGoblin
 from goblins.reserved import ReservedGoblin
+from goblins.resume_cph import ResumeGoblin
 from goblins.sandro import SandroGoblin
 from goblins.savagex import SavageXGoblin
 from goblins.scoop_models import ScoopGoblin
+from goblins.seamless_basic import SeamlessBasicGoblin
 from goblins.select_model import SelectGoblin
 from goblins.shopbop import ShopbopGoblin
 from goblins.shopify import ShopifyGoblin
 from goblins.simone_perele import SimonePereleGoblin
 from goblins.skatie import SkatieGoblin
 from goblins.skin import SkinGoblin
+from goblins.sommer_swim import SommerSwimGoblin
 from goblins.springfield import SpringfieldGoblin
 from goblins.ssense import SsenseGoblin
 from goblins.stradivarius import StradivariusGoblin
@@ -143,6 +153,7 @@ goblins = {
     'boohoo': (r'boohoo\.[a-z]+|adis\.ws', BoohooGoblin),
     'bordelle': (r'bordelle\.[a-z]+', BordelleGoblin),
     'bouxavenue': (r'bouxavenue\.[a-z]+', BouxAvenueGoblin),
+    'braboo': (r'braboo\.[a-z]+', BrabooGoblin),
     'brownie': (r'browniespain\.[a-z]+', BrownieGoblin),
     'burberry': (r'burberry\.[a-z]+', BurberryGoblin),
     'canda': (r'c-and-a\.[a-z]+', CAGoblin),
@@ -160,6 +171,7 @@ goblins = {
     'fae': (r'fae.house\.[a-z]+', FaeGoblin),
     'fashionnova': (r'fashionnova\.[a-z]+', FashionNovaGoblin),
     'faithfullthebrand': (r'faithfullthebrand\.[a-z]+', FaithfullTheBrandGoblin),
+    '5preview': (r'5preview\.[a-z]+', FivePreviewGoblin),
     'fleurdumal': (r'fleurdumal\.[a-z]+', FleurDuMalGoblin),
     'flickr': (r'flickr\.[a-z]+', FlickrGoblin),
     'fredericks': (r'fredericks(\.[a-z]+|/)', FredericksGoblin),
@@ -169,6 +181,7 @@ goblins = {
     'freepeople': (r'freepeople(\.[a-z]+|/)', FreePeopleGoblin),
     'generic': ('#####', OmegaGoblin),
     'getty': (r'gettyimages\.[a-z]+', GettyGoblin),
+    'giphy': (r'giphy\.[a-z]+', GiphyGoblin),
     'gisela': (r'gisela\.[a-z]+', GiselaGoblin),
     'guess': (r'guess(-img)?', GuessGoblin),
     'handm': (r'hm\.[a-z]+', HMGoblin),
@@ -182,6 +195,7 @@ goblins = {
     'intimissimi': (r'intimissimi\.[a-z]+', IntimissimiGoblin),
     'iterator': (r'#\d+#', IteratorGoblin),
     'jennyfer': (r'jennyfer\.[a-z]+', JennyferGoblin),
+    'juillet': (r'juillet\.[a-z]+', JuilletGoblin),
     'katherinehamilton': (r'katherinehamilton\.[a-z]+', KatherineHamiltonGoblin),
     'kikidemontparnasse': (r'kikidm\.[a-z]+', KikiDeMontparnasseGoblin),
     'kitess': (r'kitess-clothing\.[a-z]+', KitessGoblin),
@@ -203,24 +217,30 @@ goblins = {
     'monster': (r'monster-mgmt\.[a-z]+', MonsterGoblin),
     'nastygal': (r'nastygal\.[a-z]+', NastyGalGoblin),
     'nelly': (r'nelly\.[a-z]+|nlyscandinavia', NellyGoblin),
+    'newyorkmodels': (r'((newyork|la)models|globaltalentsystems)\.[a-z]+', NewYorkModelsGoblin),
     'only': (r'only\.[a-z]+', OnlyGoblin),
     'onlyhearts': (r'onlyhearts\.[a-z]+', OnlyHeartsGoblin),
     'oysho': (r'oysho\.[a-z]+', OyshoGoblin),
     'parfemme': (r'parfemme\.[a-z]+', ParFemmeGoblin),
+    'perilla': (r'perillalingerie\.[a-z]+', PerillaGoblin),
     'pinterest': (r'pin(terest|img)\.[a-z]+', PinterestGoblin),
     'prettylittlething': (r'prettylittlething\.[a-z]+', PrettyLittleThingGoblin),
     'promise': ('tienda.promise', PromiseGoblin),
     'pullandbear': (r'pullandbear\.[a-z]+', PullandBearGoblin),
+    'redgifs': (r'(gifdeliverynetwork|redgifs)\.[a-z]+', RedGifsGoblin),
     'reserved': (r'reserved\.[a-z]+', ReservedGoblin),
+    'resume': (r'resumecph\.[a-z]+', ResumeGoblin),
     'sandro': (r'sandro-paris\.[a-z]+', SandroGoblin),
     'scoop': (r'scoopmodels\.[a-z]+', ScoopGoblin),
     'select': (r'select\.solarnet|selectmodel\.[a-z]+', SelectGoblin),
     'savagex': (r'savagex\.[a-z]+', SavageXGoblin),
+    'seamlessbasic': (r'seamlessbasic\.[a-z]+', SeamlessBasicGoblin),
     'shopbop': (r'shopbop(\.[a-z]+|/)', ShopbopGoblin),
-    'shopify': ('#####', ShopifyGoblin),
+    'shopify': (r'cdn.shopify\.[a-z]+', ShopifyGoblin),
     'simoneperele': (r'simone-?perele\.[a-z]+', SimonePereleGoblin),
     'skatie': (r'skatie\.[a-z]+', SkatieGoblin),
     'skin': (r'skinworldwide\.[a-z]+', SkinGoblin),
+    'sommerswim': (r'sommerswim\.[a-z]+', SommerSwimGoblin),
     'springfield': (r'myspringfield\.[a-z]+', SpringfieldGoblin),
     'ssense': (r'ssense(media)?', SsenseGoblin),
     'stradivarius': (r'stradivarius\.[a-z]+', StradivariusGoblin),

@@ -13,5 +13,4 @@ class LcWaikikiGoblin(EpsilonGoblin):
         super().__init__(args)
 
     def generate_modifiers(self, url):
-        self.modifiers = ('_a', '_a1', '_a2', '_a3',
-                          '_b', '_b1', '_b2', '_b3')
+        self.modifiers = [f'_{m}{n}' if n > 0 else f'_{m}' for n in range(4) for m in ('a', 'b')]

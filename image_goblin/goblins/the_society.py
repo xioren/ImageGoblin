@@ -1,5 +1,3 @@
-import json
-
 from goblins.meta import MetaGoblin
 
 
@@ -18,7 +16,7 @@ class TheSocietyGoblin(MetaGoblin):
 
     def extract_info(self, url):
         '''extract model division and id'''
-        return self.parser.safe_search(r'[a-z]+/\d+(?=-)', url).split('/')
+        return self.parser.regex_search(r'[a-z]+/\d+(?=-)', url).split('/')
 
     def extract_images(self, images, key='src_hd'):
         '''extract images from json object'''
@@ -35,7 +33,7 @@ class TheSocietyGoblin(MetaGoblin):
             else:
                 division, id = self.extract_info(target)
 
-                response = json.loads(self.get(f'{self.API_URL}/models/{division}/{id}').content)
+                response = self.parser.load_json(self.get(f'{self.API_URL}/models/{division}/{id}').content)
 
                 for section in ('portfolio', 'pola'):
                     urls.extend(self.extract_images(response['books'][section]))

@@ -51,8 +51,8 @@ class Parser:
                 if tag not in self.elements:
                     self.elements[tag] = {}
 
-                for attribute in re.finditer(self.ATTRIBUTE_PAT, element):
-                    attr, value = attribute.group().split('="')
+                for attribute in [a.group() for a in re.finditer(self.ATTRIBUTE_PAT, element)]:
+                    attr, value = attribute.split('="')
                     if attr not in self.elements[tag]:
                         self.elements[tag][attr] = [value]
                     else:
@@ -82,10 +82,7 @@ class Parser:
 
     def extract_by_regex(self, html, pattern):
         '''extract from html by regex'''
-        try:
-            return {match.group().replace('\\', '') for match in re.finditer(pattern, html)}
-        except TypeError:
-            return ''
+        return {url.replace('\\', '') for url in self.regex_findall(pattern, html)}
 
     def extract_filename(self, url):
         '''extract filename from url'''
@@ -156,13 +153,34 @@ class Parser:
             else:
                 return new_path
 
-    def safe_search(self, pat, string):
+    @staticmethod
+    def valid_url(url):
+        '''test for url validity'''
+        parsed = urllib.parse.urlparse(url)
+        if not parsed.hostname:
+            if not re.search(r'(?:(\.[a-z]+){1,2}/)', url):
+                return False
+        return True
+
+    def regex_search(self, this, string):
         '''safely make one line regex searches'''
         # QUESTION: keep?
-        match = re.search(pat, string)
+        match = re.search(this, string)
         if match:
             return match.group()
         return ''
+
+    def regex_findall(self, this, string):
+        '''safely make one line iterative regex searches'''
+        # QUESTION: keep?
+        matches = re.finditer(this, string)
+        if matches:
+            return [match.group() for match in matches]
+        return []
+
+    def regex_sub(self, this, that, string):
+        '''make regex substitutions'''
+        return re.sub(this, that, string)
 
     def filter(self, url):
         '''filter unwanted urls'''
@@ -170,7 +188,7 @@ class Parser:
             return True
         return False
 
-    def safe_load_json(self, json_string):
+    def load_json(self, json_string):
         '''load JSON safely and if necessary fix improper use of double quote delimiters (*cough* imgur)'''
         if not json_string:
             return {}
@@ -178,9 +196,8 @@ class Parser:
             return json.loads(json_string)
         except json.JSONDecodeError:
             json_string = json_string.replace('\n', '').replace('\.', '.')
-            values = re.finditer(r'(?<=:").+?(?="(,"|}))', json_string)
+            values = self.regex_findall(r'(?<=:").+?(?="(,"|}))', json_string)
             for val in values:
-                val = val.group()
                 json_string = json_string.replace(val, val.replace('"', "'"))
             try:
                 return json.loads(json_string)
@@ -227,6 +244,8 @@ class Parser:
             url = url.replace('_t', '')
         elif 'redd.it' in url:
             url = self.dequery(url).replace('preview', 'i')
+        elif 'cdn.shoplo' in url:
+            url = self.regex_sub(r'/th\d+/', '/orig/', url)
         elif 'squarespace' in url:
             url += '?format=original'
         elif 'tumblr' in url:

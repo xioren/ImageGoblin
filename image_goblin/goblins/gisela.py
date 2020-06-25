@@ -1,5 +1,3 @@
-import json
-
 from goblins.meta import MetaGoblin
 
 
@@ -18,7 +16,7 @@ class GiselaGoblin(MetaGoblin):
         super().__init__(args)
 
     def extract_slug(self, url):
-        return self.parser.safe_search(r'[\w\-]+(?=.html)', url)
+        return self.parser.regex_search(r'[\w\-]+(?=.html)', url)
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting urls')
@@ -33,7 +31,7 @@ class GiselaGoblin(MetaGoblin):
                 self.headers.update({'Origin': 'https://www.gisela.com',
                                      'Accept-Language': 'en-US,en'})
 
-                response = json.loads(self.get(f'{self.API_URL}/{slug}.html?category={slug}').content)
+                response = self.parser.load_json(self.get(f'{self.API_URL}/{slug}.html?category={slug}').content)
 
                 if 'model' in response:
                     for image in response['model']['images']:

@@ -1,4 +1,4 @@
-import re
+from re import split
 
 from goblins.meta import MetaGoblin
 
@@ -24,7 +24,7 @@ class EpsilonGoblin(MetaGoblin):
 
     def trim_url(self, url):
         '''remove cropping from url'''
-        return re.sub(r'mnresize/\d+/(\d+|-)//?', '', url).replace('Thumbs', 'Originals')
+        return self.parser.regex_sub(r'mnresize/\d+/(\d+|-)//?', '', url).replace('Thumbs', 'Originals')
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting urls')
@@ -39,7 +39,7 @@ class EpsilonGoblin(MetaGoblin):
             self.delay()
 
         for url in urls:
-            url_base, _ = re.split(self.MOD_PAT, self.trim_url(url))
+            url_base, _ = split(self.MOD_PAT, self.trim_url(url))
 
             self.generate_modifiers(url)
             for mod in self.modifiers:

@@ -1,4 +1,4 @@
-import re
+from re import split
 
 from goblins.meta import MetaGoblin
 
@@ -20,7 +20,7 @@ class AmericanApparelGoblin(MetaGoblin):
 
     def split_url(self, url):
         '''split url into base, end and sub out cropping'''
-        return re.split(r'_(0\d)?(?=_)', re.sub(r'(?<=stencil/)[^/]+', 'original', url), 1)
+        return split(r'_(0\d)?(?=_)', self.parser.regex_sub(r'(?<=stencil/)[^/]+', 'original', url), 1)
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting urls')

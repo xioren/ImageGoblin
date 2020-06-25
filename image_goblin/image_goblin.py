@@ -31,11 +31,9 @@ parser.add_argument('--mask', help='use a common user agent header', action='sto
 
 parser.add_argument('--minsize', help='minimum filesize to download (in bytes)', type=int, default=50000)
 
-parser.add_argument('-m', '--mode', help='goblin dependant mode setting')
+parser.add_argument('-m', '--mode', help='goblin dependant mode settings')
 
-parser.add_argument('--noclean', help='do not remove small files', action='store_true')
-
-parser.add_argument('--nodl', help='skip downloading and print urls to stdout', action='store_true')
+parser.add_argument('--nodl', help='print urls to stdout instead of downloading', action='store_true')
 
 parser.add_argument('--noskip', help='make filename unique if a file with the same filename already exists, instead of skipping', action='store_true')
 
@@ -43,7 +41,7 @@ parser.add_argument('--nosort', help='download directly to current directory, wi
 
 parser.add_argument('--noup', help='do not remove cropping from urls', action='store_true')
 
-parser.add_argument('--posts', help='number of instagram posts (n<100) to fetch', type=int, default=100)
+parser.add_argument('--posts', help='number of instagram/tiktok posts (n<100) to fetch', type=int, default=100)
 
 parser.add_argument('-s', '--silent', help='suppress output', action='store_true')
 
@@ -60,7 +58,7 @@ args = vars(parser.parse_args())
 
 if not (args['url'] or args['feed'] or args['local'] or args['list']):
     parser.print_help()
-    exit(22) # invalid argument
+    exit(22) # NOTE: invalid argument
 
 
 if __name__ == '__main__':
@@ -68,4 +66,4 @@ if __name__ == '__main__':
         Dispatcher(args).dispatch()
     except KeyboardInterrupt:
         print('\n<-----exiting----->')
-        exit(125) # operation cancelled
+        exit(125) # NOTE: operation cancelled

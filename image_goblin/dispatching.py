@@ -2,6 +2,7 @@ import re
 import os
 
 from logging import Logger
+from parsing import Parser
 from manifest import goblins
 
 
@@ -15,10 +16,9 @@ class Dispatcher:
 
     def identify(self, url):
         '''match url to a specific goblin'''
-        for key in goblins:
-            if re.search(f'(?:{goblins[key][0]})', url, re.IGNORECASE):
-                return key
-
+        for goblin in goblins:
+            if re.search(f'(?:{goblins[goblin][0]})', url, re.IGNORECASE):
+                return goblin
         return 'generic'
 
     def dispatch(self):
@@ -31,7 +31,7 @@ class Dispatcher:
             local_path = os.path.join(os.getcwd(), self.args['local'])
 
             if not os.path.exists(local_path):
-                self.logger.log(0, self.NAME, 'ERROR', f'local path not found')
+                self.logger.log(0, self.NAME, 'ERROR', f'local path not found: {local_path}')
                 return None
 
             with open(local_path) as file:
@@ -44,10 +44,12 @@ class Dispatcher:
 
         url_assignment = {}
 
-        # map urls to relevent goblins -> {goblin1: [urls][, goblin2: [urls]]...}
+        # NOTE: map urls to relevent goblins -> {goblin1: [urls][, goblin2: [urls]]...}
         for url in urls:
-            if url == '': # skip empty entries
+            if not Parser.valid_url(url):
+                self.logger.log(0, self.NAME, 'invalid url', url)
                 continue
+
             if self.args['force']:
                 key = self.args['force']
             else:

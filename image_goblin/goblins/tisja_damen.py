@@ -16,7 +16,7 @@ class TisjaDamenGoblin(MetaGoblin):
 
     def trim(self, url):
         '''seperate image from rest url'''
-        return self.parser.safe_search(r'(?<=/)[^/]+$', url)
+        return self.parser.regex_search(r'(?<=/)[^/]+$', url)
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting urls')

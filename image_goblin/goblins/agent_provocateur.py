@@ -1,5 +1,3 @@
-import json
-
 from goblins.meta import MetaGoblin
 
 
@@ -43,7 +41,7 @@ class AgentProvocateurGoblin(MetaGoblin):
             else:
                 self.headers.update({'Content-Type': 'application/json'})
                 POST_DATA = json.dumps({"requests":[{"action":"route","children":[{"path":f"/{self.extract_path(target)}","_reqId":0}]}]})
-                response = json.loads(self.post(self.API_URL, data=POST_DATA).content)
+                response = self.parser.load_json(self.post(self.API_URL, data=POST_DATA).content)
 
                 for entry in response.get('catalog', ''):
                     for image in entry.get('media', ''):
@@ -52,9 +50,7 @@ class AgentProvocateurGoblin(MetaGoblin):
             self.delay()
 
         for url in urls:
-            if 'flatshot' in url: # skip product images
-                continue
-
-            self.collect(url)
+            if 'flatshot' not in url: # skip product images
+                self.collect(url)
 
         self.loot()

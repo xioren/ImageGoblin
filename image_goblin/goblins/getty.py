@@ -16,7 +16,7 @@ class GettyGoblin(MetaGoblin):
 
     def upgrade(self, image):
         '''sub in higher resolution cropping'''
-        id = self.parser.safe_search(r'id\d+', image)
+        id = self.parser.regex_search(r'id\d+', image)
         return f'https://media.gettyimages.com/photos/picture-{id}?s=2048x2048'
 
     def run(self):

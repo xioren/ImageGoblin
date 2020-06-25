@@ -2,11 +2,11 @@ import os
 
 from sys import exit
 from time import sleep
+from shutil import move
 from random import randint
 from socket import timeout
 from contextlib import closing
 from urllib.parse import urlencode
-from shutil import copyfileobj, move
 from http.cookiejar import CookieJar
 from gzip import decompress, GzipFile
 from urllib.request import urlopen, Request
@@ -22,11 +22,10 @@ class MetaGoblin:
     '''generic utility goblin inherited by all other goblins'''
 
     def __init__(self, args):
-        self.MIN_SIZE = args['minsize']
-
         self.args = args
-        self.collection = set()
         self.looted = []
+        self.collection = set()
+        self.MIN_SIZE = self.args['minsize']
 
         if self.args['nosort']:
             self.path_main = os.getcwd()
@@ -75,6 +74,10 @@ class MetaGoblin:
     # methods
     ####################################################################
 
+    ####################################################################
+    # miscellaneous
+    ####################################################################
+
     def delay(self, override=None):
         '''central delay method'''
         if override:
@@ -90,6 +93,7 @@ class MetaGoblin:
             path = self.path_main
         vid_dir = os.path.join(path, 'vid')
         self.make_dirs(vid_dir)
+
         for file in os.listdir(path):
             if '.mp4' in file:
                 move(os.path.join(path, file), vid_dir)
@@ -105,7 +109,7 @@ class MetaGoblin:
                         # NOTE: no sense in continuing if the download dir fails to make
                         # may change approach in future, exit for now
                         self.logger.log(1, self.NAME, e, 'exiting')
-                        exit(5) # input/output error
+                        exit(5) # NOTE: input/output error
 
     def toggle_collecton_type(self):
         '''toggle collection type between list and set'''
@@ -126,11 +130,21 @@ class MetaGoblin:
         except EOFError:
             return b''
 
+    ####################################################################
+    # http
+    ####################################################################
+
     def cookie_value(self, name):
         '''return the value of a cookie from the cookie jar'''
+        # QUESTION: is cookie jar object subscriptable?
         for cookie in self.cookie_jar:
             if cookie.name == name:
                 return cookie.value
+
+                def set_cookies(self):
+                    '''parse reponse headers and set cookies'''
+                    for cookie in self.cookie_jar:
+                        self.extend_cookie('Cookie', f'{cookie.name}={cookie.value}')
 
     def set_cookies(self):
         '''parse reponse headers and set cookies'''
@@ -155,6 +169,7 @@ class MetaGoblin:
 
     def request_handler(self, method, *args, attempt=0, **kwargs):
         '''make an http request'''
+        # NOTE: args[0] == url
         try:
             request = Request(self.parser.add_scheme(args[0]), kwargs['data'], self.headers)
         except ValueError as e:
@@ -169,7 +184,7 @@ class MetaGoblin:
         except HTTPError as e:
             self.logger.log(2, self.NAME, e, args[0])
             if e.code == 502:
-                # servers sometimes return 502 when requesting large files, retrying usually works.
+                # NOTE: servers sometimes return 502 when requesting large files, retrying usually works.
                 return self.retry(method, *args, attempt=attempt+1, **kwargs)
         except (timeout, URLError):
             return self.retry(method, *args, attempt=attempt+1, **kwargs)
@@ -197,14 +212,31 @@ class MetaGoblin:
         '''downloader front end'''
         return self.request_handler(self.downloader, url, filepath, data=None, store_cookies=False)
 
-    def downloader(self, response, _, filepath, *args, **kwargs):
-        '''download web content'''
-        filename = f'{self.parser.extract_filename(filepath)}{self.parser.extension(filepath)}'
+    def retry(self, method, *args, **kwargs):
+        '''retry http operation'''
+        if kwargs['attempt'] > 5:
+            self.logger.log(2, self.NAME, 'server error', f'aborting after 5 attempts: {args[0]}')
+            return None
 
-        if 'Content-Length' in response.info():
-            if int(response.info()['Content-Length']) < self.MIN_SIZE:
-                self.logger.log(2, self.NAME, 'skipping small file', filename)
-                return None
+        self.logger.log(2, self.NAME, 'server error', f'retry attempt {kwargs["attempt"]}: {args[0]}')
+        self.delay(kwargs['attempt'])
+
+        return self.request_handler(method, *args, **kwargs)
+
+    ####################################################################
+    # io
+    ####################################################################
+
+    def downloader(self, response, url, filepath, *args, attempt=0, **kwargs):
+        '''download web content'''
+        # NOTE: default buffer == 8192
+        filename = f'{self.parser.extract_filename(filepath)}{self.parser.extension(filepath)}'
+        length = int(response.info().get('Content-Length', -1))
+        read = 0
+
+        if length < self.MIN_SIZE:
+            self.logger.log(2, self.NAME, 'skipping small file', filename)
+            return None
 
         filepath = self.check_ext(filepath, response.info().get('Content-Type'))
         if os.path.exists(filepath):
@@ -215,21 +247,20 @@ class MetaGoblin:
             response = GzipFile(fileobj=BufferedReader(response))
 
         with open(filepath, 'wb') as file:
-            copyfileobj(response, file, DEFAULT_BUFFER_SIZE)
+            while True:
+                chunk = response.read(DEFAULT_BUFFER_SIZE)
+                if not chunk:
+                    break
+                read += len(chunk)
+                file.write(chunk)
+
+        if length >= 0 and read < length:
+            self.logger.log(2, self.NAME, 'incomplete read', filename)
+            # NOTE: untested
+            return self.retry(downloader, url, filepath, *args, attempt=attempt+1, **kwargs)
+
         self.looted.append(filepath)
-
         return True
-
-    def retry(self, method, *args, **kwargs):
-        '''retry http operation after a socket timeout or server error'''
-        if kwargs['attempt'] > 5:
-            self.logger.log(2, self.NAME, 'server error', f'aborting after 5 attempts: {args[0]}')
-            return None
-
-        self.logger.log(2, self.NAME, 'server error', f'retry attempt {kwargs["attempt"]}: {args[0]}')
-        self.delay(kwargs['attempt'])
-
-        return self.request_handler(method, *args, **kwargs)
 
     def write_file(self, content, path, iter=False):
         '''write to a text file'''
@@ -254,17 +285,22 @@ class MetaGoblin:
         except OSError as e:
             self.logger.log(2, self.NAME, e, path)
 
+    ####################################################################
+    # main url/file handling
+    ####################################################################
+
     def check_ext(self, filepath, mimetype):
         '''compare guessed extension to header content type and change if necessary'''
+        # QUESTION: rationale of checking for '/'?
         if mimetype and '/' in mimetype and 'octet-stream' not in mimetype:
-            ext = f'.{mimetype.split(";")[0].split("/")[1]}'.replace('svg+xml', 'svg')
+            header_ext = f'.{mimetype.split(";")[0].split("/")[1]}'.replace('svg+xml', 'svg')
             guessed_ext = self.parser.extension(filepath)
 
-            if guessed_ext and guessed_ext != ext:
-                filepath = filepath.replace(guessed_ext, ext)
+            if guessed_ext and guessed_ext != header_ext:
+                filepath = filepath.replace(guessed_ext, header_ext)
             elif not guessed_ext:
-                # BUG: can cause duplicate extension in some cases
-                filepath = f'{filepath}{ext}'
+                # BUG: can cause duplicate extensions in some cases
+                filepath = f'{filepath}{header_ext}'
 
         return filepath
 
@@ -281,7 +317,7 @@ class MetaGoblin:
             filename = self.parser.extract_filename(url)
         ext = self.parser.extension(url)
 
-        # add url and filename to collection as hashable string
+        # NOTE: add url and filename to collection as hashable string
         if isinstance(self.collection, list):
             self.collection.append(f'{self.parser.finalize(url)}-break-{filename}{ext}')
         else:
@@ -290,7 +326,7 @@ class MetaGoblin:
     def loot(self, save_loc=None, timeout=0):
         '''retrieve resources from collected urls'''
         failed = 0
-        file = 1 # tracking for progress bar
+        file = 1 # NOTE: tracking for progress bar
         timed_out = False
 
         for item in self.collection:

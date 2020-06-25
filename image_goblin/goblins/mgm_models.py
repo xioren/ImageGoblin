@@ -1,5 +1,3 @@
-import json
-
 from goblins.meta import MetaGoblin
 
 
@@ -37,7 +35,7 @@ class MGMGoblin(MetaGoblin):
             else:
                 model = self.extract_model(target)
 
-                response = json.loads(self.get(f'{self.API_URL}/models/{model}').content)
+                response = self.parser.load_json(self.get(f'{self.API_URL}/models/{model}').content)
 
                 for section in ('images', 'polaroids', 'setcardImages'):
                     urls.extend(self.extract_images(response.get(section, {})))

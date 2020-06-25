@@ -12,29 +12,25 @@ class ASOSGoblin(MetaGoblin):
     NAME = 'asos goblin'
     ID = 'asos'
     QUERY = '?scl=1&qlt=100'
-    URL_BASE = 'https://images.asos-media.com/products/asos/'
+    URL_BASE = 'https://images.asos-media.com/products/asos'
 
     def __init__(self, args):
         super().__init__(args)
 
     def extract_id(self, url):
         '''extract image id from url'''
-        return self.parser.safe_search(r'\d+(?=-\d)', url) or self.parser.safe_search(r'(?<=/)\d{2,}', url)
+        return self.parser.regex_search(r'\d+(?=-\d)', url) or self.parser.regex_search(r'(?<=/)\d{2,}', url)
 
     def extract_color(self, url):
         '''extract color from url'''
         if 'asos.com' in url:
-            color = self.parser.safe_search(r'(?<=clr=)[a-z\s]+', url) \
-                    or self.parser.safe_search(r'(?<=-1-)[a-z\s]+', self.get(url).content)
+            color = self.parser.regex_search(r'(?<=clr=)[a-z\s]+', url) \
+                    or self.parser.regex_search(r'(?<=-1-)[a-z\s]+', self.get(url).content)
         else:
-            color = self.parser.safe_search(r'(?<=-1-)[a-z\d]+', url) \
-                    or self.parser.safe_search(r'(?<!/\d/\d)/[a-z\s]+(?=/[^/]+$)', url)
+            color = self.parser.regex_search(r'(?<=-1-)[a-z\d]+', url) \
+                    or self.parser.regex_search(r'(?<!/\d/\d)/[a-z\s]+(?=/[^/]+$)', url)
 
         return color.lstrip('/')
-
-    def form_url(self, id):
-        '''generate a url from an image id'''
-        return f'{self.URL_BASE}{id}{self.QUERY}'
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting urls')
@@ -44,9 +40,9 @@ class ASOSGoblin(MetaGoblin):
             id = self.extract_id(target)
 
             if color:
-                self.collect(self.form_url(f'{id}-1-{color}'))
+                self.collect(f'{self.URL_BASE}/{id}-1-{color}{self.QUERY}')
             for n in range(2, 5):
-                self.collect(self.form_url(f'{id}-{n}'))
+                self.collect(f'{self.URL_BASE}/{id}-{n}{self.QUERY}')
 
             self.delay()
 

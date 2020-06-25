@@ -1,5 +1,3 @@
-from re import sub
-
 from goblins.meta import MetaGoblin
 
 
@@ -19,11 +17,11 @@ class ListalGoblin(MetaGoblin):
 
     def extract_id(self, url):
         '''exract image number'''
-        return self.parser.safe_search(r'(?<=/)\d+(?![a-z])', url)
+        return self.parser.regex_search(r'(?<=/)\d+(?![a-z])', url)
 
     def extract_name(self, url):
         '''extract profile name'''
-        return self.parser.safe_search(fr'(?<={self.BASE_URL})[\w\-]+', url)
+        return self.parser.regex_search(fr'(?<={self.BASE_URL})[\w\-]+', url)
 
     def run(self):
         self.logger.log(1, self.NAME, 'collecting urls')
@@ -51,6 +49,6 @@ class ListalGoblin(MetaGoblin):
             self.delay()
 
         for url in urls:
-            self.collect(sub(r'\d+full', '3800full', url), filename=self.extract_id(url))
+            self.collect(self.parser.regex_sub(r'\d+full', '3800full', url), filename=self.extract_id(url))
 
         self.loot()

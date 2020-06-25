@@ -1,6 +1,3 @@
-import json
-
-from re import sub
 from urllib.parse import quote
 
 from goblins.meta import MetaGoblin
@@ -57,22 +54,22 @@ class PinterestGoblin(MetaGoblin):
             elif '/pin/' in target:
                 path, _, slug = self.extract_info(target)
 
-                response = json.loads(self.get('{}{}'.format(self.BASE_URL, self.PIN_RESOURCE_URL.format(path, slug))).content)
+                response = self.parser.load_json(self.get('{}{}'.format(self.BASE_URL, self.PIN_RESOURCE_URL.format(path, slug))).content)
                 urls.append(response['resource_response']['data']['images']['736x']['url'])
             else:
                 path, username, slug = self.extract_info(target)
                 if slug:
-                    init_response = json.loads(self.get('{}{}'.format(self.BASE_URL, self.BOARD_RESOURCE_URL.format(path, username, slug))).content)
+                    init_response = self.parser.load_json(self.get('{}{}'.format(self.BASE_URL, self.BOARD_RESOURCE_URL.format(path, username, slug))).content)
                     board_id = init_response['resource_response']['data']['id']
                     # pin_count = int(init_response['resource_response']['data']['pin_count'])
 
-                    media_response = json.loads(self.get('{}{}'.format(self.BASE_URL, self.BOARD_MEDIA_URL.format(path, board_id))).content)
+                    media_response = self.parser.load_json(self.get('{}{}'.format(self.BASE_URL, self.BOARD_MEDIA_URL.format(path, board_id))).content)
                     bookmark = media_response['resource_response'].get('bookmark')
                     urls.extend(self.extract_urls(media_response))
 
                     if bookmark: # more images to load (page scroll)
                         while True:
-                            media_response = json.loads(self.get('{}{}'.format(self.BASE_URL, self.BOOKMARKED_BOARD_MEDIA_URL.format(path, board_id, bookmark))).content)
+                            media_response = self.parser.load_json(self.get('{}{}'.format(self.BASE_URL, self.BOOKMARKED_BOARD_MEDIA_URL.format(path, board_id, bookmark))).content)
                             bookmark = media_response['resource_response'].get('bookmark')
                             urls.extend(self.extract_urls(media_response))
 
@@ -86,6 +83,6 @@ class PinterestGoblin(MetaGoblin):
             self.delay()
 
         for url in urls:
-            self.collect(sub(r'\d+x', 'originals', url))
+            self.collect(self.parser.regex_sub(r'\d+x', 'originals', url))
 
         self.loot()

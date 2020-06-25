@@ -2,7 +2,8 @@
 - handle iteration urls that contain #
 - more verbose logging and commenting
 - pixiv and danbooru?
-- path argument?
 - decrop queries instead of removing all together
-- overwrite option?
+- overwrite option
 - vk
+- rename various ids to common slug term
+- gifv support?

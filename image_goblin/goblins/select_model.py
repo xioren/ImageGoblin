@@ -1,5 +1,3 @@
-import json
-
 from goblins.meta import MetaGoblin
 
 
@@ -47,11 +45,11 @@ class SelectGoblin(MetaGoblin):
                 model = self.extract_model(target)
                 location = self.extract_location(target)
                 site_id = self.SITE_IDS[location]
-                model_id = self.parser.safe_search(r'(?<=gallery/)\d+|(?<=hero_image_file/)\d+', self.get(target).content)
+                model_id = self.parser.regex_search(r'(?<=gallery/)\d+|(?<=hero_image_file/)\d+', self.get(target).content)
 
                 query = {"query":"{solarnetModel(modelId: "+model_id+", siteSolarnetId: "+site_id+", site: \""+location+"\") { \n        id,\n        firstName,\n        lastName,\n        gender,\n        departmentId,\n        name,\n        slug,\n        bio,\n        image { url },\n        videos { url, type, image { url } },\n        heroImage { sizes { name, url }, orientation, file_dimensions_x, file_dimensions_y },\n        portfolio { url, orientation },\n        polaroids { url },\n        runways { url },\n        covers { url },\n        campaigns { url },\n        books { name, slug, images { url } },\n        measurements { label, value, humanValue, metric, imperial, ukSize },\n        instagram,\n        inTown,\n        uiControls,\n        uiLogoControls,\n        seo { \n        title,\n        description,\n        openGraphTitle,\n        openGraphDescription,\n        openGraphImage,\n        twitterTitle,\n        twitterDescription\n       }\n       }}"}
 
-                response = json.loads(self.post(self.API_URL, data=query).content)
+                response = self.parser.load_json(self.post(self.API_URL, data=query).content)
 
                 for image in response['data']['solarnetModel'].get('portfolio', ''):
                     urls.append(image.get('url', ''))

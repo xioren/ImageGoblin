@@ -13,5 +13,5 @@ class YargiciGoblin(EpsilonGoblin):
         super().__init__(args)
 
     def generate_modifiers(self, url):
-        id = int(self.parser.safe_search(self.MOD_PAT, url))
+        id = int(self.parser.regex_search(self.MOD_PAT, url))
         self.modifiers = [i for i in range(id - 7, id + 7)]
