@@ -7,7 +7,7 @@ from dispatching import Dispatcher
 
 parser = ArgumentParser(usage='goblin [URL] [OPTIONS]')
 
-parser.add_argument('-d', '--delay', help='integer delay ("-1" for randomized delay), default: 0', type=int, default=0)
+parser.add_argument('-d', '--delay', help='delay ("-1" for randomized delay), default: 0', type=float, default=0)
 
 parser.add_argument('--dir', nargs='+', help='specify name for the download directory (not path)', type=str, default='')
 
@@ -29,7 +29,7 @@ parser.add_argument('--login', help='log in to instagram', action='store_true')
 
 parser.add_argument('--mask', help='use a common user agent header', action='store_true')
 
-parser.add_argument('--minsize', help='minimum filesize to download (in bytes)', type=int, default=50000)
+parser.add_argument('--minsize', help='minimum filesize to download (in bytes)', type=int, default=30000)
 
 parser.add_argument('-m', '--mode', help='goblin dependant mode settings')
 

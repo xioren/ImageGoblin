@@ -18,7 +18,7 @@ class GiselaGoblin(MetaGoblin):
     def extract_slug(self, url):
         return self.parser.regex_search(r'[\w\-]+(?=.html)', url)
 
-    def run(self):
+    def main(self):
         self.logger.log(1, self.NAME, 'collecting urls')
         urls = []
 

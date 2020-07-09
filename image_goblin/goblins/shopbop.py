@@ -18,7 +18,7 @@ class ShopbopGoblin(MetaGoblin):
         '''prepare the url by removing cropping and mobile elements'''
         return self.parser.regex_sub(r'._\w+(_\w+)?_\w+_', '', url).replace('m.media', 'images-na.ssl-images').replace('2-1', '2-0')
 
-    def run(self):
+    def main(self):
         self.logger.log(1, self.NAME, 'collecting urls')
         urls = []
 

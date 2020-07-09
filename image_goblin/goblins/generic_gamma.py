@@ -1,5 +1,3 @@
-import re
-
 from goblins.meta import MetaGoblin
 
 # NOTE: scaling with q=100 gives higher resolution; investigate.
@@ -36,13 +34,13 @@ class GammaGoblin(MetaGoblin):
 
     def extract_parts(self, url):
         '''split the url into id, end'''
-        return re.split(self.ITER_PAT, url)
+        return self.parser.regex_split(self.ITER_PAT, url)
 
     def isolate(self, url):
         '''isolate the end of the url'''
-        return self.parser.safe_search(r'(?<=/)[^/]+\.jpe?g', url)
+        return self.parser.regex_search(r'(?<=/)[^/]+\.jpe?g', url)
 
-    def run(self):
+    def main(self):
         self.logger.log(1, self.NAME, 'collecting urls')
         urls = []
 
@@ -55,7 +53,7 @@ class GammaGoblin(MetaGoblin):
             self.delay()
 
         for url in urls:
-            if not re.search(f'(?:{self.IMG_PAT})', url):
+            if not self.parser.regex_search(f'(?:{self.IMG_PAT})', url, capture=False):
                 continue
 
             id, url_end = self.extract_parts(self.isolate(url))

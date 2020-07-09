@@ -1,5 +1,3 @@
-from re import split
-
 from goblins.meta import MetaGoblin
 
 # TODO: add bigcommerce cdn generic goblin
@@ -20,9 +18,9 @@ class AmericanApparelGoblin(MetaGoblin):
 
     def split_url(self, url):
         '''split url into base, end and sub out cropping'''
-        return split(r'_(0\d)?(?=_)', self.parser.regex_sub(r'(?<=stencil/)[^/]+', 'original', url), 1)
+        return self.parser.regex_split(r'_(0\d)?(?=_)', self.parser.regex_sub(r'(?<=stencil/)[^/]+', 'original', url), maxsplit=1)
 
-    def run(self):
+    def main(self):
         self.logger.log(1, self.NAME, 'collecting urls')
         urls = []
 

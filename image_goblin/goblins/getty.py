@@ -19,7 +19,7 @@ class GettyGoblin(MetaGoblin):
         id = self.parser.regex_search(r'id\d+', image)
         return f'https://media.gettyimages.com/photos/picture-{id}?s=2048x2048'
 
-    def run(self):
+    def main(self):
         self.logger.log(1, self.NAME, 'collecting urls')
         urls = []
 

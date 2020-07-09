@@ -35,7 +35,7 @@ class AlphaGoblin(MetaGoblin):
         '''remove cropping from url'''
         return self.parser.regex_sub(r'/(custom_)?cache.*?(?=/\w/\w/)', '', url)
 
-    def run(self):
+    def main(self):
         self.logger.log(1, self.NAME, 'collecting urls')
         urls = []
 

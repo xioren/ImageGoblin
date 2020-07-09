@@ -27,29 +27,23 @@ class IteratorGoblin(MetaGoblin):
         '''seperate url into base, iterable, end'''
         return url.split('#')
 
-    def strip_iterable(self, full_iterable):
-        '''strip leading zeros'''
-        if all(n == '0' for n in full_iterable):
-            return 0
-        return int(full_iterable.lstrip('0'))
-
     def increment_iterable(self, iterable):
         '''increment the iterable by blocksize'''
-        return str(self.strip_iterable(iterable) + self.block_size).zfill(len(iterable))
+        return str(int(iterable) + self.block_size).zfill(len(iterable))
 
     def generate_block(self, base, iterable, end):
         '''generate block of urls to iterate over'''
-        stripped_iter = self.strip_iterable(iterable)
+        # NOTE: integer with leading zeros stripped
+        real_iter = int(iterable)
+        filename = ''
 
-        for n in range(stripped_iter, stripped_iter + self.block_size, self.args['step']):
-            if self.is_unique:
-                filename = ''
-            else:
-                filename = str(n)
+        for n in range(real_iter, real_iter + self.block_size, self.args['step']):
+            if not self.is_unique:
+                filename = n
 
             self.collect(f'{base}{str(n).zfill(len(iterable))}{end}', filename=filename)
 
-    def run(self):
+    def main(self):
         '''main iteration method'''
         round = 1
         self.toggle_collecton_type() # convert collection to list so that urls are ordered
@@ -57,11 +51,12 @@ class IteratorGoblin(MetaGoblin):
         self.is_unique = self.unique(f'{base}{iterable}{end}', f'{base}{self.increment_iterable(iterable)}{end}')
 
         while True:
-            self.logger.log(1, self.NAME, 'iterating', f'round: {round} || block: {iterable}-{self.strip_iterable(iterable)+self.block_size-self.args["step"]}')
+            self.logger.log(1, self.NAME, 'iterating', f'round: {round} ' \
+                            f'| block: {iterable}-{int(iterable) + self.block_size-self.args["step"]}')
             self.generate_block(base, iterable, end)
 
-            timedout = self.loot(timeout=self.args['timeout'])
-            if timedout:
+            timed_out = self.loot(timeout=self.args['timeout'])
+            if timed_out:
                 self.logger.log(1, self.NAME, 'timed out', f'after {self.args["timeout"]} attempts')
                 return None
             else:

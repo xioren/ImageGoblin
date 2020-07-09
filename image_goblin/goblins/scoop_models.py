@@ -17,7 +17,7 @@ class ScoopGoblin(MetaGoblin):
         '''extract model slug from url'''
         return self.parser.regex_search(r'(?<=model/)[^/]+', url)
 
-    def run(self):
+    def main(self):
         self.logger.log(1, self.NAME, 'collecting urls')
         urls = []
 

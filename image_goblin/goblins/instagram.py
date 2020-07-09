@@ -3,6 +3,7 @@ from json import dumps
 from os.path import join
 from getpass import getpass
 from urllib.parse import quote, urljoin
+
 from goblins.meta import MetaGoblin
 
 # NOTE: deprecated pagination /?__a=1
@@ -24,8 +25,8 @@ class InstagramGoblin(MetaGoblin):
     # POST_URL = BASE_URL + '/graphql/query/?query_hash=1451128a3ce596b72f20c738dc7f0f73&variables={}'
     MEDIA_URL = BASE_URL + '/graphql/query/?query_hash=44efc15d3c13342d02df0b5a9fa3d33f&variables={}'
     # MEDIA_URL = BASE_URL + '/graphql/query/?query_hash=7c8a1055f69ff97dc201e752cf6f0093&variables={}' # private test
-    STORIES_REELS_IDS_URL = BASE_URL + '/graphql/query/?query_hash=d4d88dc1500312af6f937f7b804c68c&variables={}'
-    STORIES_REELS_MEDIA_URL = BASE_URL + '/graphql/query/?query_hash=0a85e6ea60a4c99edc58ab2f3d17cfdf&variables={}'
+    STORIES_IDS_URL = BASE_URL + '/graphql/query/?query_hash=d4d88dc1500312af6f937f7b804c68c&variables={}'
+    STORIES_MEDIA_URL = BASE_URL + '/graphql/query/?query_hash=0a85e6ea60a4c99edc58ab2f3d17cfdf&variables={}'
 
     def __init__(self, args):
         super().__init__(args)
@@ -50,6 +51,7 @@ class InstagramGoblin(MetaGoblin):
 
     def authenticate(self, login):
         '''login to instagram or authenticate as guest'''
+        # NOTE: csrf token doesnt seem necessary, at least while not logged in.
         response = self.get(self.BASE_URL, store_cookies=True)
         self.set_cookies()
 
@@ -60,7 +62,8 @@ class InstagramGoblin(MetaGoblin):
                 password = getpass(f'[{self.NAME}] password: ')
                 formatted_password = f"#PWD_INSTAGRAM_BROWSER:0:{int(time())}:{password}"
                 response = self.parser.load_json(self.post(self.LOGIN_URL,
-                                                           data={'username': username, 'enc_password': formatted_password},
+                                                           data={'username': username,
+                                                                 'enc_password': formatted_password},
                                                            store_cookies=True).content)
                 self.set_cookies()
                 del username, password
@@ -133,7 +136,7 @@ class InstagramGoblin(MetaGoblin):
 
             if 'entry_data' in data:
                 self.user_id = data['entry_data']['ProfilePage'][0]['graphql']['user']['id']
-                # self.rhx_gis = response.get('rhx_gis', '3c7ca9dcefcf966d11dacf1f151335e8')
+                self.rhx_gis = response.get('rhx_gis', '3c7ca9dcefcf966d11dacf1f151335e8')
                 return True
         self.logger.log(2, self.NAME, 'ERROR', 'failed to get user id')
         return False
@@ -155,7 +158,6 @@ class InstagramGoblin(MetaGoblin):
 
     def parse_profile(self):
         '''collect and parse instagram posts'''
-        # POST_PAT = re.compile(r'(?<="shortcode":")[^"]+')
         cursor = ''
 
         self.headers.update({'X-Requested-With': 'XMLHttpRequest'})
@@ -212,17 +214,17 @@ class InstagramGoblin(MetaGoblin):
 
     def get_main_stories(self):
         '''get main instagram stories'''
-        self.get_stories(self.STORIES_REELS_MEDIA_URL.format(quote('{{"reel_ids":["{}"],"tag_names":[],"location_ids":[],' \
-                                                                   '"highlight_reel_ids":[],"precomposed_overlay":false,' \
-                                                                   '"show_story_viewer_list":false,"stories_video_dash_manifest":false}}'.format(self.user_id), safe='"')))
+        self.get_stories(self.STORIES_MEDIA_URL.format(quote('{{"reel_ids":["{}"],"tag_names":[],"location_ids":[],' \
+                                                             '"highlight_reel_ids":[],"precomposed_overlay":false,' \
+                                                             '"show_story_viewer_list":false,"stories_video_dash_manifest":false}}'.format(self.user_id), safe='"')))
 
     def get_highlight_stories(self):
         '''get highlight instagram stories'''
         # NOTE: get highlight reels ids
-        response = self.parser.load_json(self.get(self.STORIES_REELS_IDS_URL.format(quote('{{"user_id":"{}","include_chaining":false,' \
-                                                                                          '"include_reel":false,"include_suggested_users":false,' \
-                                                                                          '"include_logged_out_extras":false,"include_highlight_reels":true,' \
-                                                                                          '"include_live_status":true}}'.format(self.user_id), safe='"'))).content)
+        response = self.parser.load_json(self.get(self.STORIES_IDS_URL.format(quote('{{"user_id":"{}","include_chaining":false,' \
+                                                                                    '"include_reel":false,"include_suggested_users":false,' \
+                                                                                    '"include_logged_out_extras":false,"include_highlight_reels":true,' \
+                                                                                    '"include_live_status":true}}'.format(self.user_id), safe='"'))).content)
 
         if 'data' in response:
             higlight_reels_ids = [item['node']['id'] for item in response['data']['user']['edge_highlight_reels']['edges']]
@@ -231,11 +233,11 @@ class InstagramGoblin(MetaGoblin):
 
             # NOTE: get media from reels
             for ids_chunk in ids_chunks:
-                self.get_stories(self.STORIES_REELS_MEDIA_URL.format(quote('{{"reel_ids":[],"tag_names":[],"location_ids":[],' \
-                                                                           '"highlight_reel_ids":["{}"],"precomposed_overlay":false,' \
-                                                                           '"show_story_viewer_list":false,"stories_video_dash_manifest":false}}'.format('","'.join(str(x) for x in ids_chunk)), safe='"')))
+                self.get_stories(self.STORIES_MEDIA_URL.format(quote('{{"reel_ids":[],"tag_names":[],"location_ids":[],' \
+                                                                     '"highlight_reel_ids":["{}"],"precomposed_overlay":false,' \
+                                                                     '"show_story_viewer_list":false,"stories_video_dash_manifest":false}}'.format('","'.join(str(x) for x in ids_chunk)), safe='"')))
 
-    def run(self):
+    def main(self):
         self.authenticate(self.args['login'])
 
         for target in self.args['targets'][self.ID]:
@@ -262,7 +264,6 @@ class InstagramGoblin(MetaGoblin):
                         self.parse_profile()
 
                 self.loot(save_loc=self.user_dir)
-                if not self.args['nodl']:
-                    self.move_vid(self.user_dir)
+                self.move_vid(self.user_dir)
         if self.logged_in:
             self.logout()

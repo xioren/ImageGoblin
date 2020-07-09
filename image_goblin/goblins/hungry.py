@@ -13,7 +13,7 @@ class HungryGoblin:
         self.meal = set()
         logger.log(0, self.NAME, 'deployed')
 
-    def run(self):
+    def main(self):
         while True:
             bite = input(f'[{self.NAME}] <feed me> ')
             if bite == '':

@@ -24,7 +24,7 @@ class MGMGoblin(MetaGoblin):
         '''extract images from json object'''
         return [f'{self.CDN_URL}/{image.get("url", "")}' for image in images]
 
-    def run(self):
+    def main(self):
         self.logger.log(1, self.NAME, 'collecting urls')
         urls = []
 

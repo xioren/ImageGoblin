@@ -7,7 +7,6 @@ class EtaGoblin(MetaGoblin):
         - image
         - webpage
     generic back-end for:
-        - ann summers
         - boohoo
         - nasty gal
     '''
@@ -15,7 +14,7 @@ class EtaGoblin(MetaGoblin):
     NAME = 'eta goblin'
     ID = 'eta'
     QUERY = '?scl=1&qlt=100'
-    URL_PAT = r'i\d\.adis\.ws/i/[a-z]+/[\w_]+'
+    URL_PAT = r'media.[a-z]+.com/i/[a-z]+/[\w_]+'
     MODIFIERS = [f'_{n}' for n in range(1, 10)]
 
     def __init__(self, args):
@@ -30,9 +29,9 @@ class EtaGoblin(MetaGoblin):
 
     def trim(self, url):
         '''trim the url down'''
-        return self.parser.safe_search(self.URL_PAT, url).rstrip("_s/").replace('media.nastygal.com', 'i1.adis.ws')
+        return self.parser.regex_search(self.URL_PAT, url).rstrip("_s/")
 
-    def run(self):
+    def main(self):
         self.logger.log(1, self.NAME, 'collecting urls')
         urls = []
 

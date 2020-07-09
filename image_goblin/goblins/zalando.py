@@ -28,13 +28,12 @@ class ZalandoGoblin(MetaGoblin):
         '''extract image id from url'''
         return self.parser.regex_search(self.ID_PAT, self.parser.extract_filename(url).upper())
 
-    def run(self):
+    def main(self):
         self.toggle_collecton_type()
         self.logger.log(1, self.NAME, 'collecting urls')
 
         for target in self.args['targets'][self.ID]:
             self.new_collection()
-            self.looted.clear()
 
             id = self.extract_id(target)
             if not id:

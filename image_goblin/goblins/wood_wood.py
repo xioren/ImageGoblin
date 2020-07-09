@@ -22,7 +22,7 @@ class WoodWoodGoblin(MetaGoblin):
         '''sub in higher resolution cropping and return filename'''
         return self.parser.regex_sub(r'\d+x\d+c', '1600x2400c', self.parser.extract_filename(url))
 
-    def run(self):
+    def main(self):
         self.logger.log(1, self.NAME, 'collecting urls')
         urls = []
 

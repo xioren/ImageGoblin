@@ -19,7 +19,7 @@ class VictoriasSecretGoblin(MetaGoblin):
     def __init__(self, args):
         super().__init__(args)
 
-    def run(self):
+    def main(self):
         self.logger.log(1, self.NAME, 'collecting urls')
         urls = []
         if self.args['noup']:
@@ -32,13 +32,16 @@ class VictoriasSecretGoblin(MetaGoblin):
                 self.logger.log(2, self.NAME, 'WARNING', 'image urls not fully supported', once=True)
                 urls.append(self.parser.regex_sub(r'p/\d+x\d+', dimensions, target.replace('dm.', 'www.')))
             else:
-                # NOTE: version is there too if needed; might always be V6.
+                # NOTE: version is there too if needed; used to be V6.
                 for path in self.parser.extract_by_regex(self.get(target).content, r'(?<="path":")page/[^"]+'):
-                    response = self.parser.load_json(self.get(f'{self.API_URL_BASE}/products/v6/{path}').content)
+                    response = self.parser.load_json(self.get(f'{self.API_URL_BASE}/products/v8/{self.parser.dequery(path)}?activeCountry=US').content)
                     if 'product' in response:
-                        for product in response['product'].get('purchasableImages', ''):
-                            for choice in product.get('choices', ''):
-                                for image in choice.get('images', ''):
+                        products = response['product'].get('productData', '')
+                        for product in products:
+                            choices = products[product].get('choices', '')
+                            for choice in choices:
+                                images = choices[choice].get('images', '')
+                                for image in images:
                                     urls.append(f'{self.URL_BASE}/p/{dimensions}/{image["image"]}.jpg')
 
             self.delay()

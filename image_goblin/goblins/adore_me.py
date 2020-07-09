@@ -18,7 +18,7 @@ class AdoreMeGoblin(MetaGoblin):
         '''extract slug from url'''
         return self.parser.dequery(url).rstrip('/').split('/')[-1]
 
-    def run(self):
+    def main(self):
         self.logger.log(1, self.NAME, 'collecting urls')
         urls = []
 

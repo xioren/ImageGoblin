@@ -38,7 +38,7 @@ class Dispatcher:
                 urls = set(file.read().splitlines())
         elif self.args['feed']:
             goblin = goblins['hungry'][1]
-            urls = goblin().run()
+            urls = goblin().main()
         else:
             urls = [self.args['url']]
 
@@ -69,4 +69,4 @@ class Dispatcher:
                 self.logger.log(0, self.NAME, 'ERROR', f'unkown goblin "{key}" ' \
                                 '-> use --list to see available goblins')
                 continue
-            goblin(self.args).run()
+            goblin(self.args).main()

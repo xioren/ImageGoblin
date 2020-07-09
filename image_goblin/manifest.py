@@ -2,7 +2,6 @@ from goblins.adore_me import AdoreMeGoblin
 from goblins.agent_provocateur import AgentProvocateurGoblin
 from goblins.american_apparel import AmericanApparelGoblin
 from goblins.ami_clubwear import AMIGoblin
-from goblins.ann_summers import AnnSummersGoblin
 from goblins.anthropologie import AnthropologieGoblin
 from goblins.arnhem import ArnhemGoblin
 from goblins.asos import ASOSGoblin
@@ -139,7 +138,6 @@ goblins = {
     'agentprovocateur': (r'agentprovocateur\.[a-z]+', AgentProvocateurGoblin),
     'americanapparel': (r'americanapparel\.[a-z]+', AmericanApparelGoblin),
     'amiclubwear': (r'amiclubwear\.[a-z]+', AMIGoblin),
-    'annsummers': (r'annsummers(\.[a-z]+|/)', AnnSummersGoblin),
     'anthropologie': (r'anthropologie(\.[a-z]+|/)', AnthropologieGoblin),
     'arnhem': (r'arnhem\.[a-z]+', ArnhemGoblin),
     'asos': (r'asos(-media)?\.[a-z]+', ASOSGoblin),

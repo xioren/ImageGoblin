@@ -10,14 +10,14 @@ class Parser:
     '''generic url/html parsing and manipulation utilities'''
 
     QUALITY_PAT = re.compile(r'q((ua)?li?ty)?=\d+')
-    FILTER_PAT = re.compile(r'(?:\.(js|css|pdf|php|html|svg(\+xml)?)|favicon|[{}]|\+[\w\.]+\+)', flags=re.IGNORECASE)
+    FILTER_PAT = re.compile(r'(?:\.(js|css|pdf|php|html|svg(\+xml)?)|favicon|[{}])', flags=re.IGNORECASE)
     MISC_REPLACEMENTS = {'amp;': '', 'background-image:url(': ''}
     ABSOLUTE_PAT = r'(?:/?[^/\.]+\.[^/]+(?=/))'
     CROPPING_PATS = (
         re.compile(r'[\-_]?((x+)?-?(?<!\w)l(arge)?(?!\w)|profile|square)(?![\w])[\-_/]?', flags=re.IGNORECASE),
         re.compile(r'[@\-_/]\d+x(\d+)?(?![a-z\d])'), # 000x000
         re.compile(r'expanded_[a-z]+/'),
-        re.compile(r'(?<=/)[a-z]_.+?/v\d/'), # cloudfront
+        re.compile(r'(?<=/)([a-z]_[a-z\d:]+,?)+/(v\d/)?'), # cloudfront (probably too general and will catch false positives)
         re.compile(r'/v/\d/.+\.webp$'),
         re.compile(r'-e\d+(?=\.)'),
         re.compile(r'(\.|-)\d+w'), # -000w
@@ -46,12 +46,12 @@ class Parser:
 
         def parse_elements(self):
             '''extract all elements from an html source'''
-            for element in [e.group() for e in re.finditer(self.ELEMENT_PAT, self.html)]:
+            for element in re.findall(self.ELEMENT_PAT, self.html):
                 tag = re.search(self.TAG_PAT, element).group()
                 if tag not in self.elements:
                     self.elements[tag] = {}
 
-                for attribute in [a.group() for a in re.finditer(self.ATTRIBUTE_PAT, element)]:
+                for attribute in re.findall(self.ATTRIBUTE_PAT, element):
                     attr, value = attribute.split('="')
                     if attr not in self.elements[tag]:
                         self.elements[tag][attr] = [value]
@@ -62,27 +62,25 @@ class Parser:
 # methods
 ####################################################################
 
-    def extract_by_tag(self, html, tags:'[(tag,attr)]'=None):
+    def extract_by_tag(self, html, tags:'list of (tag, attr) tuples'=None):
         '''extract from html by tag'''
-        if html:
-            html_parser = self.GoblinHTMLParser(html)
-            html_parser.parse_elements()
+        html_parser = self.GoblinHTMLParser(html)
+        html_parser.parse_elements()
 
-            if tags:
-                urls = []
-                for item in tags:
-                    tag, attr = item
-                    if tag in html_parser.elements:
-                        urls.extend(html_parser.elements[tag].get(attr))
-                return urls
-            else:
-                return html_parser.elements
-
-        return ''
+        if tags:
+            urls = []
+            for item in tags:
+                tag, attr = item
+                if tag in html_parser.elements:
+                    urls.extend(html_parser.elements[tag].get(attr))
+            return urls
+        else:
+            return html_parser.elements
 
     def extract_by_regex(self, html, pattern):
         '''extract from html by regex'''
-        return {url.replace('\\', '') for url in self.regex_findall(pattern, html)}
+        # NOTE: left in for compatibility, regex_findall does the work.
+        return self.regex_findall(pattern, html)
 
     def extract_filename(self, url):
         '''extract filename from url'''
@@ -106,7 +104,7 @@ class Parser:
     def make_url_safe(self, url):
         '''quote control characters in url (filename portion only)'''
         # NOTE: some morons have both quoted and unquoted control characters in the same url,
-        # easiest approach --> just unquote then requote all filenames.
+        # easiest approach --> unquote then requote all filenames.
         filename = self.extract_filename(url)
 
         return url.replace(filename, urllib.parse.quote(urllib.parse.unquote(filename)))
@@ -141,7 +139,7 @@ class Parser:
         for item in self.MISC_REPLACEMENTS:
             url = url.replace(item, self.MISC_REPLACEMENTS[item])
 
-        return self.make_url_safe(url).rstrip(')')
+        return self.make_url_safe(url.replace('\\', '').rstrip(')'))
 
     def make_unique(self, path):
         '''make filepath unique'''
@@ -155,32 +153,47 @@ class Parser:
 
     @staticmethod
     def valid_url(url):
-        '''test for url validity'''
-        parsed = urllib.parse.urlparse(url)
-        if not parsed.hostname:
+        '''test url validity'''
+        if not urllib.parse.urlparse(url).hostname:
             if not re.search(r'(?:(\.[a-z]+){1,2}/)', url):
                 return False
         return True
 
-    def regex_search(self, this, string):
+    def regex_search(self, this, string, capture=True):
         '''safely make one line regex searches'''
-        # QUESTION: keep?
         match = re.search(this, string)
         if match:
-            return match.group()
+            if capture:
+                return match.group()
+            return True
         return ''
 
     def regex_findall(self, this, string):
         '''safely make one line iterative regex searches'''
-        # QUESTION: keep?
         matches = re.finditer(this, string)
         if matches:
-            return [match.group() for match in matches]
-        return []
+            return {match.group() for match in matches}
+        return ''
 
     def regex_sub(self, this, that, string):
         '''make regex substitutions'''
         return re.sub(this, that, string)
+
+    def regex_split(self, this, string, maxsplit=0):
+        '''split a string via regex pattern'''
+        return re.split(this, string, maxsplit=maxsplit)
+
+    def regex_startswith(self, this, string):
+        '''check if string starts with regex pattern'''
+        return re.match(this, string)
+
+    def regex_pattern(self, string, ignore=0):
+        '''compile a regex pattern'''
+        if ignore:
+            flags = re.IGNORECASE
+        else:
+            flags = ignore
+        return re.compile(string, flags=flags)
 
     def filter(self, url):
         '''filter unwanted urls'''
@@ -204,6 +217,14 @@ class Parser:
             except json.JSONDecodeError:
                 return {}
 
+    def make_json(self, object):
+        '''convert to json'''
+        try:
+            return json.dumps(object)
+        except TypeError:
+            pass
+        return '{}'
+
     def user_format(self, url):
         '''add, substitute, or remove arbitrary elements from a url'''
         if self.user_formatting[0] == 'add':
@@ -223,6 +244,8 @@ class Parser:
 
         if 'acidimg' in url:
             url = url.replace('small', 'big')
+        elif 'i.f1g.fr' in url:
+            url = re.sub(r'madame/(x\d+/)?', 'madame/orig/', url)
         elif 'imagetwist' in url:
             url = url.replace('/th/', '/i/').replace('.jpg', '.JPG')
         elif 'imgbox' in url:
@@ -245,7 +268,7 @@ class Parser:
         elif 'redd.it' in url:
             url = self.dequery(url).replace('preview', 'i')
         elif 'cdn.shoplo' in url:
-            url = self.regex_sub(r'/th\d+/', '/orig/', url)
+            url = re.sub(r'/th\d+/', '/orig/', url)
         elif 'squarespace' in url:
             url += '?format=original'
         elif 'tumblr' in url:

@@ -28,7 +28,7 @@ class AgentProvocateurGoblin(MetaGoblin):
             return url.split(')/')[-1]
         return url
 
-    def run(self):
+    def main(self):
         self.logger.log(1, self.NAME, 'collecting urls')
         urls = []
 
@@ -40,7 +40,7 @@ class AgentProvocateurGoblin(MetaGoblin):
                     urls.append(f'{base}_ecom_{n}.jpg')
             else:
                 self.headers.update({'Content-Type': 'application/json'})
-                POST_DATA = json.dumps({"requests":[{"action":"route","children":[{"path":f"/{self.extract_path(target)}","_reqId":0}]}]})
+                POST_DATA = self.parser.make_json({"requests":[{"action":"route","children":[{"path":f"/{self.extract_path(target)}","_reqId":0}]}]})
                 response = self.parser.load_json(self.post(self.API_URL, data=POST_DATA).content)
 
                 for entry in response.get('catalog', ''):

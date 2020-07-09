@@ -40,5 +40,5 @@ class Logger:
         '''progress bar'''
         if not (self.verbose or self.silent or self.nodl):
             self.clear_line()
-            bar =  '#' * floor(current/total * 20)
-            print(f'[{caller}] <{msg}> [{bar.ljust(20, " ")}] {current} of {total}', end='\r')
+            bar = '█' * floor(current/total * 20)
+            print(f'[{caller}] <{msg}> |{bar.ljust(20, " ")}| {current} of {total}', end='\r')

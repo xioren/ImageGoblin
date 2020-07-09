@@ -22,7 +22,7 @@ class MarilynGoblin(MetaGoblin):
         polaroid_id = self.parser.regex_search(r'(?<="polaID":")\d+', url)
         return model_id, portfolio_id, polaroid_id
 
-    def run(self):
+    def main(self):
         self.logger.log(1, self.NAME, 'collecting urls')
         urls = []
 

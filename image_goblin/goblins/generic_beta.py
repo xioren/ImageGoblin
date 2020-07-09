@@ -33,7 +33,7 @@ class BetaGoblin(MetaGoblin):
         '''extract url base'''
         return self.parser.regex_sub(r'(?<=/)[^/]+$', '', url)
 
-    def run(self):
+    def main(self):
         self.logger.log(1, self.NAME, 'collecting urls')
         urls = []
 

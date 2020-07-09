@@ -1,5 +1,3 @@
-from re import split
-
 from goblins.meta import MetaGoblin
 
 # NOTE: used to use Inditex Group API
@@ -25,13 +23,13 @@ class ZaraGoblin(MetaGoblin):
         '''remove cropping from query string'''
         return self.parser.regex_sub(r'&imwidth=\d+', '', url)
 
-    def run(self):
+    def main(self):
         self.logger.log(1, self.NAME, 'collecting urls')
         urls = []
 
         for target in self.args['targets'][self.ID]:
             if 'static' in target:
-                url_base, url_end = split(r'_\d_\d_\d+', target)
+                url_base, url_end = self.parser.regex_split(r'_\d_\d_\d+', target)
 
                 for mod in self.MODIFIERS:
                     urls.append(f'{url_base}{mod}{self.SIZE}{self.trim(url_end)}')

@@ -18,7 +18,7 @@ class TisjaDamenGoblin(MetaGoblin):
         '''seperate image from rest url'''
         return self.parser.regex_search(r'(?<=/)[^/]+$', url)
 
-    def run(self):
+    def main(self):
         self.logger.log(1, self.NAME, 'collecting urls')
         urls = []
 

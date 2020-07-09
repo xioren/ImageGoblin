@@ -23,7 +23,6 @@ class MetaGoblin:
 
     def __init__(self, args):
         self.args = args
-        self.looted = []
         self.collection = set()
         self.MIN_SIZE = self.args['minsize']
 
@@ -89,14 +88,15 @@ class MetaGoblin:
 
     def move_vid(self, path=None):
         '''move mp4 files into seperate directory'''
-        if not path:
-            path = self.path_main
-        vid_dir = os.path.join(path, 'vid')
-        self.make_dirs(vid_dir)
+        if not self.args['nodl']:
+            if not path:
+                path = self.path_main
+            vid_dir = os.path.join(path, 'vid')
+            self.make_dirs(vid_dir)
 
-        for file in os.listdir(path):
-            if '.mp4' in file:
-                move(os.path.join(path, file), vid_dir)
+            for file in os.listdir(path):
+                if '.mp4' in file:
+                    move(os.path.join(path, file), vid_dir)
 
     def make_dirs(self, *paths):
         '''creates directories'''
@@ -121,7 +121,6 @@ class MetaGoblin:
     def new_collection(self):
         '''initialize a new collection'''
         self.collection.clear()
-        self.looted.clear()
 
     def unzip(data):
         '''gzip decompression'''
@@ -167,30 +166,29 @@ class MetaGoblin:
             cookie_string = '; '.join(f'{key}={value}' for key, value in current_values.items())
             self.headers[cookie] = cookie_string
 
-    def request_handler(self, method, *args, attempt=0, **kwargs):
+    def request_handler(self, method, url, *args, attempt=0, **kwargs):
         '''make an http request'''
-        # NOTE: args[0] == url
         try:
-            request = Request(self.parser.add_scheme(args[0]), kwargs['data'], self.headers)
+            request = Request(self.parser.add_scheme(url), kwargs['data'], self.headers)
         except ValueError as e:
-            self.logger.log(2, self.NAME, e, args[0])
+            self.logger.log(2, self.NAME, e, url)
             return None
 
         try:
             with closing(urlopen(request, timeout=20)) as response:
                 if kwargs['store_cookies']:
                     self.cookie_jar.extract_cookies(response, request)
-                return method(response, *args, **kwargs)
+                return method(response, url, *args, **kwargs)
         except HTTPError as e:
-            self.logger.log(2, self.NAME, e, args[0])
+            self.logger.log(2, self.NAME, e, url)
             if e.code == 502:
                 # NOTE: servers sometimes return 502 when requesting large files, retrying usually works.
-                return self.retry(method, *args, attempt=attempt+1, **kwargs)
+                return self.retry(method, url, *args, attempt=attempt+1, **kwargs)
         except (timeout, URLError):
-            return self.retry(method, *args, attempt=attempt+1, **kwargs)
+            return self.retry(method, url, *args, attempt=attempt+1, **kwargs)
         except Exception as e:
             # NOTE: too many possible exceptions to catch individually -> use catchall
-            self.logger.log(2, self.NAME, e, args[0])
+            self.logger.log(2, self.NAME, e, url)
 
     def get(self, url, store_cookies=False):
         '''make a get request'''
@@ -230,11 +228,11 @@ class MetaGoblin:
     def downloader(self, response, url, filepath, *args, attempt=0, **kwargs):
         '''download web content'''
         # NOTE: default buffer == 8192
-        filename = f'{self.parser.extract_filename(filepath)}{self.parser.extension(filepath)}'
+        filename = self.parser.extract_filename(filepath)
         length = int(response.info().get('Content-Length', -1))
         read = 0
 
-        if length < self.MIN_SIZE:
+        if length >= 0 and length < self.MIN_SIZE:
             self.logger.log(2, self.NAME, 'skipping small file', filename)
             return None
 
@@ -257,9 +255,9 @@ class MetaGoblin:
         if length >= 0 and read < length:
             self.logger.log(2, self.NAME, 'incomplete read', filename)
             # NOTE: untested
+            # TODO: add seek?
             return self.retry(downloader, url, filepath, *args, attempt=attempt+1, **kwargs)
 
-        self.looted.append(filepath)
         return True
 
     def write_file(self, content, path, iter=False):
@@ -299,14 +297,14 @@ class MetaGoblin:
             if guessed_ext and guessed_ext != header_ext:
                 filepath = filepath.replace(guessed_ext, header_ext)
             elif not guessed_ext:
-                # BUG: can cause duplicate extensions in some cases
+                # BUG: can cause multiple extensions in some cases
                 filepath = f'{filepath}{header_ext}'
 
         return filepath
 
     def collect(self, url, filename='', clean=False):
         '''finalize and add urls to the collection'''
-        if self.parser.filter(url):
+        if self.parser.filter(url) or not self.parser.valid_url(url):
             return None
 
         if clean:
@@ -325,9 +323,11 @@ class MetaGoblin:
 
     def loot(self, save_loc=None, timeout=0):
         '''retrieve resources from collected urls'''
-        failed = 0
         file = 1 # NOTE: tracking for progress bar
+        looted, failed = 0, 0
         timed_out = False
+        if not save_loc:
+            save_loc = self.path_main
 
         for item in self.collection:
             self.logger.progress(self.NAME, 'looting', file, len(self.collection))
@@ -342,10 +342,7 @@ class MetaGoblin:
                 print(url, end='\n\n')
                 continue
 
-            if not save_loc:
-                save_loc = self.path_main
             filepath = os.path.join(save_loc, filename)
-
             if os.path.exists(filepath):
                 if self.args['noskip'] or self.args['filename']:
                     filepath = self.parser.make_unique(filepath)
@@ -357,6 +354,7 @@ class MetaGoblin:
             if attempt:
                 self.logger.log(2, self.NAME, 'looted', filename)
                 failed = 0
+                looted += 1
             else:
                 failed += 1
 
@@ -366,6 +364,6 @@ class MetaGoblin:
         if self.args['nodl']:
             self.logger.log(1, self.NAME, 'info', f'{len(self.collection)} urls(s) collected', clear=True)
         else:
-            self.logger.log(1, self.NAME, 'complete', f'{len(self.looted)} file(s) looted', clear=True)
+            self.logger.log(1, self.NAME, 'complete', f'{looted} file(s) looted', clear=True)
 
         return timed_out

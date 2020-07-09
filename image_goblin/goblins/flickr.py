@@ -19,7 +19,7 @@ class FlickrGoblin(MetaGoblin):
         '''extract image id from url'''
         return self.parser.regex_search(r'(?<=photos/)\w+/\d+', url).split('/')[1]
 
-    def run(self):
+    def main(self):
         self.logger.log(1, self.NAME, 'collecting urls')
         urls = []
 

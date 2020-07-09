@@ -50,7 +50,7 @@ class ThetaGoblin(MetaGoblin):
         '''remove variant hash'''
         return self.parser.regex_sub(r'_[a-z\d]+(\-[a-z\d]+){4}', '', url)
 
-    def run(self):
+    def main(self):
         self.logger.log(1, self.NAME, 'collecting urls')
         urls = []
 

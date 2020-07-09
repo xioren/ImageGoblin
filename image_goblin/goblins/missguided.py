@@ -19,7 +19,7 @@ class MissguidedGoblin(MetaGoblin):
         '''extract image id from url'''
         return self.parser.regex_search(r'[A-Z\d]+', url).upper()
 
-    def run(self):
+    def main(self):
         self.logger.log(1, self.NAME, 'collecting urls')
         urls = []
 

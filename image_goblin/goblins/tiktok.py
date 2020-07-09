@@ -26,7 +26,7 @@ class TikTokGoblin(MetaGoblin):
         self.MIN_SIZE = 0
         self.count = self.args['posts'] if self.args['posts'] < 100 else 100
 
-    def run(self):
+    def main(self):
         self.logger.log(1, self.NAME, 'collecting urls')
         urls = []
 
@@ -39,7 +39,7 @@ class TikTokGoblin(MetaGoblin):
                 urls.append(target)
                 self.logger.log(2, self.NAME, 'WARNING', 'video urls not fully supported', once=True)
             else:
-                # NOTE: get user id using username
+                # NOTE: get user id
                 init_response = self.parser.load_json(self.get(self.API_USER_URL.format(username)).content)
 
                 if 'userInfo' in init_response:
@@ -56,7 +56,7 @@ class TikTokGoblin(MetaGoblin):
                             # NOTE: dynamicCover are moving webp images
                             # NOTE: cover and originCover are often the same
                             for key in ('cover', 'originCover', 'downloadAddr'):
-                                urls.append(item['video'][key])
+                                self.collect(item['video'][key])
 
                         if not response.get('hasMore') or self.count < 100:
                             break
@@ -66,10 +66,8 @@ class TikTokGoblin(MetaGoblin):
                         # min_cursor = response['minCursor']
 
                         self.delay()
-
-        for url in urls:
-            self.collect(url)
+                elif init_response.get('statusCode') == 10202:
+                    self.logger.log(0, self.NAME, 'ERROR', f'user not found: {username}')
 
         self.loot(save_loc=user_dir)
-        if not self.args['nodl']:
-            self.move_vid(user_dir)
+        self.move_vid(user_dir)

@@ -24,7 +24,7 @@ class TopshopGoblin(MetaGoblin):
         brand_code = path[1]
         return '/'.join(path), brand_code
 
-    def run(self):
+    def main(self):
         self.logger.log(1, self.NAME, 'collecting urls')
         urls = []
 

@@ -23,7 +23,7 @@ class ListalGoblin(MetaGoblin):
         '''extract profile name'''
         return self.parser.regex_search(fr'(?<={self.BASE_URL})[\w\-]+', url)
 
-    def run(self):
+    def main(self):
         self.logger.log(1, self.NAME, 'collecting urls')
         urls = []
 

@@ -33,7 +33,7 @@ class SelectGoblin(MetaGoblin):
         '''extract model name from url'''
         return url.rstrip('/').split('/')[-1]
 
-    def run(self):
+    def main(self):
         self.logger.log(1, self.NAME, 'collecting urls')
         urls = []
 

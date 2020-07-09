@@ -18,7 +18,7 @@ class FrancinaGoblin(MetaGoblin):
         '''extract model id from url'''
         return url.split('-')[1].split('/')[-1]
 
-    def run(self):
+    def main(self):
         self.logger.log(1, self.NAME, 'collecting urls')
         urls = []
 

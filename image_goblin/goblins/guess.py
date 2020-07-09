@@ -18,7 +18,7 @@ class GuessGoblin(MetaGoblin):
         '''decrop and return url base'''
         return self.parser.regex_sub(r'(?<=upload/).+/v1/|-ALT\d', '', self.parser.dequery(url))
 
-    def run(self):
+    def main(self):
         self.logger.log(1, self.NAME, 'collecting urls')
         urls = []
 

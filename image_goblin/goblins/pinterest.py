@@ -44,7 +44,7 @@ class PinterestGoblin(MetaGoblin):
 
         return urls
 
-    def run(self):
+    def main(self):
         self.logger.log(1, self.NAME, 'collecting urls')
         urls = []
 

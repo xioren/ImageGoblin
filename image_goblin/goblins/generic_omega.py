@@ -1,5 +1,3 @@
-import re
-
 from goblins.meta import MetaGoblin
 
 
@@ -14,13 +12,14 @@ class OmegaGoblin(MetaGoblin):
     ID = 'generic'
 
     FILETYPES = r'\.(jpe?g|png|gif|mp4|web[pm]|tiff?|mov|svg|bmp|exif)'
-    URL_PAT = re.compile(fr'[^"\(\'\n\s\[;:]+?/[^"]+?\.jpg(\?[^"\s\n\'\)]+)?', flags=re.IGNORECASE)
-    ATTR_PAT = re.compile(r'(?:src(?![a-z])|data(?![a-z\-])|data-(src(?!set)|lazy|url|original)' \
-                          r'|content(?![a-z\-])|hires(?![a-z\-]))')
-    TAG_PAT = re.compile('(?:a(?![a-z])|ima?ge?|video|source|div)')
 
     def __init__(self, args):
         super().__init__(args)
+        self.URL_PAT = self.parser.regex_pattern(fr'[^"\(\'\n\s\[;:]+?/[^"]+?{self.FILETYPES}(\?[^"\s\n\'\)]+)?', ignore=True)
+        self.IMG_PAT = self.parser.regex_pattern(f'(?:{self.FILETYPES}|/upload/|/image/)', ignore=True)
+        self.ATTR_PAT = self.parser.regex_pattern(r'(?:src(?![a-z])|data(?![a-z\-])|data-(src(?!set)|lazy|url|original)' \
+                                                  r'|content(?![a-z\-])|hires(?![a-z\-]))')
+        self.TAG_PAT = self.parser.regex_pattern('(?:a(?![a-z])|ima?ge?|video|source|div)')
 
     def format(self, url):
         '''format a url either automatically or via user input'''
@@ -37,9 +36,9 @@ class OmegaGoblin(MetaGoblin):
         elements = self.parser.extract_by_tag(self.get(url).content)
 
         for tag in elements:
-            if re.match(self.TAG_PAT, tag):
+            if self.parser.regex_startswith(self.TAG_PAT, tag):
                 for attribute in elements[tag]:
-                    if re.match(self.ATTR_PAT, attribute):
+                    if self.parser.regex_startswith(self.ATTR_PAT, attribute):
                         urls.extend(elements[tag][attribute])
 
         for url in urls:
@@ -54,11 +53,11 @@ class OmegaGoblin(MetaGoblin):
                 url = url.split('.php?img=')[1]
             self.collect(self.format(url), filename=self.args['filename'])
 
-    def run(self):
+    def main(self):
         self.logger.log(1, self.NAME, 'collecting urls')
 
         for target in self.args['targets'][self.ID]:
-            if re.search(f'(?:{self.FILETYPES}|/upload/|/image/)', target, re.IGNORECASE):
+            if self.parser.regex_search(self.IMG_PAT, target):
                 self.collect(self.format(target))
             else:
                 if self.args['greedy']:

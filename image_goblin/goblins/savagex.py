@@ -20,7 +20,7 @@ class SavageXGoblin(MetaGoblin):
         '''extract product id from url'''
         return self.parser.dequery(url).split('-')[-1]
 
-    def run(self):
+    def main(self):
         self.logger.log(1, self.NAME, 'collecting urls')
         urls = []
 

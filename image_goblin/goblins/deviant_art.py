@@ -21,7 +21,7 @@ class DeviantArtGoblin(MetaGoblin):
         '''remove cropping'''
         return self.parser.regex_sub(r'/v1/[^\?]+(?=\?)', '', url)
 
-    def run(self):
+    def main(self):
         self.logger.log(1, self.NAME, 'collecting urls')
         urls = []
 

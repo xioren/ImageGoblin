@@ -1,7 +1,6 @@
 # ImageGoblin
 
-#### changelog v0.3.8:
-+ added incomplete download handling
+#### changelog v0.3.9:
 + ongoing centralization of imports
 + new goblins
 + bug fixes
@@ -28,14 +27,14 @@
   image-goblin --local urls.txt
   ```
 
-+ *generic:* for any site without a specific goblin. by default, this goblin will automatically try to remove common cropping. using the '--format' option overrides this functionality and instead formats according to user input modifier(s). the usage format for this is '--format _mode_ _modifier_[ _replacement_]'. 'add _modifier_' will append the modifier to the end of the url; for example a query string. 'sub _modifier_ _replacement_' substitutes, while 'rem _modifier_' removes. the modifier can be a regular string or regex pattern. using the --noup flag prevents any automatic manipulation of urls. you can also enforce greedy mode with --greedy; sometimes this will find more images.
++ *generic:* for any site without a specific goblin. by default, this goblin will automatically try to remove common cropping. using the '--format' option overrides this functionality and instead formats according to user input modifier(s). the usage format for this is '--format _mode_ _modifier_[ _replacement_]'. 'add _modifier_' will append the modifier to the end of the url; for example a query string. 'sub _modifier_ _replacement_' substitutes, while 'rem _modifier_' removes. the modifier can be a regular string or regex pattern. using the --noup flag prevents any automatic manipulation of urls. you can also enforce greedy mode with --greedy; sometimes this will find more images. be sure to quote the pattern as some terminals will remove backslashes.
 
   *examples:*
 
   ```
   image-goblin https://website.com/pages/somewebpage.html -f rem -300x300
 
-  image-goblin https://website.com/uploads/image_01.jpg?size=small --format sub size=\w+ size=large
+  image-goblin https://website.com/uploads/image_01.jpg?size=small --format sub 'size=\w+' size=large
   ```
 
 + *iterate:* when provided a url to a single image url, the program will try to download that image and all other images with the same url structure that are on the server (but not necessarily displayed on the website). the iterable needs to be surrounded by '#' on either side when input to indicate the portion of the url to be iterated. use the --step argument to set step size (default 1); negative values will iterate down.

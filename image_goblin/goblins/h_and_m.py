@@ -20,7 +20,7 @@ class HMGoblin(MetaGoblin):
         '''extract source path from url'''
         return self.parser.regex_search(r'source\[[\w\./]+\]', url).replace('source[', '').rstrip(']')
 
-    def run(self):
+    def main(self):
         self.logger.log(1, self.NAME, 'collecting urls')
         urls = []
 
