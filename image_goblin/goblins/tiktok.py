@@ -6,7 +6,7 @@ from goblins.meta import MetaGoblin
 # QUESTION: what is secUid for?
 # TODO: handle single posts?
 # NOTE: remove watermark with "https://api2.musical.ly/aweme/v1/playwm/?video_id=" (doesnt seem to work)
-# QUESTION: type=1 recent posts?
+# QUESTION: type=1 == recent posts?
 
 
 class TikTokGoblin(MetaGoblin):

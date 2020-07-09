@@ -140,11 +140,6 @@ class MetaGoblin:
             if cookie.name == name:
                 return cookie.value
 
-                def set_cookies(self):
-                    '''parse reponse headers and set cookies'''
-                    for cookie in self.cookie_jar:
-                        self.extend_cookie('Cookie', f'{cookie.name}={cookie.value}')
-
     def set_cookies(self):
         '''parse reponse headers and set cookies'''
         for cookie in self.cookie_jar:
@@ -304,7 +299,8 @@ class MetaGoblin:
 
     def collect(self, url, filename='', clean=False):
         '''finalize and add urls to the collection'''
-        if self.parser.filter(url) or not self.parser.valid_url(url):
+        if self.parser.filter(url):
+            # FIXME: adding valid url check here wrongly filters relative urls
             return None
 
         if clean:

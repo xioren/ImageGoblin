@@ -1,14 +1,13 @@
 # ImageGoblin
 
-#### changelog v0.3.9:
-+ ongoing centralization of imports
-+ new goblins
+#### changelog v0.3.10:
++ fixed relative urls being rejected
 + bug fixes
 + misc code clean up and improvements
 
 ### This Program:
 + is a web scraping tool specifically for the discovery and retrieval of images on a web server, in the highest possible quality
-+ is designed according to my own personal needs
++ is a personal project designed according to my own needs
 + is a work in progress
 
 ### Requirements
@@ -37,7 +36,7 @@
   image-goblin https://website.com/uploads/image_01.jpg?size=small --format sub 'size=\w+' size=large
   ```
 
-+ *iterate:* when provided a url to a single image url, the program will try to download that image and all other images with the same url structure that are on the server (but not necessarily displayed on the website). the iterable needs to be surrounded by '#' on either side when input to indicate the portion of the url to be iterated. use the --step argument to set step size (default 1); negative values will iterate down.
++ *iterate:* when provided a url to a single image, the program will try to download that image and all other images with the same url structure that are on the server (but not necessarily displayed on the website). the iterable needs to be surrounded by '#' on either side when input to indicate the portion of the url to be iterated. use the --step argument to set step size (default 1); negative values will iterate down. set --timeout 0 to prevent timing out.
 
   *example:*
 

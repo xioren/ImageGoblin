@@ -15,7 +15,7 @@ class OmegaGoblin(MetaGoblin):
 
     def __init__(self, args):
         super().__init__(args)
-        self.URL_PAT = self.parser.regex_pattern(fr'[^"\(\'\n\s\[;:]+?/[^"]+?{self.FILETYPES}(\?[^"\s\n\'\)]+)?', ignore=True)
+        self.URL_PAT = self.parser.regex_pattern(fr'[^"\s\n\']+?{self.FILETYPES}(\?[^"\s\n\'\)]+)?', ignore=True)
         self.IMG_PAT = self.parser.regex_pattern(f'(?:{self.FILETYPES}|/upload/|/image/)', ignore=True)
         self.ATTR_PAT = self.parser.regex_pattern(r'(?:src(?![a-z])|data(?![a-z\-])|data-(src(?!set)|lazy|url|original)' \
                                                   r'|content(?![a-z\-])|hires(?![a-z\-]))')
@@ -42,7 +42,7 @@ class OmegaGoblin(MetaGoblin):
                         urls.extend(elements[tag][attribute])
 
         for url in urls:
-            self.collect(self.format(url.replace('\\', '')), filename=self.args['filename'])
+            self.collect(self.format(url), filename=self.args['filename'])
 
     def find_urls_greedy(self, url):
         '''greedily find and collect urls'''

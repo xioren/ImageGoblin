@@ -40,8 +40,8 @@ class MGMGoblin(MetaGoblin):
                 for section in ('images', 'polaroids', 'setcardImages'):
                     urls.extend(self.extract_images(response.get(section, {})))
 
-                for video in response.get('videos', ''):
-                    self.logger.log(1, self.NAME, 'video url', f'https://player.vimeo.com/video/{video["url"]}')
+                # for video in response.get('videos', ''):
+                #     self.logger.log(1, self.NAME, 'video url', f'https://player.vimeo.com/video/{video["url"]}')
 
             self.delay()
 
