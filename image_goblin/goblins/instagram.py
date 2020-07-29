@@ -6,7 +6,7 @@ from urllib.parse import quote, urljoin
 
 from goblins.meta import MetaGoblin
 
-# NOTE: deprecated pagination /?__a=1
+# NOTE: pagination /?__a=1
 # NOTE: ig_id
 
 class InstagramGoblin(MetaGoblin):
@@ -24,7 +24,7 @@ class InstagramGoblin(MetaGoblin):
     SEARCH_URL = BASE_URL + '/web/search/topsearch/?query='
     # POST_URL = BASE_URL + '/graphql/query/?query_hash=1451128a3ce596b72f20c738dc7f0f73&variables={}'
     MEDIA_URL = BASE_URL + '/graphql/query/?query_hash=44efc15d3c13342d02df0b5a9fa3d33f&variables={}'
-    # MEDIA_URL = BASE_URL + '/graphql/query/?query_hash=7c8a1055f69ff97dc201e752cf6f0093&variables={}' # private test
+    # TAGGED_URL = BASE_URL + '/graphql/query/?query_hash=ff260833edf142911047af6024eb634a&variables={}'
     STORIES_IDS_URL = BASE_URL + '/graphql/query/?query_hash=d4d88dc1500312af6f937f7b804c68c&variables={}'
     STORIES_MEDIA_URL = BASE_URL + '/graphql/query/?query_hash=0a85e6ea60a4c99edc58ab2f3d17cfdf&variables={}'
 
@@ -175,6 +175,7 @@ class InstagramGoblin(MetaGoblin):
 
             response = self.parser.load_json(self.get(self.MEDIA_URL.format(quote(variables, safe='"'))).content)
             if 'data' in response:
+                # NOTE: 'edge_user_to_photos_of_you' for tagged media
                 for edge in response['data']['user']['edge_owner_to_timeline_media'].get('edges', ''):
                     self.extract_media(edge)
                     if 'edge_sidecar_to_children' in edge.get('node', ''): # post has multiple images/videos

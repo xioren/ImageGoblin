@@ -1,8 +1,6 @@
 from goblins.meta import MetaGoblin
 
 
-# NOTE: {"query":"{model(slug: \""+model+"\", site: \""+location+"\", siteSolarnetId: "+site_id+") { \n       id\n       }}"}
-
 class SelectGoblin(MetaGoblin):
     '''accepts:
         - image
@@ -11,16 +9,18 @@ class SelectGoblin(MetaGoblin):
 
     NAME = 'select goblin'
     ID = 'select'
-    API_URL = 'https://selectmodel.com/graphql'
-    SITE_IDS = {'atlanta': '6',
-                'chicago': '7',
-                'london': '9',
-                'los-angeles': '8',
-                'miami': '5',
-                'milano': '4',
-                'model': 'null',
-                'paris': '3',
-                'stockholm': '2'}
+    # NOTE: old
+    # API_URL = 'https://selectmodel.com/graphql'
+    API_URL = 'https://cms-select.patr.onl/api/graphql.php'
+    # SITE_IDS = {'atlanta': '6',
+    #             'chicago': '7',
+    #             'london': '9',
+    #             'los-angeles': '8',
+    #             'miami': '5',
+    #             'milano': '4',
+    #             'model': 'null',
+    #             'paris': '3',
+    #             'stockholm': '2'}
 
     def __init__(self, args):
         super().__init__(args)
@@ -44,23 +44,24 @@ class SelectGoblin(MetaGoblin):
             else:
                 model = self.extract_model(target)
                 location = self.extract_location(target)
-                site_id = self.SITE_IDS[location]
-                model_id = self.parser.regex_search(r'(?<=gallery/)\d+|(?<=hero_image_file/)\d+', self.get(target).content)
+                # site_id = self.SITE_IDS[location]
+                # model_id = self.parser.regex_search(r'(?<=gallery/)\d+|(?<=hero_image_file/)\d+', self.get(target).content)
 
-                query = {"query":"{solarnetModel(modelId: "+model_id+", siteSolarnetId: "+site_id+", site: \""+location+"\") { \n        id,\n        firstName,\n        lastName,\n        gender,\n        departmentId,\n        name,\n        slug,\n        bio,\n        image { url },\n        videos { url, type, image { url } },\n        heroImage { sizes { name, url }, orientation, file_dimensions_x, file_dimensions_y },\n        portfolio { url, orientation },\n        polaroids { url },\n        runways { url },\n        covers { url },\n        campaigns { url },\n        books { name, slug, images { url } },\n        measurements { label, value, humanValue, metric, imperial, ukSize },\n        instagram,\n        inTown,\n        uiControls,\n        uiLogoControls,\n        seo { \n        title,\n        description,\n        openGraphTitle,\n        openGraphDescription,\n        openGraphImage,\n        twitterTitle,\n        twitterDescription\n       }\n       }}"}
+                # query = {"query":"{solarnetModel(modelId: "+model_id+", siteSolarnetId: "+site_id+", site: \""+location+"\") { \n        id,\n        firstName,\n        lastName,\n        gender,\n        departmentId,\n        name,\n        slug,\n        bio,\n        image { url },\n        videos { url, type, image { url } },\n        heroImage { sizes { name, url }, orientation, file_dimensions_x, file_dimensions_y },\n        portfolio { url, orientation },\n        polaroids { url },\n        runways { url },\n        covers { url },\n        campaigns { url },\n        books { name, slug, images { url } },\n        measurements { label, value, humanValue, metric, imperial, ukSize },\n        instagram,\n        inTown,\n        uiControls,\n        uiLogoControls,\n        seo { \n        title,\n        description,\n        openGraphTitle,\n        openGraphDescription,\n        openGraphImage,\n        twitterTitle,\n        twitterDescription\n       }\n       }}"}
+
+                query = self.parser.make_json({"operationName":"MODEL_QUERY","variables":{"modelUri":f"{model}","site":f"{location}"},"query":"query MODEL_QUERY($modelUri: String, $site: String) {\n  model(modelUri: $modelUri, site: $site) {\n    id\n    gender\n    firstName\n    lastName\n    slug\n    inTown\n    uiColour\n    uiLogoColour\n    bio\n    image {\n      ... on Image {\n        sourceUrl\n        __typename\n      }\n      __typename\n    }\n    heroImage {\n      ... on Image {\n        sourceUrl\n        width\n        height\n        __typename\n      }\n      __typename\n    }\n    heroImageDesktop {\n      ... on Image {\n        sourceUrl\n        width\n        height\n        __typename\n      }\n      __typename\n    }\n    portfolio {\n      ... on Image {\n        sourceUrl\n        orientation\n        __typename\n      }\n      __typename\n    }\n    polaroids {\n      ... on Image {\n        sourceUrl\n        __typename\n      }\n      __typename\n    }\n    runways {\n      ... on Image {\n        sourceUrl\n        __typename\n      }\n      __typename\n    }\n    covers {\n      ... on Image {\n        sourceUrl\n        __typename\n      }\n      __typename\n    }\n    campaigns {\n      ... on Image {\n        sourceUrl\n        __typename\n      }\n      __typename\n    }\n    videos {\n      ... on Video {\n        sourceUrl\n        videoType\n        __typename\n      }\n      __typename\n    }\n    books {\n      name\n      slug\n      assets {\n        ... on Image {\n          sourceUrl\n          __typename\n        }\n        ... on Video {\n          sourceUrl\n          videoType\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    measurements {\n      fieldName\n      fieldValue\n      fieldValueHuman {\n        us\n        metric\n        uk\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}\n"})
 
                 response = self.parser.load_json(self.post(self.API_URL, data=query).content)
 
-                for image in response['data']['solarnetModel'].get('portfolio', ''):
-                    urls.append(image.get('url', ''))
+                if 'data' in response:
+                    for image in response['data']['model'].get('portfolio', ''):
+                        urls.append(image.get('sourceUrl', ''))
 
-                if response['data']['solarnetModel'].get('polaroids'):
-                    for image in response['data']['solarnetModel']['polaroids']:
-                        urls.append(image['url'])
+                    for image in response['data']['model'].get('polaroids', ''):
+                        urls.append(image.get('sourceUrl', ''))
 
-                if response['data']['solarnetModel'].get('videos'):
-                    for video in response['data']['solarnetModel']['videos']:
-                        urls.append(video['url'])
+                    for video in response['data']['model'].get('videos', ''):
+                        urls.append(video.get('sourceUrl', ''))
 
             self.delay()
 

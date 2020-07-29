@@ -28,6 +28,7 @@ class ThetaGoblin(MetaGoblin):
         - juillet
         - kiki de montparnasse
         - lounge
+        - myla
         - par femme
         - seamless basic
         - skatie

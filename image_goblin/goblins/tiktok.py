@@ -24,7 +24,7 @@ class TikTokGoblin(MetaGoblin):
     def __init__(self, args):
         super().__init__(args)
         self.MIN_SIZE = 0
-        self.count = self.args['posts'] if self.args['posts'] < 100 else 100
+        self.count = self.args['posts'] if self.args['posts'] < 50 else 50
 
     def main(self):
         self.logger.log(1, self.NAME, 'collecting urls')

@@ -67,6 +67,7 @@ from goblins.le_petit_trou import LePetitTrouGoblin
 from goblins.listal import ListalGoblin
 from goblins.livy import LivyGoblin
 from goblins.lounge import LoungeGoblin
+from goblins.love_stories import LoveStoriesGoblin
 from goblins.maison_lejaby import MaisonLejabyGoblin
 from goblins.maison_close import MaisonCloseGoblin
 from goblins.mango import MangoGoblin
@@ -77,6 +78,7 @@ from goblins.mgm_models import MGMGoblin
 from goblins.missguided import MissguidedGoblin
 from goblins.missy_empire import MissyEmpireGoblin
 from goblins.monster_management import MonsterGoblin
+from goblins.myla import MylaGoblin
 from goblins.nasty_gal import NastyGalGoblin
 from goblins.nelly import NellyGoblin
 from goblins.new_york_models import NewYorkModelsGoblin
@@ -203,9 +205,10 @@ goblins = {
     'listal': (r'lis(tal|img)\.[a-z]+', ListalGoblin),
     'livy': (r'li-vy\.[a-z]+', LivyGoblin),
     'lounge': (r'loungeunderwear\.[a-z]+', LoungeGoblin),
+    'lovestories': (r'lovestories(intimates)?\.[a-z]+', LoveStoriesGoblin),
     'maisonclose': (r'maison-close\.[a-z]+', MaisonCloseGoblin),
     'maisonlejaby': (r'maisonlejaby\.[a-z]+', MaisonLejabyGoblin),
-    'mango': (r'mango\.[a-z]+|mngbcn', MangoGoblin),
+    'mango': (r'mango(outlet)?\.[a-z]+|mngbcn', MangoGoblin),
     'marliesdekkers': (r'marliesdekkers\.[a-z]+', MarliesDekkersGoblin),
     'marilyn': (r'booker-marilyn|marilynagency\.[a-z]+', MarilynGoblin),
     'massimodutti': (r'massimodutti\.[a-z]+', MassimoDuttiGoblin),
@@ -213,9 +216,10 @@ goblins = {
     'missguided': (r'missguided(us)?\.[a-z]+', MissguidedGoblin),
     'missyempire': (r'missyempire\.[a-z]+', MissyEmpireGoblin),
     'monster': (r'monster-mgmt\.[a-z]+', MonsterGoblin),
+    'myla': (r'myla\.[a-z]+', MylaGoblin),
     'nastygal': (r'nastygal\.[a-z]+', NastyGalGoblin),
     'nelly': (r'nelly\.[a-z]+|nlyscandinavia', NellyGoblin),
-    'newyorkmodels': (r'((newyork|la)models|globaltalentsystems)\.[a-z]+', NewYorkModelsGoblin),
+    'newyorkmodels': (r'((newyork|(?<![a-z])la)models|globaltalentsystems)\.[a-z]+', NewYorkModelsGoblin),
     'only': (r'only\.[a-z]+', OnlyGoblin),
     'onlyhearts': (r'onlyhearts\.[a-z]+', OnlyHeartsGoblin),
     'oysho': (r'oysho\.[a-z]+', OyshoGoblin),

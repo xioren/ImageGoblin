@@ -80,7 +80,7 @@ class IotaGoblin(MetaGoblin):
                     self.reauthorize()
                     response = self.parser.load_json(self.get(self.API_URL.format(self.extract_product(target))).content)
 
-                if response[0] and 'skuInfo' in response[0]:
+                if isinstance(response, list) and 'skuInfo' in response[0]:
                     for slice in response[0]['skuInfo']['primarySlice']['sliceItems']:
                         url = '_'.join(slice['swatchUrl'].split('_')[:-1])
 

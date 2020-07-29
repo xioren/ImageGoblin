@@ -1,7 +1,6 @@
 from goblins.meta import MetaGoblin
 
 # TODO:
-#   - implement natural sorting?
 #   - add webpage handling
 #   - handle urls containing #
 
@@ -45,21 +44,22 @@ class IteratorGoblin(MetaGoblin):
 
     def main(self):
         '''main iteration method'''
-        round = 1
         self.toggle_collecton_type() # convert collection to list so that urls are ordered
-        base, iterable, end = self.isolate_parts(self.args['targets'][self.ID][0])
-        self.is_unique = self.unique(f'{base}{iterable}{end}', f'{base}{self.increment_iterable(iterable)}{end}')
+        for target in self.args['targets'][self.ID]:
+            round = 1
+            base, iterable, end = self.isolate_parts(target)
+            self.is_unique = self.unique(f'{base}{iterable}{end}', f'{base}{self.increment_iterable(iterable)}{end}')
 
-        while True:
-            self.logger.log(1, self.NAME, 'iterating', f'round: {round} ' \
-                            f'| block: {iterable}-{int(iterable) + self.block_size-self.args["step"]}')
-            self.generate_block(base, iterable, end)
+            while True:
+                self.logger.log(1, self.NAME, 'iterating', f'round: {round} ' \
+                                f'| block: {iterable}-{int(iterable) + self.block_size-self.args["step"]}')
+                self.generate_block(base, iterable, end)
 
-            timed_out = self.loot(timeout=self.args['timeout'])
-            if timed_out:
-                self.logger.log(1, self.NAME, 'timed out', f'after {self.args["timeout"]} attempts')
-                return None
-            else:
-                round += 1
-                iterable = self.increment_iterable(iterable)
-                self.new_collection()
+                timed_out = self.loot(timeout=self.args['timeout'])
+                if timed_out:
+                    self.logger.log(1, self.NAME, 'timed out', f'after {self.args["timeout"]} attempts')
+                    break
+                else:
+                    round += 1
+                    iterable = self.increment_iterable(iterable)
+                    self.new_collection()

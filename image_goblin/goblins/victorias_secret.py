@@ -23,14 +23,14 @@ class VictoriasSecretGoblin(MetaGoblin):
         self.logger.log(1, self.NAME, 'collecting urls')
         urls = []
         if self.args['noup']:
-            dimensions = 'p/760x1013'
+            DIMENSIONS = 'p/760x1013'
         else:
-            dimensions = 'p/3040x4052'
+            DIMENSIONS = 'p/3040x4052'
 
         for target in self.args['targets'][self.ID]:
             if '/p/' in target:
                 self.logger.log(2, self.NAME, 'WARNING', 'image urls not fully supported', once=True)
-                urls.append(self.parser.regex_sub(r'p/\d+x\d+', dimensions, target.replace('dm.', 'www.')))
+                urls.append(self.parser.regex_sub(r'p/\d+x\d+', DIMENSIONS, target.replace('dm.', 'www.')))
             else:
                 # NOTE: version is there too if needed; used to be V6.
                 for path in self.parser.extract_by_regex(self.get(target).content, r'(?<="path":")page/[^"]+'):
@@ -42,7 +42,7 @@ class VictoriasSecretGoblin(MetaGoblin):
                             for choice in choices:
                                 images = choices[choice].get('images', '')
                                 for image in images:
-                                    urls.append(f'{self.URL_BASE}/p/{dimensions}/{image["image"]}.jpg')
+                                    urls.append(f'{self.URL_BASE}/p/{DIMENSIONS}/{image["image"]}.jpg')
 
             self.delay()
 

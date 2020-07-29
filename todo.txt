@@ -7,3 +7,4 @@
 - vk
 - rename various ids to common slug term
 - gifv support?
+- unquote filenames

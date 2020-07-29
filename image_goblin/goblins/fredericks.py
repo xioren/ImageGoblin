@@ -37,10 +37,11 @@ class FredericksGoblin(MetaGoblin):
                 response = ''
 
                 for _ in range(10):
-                    try: # the api is VERY unreliable, usually takes multiple requests to get a proper response.
-                        response = self.parser.load_json(self.get(self.API_URL + self.QUERY.format(self.extract_page_name(target))).content)
-                    except json.decoder.JSONDecodeError:
-                        self.delay(3)
+                    # the api is VERY unreliable, usually takes multiple requests to get a proper response.
+                    response = self.parser.load_json(self.get(self.API_URL + self.QUERY.format(self.extract_page_name(target))).content)
+                    if response:
+                        break
+                    self.delay(3)
 
                 if 'product' in response:
                     for image in response['product'][0].get('displayMedia', ''):

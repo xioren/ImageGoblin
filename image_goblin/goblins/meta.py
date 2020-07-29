@@ -151,10 +151,14 @@ class MetaGoblin:
             self.headers[cookie] = value
         else:
             current_values = {}
-            new_key, new_val = value.split('=')
+            key_val_pair = value.split('=')
+            new_key = key_val_pair[0]
+            new_val = '='.join(key_val_pair[1:])
 
             for item in self.headers[cookie].split('; '):
-                key, val = item.split('=')
+                key_val_pair = item.split('=')
+                key = key_val_pair[0]
+                val = '='.join(key_val_pair[1:])
                 current_values[key] = val
 
             current_values[new_key] = new_val
@@ -205,16 +209,16 @@ class MetaGoblin:
         '''downloader front end'''
         return self.request_handler(self.downloader, url, filepath, data=None, store_cookies=False)
 
-    def retry(self, method, *args, **kwargs):
+    def retry(self, method, url, *args, **kwargs):
         '''retry http operation'''
         if kwargs['attempt'] > 5:
-            self.logger.log(2, self.NAME, 'server error', f'aborting after 5 attempts: {args[0]}')
+            self.logger.log(2, self.NAME, 'server error', f'aborting after 5 attempts: {url}')
             return None
 
-        self.logger.log(2, self.NAME, 'server error', f'retry attempt {kwargs["attempt"]}: {args[0]}')
+        self.logger.log(2, self.NAME, 'server error', f'retry attempt {kwargs["attempt"]}: {url}')
         self.delay(kwargs['attempt'])
 
-        return self.request_handler(method, *args, **kwargs)
+        return self.request_handler(method, url, *args, **kwargs)
 
     ####################################################################
     # io
@@ -251,6 +255,7 @@ class MetaGoblin:
             self.logger.log(2, self.NAME, 'incomplete read', filename)
             # NOTE: untested
             # TODO: add seek?
+            os.remove(filepath)
             return self.retry(downloader, url, filepath, *args, attempt=attempt+1, **kwargs)
 
         return True
@@ -293,14 +298,14 @@ class MetaGoblin:
                 filepath = filepath.replace(guessed_ext, header_ext)
             elif not guessed_ext:
                 # BUG: can cause multiple extensions in some cases
-                filepath = f'{filepath}{header_ext}'
+                filepath += header_ext
 
         return filepath
 
     def collect(self, url, filename='', clean=False):
         '''finalize and add urls to the collection'''
         if self.parser.filter(url):
-            # FIXME: adding valid url check here wrongly filters relative urls
+            # FIXME: adding valid url check here rejects relative urls
             return None
 
         if clean:

@@ -14,8 +14,8 @@ class Parser:
     MISC_REPLACEMENTS = {'amp;': '', 'background-image:url(': ''}
     ABSOLUTE_PAT = r'(?:/?[^/\.]+\.[^/]+(?=/))'
     CROPPING_PATS = (
-        re.compile(r'[\-_]?((x+)?-?(?<!\w)l(arge)?(?!\w)|profile|square)(?![\w])[\-_/]?', flags=re.IGNORECASE),
-        re.compile(r'[@\-_/]\d+x(\d+)?(?![a-z\d])'), # 000x000
+        re.compile(r'[\-_]?((x+)?-?(?<![\w\-])l(arge)?(?!\w)|profile|square)(?![\w])[\-_/]?', flags=re.IGNORECASE),
+        re.compile(r'[@\-_/\.]\d+x(\d+)?(?![a-z\d])'), # 000x000
         re.compile(r'expanded_[a-z]+/'),
         re.compile(r'(?<=/)([a-z]_[a-z\d:]+,?)+/(v\d/)?'), # cloudfront (probably too general and will catch false positives)
         re.compile(r'/v/\d/.+\.webp$'),
@@ -218,12 +218,11 @@ class Parser:
                 return {}
 
     def make_json(self, object):
-        '''convert to json'''
+        '''safely convert an object json'''
         try:
             return json.dumps(object)
         except TypeError:
-            pass
-        return '{}'
+            return '{}'
 
     def user_format(self, url):
         '''add, substitute, or remove arbitrary elements from a url'''

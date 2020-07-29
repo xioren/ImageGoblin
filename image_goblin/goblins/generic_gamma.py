@@ -1,6 +1,7 @@
 from goblins.meta import MetaGoblin
 
-# NOTE: scaling with q=100 gives higher resolution; investigate.
+# NOTE: scaling with q=100 does not affect quality of original image, only the
+# the quality of the re-encode --> images are still noisy
 # TODO: this could really use a better approach
 
 class GammaGoblin(MetaGoblin):
@@ -18,6 +19,7 @@ class GammaGoblin(MetaGoblin):
         - jennyfer
         - livy
         - marlies dekkers
+        - only
         - sandro
         - springfield
         - tezenis
@@ -45,7 +47,7 @@ class GammaGoblin(MetaGoblin):
         urls = []
 
         for target in self.args['targets'][self.ID]:
-            if 'demandware' in target:
+            if 'image' in target:
                 urls.append(target)
             else:
                 urls.extend(self.parser.extract_by_regex(self.get(target).content, self.URL_PAT))

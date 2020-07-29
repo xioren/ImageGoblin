@@ -1,8 +1,8 @@
 # ImageGoblin
 
-#### changelog v0.3.10:
-+ fixed relative urls being rejected
-+ bug fixes
+#### changelog v0.3.11:
++ tiktok fix
++ new goblins
 + misc code clean up and improvements
 
 ### This Program:
@@ -56,7 +56,7 @@
 
   etc...
 
-### NOTE: instagram recently took the nuclear option and seemingly banned all non residential ips. currently logging in is required if you are using a vpn/proxy.
+#### NOTE: instagram recently took the nuclear option and seemingly banned all non residential ips. currently logging in is required if you are using a vpn/proxy.
 + *instagram:* this goblin will scrape an entire profile by default. stories require the user to be logged in; pass the --login flag to do so. the number of posts to retrieve can also be specified with --posts n (n < 100). finally, if 'latest' or 'recent' are passed as the --mode argument, the program will only retrieve the main stories (if logged in) and the six most recent posts. note, using a scraper while logged in is likely to get your account suspended.
 
     *examples:*

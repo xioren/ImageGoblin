@@ -35,9 +35,10 @@ class AgentProvocateurGoblin(MetaGoblin):
         for target in self.args['targets'][self.ID]:
             if 'media/catalog' in target:
                 base = self.isolate(target).split('_')[0]
-
+                zero = self.parser.regex_search(r'0(?=\d\.jpg)', target)
                 for n in range(1, 6):
-                    urls.append(f'{base}_ecom_{n}.jpg')
+
+                    urls.append(f'{base}_ecom_{zero}{n}.jpg')
             else:
                 self.headers.update({'Content-Type': 'application/json'})
                 POST_DATA = self.parser.make_json({"requests":[{"action":"route","children":[{"path":f"/{self.extract_path(target)}","_reqId":0}]}]})
