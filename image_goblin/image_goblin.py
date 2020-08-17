@@ -60,16 +60,16 @@ args = vars(parser.parse_args())
 
 
 if not (args['url'] or args['feed'] or args['local'] or args['list']):
-    parser.print_help()
-    exit(22) # NOTE: invalid argument
+	parser.print_help()
+	exit(22) # NOTE: invalid argument
 elif args['version']:
-    print(__version__)
-    exit(0)
+	print(__version__)
+	exit(0)
 
 
 if __name__ == '__main__':
-    try:
-        Dispatcher(args).dispatch()
-    except KeyboardInterrupt:
-        print('\n<-----exiting----->')
-        exit(125) # NOTE: operation cancelled
+	try:
+		Dispatcher(args).dispatch()
+	except KeyboardInterrupt:
+		print('\n<-----exiting----->')
+		exit(125) # NOTE: operation cancelled

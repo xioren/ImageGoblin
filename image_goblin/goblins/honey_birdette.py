@@ -1,10 +1,10 @@
 from goblins.generic_theta import ThetaGoblin
 
 
-class SkatieGoblin(ThetaGoblin):
+class HoneyBirdetteGoblin(ThetaGoblin):
 
-	NAME = 'skatie goblin'
-	ID = 'skatie'
+	NAME = 'honey birdette goblin'
+	ID = 'honeybirdette'
 
 	def __init__(self, args):
 		super().__init__(args)

@@ -1,8 +1,9 @@
 # ImageGoblin
 
-#### changelog v0.3.11:
-+ tiktok fix
-+ new goblins
+#### changelog v0.3.12:
++ tiktok currently does not work again due to changed on their end. working on fix.
++ removed zalando
++ bug fixes
 + misc code clean up and improvements
 
 ### This Program:

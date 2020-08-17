@@ -8,3 +8,4 @@
 - rename various ids to common slug term
 - gifv support?
 - unquote filenames
+- add duel gif/mp4 to imgur
