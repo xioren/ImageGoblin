@@ -34,7 +34,7 @@
   ```
   image-goblin https://website.com/pages/somewebpage.html -f rem -300x300
 
-  image-goblin https://website.com/uploads/image_01.jpg?size=small --format sub 'size=\w+' size=large
+  image-goblin https://website.com/uploads/image_01.jpg?size=some_size --format sub 'size=\w+' size=large
   ```
 
 + *iterate:* when provided a url to a single image, the program will try to download that image and all other images with the same url structure that are on the server (but not necessarily displayed on the website). the iterable needs to be surrounded by '#' on either side when input to indicate the portion of the url to be iterated. use the --step argument to set step size (default 1); negative values will iterate down. set --timeout 0 to prevent timing out.
@@ -72,10 +72,8 @@
 
 #### Misc:
   + this program has only been tested on linux but should work on windows/mac as well.
-  + the install script is optional and linux specific. it only serves to add a symlink to /usr/local/bin so that the program can be run from the shell with 'image-goblin' instead of 'python3 /path/to/image_goblin.py'.
-  + use --nodl to view found urls instead of downloading them
+  + the install script is optional and linux specific. it only serves to add a symlink to /usr/local/bin so that the program can be run from the shell with 'image-goblin' instead of 'python3 /path/to/image_goblin.py or ./image_goblin.py'.
   + a specific goblin can be forced using '--force _goblin_'.
-  + all available goblins can be listed using '-l or --list'.
   + a random delay (0<=n<=10) can be used with --delay -1
   + the --format input needs to be exact so make sure modifiers/spaces have not been erroneously added or left out.
   + if little or no (relevant) images are found then the page is probably generated dynamically with javascript which the program does not handle. you can also try with the --noup/--greedy handles.

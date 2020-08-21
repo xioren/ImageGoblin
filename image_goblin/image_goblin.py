@@ -6,11 +6,11 @@ from dispatching import Dispatcher
 from version import __version__
 
 
-parser = ArgumentParser(usage='goblin [URL] [OPTIONS]')
+parser = ArgumentParser(usage='image-goblin [URL] [OPTIONS]')
 
 parser.add_argument('-d', '--delay', help='delay ("-1" for randomized delay), default: 0', type=float, default=0)
 
-parser.add_argument('--dir', nargs='+', help='specify name for the download directory (not path)', type=str, default='')
+parser.add_argument('--dir', nargs='+', help='specify name or relative path of the download directory', type=str, default='')
 
 parser.add_argument('--feed', help='input urls one at a time', action='store_true')
 
@@ -32,7 +32,7 @@ parser.add_argument('--login', help='log in (goblin dependant)', action='store_t
 
 parser.add_argument('--mask', help='use a common user agent header', action='store_true')
 
-parser.add_argument('--minsize', help='minimum filesize to download (in bytes)', type=int, default=30000)
+parser.add_argument('--minsize', help='minimum filesize to download (in bytes) default: 30000 (30kb)', type=int, default=30000)
 
 parser.add_argument('-m', '--mode', help='mode settings (goblin dependant)')
 
