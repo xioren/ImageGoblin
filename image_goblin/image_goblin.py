@@ -6,7 +6,7 @@ from dispatching import Dispatcher
 from version import __version__
 
 
-parser = ArgumentParser(usage='image-goblin [URL] [OPTIONS]')
+parser = ArgumentParser(usage='image-goblin [OPTIONS] [URL]')
 
 parser.add_argument('-d', '--delay', help='delay ("-1" for randomized delay), default: 0', type=float, default=0)
 
