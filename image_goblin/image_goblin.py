@@ -61,11 +61,12 @@ parser.add_argument('--version', help='program version', action='store_true')
 args = vars(parser.parse_args())
 
 
-if not (args['url'] or args['feed'] or args['local'] or args['list']):
+if not (args['url'] or args['feed'] or args['local']
+        or args['list'] or args['version']):
 	parser.print_help()
 	exit(22) # NOTE: invalid argument
 elif args['version']:
-	print(__version__)
+	print(f'version: {__version__}')
 	exit(0)
 
 
