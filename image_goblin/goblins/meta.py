@@ -29,7 +29,7 @@ class MetaGoblin:
 		if self.args['nosort']:
 			self.path_main = os.getcwd()
 		elif self.args['dir']:
-			self.path_main = os.path.join(os.getcwd(), '_'.join(self.args['dir']))
+			self.path_main = os.path.join(os.getcwd(), self.args['dir'].replace(' ', '_'))
 		else:
 			self.path_main = os.path.join(os.getcwd(), 'goblin_loot', self.NAME.replace(' ', '_'))
 		self.make_dirs(self.path_main)
