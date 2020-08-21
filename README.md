@@ -20,9 +20,9 @@
   *examples:*
 
   ```
-  image-goblin https://www.website.com/pages/somewebpage.html
+  image-goblin --verbose https://www.website.com/pages/somewebpage.html
 
-  image-goblin https://www.website.com/files/cropped/image-600x600.jpg --verbose
+  image-goblin https://www.website.com/files/cropped/image-600x600.jpg
 
   image-goblin --local urls.txt
   ```
@@ -32,9 +32,9 @@
   *examples:*
 
   ```
-  image-goblin https://website.com/pages/somewebpage.html -f rem -300x300
+  image-goblin -f rem '-\d+x\d+' https://website.com/pages/somewebpage.html
 
-  image-goblin https://website.com/uploads/image_01.jpg?size=some_size --format sub 'size=\w+' size=large
+  image-goblin --format sub 'size=\w+' size=large https://website.com/uploadsimage_01.jpg?size=some_size
   ```
 
 + *iterate:* when provided a url to a single image, the program will try to download that image and all other images with the same url structure that are on the server (but not necessarily displayed on the website). the iterable needs to be surrounded by '#' on either side when input to indicate the portion of the url to be iterated. use the --step argument to set step size (default 1); negative values will iterate down. set --timeout 0 to prevent timing out.
@@ -42,7 +42,7 @@
   *example:*
 
   ```
-  image-goblin https://website.com/uploads/image_#01#.jpg --timeout 10 --delay 3
+  image-goblin --timeout 10 --delay 3 https://website.com/uploads/image_#01#.jpg
   ```
 
   the program will then iterate through and download all images it can find with that url structure on the server.
@@ -63,9 +63,9 @@
     *examples:*
 
     ```
-    image-goblin https://www.instagram.com/username/ --mode recent --login
+    image-goblin --login --mode recent https://www.instagram.com/username/
 
-    image-goblin username --posts 30 --force instagram
+    image-goblin --posts 30 --force instagram username
     ```
 
 + *feed:* using the feed flag, you can accumulate urls by inputting them one by one. this is useful for accumulating urls as you find them while browsing the web, and downloading all at once. press "enter" with an empty input when finished. try it :)
