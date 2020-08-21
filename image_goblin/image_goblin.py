@@ -16,6 +16,8 @@ parser.add_argument('--feed', help='input urls one at a time', action='store_tru
 
 parser.add_argument('--filename', help='specify filename to use', type=str, default='')
 
+parser.add_argument('--filter', help='specify which extension(s) to download jpg,png[,...]', type=str, default='')
+
 parser.add_argument('--force', help='force a specific goblin')
 
 parser.add_argument('-f', '--format', nargs='+', help='formatting modifier (action modifier[ modifier])')

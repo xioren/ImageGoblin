@@ -45,7 +45,7 @@ class MetaGoblin:
 
 		self.cookie_jar = CookieJar()
 		self.logger = Logger(self.args['verbose'], self.args['silent'], self.args['nodl'])
-		self.parser = Parser(self.args['targets'][self.ID][0], self.args['format'])
+		self.parser = Parser(self.args['targets'][self.ID][0], self.args['format'], self.args['filter'])
 
 		self.logger.log(1, self.NAME, 'deployed')
 
@@ -227,19 +227,21 @@ class MetaGoblin:
 	def downloader(self, response, url, filepath, *args, attempt=0, **kwargs):
 		'''download web content'''
 		# NOTE: default buffer == 8192
+		ext = self.parser.extension(url)
 		filename = self.parser.extract_filename(filepath)
 		length = int(response.info().get('Content-Length', -1))
 		read = 0
 
 		if length >= 0 and length < self.MIN_SIZE:
 			# QUESTION: add ext here?
-			self.logger.log(2, self.NAME, 'skipping small file', filename)
+			self.logger.log(2, self.NAME, 'skipping small file', f'{filename}{ext}')
 			return None
 
 		filepath = self.check_ext(filepath, response.info().get('Content-Type'))
 		if os.path.exists(filepath):
-			self.logger.log(2, self.NAME, 'file exists', filename)
+			self.logger.log(2, self.NAME, 'file exists', f'{filename}{ext}')
 			return None
+
 
 		if response.info().get('Content-Encoding') == 'gzip':
 			response = GzipFile(fileobj=BufferedReader(response))
@@ -253,7 +255,7 @@ class MetaGoblin:
 				file.write(chunk)
 
 		if length >= 0 and read < length:
-			self.logger.log(2, self.NAME, 'incomplete read', filename)
+			self.logger.log(2, self.NAME, 'incomplete read', f'{filename}{ext}')
 			# NOTE: untested
 			# TODO: add seek?
 			os.remove(filepath)

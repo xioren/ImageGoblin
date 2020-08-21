@@ -1,8 +1,8 @@
 # ImageGoblin
 
-#### changelog v0.3.12:
-+ tiktok currently does not work again due to changed on their end. working on fix.
-+ removed zalando
+#### changelog v0.3.13:
++ added extension filtering option
++ removed tiktok until a fix is found
 + bug fixes
 + misc code clean up and improvements
 

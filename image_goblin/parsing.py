@@ -15,16 +15,17 @@ class Parser:
 	ABSOLUTE_PAT = r'(?:/?[^/\.]+\.[^/]+(?=/))'
 	CROPPING_PATS = (
 		re.compile(r'[\-_]?((x+)?-?(?<![\w\-])l(arge)?(?!\w)|profile|square)(?![\w])[\-_/]?', flags=re.IGNORECASE),
+		re.compile(r'[\.-_]\d+w(?=[-_\.])|[\.-_]w\d+(?=[-_\.])'), # -000w
+		re.compile(r'(?<=/)([a-z]_[a-z\d:]+,?)+/(v\d/)?'), # cloudfront (probably too general and will catch false positives)
 		re.compile(r'[@\-_/\.]\d+x(\d+)?(?![a-z\d])'), # 000x000
 		re.compile(r'expanded_[a-z]+/'),
-		re.compile(r'(?<=/)([a-z]_[a-z\d:]+,?)+/(v\d/)?'), # cloudfront (probably too general and will catch false positives)
-		re.compile(r'/v/\d/.+\.webp$'),
+		re.compile(r'/v/\d/.+\.webp$'), # wix
 		re.compile(r'-e\d+(?=\.)'),
-		re.compile(r'(\.|-)\d+w'), # -000w
 		re.compile(r'@\d+x')
 	)
 
-	def __init__(self, origin_url, user_formatting):
+	def __init__(self, origin_url, user_formatting, ext_filter):
+		self.ext_filter = [self.extension(f'null.{ext.lstrip(".")}') for ext in ext_filter.split(',')]
 		self.origin_url = self.add_scheme(self.dequery(origin_url))
 		self.user_formatting = user_formatting
 		mimetypes.add_type('image/webp', '.webp')
@@ -204,6 +205,8 @@ class Parser:
 	def filter(self, url):
 		'''filter unwanted urls'''
 		if re.search(self.FILTER_PAT, url):
+			return True
+		elif self.ext_filter[0] and self.extension(url) not in self.ext_filter:
 			return True
 		return False
 

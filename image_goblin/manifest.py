@@ -114,7 +114,6 @@ from goblins.tezenis import TezenisGoblin
 from goblins.the_great_eros import TheGreatErosGoblin
 from goblins.the_iconic import TheIconicGoblin
 from goblins.the_society import TheSocietyGoblin
-from goblins.tiktok import TikTokGoblin
 from goblins.tisja_damen import TisjaDamenGoblin
 from goblins.tommy_hilfiger import TommyHilfigerGoblin
 from goblins.topshop import TopshopGoblin
@@ -253,7 +252,6 @@ goblins = {
 	'theiconic': (r'theiconic\.[a-z]+', TheIconicGoblin),
 	'thesociety': (r'(media\.)?thesocietymanagement\.[a-z]+', TheSocietyGoblin),
 	'tommyhilfiger':(r'tommy-europe|shoptommy|tommy\.[a-z]+', TommyHilfigerGoblin),
-	'tiktok': (r'tiktok\.[a-z]+', TikTokGoblin),
 	'tisjadamen': (r'tisjadamen\.[a-z]+', TisjaDamenGoblin),
 	'topshop': (r'topshop\.[a-z]+', TopshopGoblin),
 	'trendyol': (r'trendyol\.[a-z]+', TrendyolGoblin),
