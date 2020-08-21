@@ -10,7 +10,7 @@ parser = ArgumentParser(usage='image-goblin [OPTIONS] [URL]')
 
 parser.add_argument('-d', '--delay', help='delay ("-1" for randomized delay), default: 0', type=float, default=0)
 
-parser.add_argument('--dir', nargs='+', help='specify name or relative path of the download directory', type=str, default='')
+parser.add_argument('--dir', help='specify name or relative path of the download directory', type=str, default='')
 
 parser.add_argument('--feed', help='input urls one at a time', action='store_true')
 
