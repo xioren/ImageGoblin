@@ -1,4 +1,4 @@
-from goblins.meta import MetaGoblin
+from meta import MetaGoblin
 
 
 # NOTE: some images in form: image-cdn.symphonycommerce.com/images/sites/fredericks/product_images/filename-001.jpg

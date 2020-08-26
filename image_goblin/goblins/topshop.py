@@ -1,6 +1,6 @@
 from urllib.parse import quote_plus
 
-from goblins.meta import MetaGoblin
+from meta import MetaGoblin
 
 
 class TopshopGoblin(MetaGoblin):

@@ -45,7 +45,8 @@ class MetaGoblin:
 
 		self.cookie_jar = CookieJar()
 		self.logger = Logger(self.args['verbose'], self.args['silent'], self.args['nodl'])
-		self.parser = Parser(self.args['targets'][self.ID][0], self.args['format'], self.args['filter'])
+		self.parser = Parser(self.args['targets'][self.ID][0], self.args['format'],
+							 self.args['filter'], self.args['slugify'])
 
 		self.logger.log(1, self.NAME, 'deployed')
 
@@ -233,7 +234,6 @@ class MetaGoblin:
 		read = 0
 
 		if length >= 0 and length < self.MIN_SIZE:
-			# QUESTION: add ext here?
 			self.logger.log(2, self.NAME, 'skipping small file', f'{filename}{ext}')
 			return None
 

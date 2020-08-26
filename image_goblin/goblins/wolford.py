@@ -1,4 +1,4 @@
-from goblins.meta import MetaGoblin
+from meta import MetaGoblin
 
 # NOTE: can use gamma goblin but has no real conistancy with filenames or urls
 

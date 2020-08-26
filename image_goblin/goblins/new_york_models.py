@@ -1,4 +1,4 @@
-from goblins.meta import MetaGoblin
+from meta import MetaGoblin
 
 # NOTE: works for la models too
 

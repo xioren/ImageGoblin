@@ -1,8 +1,8 @@
 # ImageGoblin
 
-#### changelog v0.3.13:
-+ added extension filtering option
-+ removed tiktok until a fix is found
+#### changelog v0.4.0:
++ added slugify option to make filenames web and script safe
++ new goblin
 + bug fixes
 + misc code clean up and improvements
 

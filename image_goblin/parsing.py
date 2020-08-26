@@ -4,6 +4,7 @@ import mimetypes
 import urllib.parse
 
 from os.path import join, exists
+from string import ascii_letters, digits
 
 
 class Parser:
@@ -24,10 +25,12 @@ class Parser:
 		re.compile(r'@\d+x')
 	)
 
-	def __init__(self, origin_url, user_formatting, ext_filter):
+	def __init__(self, origin_url, user_formatting, ext_filter, slug):
 		self.ext_filter = [self.extension(f'null.{ext.lstrip(".")}') for ext in ext_filter.split(',')]
 		self.origin_url = self.add_scheme(self.dequery(origin_url))
+		self.ALPHA = ascii_letters + digits + '-_'
 		self.user_formatting = user_formatting
+		self.slug = slug
 		mimetypes.add_type('image/webp', '.webp')
 
 ####################################################################
@@ -85,8 +88,27 @@ class Parser:
 
 	def extract_filename(self, url):
 		'''extract filename from url'''
-		filename = self.dequery(url).rstrip('/').split('/')[-1]
-		return self.unquote(re.sub(r'\.\w{,4}$', '', filename))
+		filename = self.unquote(re.sub(r'\.\w{,4}$', '', self.dequery(url).rstrip('/').split('/')[-1]))
+		if self.slug:
+			return self.slugify(filename)
+		return filename
+
+	def slugify(self, filename):
+		'''make filenames web safe'''
+		new_filename = ''
+
+		for char in filename:
+			if char in (' ', '.'):
+				new_filename += '_'
+			elif char not in self.ALPHA:
+				pass
+			else:
+				new_filename += char
+
+		for char in ('-', '_'):
+			new_filename = re.sub(f'{char}{{2,}}', char, new_filename)
+
+		return new_filename.strip('-_').lower()
 
 	def decrop(self, url):
 		'''remove common cropping from url'''

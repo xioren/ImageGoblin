@@ -1,4 +1,4 @@
-from goblins.meta import MetaGoblin
+from meta import MetaGoblin
 
 # NOTE: scaling with q=100 does not affect quality of original image, only the
 # the quality of the re-encode --> images are still noisy
@@ -14,6 +14,7 @@ class GammaGoblin(MetaGoblin):
 	generic backend for:
 		- boux avenue
 		- envii
+		- eres
 		- etam
 		- intimissimi
 		- jennyfer
@@ -36,6 +37,7 @@ class GammaGoblin(MetaGoblin):
 
 	def extract_parts(self, url):
 		'''split the url into id, end'''
+		print(url)
 		return self.parser.regex_split(self.ITER_PAT, url)
 
 	def isolate(self, url):

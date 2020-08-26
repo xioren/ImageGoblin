@@ -1,4 +1,4 @@
-from goblins.meta import MetaGoblin
+from meta import MetaGoblin
 
 
 # NOTE:  _OM_ -> model image | _OF_ -> product image
@@ -33,7 +33,7 @@ class VictoriasSecretGoblin(MetaGoblin):
 				urls.append(self.parser.regex_sub(r'p/\d+x\d+', DIMENSIONS, target.replace('dm.', 'www.')))
 			else:
 				init_response = self.get(target).content
-				api_version = self.parser.regex_search(r'(?<=C":{"version":")v\d+', init_response)
+				api_version = self.parser.regex_search(r'(?<=:"products","version":")v\d+', init_response)
 				for path in self.parser.extract_by_regex(init_response, r'(?<="path":")page/[^"]+'):
 					response = self.parser.load_json(self.get(f'{self.API_URL_BASE}/products/{api_version}/{self.parser.dequery(path)}?activeCountry=US').content)
 					if 'product' in response:

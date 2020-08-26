@@ -1,4 +1,4 @@
-from goblins.meta import MetaGoblin
+from meta import MetaGoblin
 
 
 class OmegaGoblin(MetaGoblin):
@@ -17,7 +17,7 @@ class OmegaGoblin(MetaGoblin):
 		super().__init__(args)
 		self.URL_PAT = self.parser.regex_pattern(fr'[^"\s\n\']+?{self.FILETYPES}(\?[^"\s\n\'\|)]+)?', ignore=True)
 		self.IMG_PAT = self.parser.regex_pattern(f'(?:{self.FILETYPES}|/upload/|/image/)', ignore=True)
-		self.ATTR_PAT = self.parser.regex_pattern(r'(?:src(?![a-z])|data(?![a-z\-])|data-(src(?!set)|lazy|url|original)' \
+		self.ATTR_PAT = self.parser.regex_pattern(r'(?:src(?![a-z])|data(?![a-z\-])|data-(src(?!set)|lazy(?!-srcset)|url|original)' \
 												  r'|content(?![a-z\-])|hires(?![a-z\-]))')
 		self.TAG_PAT = self.parser.regex_pattern('(?:a(?![a-z])|ima?ge?|video|source|div)')
 

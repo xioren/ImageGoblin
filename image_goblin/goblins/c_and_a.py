@@ -1,4 +1,4 @@
-from goblins.meta import MetaGoblin
+from meta import MetaGoblin
 
 
 # NOTE: can scale with c_scale,h_5058,q_100

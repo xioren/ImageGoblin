@@ -1,4 +1,4 @@
-from goblins.meta import MetaGoblin
+from meta import MetaGoblin
 
 
 # NOTE: 1 = higher res jpeg | 36 = lower res png

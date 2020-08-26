@@ -4,7 +4,7 @@ from os.path import join
 from getpass import getpass
 from urllib.parse import quote, urljoin
 
-from goblins.meta import MetaGoblin
+from meta import MetaGoblin
 
 # NOTE: pagination /?__a=1
 # NOTE: ig_id

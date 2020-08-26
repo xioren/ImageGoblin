@@ -1,4 +1,4 @@
-from goblins.meta import MetaGoblin
+from meta import MetaGoblin
 
 # BUG: currently getting gzip EOF errors
 # NOTE: same as kitess

@@ -28,6 +28,7 @@ from goblins.dolls_kill import DollsKillGoblin
 from goblins.dora_larsen import DoraLarsenGoblin
 from goblins.else_lingerie import ElseGoblin
 from goblins.envii import EnviiGoblin
+from goblins.eres import EresGoblin
 from goblins.esprit import EspritGoblin
 from goblins.etam import EtamGoblin
 from goblins.fae import FaeGoblin
@@ -165,6 +166,7 @@ goblins = {
 	'doralarsen': (r'doralarsen\.[a-z]+', DoraLarsenGoblin),
 	'else': (r'elselingerie\.[a-z]+', ElseGoblin),
 	'envii': (r'envii\.[a-z]+', EnviiGoblin),
+	'eres': (r'eresparis\.[a-z]+', EresGoblin),
 	'esprit': (r'esprit\.[a-z]+', EspritGoblin),
 	'etam': (r'etam\.[a-z]+', EtamGoblin),
 	'fae': (r'fae.house\.[a-z]+', FaeGoblin),

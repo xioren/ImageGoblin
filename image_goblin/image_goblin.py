@@ -48,6 +48,8 @@ parser.add_argument('--posts', help='number of posts (n<100) to fetch (goblin de
 
 parser.add_argument('-s', '--silent', help='suppress output', action='store_true')
 
+parser.add_argument('--slugify', help='slugify filenames', action='store_true')
+
 parser.add_argument('--step', help='iteration step size (n)', type=int, default=1)
 
 parser.add_argument('-t', '--timeout', help='iteration timeout threshold (n)', type=int, default=5)

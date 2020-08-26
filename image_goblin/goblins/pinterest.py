@@ -1,6 +1,6 @@
 from urllib.parse import quote
 
-from goblins.meta import MetaGoblin
+from meta import MetaGoblin
 
 
 # NOTE: max page size == 250
