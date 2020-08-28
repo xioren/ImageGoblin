@@ -76,5 +76,10 @@ class ImgurGoblin(MetaGoblin):
 
 		for url in urls:
 			self.collect(self.upgrade(url))
+			# NOTE: get both gif and mp4 versions of file
+			if '.gif' in url:
+				self.collect(self.upgrade(url.replace('.gif', '.mp4')))
+			elif '.mp4' in url:
+				self.collect(self.upgrade(url.replace('.mp4', '.gif')))
 
 		self.loot()

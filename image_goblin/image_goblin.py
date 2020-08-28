@@ -10,7 +10,8 @@ parser = ArgumentParser(usage='image-goblin [OPTIONS] [URL]')
 
 parser.add_argument('-d', '--delay', help='delay ("-1" for randomized delay), default: 0', type=float, default=0)
 
-parser.add_argument('--dir', help='specify name or relative path of the download directory', type=str, default='')
+parser.add_argument('--dir', help='specify name or relative path of the download directory. \
+								   the directory will be created if it does not exist', type=str, default='')
 
 parser.add_argument('--feed', help='input urls one at a time', action='store_true')
 
@@ -20,7 +21,7 @@ parser.add_argument('--filter', help='specify which extension(s) to download jpg
 
 parser.add_argument('--force', help='force a specific goblin')
 
-parser.add_argument('-f', '--format', nargs='+', help='formatting modifier (action modifier[ modifier])')
+parser.add_argument('-f', '--format', help='formatting modifier (action modifier[ modifier]). needs to be quoted.')
 
 parser.add_argument('--greedy', help='find urls based on regex instead of html tags (only applies to generic goblin)', action='store_true')
 

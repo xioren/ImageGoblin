@@ -257,13 +257,14 @@ class Parser:
 
 	def user_format(self, url):
 		'''add, substitute, or remove arbitrary elements from a url'''
-		if self.user_formatting[0] == 'add':
+		formatting = self.user_formatting.split(' ')
+		if formatting[0] == 'add':
 			# QUESTION: add auto query formatting? use urlencode?
-			return self.dequery(url) + self.user_formatting[1]
-		elif self.user_formatting[0] == 'sub':
-			return re.sub(fr'{self.user_formatting[1]}', self.user_formatting[2], url)
-		elif self.user_formatting[0] == 'rem':
-			return re.sub(fr'{self.user_formatting[1]}', '', url)
+			return self.dequery(url) + formatting[1]
+		elif formatting[0] == 'sub':
+			return re.sub(fr'{formatting[1]}', formatting[2], url)
+		elif formatting[0] == 'rem':
+			return re.sub(fr'{formatting[1]}', '', url)
 		else:
 			return url
 
@@ -301,11 +302,6 @@ class Parser:
 			url = re.sub(r'/th\d+/', '/orig/', url)
 		elif 'squarespace' in url:
 			url += '?format=original'
-		elif 'tumblr' in url:
-			if '.gif' in url:
-				url = re.sub(r'\d+(?=\.gif)', '540', url)
-			else:
-				url = re.sub(r'\d+(?=\.jpg)', '1280', url)
 		elif 'wix' in url:
 			url = re.sub(r'(?<=\.jpg).+$', '', url)
 

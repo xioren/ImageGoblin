@@ -256,8 +256,10 @@ class MetaGoblin:
 
 		if length >= 0 and read < length:
 			self.logger.log(2, self.NAME, 'incomplete read', f'{filename}{ext}')
-			# NOTE: untested
+			# WARNING: untested
 			# TODO: add seek?
+			# NOTE: add to headers:
+			# Range: bytes=StartPos-
 			os.remove(filepath)
 			return self.retry(downloader, url, filepath, *args, attempt=attempt+1, **kwargs)
 

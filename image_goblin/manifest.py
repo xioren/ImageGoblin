@@ -118,6 +118,7 @@ from goblins.the_society import TheSocietyGoblin
 from goblins.tisja_damen import TisjaDamenGoblin
 from goblins.tommy_hilfiger import TommyHilfigerGoblin
 from goblins.topshop import TopshopGoblin
+from goblins.tumblr import TumblrGoblin
 from goblins.trendyol import TrendyolGoblin
 from goblins.triangl import TrianglGoblin
 from goblins.underprotection import UnderprotectionGoblin
@@ -258,6 +259,7 @@ goblins = {
 	'topshop': (r'topshop\.[a-z]+', TopshopGoblin),
 	'trendyol': (r'trendyol\.[a-z]+', TrendyolGoblin),
 	'triangl': (r'triangl\.[a-z]+', TrianglGoblin),
+	'tumblr': (r'tumblr\.[a-z]+', TumblrGoblin),
 	'underprotection': (r'underprotection\.[a-z]+', UnderprotectionGoblin),
 	'urbanoutfitters':(r'urbanoutfitters(eu)?(\.[a-z]+|/)', UrbanOutfittersGoblin),
 	'victoriassecret': (r'victoriassecret\.[a-z]+', VictoriasSecretGoblin),
