@@ -3,16 +3,16 @@ from goblins.generic_alpha import AlphaGoblin
 
 class BikiniLoversGoblin(AlphaGoblin):
 
-	NAME = 'bikini lovers goblin'
-	ID = 'bikinilovers'
-	ACCEPT_IMAGE = False
-	ACCEPT_WEBPAGE = True
+    NAME = 'bikini lovers goblin'
+    ID = 'bikinilovers'
+    ACCEPT_IMAGE = False
+    ACCEPT_WEBPAGE = True
 
-	def __init__(self, args):
-		super().__init__(args)
+    def __init__(self, args):
+        super().__init__(args)
 
-	def generate_urls(self, url, image=True):
-		if image:
-			return [url]
-		else:
-			return self.parser.extract_by_regex(self.get(url).content, self.URL_PAT)
+    def generate_urls(self, url, image=True):
+        if image:
+            return [url]
+        else:
+            return self.parser.extract_by_regex(self.get(url).content, self.URL_PAT)

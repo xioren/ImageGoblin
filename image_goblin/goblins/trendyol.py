@@ -4,38 +4,38 @@ from meta import MetaGoblin
 # legacy: https://www.trendyol.com/assets/product/media/images/20191021/17/449253/57309150/5/5_org_zoom.jpg
 
 class TrendyolGoblin(MetaGoblin):
-	'''accepts:
-		- image
-		- webpage
-	'''
+    '''accepts:
+        - image
+        - webpage
+    '''
 
-	NAME = 'trandyol goblin'
-	ID = 'trendyol'
-	URL_PAT = r'https?://(img-trendyol\.mncdn|cdn\.dsmcdn)\.com/[^"\s,]+\d_org(_zoom)?\.jpg'
+    NAME = 'trandyol goblin'
+    ID = 'trendyol'
+    URL_PAT = r'https?://(img-trendyol\.mncdn|cdn\.dsmcdn)\.com/[^"\s,]+\d_org(_zoom)?\.jpg'
 
-	def __init__(self, args):
-		super().__init__(args)
+    def __init__(self, args):
+        super().__init__(args)
 
-	def extract_base(self, url):
-		'''extract base of url'''
-		return self.parser.regex_sub(r'\d+_[a-z]+(_[a-z]+)?\.jpg', '', url)
+    def extract_base(self, url):
+        '''extract base of url'''
+        return self.parser.regex_sub(r'\d+_[a-z]+(_[a-z]+)?\.jpg', '', url)
 
-	def main(self):
-		self.logger.log(1, self.NAME, 'collecting urls')
-		urls = []
+    def main(self):
+        self.logger.log(1, self.NAME, 'collecting urls')
+        urls = []
 
-		for target in self.args['targets'][self.ID]:
-			if 'img-trendyol' in target or 'cdn.dsmcdn' in target:
-				urls.append(target)
-			else:
-				urls.extend(self.parser.extract_by_regex(self.get(target).content, self.URL_PAT))
+        for target in self.args['targets'][self.ID]:
+            if 'img-trendyol' in target or 'cdn.dsmcdn' in target:
+                urls.append(target)
+            else:
+                urls.extend(self.parser.extract_by_regex(self.get(target).content, self.URL_PAT))
 
-			self.delay()
+            self.delay()
 
-		for url in urls:
-			url_base = self.extract_base(url)
+        for url in urls:
+            url_base = self.extract_base(url)
 
-			for n in range(1, 16):
-				self.collect(f'{url_base}{n}_org_zoom.jpg')
+            for n in range(1, 16):
+                self.collect(f'{url_base}{n}_org_zoom.jpg')
 
-		self.loot()
+        self.loot()

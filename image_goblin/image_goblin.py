@@ -11,7 +11,7 @@ parser = ArgumentParser(usage='image-goblin [OPTIONS] [URL]')
 parser.add_argument('-d', '--delay', help='delay ("-1" for randomized delay), default: 0', type=float, default=0)
 
 parser.add_argument('--dir', help='specify name or relative path of the download directory. \
-								   the directory will be created if it does not exist', type=str, default='')
+                                   the directory will be created if it does not exist', type=str, default='')
 
 parser.add_argument('--feed', help='input urls one at a time', action='store_true')
 
@@ -66,16 +66,16 @@ args = vars(parser.parse_args())
 
 if not (args['url'] or args['feed'] or args['local']
         or args['list'] or args['version']):
-	parser.print_help()
-	exit(22) # NOTE: invalid argument
+    parser.print_help()
+    exit(22) # NOTE: invalid argument
 elif args['version']:
-	print(f'version: {__version__}')
-	exit(0)
+    print(f'version: {__version__}')
+    exit(0)
 
 
 if __name__ == '__main__':
-	try:
-		Dispatcher(args).dispatch()
-	except KeyboardInterrupt:
-		print('\n<-----exiting----->')
-		exit(125) # NOTE: operation cancelled
+    try:
+        Dispatcher(args).dispatch()
+    except KeyboardInterrupt:
+        print('\n<-----exiting----->')
+        exit(125) # NOTE: operation cancelled
