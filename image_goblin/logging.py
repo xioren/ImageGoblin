@@ -13,7 +13,7 @@ class Logger:
     def clear_line(self):
         '''clear the current terminal line'''
         try:
-            print(' ' * get_terminal_size().columns, end='\r')
+            print(' ' * (get_terminal_size().columns-1), end='\r')
         except OSError: # NOTE: ioctl error when redirecting output
             pass
 

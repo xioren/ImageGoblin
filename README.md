@@ -1,6 +1,7 @@
 # ImageGoblin
 
 #### changelog v0.4.2:
++ fixed terminal print bug on windows
 + new goblin
 + bug fixes
 + misc code clean up and improvements
