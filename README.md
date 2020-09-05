@@ -59,7 +59,7 @@
 
 + *feed:* using the feed flag, you can accumulate urls by inputting them one by one. this is useful for accumulating urls as you find them while browsing the web, and downloading all at once. press "enter" with an empty input when finished. try it :)
 
-+ *other goblins* with a few exceptions (see --help for more info), all other goblins require no explanation.
++ *other goblins:* with a few exceptions (see --help for more info), all other goblins require no explanation.
 
 #### Misc:
 	+ this program has been tested on linux/windows/android.
