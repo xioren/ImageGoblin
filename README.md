@@ -45,7 +45,7 @@
 	image-goblin --timeout 10 --delay 3 https://website.com/uploads/image_#01#.jpg
 	```
 
-	the program will then iterate through and download all images it can find with that url structure on the server.
+	the program will then iterate that url:
 
 	* https://website.com/uploads/image_01.jpg
 	* https://website.com/uploads/image_02.jpg
