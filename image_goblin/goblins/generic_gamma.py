@@ -37,7 +37,6 @@ class GammaGoblin(MetaGoblin):
 
     def extract_parts(self, url):
         '''split the url into id, end'''
-        print(url)
         return self.parser.regex_split(self.ITER_PAT, url)
 
     def isolate(self, url):
