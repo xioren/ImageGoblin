@@ -52,7 +52,7 @@ class IteratorGoblin(MetaGoblin):
 
             while True:
                 self.logger.log(1, self.NAME, 'iterating', f'round: {round} ' \
-                                f'| block: {iterable}-{int(iterable) + self.block_size-self.args["step"]}')
+                                f'| block: {iterable}-{str(int(iterable) + self.block_size-self.args["step"]).zfill(len(iterable))}')
                 self.generate_block(base, iterable, end)
 
                 timed_out = self.loot(timeout=self.args['timeout'])

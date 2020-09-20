@@ -62,9 +62,8 @@ class InstagramGoblin(MetaGoblin):
                 password = getpass(f'[{self.NAME}] password: ')
                 formatted_password = f"#PWD_INSTAGRAM_BROWSER:0:{int(time())}:{password}"
                 response = self.parser.load_json(self.post(self.LOGIN_URL,
-                                                           data={'username': username,
-                                                                 'enc_password': formatted_password},
-                                                           store_cookies=True).content)
+                                                            data={'username': username, 'enc_password': formatted_password},
+                                                            store_cookies=True).content)
                 self.set_cookies()
                 del username, password
 
@@ -77,7 +76,7 @@ class InstagramGoblin(MetaGoblin):
                 else:
                     self.logger.log(0, self.NAME, 'ERROR', 'login failed')
                     retry = input(f'[{self.NAME}] retry? (y/n): ')
-                    if retry == 'y':
+                    if retry in ('y', 'Y', 'yes', "YES"):
                         continue
                     self.logger.log(0, self.NAME, 'continuing as guest')
                 break
@@ -120,10 +119,9 @@ class InstagramGoblin(MetaGoblin):
             else:
                 self.logger.log(0, self.NAME, 'ERROR', 'security challenge failed')
                 retry = input(f'[{self.NAME}] retry? (y/n): ')
-                if retry == 'y':
+                if retry in ('y', 'Y', 'yes', "YES"):
                     continue
-                else:
-                    self.logger.log(0, self.NAME, 'continuing as guest')
+                self.logger.log(0, self.NAME, 'continuing as guest')
             break
 
     def get_initial_data(self):

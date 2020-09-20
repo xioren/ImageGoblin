@@ -160,6 +160,7 @@ class Parser:
         - expand relative urls
         - handle control characters
         '''
+        url = url.replace('\\', '')
         if re.search(self.ABSOLUTE_PAT, url): # absolute path
             url = self.add_scheme(url.lstrip('/'))
         else: # relative path
@@ -168,7 +169,7 @@ class Parser:
         for item in self.MISC_REPLACEMENTS:
             url = url.replace(item, self.MISC_REPLACEMENTS[item])
 
-        return self.make_url_safe(url.replace('\\', '').rstrip(')'))
+        return self.make_url_safe(url.rstrip(')'))
 
     def make_unique(self, path):
         '''make filepath unique'''

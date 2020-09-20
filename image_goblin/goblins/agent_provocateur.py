@@ -41,7 +41,9 @@ class AgentProvocateurGoblin(MetaGoblin):
                     urls.append(f'{base}_ecom_{zero}{n}.jpg')
             else:
                 self.headers.update({'Content-Type': 'application/json'})
-                POST_DATA = self.parser.make_json({"requests":[{"action":"route","children":[{"path":f"/{self.extract_path(target)}","_reqId":0}]}]})
+                POST_DATA = self.parser.make_json({"requests":[{"action":"route",
+                                                                "children":[{"path":f"/{self.extract_path(target)}",
+                                                                             "_reqId":0}]}]})
                 response = self.parser.load_json(self.post(self.API_URL, data=POST_DATA).content)
 
                 for entry in response.get('catalog', ''):
