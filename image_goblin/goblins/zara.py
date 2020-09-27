@@ -13,8 +13,8 @@ class ZaraGoblin(MetaGoblin):
     SIZE = 0
     # API_URL = 'https://www.zara.com/itxrest/1/catalog/store/11719/category/0/product/{}/detail' -> returns empty legacy response
     # URL_BASE = 'https://static.zara.net/photos'
-    URL_PAT = r'https?://static[^"]+_\d_\d_\d\.jpe?g'
-    MODIFIERS = [f'_{j}_{k}_' for j in range(1, 7) for k in range(1, 15)]
+    URL_PAT = r'https?://static[^"]+_\d+_\d+_\d+\.jpe?g'
+    MODIFIERS = [f'_{j}_{k}_' for j in range(1, 7) for k in range(1, 21)]
 
     def __init__(self, args):
         super().__init__(args)
@@ -29,7 +29,7 @@ class ZaraGoblin(MetaGoblin):
 
         for target in self.args['targets'][self.ID]:
             if 'static' in target:
-                url_base, url_end = self.parser.regex_split(r'_\d_\d_\d+', target)
+                url_base, url_end = self.parser.regex_split(r'_\d+_\d+_\d+', target)
 
                 for mod in self.MODIFIERS:
                     urls.append(f'{url_base}{mod}{self.SIZE}{self.trim(url_end)}')

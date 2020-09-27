@@ -242,7 +242,6 @@ class MetaGoblin:
             self.logger.log(2, self.NAME, 'file exists', f'{filename}{ext}')
             return None
 
-
         if response.info().get('Content-Encoding') == 'gzip':
             response = GzipFile(fileobj=BufferedReader(response))
 
@@ -370,6 +369,7 @@ class MetaGoblin:
         if self.args['nodl']:
             self.logger.log(1, self.NAME, 'info', f'{len(self.collection)} urls(s) collected', clear=True)
         else:
+            # QUESTION: add extension?
             self.logger.log(1, self.NAME, 'complete', f'{looted} file(s) looted', clear=True)
 
         return timed_out

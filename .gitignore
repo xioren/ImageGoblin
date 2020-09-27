@@ -127,8 +127,3 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-
-# misc
-testing.txt
-image_hosts.txt
-todo.txt

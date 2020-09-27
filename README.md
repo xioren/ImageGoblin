@@ -1,7 +1,6 @@
 # ImageGoblin
 
-#### changelog v0.4.3:
-+ fixed listal
+#### changelog v0.4.4:
 + bug fixes
 + misc code clean up and improvements
 

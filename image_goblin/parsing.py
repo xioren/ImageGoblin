@@ -66,15 +66,14 @@ class Parser:
 # methods
 ####################################################################
 
-    def extract_by_tag(self, html, tags:'list of (tag, attr) tuples'=None):
+    def extract_by_tag(self, html, tags:'{tag: attr}'=None):
         '''extract from html by tag'''
         html_parser = self.GoblinHTMLParser(html)
         html_parser.parse_elements()
 
         if tags:
             urls = []
-            for item in tags:
-                tag, attr = item
+            for tag, attr in tags.items():
                 if tag in html_parser.elements:
                     urls.extend(html_parser.elements[tag].get(attr))
             return urls
@@ -250,7 +249,7 @@ class Parser:
                 return {}
 
     def make_json(self, object):
-        '''safely convert an object json'''
+        '''safely convert an object to json'''
         try:
             return json.dumps(object)
         except TypeError:
