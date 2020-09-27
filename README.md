@@ -7,7 +7,6 @@
 ### This Program:
 + is a web scraping tool specifically for the discovery and retrieval of images on a web server, in the highest possible quality
 + is a personal project designed according to my own needs
-+ is a work in progress
 
 ### Requirements
 + Python 3.6+
