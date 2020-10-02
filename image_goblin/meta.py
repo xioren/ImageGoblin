@@ -88,7 +88,7 @@ class MetaGoblin:
             sleep(self.args['delay'])
 
     def move_vid(self, path=None):
-        '''move mp4 files into seperate directory'''
+        '''move video files into seperate directory'''
         if not self.args['nodl']:
             if not path:
                 path = self.path_main
@@ -96,21 +96,22 @@ class MetaGoblin:
             self.make_dirs(vid_dir)
 
             for file in os.listdir(path):
-                if '.mp4' in file:
-                    move(os.path.join(path, file), vid_dir)
+                for ext in ('.mp4', '.webm', '.mkv', 'mov', 'wmv'):
+                    if ext in file:
+                        move(os.path.join(path, file), vid_dir)
+                        break
 
     def make_dirs(self, *paths):
         '''creates directories'''
         if not self.args['nodl']:
             for path in paths:
-                if not os.path.exists(path):
-                    try:
-                        os.makedirs(path)
-                    except OSError as e:
-                        # NOTE: no sense in continuing if the download dir fails to make
-                        # may change approach in future, exit for now
-                        self.logger.log(1, self.NAME, e, 'exiting')
-                        exit(5) # NOTE: input/output error
+                try:
+                    os.makedirs(path, exist_ok=True)
+                except OSError as e:
+                    # NOTE: no sense in continuing if the download dir fails to make
+                    # may change approach in future, exit for now
+                    self.logger.log(1, self.NAME, e, 'exiting')
+                    exit(5) # NOTE: input/output error
 
     def toggle_collecton_type(self):
         '''toggle collection type between list and set'''
@@ -239,8 +240,14 @@ class MetaGoblin:
 
         filepath = self.check_ext(filepath, response.info().get('Content-Type'))
         if os.path.exists(filepath):
-            self.logger.log(2, self.NAME, 'file exists', f'{filename}{ext}')
-            return None
+            if attempt > 0:
+                # NOTE: for timeouts during read, remove partialy downloaded file
+                # WARNING: possible to erroneously remove legit files with same filename
+                # FIXME: lazy approach
+                os.remove(filepath)
+            else:
+                self.logger.log(2, self.NAME, 'file exists', f'{filename}{ext}')
+                return None
 
         if response.info().get('Content-Encoding') == 'gzip':
             response = GzipFile(fileobj=BufferedReader(response))

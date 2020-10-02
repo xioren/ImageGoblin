@@ -3,8 +3,8 @@ import json
 import mimetypes
 import urllib.parse
 
-from os.path import join, exists
 from string import ascii_letters, digits
+from os.path import join, exists, split, splitext
 
 
 class Parser:
@@ -26,6 +26,7 @@ class Parser:
     )
 
     def __init__(self, origin_url, user_formatting, ext_filter, slug):
+        # NOTE: user set ext filters
         self.ext_filter = [self.extension(f'null.{ext.lstrip(".")}') for ext in ext_filter.split(',')]
         self.origin_url = self.add_scheme(self.dequery(origin_url))
         self.ALPHA = ascii_letters + digits + '-_'
@@ -87,7 +88,8 @@ class Parser:
 
     def extract_filename(self, url):
         '''extract filename from url'''
-        filename = self.unquote(re.sub(r'\.\w{,4}$', '', self.dequery(url).rstrip('/').split('/')[-1]))
+        url = self.unquote(self.dequery(url).rstrip('/'))
+        filename = split(url)[-1].replace(splitext(url)[-1], '')
         if self.slug:
             return self.slugify(filename)
         return filename
@@ -174,7 +176,7 @@ class Parser:
         '''make filepath unique'''
         n = 1
         while True:
-            new_path = join(path, f'({n}).'.join(path.split('.')))
+            new_path = join(path, f'-{n}.'.join(path.split('.')))
             if exists(new_path):
                 n += 1
             else:
@@ -229,6 +231,8 @@ class Parser:
         if re.search(self.FILTER_PAT, url):
             return True
         elif self.ext_filter[0] and self.extension(url) not in self.ext_filter:
+            return True
+        elif 'data:image/svg+xml' in url or 'facebook.com/tr' in url:
             return True
         return False
 
