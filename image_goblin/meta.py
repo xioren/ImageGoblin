@@ -179,16 +179,18 @@ class MetaGoblin:
             with closing(urlopen(request, timeout=20)) as response:
                 if kwargs['store_cookies']:
                     self.cookie_jar.extract_cookies(response, request)
-                return method(response, url, *args, **kwargs)
+                return method(response, url, *args, attempt=attempt, **kwargs)
         except HTTPError as e:
-            self.logger.log(2, self.NAME, e, url)
-            if e.code == 502:
+            if e.code in (500, 502, 503, 504):
                 # NOTE: servers sometimes return 502 when requesting large files, retrying usually works.
-                return self.retry(method, url, *args, attempt=attempt+1, **kwargs)
-        except (timeout, URLError):
-            return self.retry(method, url, *args, attempt=attempt+1, **kwargs)
+                kwargs['error'] = e
+                return self.retry(method, url, *args, attempt=attempt, **kwargs)
+            self.logger.log(2, self.NAME, e, url)
+        except (timeout, URLError) as e:
+            kwargs['error'] = e
+            return self.retry(method, url, *args, attempt=attempt, **kwargs)
         except Exception as e:
-            # NOTE: too many possible exceptions to catch individually -> use catchall
+            # NOTE: too many other possible exceptions to catch individually -> use catchall
             self.logger.log(2, self.NAME, e, url)
 
     def get(self, url, store_cookies=False):
@@ -213,11 +215,12 @@ class MetaGoblin:
 
     def retry(self, method, url, *args, **kwargs):
         '''retry http operation'''
+        kwargs['attempt'] += 1
         if kwargs['attempt'] > 5:
-            self.logger.log(2, self.NAME, 'server error', f'aborting after 5 attempts: {url}')
+            self.logger.log(2, self.NAME, kwargs["error"], f'aborting after 5 attempts: {url}')
             return None
 
-        self.logger.log(2, self.NAME, 'server error', f'retry attempt {kwargs["attempt"]}: {url}')
+        self.logger.log(2, self.NAME, kwargs["error"], f'retry attempt {kwargs["attempt"]}: {url}')
         self.delay(kwargs['attempt'])
 
         return self.request_handler(method, url, *args, **kwargs)
@@ -226,7 +229,7 @@ class MetaGoblin:
     # io
     ####################################################################
 
-    def downloader(self, response, url, filepath, *args, attempt=0, **kwargs):
+    def downloader(self, response, url, filepath, *args, error='', **kwargs):
         '''download web content'''
         # NOTE: default buffer == 8192
         ext = self.parser.extension(url)
@@ -241,7 +244,7 @@ class MetaGoblin:
         filepath = self.check_ext(filepath, response.info().get('Content-Type'))
         if os.path.exists(filepath):
             if attempt > 0:
-                # NOTE: for timeouts during read, remove partialy downloaded file
+                # NOTE: remove files that timed out during initial read
                 # WARNING: possible to erroneously remove legit files with same filename
                 # FIXME: lazy approach
                 os.remove(filepath)
@@ -261,13 +264,12 @@ class MetaGoblin:
                 file.write(chunk)
 
         if length >= 0 and read < length:
-            self.logger.log(2, self.NAME, 'incomplete read', f'{filename}{ext}')
-            # WARNING: untested
             # TODO: add seek?
             # NOTE: add to headers:
             # Range: bytes=StartPos-
             os.remove(filepath)
-            return self.retry(downloader, url, filepath, *args, attempt=attempt+1, **kwargs)
+            return self.retry(self.downloader, url, filepath, *args,
+                              error='incomplete read', **kwargs)
 
         return True
 

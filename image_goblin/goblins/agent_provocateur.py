@@ -12,8 +12,8 @@ class AgentProvocateurGoblin(MetaGoblin):
 
     NAME = 'agent provocateur goblin'
     ID = 'agentprovocateur'
-    API_URL = 'https://www.agentprovocateur.com/api/n/bundle'
     BASE_URL = 'https://www.agentprovocateur.com'
+    API_URL = BASE_URL + '{}/api/n/bundle'
 
     def __init__(self, args):
         super().__init__(args)
@@ -28,6 +28,10 @@ class AgentProvocateurGoblin(MetaGoblin):
             return url.split(')/')[-1]
         return url
 
+    def extract_location(self, url):
+        '''extract location from url'''
+        return self.parser.regex_search(r'/[a-z]+_[a-z]+', url)
+
     def main(self):
         self.logger.log(1, self.NAME, 'collecting urls')
         urls = []
@@ -36,15 +40,16 @@ class AgentProvocateurGoblin(MetaGoblin):
             if 'media/catalog' in target:
                 base = self.isolate(target).split('_')[0]
                 zero = self.parser.regex_search(r'0(?=\d\.jpg)', target)
-                for n in range(1, 6):
 
+                for n in range(1, 6):
                     urls.append(f'{base}_ecom_{zero}{n}.jpg')
             else:
+                location = self.extract_location(target)
                 self.headers.update({'Content-Type': 'application/json'})
                 POST_DATA = self.parser.make_json({"requests":[{"action":"route",
                                                                 "children":[{"path":f"/{self.extract_path(target)}",
                                                                              "_reqId":0}]}]})
-                response = self.parser.load_json(self.post(self.API_URL, data=POST_DATA).content)
+                response = self.parser.load_json(self.post(self.API_URL.format(location), data=POST_DATA).content)
 
                 for entry in response.get('catalog', ''):
                     for image in entry.get('media', ''):

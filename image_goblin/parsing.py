@@ -232,7 +232,7 @@ class Parser:
             return True
         elif self.ext_filter[0] and self.extension(url) not in self.ext_filter:
             return True
-        elif 'data:image/svg+xml' in url or 'facebook.com/tr' in url:
+        elif 'data:image/' in url or 'facebook.com/tr' in url:
             return True
         return False
 
@@ -280,7 +280,7 @@ class Parser:
         if 'acidimg' in url:
             url = url.replace('small', 'big')
         elif 'i.f1g.fr' in url:
-            url = re.sub(r'madame/(x\d+/)?', 'madame/orig/', url)
+            url = re.sub(r'madame/(([a-z]+|(\d+)?x\d+)/)', 'madame/orig/', url)
         elif 'imagetwist' in url:
             url = url.replace('/th/', '/i/').replace('.jpg', '.JPG')
         elif 'imgbox' in url:
