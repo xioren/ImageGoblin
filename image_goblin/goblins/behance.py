@@ -18,6 +18,9 @@ class BehanceGoblin(MetaGoblin):
         urls = []
 
         for target in self.args['targets'][self.ID]:
+            self.logger.log(2, self.NAME, 'looting', target)
+            self.logger.spin()
+            
             if 'mir-s3-cdn' in target:
                 self.logger.log(2, self.NAME, 'WARNING', 'image urls not fully supported', once=True)
                 urls.append(self.parser.regex_sub(r'(?<=modules/)[^/]+', 'source', target))

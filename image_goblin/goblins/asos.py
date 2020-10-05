@@ -36,6 +36,9 @@ class ASOSGoblin(MetaGoblin):
         self.logger.log(1, self.NAME, 'collecting urls')
 
         for target in self.args['targets'][self.ID]:
+            self.logger.log(2, self.NAME, 'looting', target)
+            self.logger.spin()
+            
             color = self.extract_color(target)
             id = self.extract_id(target)
 

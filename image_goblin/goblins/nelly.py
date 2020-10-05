@@ -27,6 +27,9 @@ class NellyGoblin(MetaGoblin):
         self.logger.log(1, self.NAME, 'collecting urls')
 
         for target in self.args['targets'][self.ID]:
+            self.logger.log(2, self.NAME, 'looting', target)
+            self.logger.spin()
+            
             id = self.extract_id(target)
 
             for n in range(1, 6):

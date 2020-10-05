@@ -20,6 +20,9 @@ class LikeeGoblin(MetaGoblin):
         urls = []
 
         for target in self.args['targets'][self.ID]:
+            self.logger.log(2, self.NAME, 'looting', target)
+            self.logger.spin()
+            
             if '/s/' in target:
                 response = self.get(target).content
                 urls.append(self.parser.regex_search(r'(?<=video_url":")[^"]+', response))

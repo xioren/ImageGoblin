@@ -29,6 +29,9 @@ class TumblrGoblin(MetaGoblin):
             self.delay()
 
         for url in urls:
+            self.logger.log(2, self.NAME, 'looting', target)
+            self.logger.spin()
+            
             if 'tumblr_' in url:
                 if '.gif' in target:
                     self.collect(self.parser.regex_sub(r'\d+(?=\.gif)', '540', url))

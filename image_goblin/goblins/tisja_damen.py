@@ -23,6 +23,9 @@ class TisjaDamenGoblin(MetaGoblin):
         urls = []
 
         for target in self.args['targets'][self.ID]:
+            self.logger.log(2, self.NAME, 'looting', target)
+            self.logger.spin()
+            
             if 'images' in target:
                 self.logger.log(2, self.NAME, 'WARNING', 'image urls not fully supported', once=True)
                 urls.append(target)

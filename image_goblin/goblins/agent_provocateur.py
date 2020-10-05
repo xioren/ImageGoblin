@@ -37,6 +37,9 @@ class AgentProvocateurGoblin(MetaGoblin):
         urls = []
 
         for target in self.args['targets'][self.ID]:
+            self.logger.log(2, self.NAME, 'looting', target)
+            self.logger.spin()
+            
             if 'media/catalog' in target:
                 base = self.isolate(target).split('_')[0]
                 zero = self.parser.regex_search(r'0(?=\d\.jpg)', target)

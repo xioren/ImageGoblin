@@ -1,4 +1,5 @@
 from math import floor
+from itertools import cycle
 from os import get_terminal_size
 
 class Logger:
@@ -9,6 +10,8 @@ class Logger:
         self.silent = silent
         self.nodl = nodl
         self.logged = [] # NOTE: keep track of log once logs
+        self.spinners = cycle(['#-----', '-#----', '--#---', '---#--', '----#-',
+                                '-----#', '----#-', '---#--', '--#---', '-#----'])
 
     def clear_line(self):
         '''clear the current terminal line'''
@@ -42,3 +45,8 @@ class Logger:
             self.clear_line()
             bar = '█' * floor(current/total * 20)
             print(f'[{caller}] <{msg}> |{bar.ljust(20, " ")}| {current} of {total}', end='\r')
+
+    def spin(self):
+        '''activity spinner'''
+        if not (self.verbose or self.silent):
+            print(f'[{next(self.spinners)}]', end='\r')

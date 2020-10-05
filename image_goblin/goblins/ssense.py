@@ -23,6 +23,9 @@ class SsenseGoblin(MetaGoblin):
         urls = []
 
         for target in self.args['targets'][self.ID]:
+            self.logger.log(2, self.NAME, 'looting', target)
+            self.logger.spin()
+            
             if 'img.ssensemedia' in target or 'res.cloudinary' in target:
                 urls.append(target)
             else:

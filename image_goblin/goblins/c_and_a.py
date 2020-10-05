@@ -22,6 +22,9 @@ class CAGoblin(MetaGoblin):
         urls = []
 
         for target in self.args['targets'][self.ID]:
+            self.logger.log(2, self.NAME, 'looting', target)
+            self.logger.spin()
+            
             if 'productimages' in target:
                 urls.append(target)
             else:

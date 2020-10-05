@@ -28,6 +28,9 @@ class ZaraGoblin(MetaGoblin):
         urls = []
 
         for target in self.args['targets'][self.ID]:
+            self.logger.log(2, self.NAME, 'looting', target)
+            self.logger.spin()
+            
             if 'static' in target:
                 url_base, url_end = self.parser.regex_split(r'_\d+_\d+_\d+', target)
 

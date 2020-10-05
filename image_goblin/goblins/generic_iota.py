@@ -50,6 +50,9 @@ class IotaGoblin(MetaGoblin):
         urls = []
 
         for target in self.args['targets'][self.ID]:
+            self.logger.log(2, self.NAME, 'looting', target)
+            self.logger.spin()
+            
             if 'scene7' in target:
                 id = self.extract_id(self.parser.dequery(target))
                 self.url_base = self.extract_base(target)

@@ -19,8 +19,10 @@ class PerillaGoblin(MetaGoblin):
         urls = []
 
         for target in self.args['targets'][self.ID]:
-            urls.extend(self.parser.extract_by_regex(self.get(target).content, self.URL_PAT))
+            self.logger.log(2, self.NAME, 'looting', target)
+            self.logger.spin()
 
+            urls.extend(self.parser.extract_by_regex(self.get(target).content, self.URL_PAT))
             self.delay()
 
         for url in urls:

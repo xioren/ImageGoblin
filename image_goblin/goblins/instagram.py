@@ -240,6 +240,9 @@ class InstagramGoblin(MetaGoblin):
         self.authenticate(self.args['login'])
 
         for target in self.args['targets'][self.ID]:
+            self.logger.log(2, self.NAME, 'looting', target)
+            # self.logger.spin()
+
             if 'cdninstagram' in target:
                 self.collect(target)
                 self.loot()

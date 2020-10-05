@@ -35,6 +35,9 @@ class HunkemollerGoblin(MetaGoblin):
         urls = []
 
         for target in self.args['targets'][self.ID]:
+            self.logger.log(2, self.NAME, 'looting', target)
+            self.logger.spin()
+            
             if self.parser.regex_search(self.URL_TYPES, target, capture=False):
                 urls.append(target)
             else:

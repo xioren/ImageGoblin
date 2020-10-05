@@ -28,6 +28,9 @@ class VictoriasSecretGoblin(MetaGoblin):
             DIMENSIONS = 'p/3040x4052'
 
         for target in self.args['targets'][self.ID]:
+            self.logger.log(2, self.NAME, 'looting', target)
+            self.logger.spin()
+            
             if '/p/' in target:
                 self.logger.log(2, self.NAME, 'WARNING', 'image urls not fully supported', once=True)
                 urls.append(self.parser.regex_sub(r'p/\d+x\d+', DIMENSIONS, target.replace('dm.', 'www.')))
