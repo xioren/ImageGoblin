@@ -14,7 +14,7 @@ class Parser:
     FILTER_PAT = re.compile(r'(?:\.(js|css|pdf|php|html|svg(\+xml)?)|favicon|[{}])', flags=re.IGNORECASE)
     MISC_REPLACEMENTS = {'amp;': '', 'background-image:url(': ''}
     ABSOLUTE_PAT = r'(?:/?[^/\.]+\.[^/]+(?=/))'
-    CROPPING_PATS = (
+    SCALING_PATS = (
         re.compile(r'[\-_]?((x+)?-?(?<![\w\-])l(arge)?(?!\w)|profile|square)(?![\w])[\-_/]?', flags=re.IGNORECASE),
         re.compile(r'[\.-_]\d+w(?=[-_\.])|[\.-_]w\d+(?=[-_\.])'), # -000w
         re.compile(r'(?<=/)([a-z]_[a-z\d:]+,?)+/(v\d/)?'), # cloudfront (probably too general and will catch false positives)
@@ -111,9 +111,9 @@ class Parser:
 
         return new_filename.strip('-_').lower()
 
-    def decrop(self, url):
-        '''remove common cropping from url'''
-        for pat in self.CROPPING_PATS:
+    def descale(self, url):
+        '''remove common scaling from url'''
+        for pat in self.SCALING_PATS:
             url = re.sub(pat, '', url)
         return url
 
@@ -122,8 +122,8 @@ class Parser:
         return url.split('?')[0]
 
     def sanitize(self, url):
-        '''combine dequery and decrop'''
-        return self.decrop(self.dequery(url))
+        '''combine dequery and descale'''
+        return self.descale(self.dequery(url))
 
     def unquote(self, filename):
         '''unquote filenames'''

@@ -9,6 +9,7 @@ from contextlib import closing
 from urllib.parse import urlencode
 from http.cookiejar import CookieJar
 from gzip import decompress, GzipFile
+from http.client import RemoteDisconnected
 from urllib.request import urlopen, Request
 from urllib.error import HTTPError, URLError
 from io import DEFAULT_BUFFER_SIZE, BufferedReader
@@ -186,10 +187,13 @@ class MetaGoblin:
                 kwargs['error'] = e
                 return self.retry(method, url, *args, attempt=attempt, **kwargs)
             self.logger.log(2, self.NAME, e, url)
-        except (timeout, URLError) as e:
+        except (RemoteDisconnected, timeout, URLError) as e:
             kwargs['error'] = e
             return self.retry(method, url, *args, attempt=attempt, **kwargs)
         except Exception as e:
+            # BUG: "name 'attempt' is not defined" outputting as error message
+            # for this catch all
+            # https://s7g10.scene7.com/is/image/UrbanOutfittersEU/0147341872052_055_e?fmt=jpeg&qlt=100&scl=1
             # NOTE: too many other possible exceptions to catch individually -> use catchall
             self.logger.log(2, self.NAME, e, url)
 
@@ -217,13 +221,13 @@ class MetaGoblin:
         '''retry http operation'''
         kwargs['attempt'] += 1
         if kwargs['attempt'] > 5:
-            self.logger.log(2, self.NAME, kwargs["error"], f'aborting after 5 attempts: {url}')
+            self.logger.log(2, self.NAME, kwargs['error'], f'aborting after 5 attempts: {url}')
             return None
 
-        self.logger.log(2, self.NAME, kwargs["error"], f'retry attempt {kwargs["attempt"]}: {url}')
+        self.logger.log(2, self.NAME, kwargs['error'], f'retry attempt {kwargs["attempt"]}: {url}')
         self.delay(kwargs['attempt'])
 
-        return self.request_handler(method, url, *args, **kwargs)
+        return self.request_handler(method, url, *args **kwargs)
 
     ####################################################################
     # io

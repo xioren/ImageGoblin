@@ -15,7 +15,7 @@ class GettyGoblin(MetaGoblin):
         super().__init__(args)
 
     def upgrade(self, image):
-        '''sub in higher resolution cropping'''
+        '''sub in higher resolution scaling'''
         id = self.parser.regex_search(r'id\d+', image)
         return f'https://media.gettyimages.com/photos/picture-{id}?s=2048x2048'
 
@@ -26,7 +26,7 @@ class GettyGoblin(MetaGoblin):
         for target in self.args['targets'][self.ID]:
             self.logger.log(2, self.NAME, 'looting', target)
             self.logger.spin()
-            
+
             if 'media' in target:
                 self.logger.log(2, self.NAME, 'WARNING', 'image urls not fully supported', once=True)
                 urls.append(target)

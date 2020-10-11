@@ -11,14 +11,19 @@ class TrendyolGoblin(MetaGoblin):
 
     NAME = 'trandyol goblin'
     ID = 'trendyol'
-    URL_PAT = r'https?://(img-trendyol\.mncdn|cdn\.dsmcdn)\.com/[^"\s,]+\d_org(_zoom)?\.jpg'
+    # API_URL = 'https://api.trendyol.com/webbrowsinggw/api/productDetails'
+    # IMG_BASE = 'https://cdn.dsmcdn.com'
 
     def __init__(self, args):
         super().__init__(args)
 
     def extract_base(self, url):
         '''extract base of url'''
-        return self.parser.regex_sub(r'\d+_[a-z]+(_[a-z]+)?\.jpg', '', url)
+        return self.parser.regex_sub(r'\d+/\d+_[a-z]+(_[a-z]+)?\.jpg', '', url)
+
+    # def extract_id(self, url):
+    #     '''extract product id'''
+    #     return self.parser.regex_search(r'(?<=p-)\d+', url)
 
     def main(self):
         self.logger.log(1, self.NAME, 'collecting urls')
@@ -27,18 +32,20 @@ class TrendyolGoblin(MetaGoblin):
         for target in self.args['targets'][self.ID]:
             self.logger.log(2, self.NAME, 'looting', target)
             self.logger.spin()
-            
+
             if 'img-trendyol' in target or 'cdn.dsmcdn' in target:
                 urls.append(target)
             else:
-                urls.extend(self.parser.extract_by_regex(self.get(target).content, self.URL_PAT))
+                # NOTE: api works sometimes...depends on product id
+                # TODO: come up with solution
+                self.logger.log(2, self.NAME, 'WARNING', 'webpage urls not supported', once=True)
 
             self.delay()
 
         for url in urls:
             url_base = self.extract_base(url)
 
-            for n in range(1, 16):
-                self.collect(f'{url_base}{n}_org_zoom.jpg')
+            for n in range(1, 10):
+                self.collect(f'{url_base}{n}/{n}_org_zoom.jpg', filename=f'{url_base.split("/")[-2]}_{n}_org_zoom')
 
         self.loot()

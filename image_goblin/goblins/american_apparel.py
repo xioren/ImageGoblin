@@ -17,7 +17,7 @@ class AmericanApparelGoblin(MetaGoblin):
         super().__init__(args)
 
     def split_url(self, url):
-        '''split url into base, end and sub out cropping'''
+        '''split url into base, end and sub out scalinging'''
         return self.parser.regex_split(r'_(0\d)?(?=_)', self.parser.regex_sub(r'(?<=stencil/)[^/]+', 'original', url), maxsplit=1)
 
     def main(self):
@@ -27,7 +27,7 @@ class AmericanApparelGoblin(MetaGoblin):
         for target in self.args['targets'][self.ID]:
             self.logger.log(2, self.NAME, 'looting', target)
             self.logger.spin()
-            
+
             if 'bigcommerce' in target:
                 urls.append(self.parser.dequery(target))
             else:

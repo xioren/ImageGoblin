@@ -19,7 +19,7 @@ class WoodWoodGoblin(MetaGoblin):
         return self.parser.regex_search(r'/\d+/\d+/', url).strip('/').split('/')
 
     def upscale(self, url):
-        '''sub in higher resolution cropping and return filename'''
+        '''sub in higher resolution scaling and return filename'''
         return self.parser.regex_sub(r'\d+x\d+c', '1600x2400c', self.parser.extract_filename(url))
 
     def main(self):
@@ -29,7 +29,7 @@ class WoodWoodGoblin(MetaGoblin):
         for target in self.args['targets'][self.ID]:
             self.logger.log(2, self.NAME, 'looting', target)
             self.logger.spin()
-            
+
             if 'shared' in target:
                 urls.append(target)
             else:

@@ -15,7 +15,7 @@ class GuessGoblin(MetaGoblin):
         super().__init__(args)
 
     def trim(self, url):
-        '''decrop and return url base'''
+        '''scale and return url base'''
         return self.parser.regex_sub(r'(?<=upload/).+/v1/|-ALT\d', '', self.parser.dequery(url))
 
     def main(self):
@@ -25,7 +25,7 @@ class GuessGoblin(MetaGoblin):
         for target in self.args['targets'][self.ID]:
             self.logger.log(2, self.NAME, 'looting', target)
             self.logger.spin()
-            
+
             if 'guess-img' in target:
                 urls.append(target)
             else:

@@ -15,7 +15,7 @@ class ShopbopGoblin(MetaGoblin):
         super().__init__(args)
 
     def prep(self, url):
-        '''prepare the url by removing cropping and mobile elements'''
+        '''prepare the url by removing scaling and mobile elements'''
         return self.parser.regex_sub(r'._\w+(_\w+)?_\w+_', '', url).replace('m.media', 'images-na.ssl-images').replace('2-1', '2-0')
 
     def main(self):
@@ -25,7 +25,7 @@ class ShopbopGoblin(MetaGoblin):
         for target in self.args['targets'][self.ID]:
             self.logger.log(2, self.NAME, 'looting', target)
             self.logger.spin()
-            
+
             if 'amazon' in target:
                 urls.append(target)
             else:

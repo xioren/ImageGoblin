@@ -21,7 +21,7 @@ class EpsilonGoblin(MetaGoblin):
         super().__init__(args)
 
     def trim_url(self, url):
-        '''remove cropping from url'''
+        '''remove scaling from url'''
         return self.parser.regex_sub(r'mnresize/\d+/(\d+|-)//?', '', url).replace('Thumbs', 'Originals')
 
     def main(self):
@@ -31,7 +31,7 @@ class EpsilonGoblin(MetaGoblin):
         for target in self.args['targets'][self.ID]:
             self.logger.log(2, self.NAME, 'looting', target)
             self.logger.spin()
-            
+
             if 'mncdn' in target:
                 urls.append(target)
             else:

@@ -22,7 +22,7 @@ class DeltaGoblin(MetaGoblin):
         super().__init__(args)
 
     def trim(self, url):
-        '''remove cropping from query string'''
+        '''remove scaling from query string'''
         return self.parser.regex_sub(r'&imwidth=\d+', '', url)
 
     def extract_product_id(self, url):
@@ -35,7 +35,7 @@ class DeltaGoblin(MetaGoblin):
         for target in self.args['targets'][self.ID]:
             self.logger.log(2, self.NAME, 'looting', target)
             self.logger.spin()
-            
+
             if 'photos' in target:
                 for mod in self.MODIFIERS:
                     urls.append(self.trim(self.parser.regex_sub(r'_\d+_\d+_\d+', f'{mod}{self.SIZE}', target)))

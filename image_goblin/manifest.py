@@ -259,7 +259,7 @@ goblins = {
     'tommyhilfiger':(r'tommy-europe|shoptommy|tommy\.[a-z]+', TommyHilfigerGoblin),
     'tisjadamen': (r'tisjadamen\.[a-z]+', TisjaDamenGoblin),
     'topshop': (r'topshop\.[a-z]+', TopshopGoblin),
-    'trendyol': (r'trendyol\.[a-z]+', TrendyolGoblin),
+    'trendyol': (r'(trendyol|cdn\.dsmcdn)\.[a-z]+', TrendyolGoblin),
     'triangl': (r'triangl\.[a-z]+', TrianglGoblin),
     'tumblr': (r'tumblr\.[a-z]+', TumblrGoblin),
     'underprotection': (r'underprotection\.[a-z]+', UnderprotectionGoblin),

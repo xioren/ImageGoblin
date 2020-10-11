@@ -20,7 +20,7 @@ class ZaraGoblin(MetaGoblin):
         super().__init__(args)
 
     def trim(self, url):
-        '''remove cropping from query string'''
+        '''remove scaling from query string'''
         return self.parser.regex_sub(r'&imwidth=\d+', '', url)
 
     def main(self):
@@ -30,7 +30,7 @@ class ZaraGoblin(MetaGoblin):
         for target in self.args['targets'][self.ID]:
             self.logger.log(2, self.NAME, 'looting', target)
             self.logger.spin()
-            
+
             if 'static' in target:
                 url_base, url_end = self.parser.regex_split(r'_\d+_\d+_\d+', target)
 

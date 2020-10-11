@@ -32,7 +32,7 @@ class AlphaGoblin(MetaGoblin):
         super().__init__(args)
 
     def trim(self, url):
-        '''remove cropping from url'''
+        '''remove scaling from url'''
         return self.parser.regex_sub(r'/(custom_)?cache.*?(?=/\w/\w/)', '', url)
 
     def main(self):

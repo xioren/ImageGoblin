@@ -18,7 +18,7 @@ class DeviantArtGoblin(MetaGoblin):
         super().__init__(args)
 
     def trim(self, url):
-        '''remove cropping'''
+        '''remove scaling'''
         return self.parser.regex_sub(r'/v1/[^\?]+(?=\?)', '', url)
 
     def main(self):
@@ -28,7 +28,7 @@ class DeviantArtGoblin(MetaGoblin):
         for target in self.args['targets'][self.ID]:
             self.logger.log(2, self.NAME, 'looting', target)
             self.logger.spin()
-            
+
             if '.jpg' in target:
                 urls.append(target)
             else:

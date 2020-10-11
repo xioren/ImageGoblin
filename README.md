@@ -1,7 +1,6 @@
 # ImageGoblin
 
-#### changelog v0.4.7:
-+ increased logging
+#### changelog v0.4.8:
 + bug fixes
 + misc code clean up and improvements
 

@@ -16,7 +16,7 @@ class WolfordGoblin(MetaGoblin):
         super().__init__(args)
 
     def trim(self, url):
-        '''strip cropping from url'''
+        '''strip scaling from url'''
         return self.parser.regex_sub(r'default/\w+/images', 'default/images', self.parser.dequery(url)).replace('dw/image/v2/BBCH_PRD/', '')
 
     def main(self):
@@ -26,7 +26,7 @@ class WolfordGoblin(MetaGoblin):
         for target in self.args['targets'][self.ID]:
             self.logger.log(2, self.NAME, 'looting', target)
             self.logger.spin()
-            
+
             if 'demandware' in target:
                 urls.append(target)
             else:
