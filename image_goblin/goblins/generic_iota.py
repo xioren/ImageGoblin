@@ -17,6 +17,7 @@ class IotaGoblin(MetaGoblin):
 
     NAME = 'iota goblin'
     ID = 'iota'
+    # NOTE: as high as scl=.7 has worked in some cases
     QUERY = '?fmt=jpeg&qlt=100&scl=1'
     # FALLBACK_QUERY = '?fmt=jpeg&qlt=100&scl=1.3'
 
@@ -55,40 +56,47 @@ class IotaGoblin(MetaGoblin):
             self.logger.spin()
 
             if 'scene7' in target:
+                # NOTE: singapore uses different cdn
+                if 'i.localised' in targett:
+                    self.logger.log(2, self.NAME, 'WARNING', 'image urls not fully supported', once=True)
                 id = self.extract_id(self.parser.dequery(target))
                 self.url_base = self.extract_base(target)
 
                 for mod in self.MODIFIERS:
                     urls.append(f'{self.url_base}{id}{mod}{self.QUERY}')
             else:
-                init_response = self.get(target, store_cookies=True)
-                if init_response.code == 200:
-                    self.set_auth_tokens(self.parser.load_json(self.parser.unquote(self.cookie_value('urbn_auth_payload'))))
+                # FIXME: currently returns 403 forbidden on eu
+                if 'en-sg' in target or 'en-gb' in target:
+                    self.logger.log(2, self.NAME, 'WARNING', 'webpage urls not fully supported', once=True)
+                else:
+                    init_response = self.get(target, store_cookies=True)
+                    if init_response.code == 200:
+                        self.set_auth_tokens(self.parser.load_json(self.parser.unquote(self.cookie_value('urbn_auth_payload'))))
 
-                    self.headers.update(
-                        {
-                            'Accept': 'application/json',
-                            'x-urbn-site-id': self.cookie_value('siteId'),
-                            'x-urbn-channel': 'web',
-                            'x-urbn-currency': self.cookie_value('urbn_currency'),
-                            'x-urbn-language': init_response.info['locale'].replace('_', '-'),
-                            'authorization': f'Bearer {self.auth_token}'
-                        }
-                    )
+                        self.headers.update(
+                            {
+                                'Accept': 'application/json',
+                                'x-urbn-site-id': self.cookie_value('siteId'),
+                                'x-urbn-channel': 'web',
+                                'x-urbn-currency': self.cookie_value('urbn_currency'),
+                                'x-urbn-language': init_response.info['locale'].replace('_', '-'),
+                                'authorization': f'Bearer {self.auth_token}'
+                            }
+                        )
 
-                    response = self.parser.load_json(self.get(self.API_URL.format(self.extract_product(target))).content)
-
-                    if isinstance(response, dict) and response.get('code') == 'EXPIRED_TOKEN':
-                        self.logger.log(2, self.NAME, 'reauthorizing')
-                        self.reauthorize()
                         response = self.parser.load_json(self.get(self.API_URL.format(self.extract_product(target))).content)
 
-                    if isinstance(response, list) and 'skuInfo' in response[0]:
-                        for slice in response[0]['skuInfo']['primarySlice']['sliceItems']:
-                            url = '_'.join(slice['swatchUrl'].split('_')[:-1])
+                        if isinstance(response, dict) and response.get('code') == 'EXPIRED_TOKEN':
+                            self.logger.log(2, self.NAME, 'reauthorizing')
+                            self.reauthorize()
+                            response = self.parser.load_json(self.get(self.API_URL.format(self.extract_product(target))).content)
 
-                            for image in slice.get('images', ''):
-                                urls.append(f'{url}_{image}{self.QUERY}')
+                        if isinstance(response, list) and 'skuInfo' in response[0]:
+                            for slice in response[0]['skuInfo']['primarySlice']['sliceItems']:
+                                url = '_'.join(slice['swatchUrl'].split('_')[:-1])
+
+                                for image in slice.get('images', ''):
+                                    urls.append(f'{url}_{image}{self.QUERY}')
 
             self.delay()
 

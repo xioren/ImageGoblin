@@ -19,6 +19,7 @@ class Parser:
         re.compile(r'[\.-_]\d+w(?=[-_\.])|[\.-_]w\d+(?=[-_\.])'), # -000w
         re.compile(r'(?<=/)([a-z]_[a-z\d:]+,?)+/(v\d/)?'), # cloudfront (probably too general and will catch false positives)
         re.compile(r'[@\-_/\.]\d+x(\d+)?(?![a-z\d])'), # 000x000
+        re.compile(r'styles/\w+/public/'), # styles/njal_scale_large_vertical/public
         re.compile(r'expanded_[a-z]+/'),
         re.compile(r'/v/\d/.+\.webp$'), # wix
         re.compile(r'-e\d+(?=\.)'),

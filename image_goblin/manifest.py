@@ -263,7 +263,7 @@ goblins = {
     'triangl': (r'triangl\.[a-z]+', TrianglGoblin),
     'tumblr': (r'tumblr\.[a-z]+', TumblrGoblin),
     'underprotection': (r'underprotection\.[a-z]+', UnderprotectionGoblin),
-    'urbanoutfitters':(r'urbanoutfitters(eu)?(\.[a-z]+|/)', UrbanOutfittersGoblin),
+    'urbanoutfitters': (r'urbanoutfitters(eu)?(\.[a-z]+|/)', UrbanOutfittersGoblin),
     'victoriassecret': (r'victoriassecret\.[a-z]+', VictoriasSecretGoblin),
     'vila': (r'vila\.[a-z]+', VilaGoblin),
     'vincecamuto': (r'vincecamuto\.[a-z]+', VinceCamutoGoblin),

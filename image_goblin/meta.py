@@ -138,7 +138,6 @@ class MetaGoblin:
 
     def cookie_value(self, name):
         '''return the value of a cookie from the cookie jar'''
-        # QUESTION: is cookie jar object subscriptable?
         for cookie in self.cookie_jar:
             if cookie.name == name:
                 return cookie.value
@@ -191,9 +190,6 @@ class MetaGoblin:
             kwargs['error'] = e
             return self.retry(method, url, *args, attempt=attempt, **kwargs)
         except Exception as e:
-            # BUG: "name 'attempt' is not defined" outputting as error message
-            # for this catch all
-            # https://s7g10.scene7.com/is/image/UrbanOutfittersEU/0147341872052_055_e?fmt=jpeg&qlt=100&scl=1
             # NOTE: too many other possible exceptions to catch individually -> use catchall
             self.logger.log(2, self.NAME, e, url)
 
@@ -247,7 +243,7 @@ class MetaGoblin:
 
         filepath = self.check_ext(filepath, response.info().get('Content-Type'))
         if os.path.exists(filepath):
-            if attempt > 0:
+            if kwargs['attempt'] > 0:
                 # NOTE: remove files that timed out during initial read
                 # WARNING: possible to erroneously remove legit files with same filename
                 # FIXME: lazy approach
