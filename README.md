@@ -1,6 +1,6 @@
 # ImageGoblin
 
-#### changelog v0.4.9:
+#### changelog v0.4.10:
 + changed default location for install script
 + bug fixes
 + misc code clean up and improvements
