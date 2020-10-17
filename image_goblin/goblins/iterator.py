@@ -38,6 +38,7 @@ class IteratorGoblin(MetaGoblin):
 
         for n in range(real_iter, real_iter + self.block_size, self.args['step']):
             if not self.is_unique:
+                # if filenames are not unique, use iterable as filename instead
                 filename = n
 
             self.collect(f'{base}{str(n).zfill(len(iterable))}{end}', filename=filename)
@@ -48,7 +49,7 @@ class IteratorGoblin(MetaGoblin):
         for target in self.args['targets'][self.ID]:
             self.logger.log(2, self.NAME, 'looting', target)
             self.logger.spin()
-            
+
             round = 1
             base, iterable, end = self.isolate_parts(target)
             self.is_unique = self.unique(f'{base}{iterable}{end}', f'{base}{self.increment_iterable(iterable)}{end}')

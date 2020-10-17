@@ -223,7 +223,7 @@ class MetaGoblin:
         self.logger.log(2, self.NAME, kwargs['error'], f'retry attempt {kwargs["attempt"]}: {url}')
         self.delay(kwargs['attempt'])
 
-        return self.request_handler(method, url, *args **kwargs)
+        return self.request_handler(method, url, *args, **kwargs)
 
     ####################################################################
     # io
