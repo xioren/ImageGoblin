@@ -356,6 +356,7 @@ class MetaGoblin:
                 print(url, end='\n\n')
                 continue
 
+            # ext = self.parser.extension(url)
             filepath = os.path.join(save_loc, filename)
             if os.path.exists(filepath):
                 if self.args['noskip'] or self.args['filename']:
@@ -378,7 +379,6 @@ class MetaGoblin:
         if self.args['nodl']:
             self.logger.log(1, self.NAME, 'info', f'{len(self.collection)} urls(s) collected', clear=True)
         else:
-            # QUESTION: add extension?
             self.logger.log(1, self.NAME, 'complete', f'{looted} file(s) looted', clear=True)
 
         return timed_out

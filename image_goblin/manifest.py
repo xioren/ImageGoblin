@@ -98,6 +98,7 @@ from goblins.red_gifs import RedGifsGoblin
 from goblins.reserved import ReservedGoblin
 from goblins.resume_cph import ResumeGoblin
 from goblins.sandro import SandroGoblin
+from goblins.sans_complexe import SansComplexeGoblin
 from goblins.savagex import SavageXGoblin
 from goblins.scoop_models import ScoopGoblin
 from goblins.seamless_basic import SeamlessBasicGoblin
@@ -240,6 +241,7 @@ goblins = {
     'sandro': (r'sandro-paris\.[a-z]+', SandroGoblin),
     'scoop': (r'scoopmodels\.[a-z]+', ScoopGoblin),
     'select': (r'select\.solarnet|selectmodel\.[a-z]+', SelectGoblin),
+    'sanscomplexe': (r'sanscomplexe\.[a-z]+', SansComplexeGoblin),
     'savagex': (r'savagex\.[a-z]+', SavageXGoblin),
     'seamlessbasic': (r'seamlessbasic\.[a-z]+', SeamlessBasicGoblin),
     'shopbop': (r'shopbop(\.[a-z]+|/)', ShopbopGoblin),

@@ -19,6 +19,7 @@ class AlphaGoblin(MetaGoblin):
         - only hearts
         - promise
         - reserved
+        - sans complexe
         - simone perele
         - watercult
         - vince camuto
