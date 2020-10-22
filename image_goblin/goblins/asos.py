@@ -19,7 +19,7 @@ class ASOSGoblin(MetaGoblin):
 
     def extract_id(self, url):
         '''extract image id from url'''
-        return self.parser.regex_search(r'\d{5,}(-\d)?', url)
+        return self.parser.regex_search(r'\d{5,}', url)
 
     def extract_color(self, url):
         '''extract color from url'''
@@ -38,7 +38,7 @@ class ASOSGoblin(MetaGoblin):
         for target in self.args['targets'][self.ID]:
             self.logger.log(2, self.NAME, 'looting', target)
             self.logger.spin()
-            
+
             color = self.extract_color(target)
             id = self.extract_id(target)
 

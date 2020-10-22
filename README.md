@@ -1,7 +1,6 @@
 # ImageGoblin
 
-#### changelog v0.4.11:
-+ new goblin
+#### changelog v0.5.0:
 + bug fixes
 + misc code clean up and improvements
 

@@ -57,7 +57,7 @@ class IotaGoblin(MetaGoblin):
 
             if 'scene7' in target:
                 # NOTE: singapore uses different cdn
-                if 'i.localised' in targett:
+                if 'i.localised' in target:
                     self.logger.log(2, self.NAME, 'WARNING', 'image urls not fully supported', once=True)
                 id = self.extract_id(self.parser.dequery(target))
                 self.url_base = self.extract_base(target)

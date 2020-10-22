@@ -127,7 +127,6 @@ from goblins.underprotection import UnderprotectionGoblin
 from goblins.urban_outfitters import UrbanOutfittersGoblin
 from goblins.victorias_secret import VictoriasSecretGoblin
 from goblins.vila import VilaGoblin
-from goblins.vince_camuto import VinceCamutoGoblin
 from goblins.vitamin_a import VitaminAGoblin
 from goblins.watercult import WatercultGoblin
 from goblins.wolford import WolfordGoblin
@@ -268,7 +267,6 @@ goblins = {
     'urbanoutfitters': (r'urbanoutfitters(eu)?(\.[a-z]+|/)', UrbanOutfittersGoblin),
     'victoriassecret': (r'victoriassecret\.[a-z]+', VictoriasSecretGoblin),
     'vila': (r'vila\.[a-z]+', VilaGoblin),
-    'vincecamuto': (r'vincecamuto\.[a-z]+', VinceCamutoGoblin),
     'vitamina': (r'vitaminaswim\.[a-z]+', VitaminAGoblin),
     'watercult': (r'watercult\.[a-z]+', WatercultGoblin),
     'wolford': (r'wolfordshop\.[a-z]+', WolfordGoblin),
