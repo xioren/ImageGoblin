@@ -187,7 +187,7 @@ goblins = {
     'getty': (r'gettyimages\.[a-z]+', GettyGoblin),
     'giphy': (r'giphy\.[a-z]+', GiphyGoblin),
     'gisela': (r'gisela\.[a-z]+', GiselaGoblin),
-    'guess': (r'guess\.[a-z]+', GuessGoblin),
+    'guess': (r'guess(-img|\.[a-z]+)', GuessGoblin),
     'handm': (r'hm\.[a-z]+', HMGoblin),
     'hannebloch': (r'hanne-bloch\.[a-z]+', HanneBlochGoblin),
     'honeybirdette': (r'honeybirdette\.[a-z]+', HoneyBirdetteGoblin),
