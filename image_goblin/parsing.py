@@ -17,8 +17,9 @@ class Parser:
     SCALING_PATS = (
         re.compile(r'[\-_]?((x+)?-?(?<![\w\-])l(arge)?(?!\w)|profile|square)(?![\w])[\-_/]?', flags=re.IGNORECASE),
         re.compile(r'[\.-_]\d+w(?=[-_\.])|[\.-_]w\d+(?=[-_\.])'), # -000w
-        re.compile(r'(?<=/)([a-z]_[a-z\d:]+,?)+/(v\d/)?'), # cloudfront (probably too general and will catch false positives)
-        re.compile(r'[@\-_/\.]\d{2,}x(\d{2,})?(?=\.|/)'), # 000x000
+        re.compile(r'(?<=/)([a-z]+_[\w\:\.]+(,|/))+(v\d/)?'), # cloudfront (probably too general and will catch false positives)
+        re.compile(r'[@\-_/\.]\d{2,}x(\d{2,})?(?=\.|/)'), # 000x[000]
+        re.compile(r'[@\-_/\.](\d{2,})?x\d{2,}(_crop)?(?=\.|/)'), # [000]x000
         re.compile(r'styles/\w+/public/'), # styles/njal_scale_large_vertical/public
         re.compile(r'expanded_[a-z]+/'),
         re.compile(r'/v/\d/.+\.webp$'), # wix
@@ -281,7 +282,7 @@ class Parser:
         if 'acidimg' in url:
             url = url.replace('small', 'big')
         elif 'i.f1g.fr' in url:
-            url = re.sub(r'madame/(([a-z]+|(\d+)?x\d+)/)', 'madame/orig/', url)
+            url = re.sub(r'madame/', 'madame/orig/', url)
         elif 'imagetwist' in url:
             url = url.replace('/th/', '/i/').replace('.jpg', '.JPG')
         elif 'imgbox' in url:
@@ -302,7 +303,7 @@ class Parser:
         elif 'pixroute' in url:
             url = url.replace('_t', '')
         elif 'redd.it' in url:
-            url = self.dequery(url).replace('preview', 'i')
+            url = url.replace('preview', 'i')
         elif 'cdn.shoplo' in url:
             url = re.sub(r'/th\d+/', '/orig/', url)
         elif 'squarespace' in url:

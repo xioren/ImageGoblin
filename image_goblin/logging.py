@@ -10,14 +10,15 @@ class Logger:
         self.silent = silent
         self.nodl = nodl
         self.logged = [] # NOTE: keep track of log once logs
-        self.spinners = cycle(['#-----', '-#----', '--#---', '---#--', '----#-',
+        self.spinner = cycle(['#-----', '-#----', '--#---', '---#--', '----#-',
                                 '-----#', '----#-', '---#--', '--#---', '-#----'])
 
     def clear_line(self):
         '''clear the current terminal line'''
         try:
             print(' ' * (get_terminal_size().columns-1), end='\r')
-        except OSError: # NOTE: ioctl error when redirecting output
+        except OSError:
+            # NOTE: ioctl error when redirecting output
             pass
 
     def log(self, level, caller, msg, info='', clear=False, once=False):
@@ -49,4 +50,4 @@ class Logger:
     def spin(self):
         '''activity spinner'''
         if not (self.verbose or self.silent):
-            print(f'[{next(self.spinners)}]', end='\r')
+            print(f'[{next(self.spinner)}]', end='\r')

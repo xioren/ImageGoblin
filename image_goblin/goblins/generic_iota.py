@@ -67,7 +67,7 @@ class IotaGoblin(MetaGoblin):
             else:
                 # FIXME: currently returns 403 forbidden on eu
                 if 'en-sg' in target or 'en-gb' in target:
-                    self.logger.log(2, self.NAME, 'WARNING', 'webpage urls not fully supported', once=True)
+                    self.logger.log(2, self.NAME, 'WARNING', 'webpage urls not supported', once=True)
                 else:
                     init_response = self.get(target, store_cookies=True)
                     if init_response.code == 200:
@@ -86,6 +86,7 @@ class IotaGoblin(MetaGoblin):
 
                         response = self.parser.load_json(self.get(self.API_URL.format(self.extract_product(target))).content)
 
+                        # QUESTION: isinstance checks necessary?
                         if isinstance(response, dict) and response.get('code') == 'EXPIRED_TOKEN':
                             self.logger.log(2, self.NAME, 'reauthorizing')
                             self.reauthorize()
@@ -97,7 +98,6 @@ class IotaGoblin(MetaGoblin):
 
                                 for image in slice.get('images', ''):
                                     urls.append(f'{url}_{image}{self.QUERY}')
-
             self.delay()
 
         for url in urls:

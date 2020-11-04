@@ -50,13 +50,12 @@ class IteratorGoblin(MetaGoblin):
             self.logger.log(2, self.NAME, 'looting', target)
             self.logger.spin()
 
-            round = 1
             base, iterable, end = self.isolate_parts(target)
             self.is_unique = self.unique(f'{base}{iterable}{end}', f'{base}{self.increment_iterable(iterable)}{end}')
 
             while True:
-                self.logger.log(1, self.NAME, 'iterating', f'round: {round} ' \
-                                f'| block: {iterable}-{str(int(iterable) + self.block_size-self.args["step"]).zfill(len(iterable))}')
+                self.logger.log(1, self.NAME, 'iterating',
+                                f'block: {iterable}-{str(int(iterable) + self.block_size-self.args["step"]).zfill(len(iterable))}')
                 self.generate_block(base, iterable, end)
 
                 timed_out = self.loot(timeout=self.args['timeout'])
@@ -64,6 +63,5 @@ class IteratorGoblin(MetaGoblin):
                     self.logger.log(1, self.NAME, 'timed out', f'after {self.args["timeout"]} attempts')
                     break
                 else:
-                    round += 1
                     iterable = self.increment_iterable(iterable)
                     self.new_collection()

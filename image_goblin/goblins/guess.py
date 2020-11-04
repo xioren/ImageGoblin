@@ -9,7 +9,7 @@ class GuessGoblin(MetaGoblin):
 
     NAME = 'guess goblin'
     ID = 'guess'
-    URL_PAT = r'https?://res\.cloudinary\.com/guess-img/image/upload/f_auto[^"\s\']+/Style/[^"\s\']+'
+    URL_PAT = r'https?://[^"\s\']+/image/upload/[^"\s\']+/Style/[^"\s\'\)]+'
 
     def __init__(self, args):
         super().__init__(args)
@@ -26,7 +26,7 @@ class GuessGoblin(MetaGoblin):
             self.logger.log(2, self.NAME, 'looting', target)
             self.logger.spin()
 
-            if 'guess-img' in target:
+            if 'image/upload' in target:
                 urls.append(target)
             else:
                 urls.extend(self.parser.extract_by_regex(self.get(target).content, self.URL_PAT))
@@ -34,7 +34,7 @@ class GuessGoblin(MetaGoblin):
             self.delay()
 
         for url in urls:
-            url_base = self.trim(url)
+            url_base = self.trim(self.parser.sanitize(url))
 
             for id in ('', '-ALT1', '-ALT2', '-ALT3', '-ALT4'):
                 self.collect(f'{url_base}{id}')

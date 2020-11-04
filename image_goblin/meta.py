@@ -204,6 +204,7 @@ class MetaGoblin:
         '''make a post request'''
         if isinstance(data, dict):
             data = urlencode(data)
+
         response = self.request_handler(self.ParsedResponse, url, data=data.encode(), store_cookies=store_cookies)
         if not response:
             return self.ParsedResponse(None)
@@ -366,6 +367,7 @@ class MetaGoblin:
                     continue
 
             attempt = self.download(url, filepath)
+            # FIXME: sites that return data, such as html instead of 404 make iterator goblin run forever.
             if attempt:
                 self.logger.log(2, self.NAME, 'looted', filename)
                 failed = 0

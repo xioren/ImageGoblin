@@ -1,6 +1,7 @@
 # ImageGoblin
 
-#### changelog v0.5.0:
+#### changelog v0.5.1:
++ added vsco goblin
 + bug fixes
 + misc code clean up and improvements
 

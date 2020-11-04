@@ -30,7 +30,7 @@ class VictoriasSecretGoblin(MetaGoblin):
         for target in self.args['targets'][self.ID]:
             self.logger.log(2, self.NAME, 'looting', target)
             self.logger.spin()
-            
+
             if '/p/' in target:
                 self.logger.log(2, self.NAME, 'WARNING', 'image urls not fully supported', once=True)
                 urls.append(self.parser.regex_sub(r'p/\d+x\d+', DIMENSIONS, target.replace('dm.', 'www.')))
@@ -39,6 +39,7 @@ class VictoriasSecretGoblin(MetaGoblin):
                 api_version = self.parser.regex_search(r'(?<=:"products","version":")v\d+', init_response)
                 for path in self.parser.extract_by_regex(init_response, r'(?<="path":")page/[^"]+'):
                     response = self.parser.load_json(self.get(f'{self.API_URL_BASE}/products/{api_version}/{self.parser.dequery(path)}?activeCountry=US').content)
+                    # QUESTION: can this be condensed?
                     if 'product' in response:
                         products = response['product'].get('productData', '')
                         for product in products:

@@ -128,6 +128,7 @@ from goblins.urban_outfitters import UrbanOutfittersGoblin
 from goblins.victorias_secret import VictoriasSecretGoblin
 from goblins.vila import VilaGoblin
 from goblins.vitamin_a import VitaminAGoblin
+from goblins.vsco import VSCOGoblin
 from goblins.watercult import WatercultGoblin
 from goblins.wolford import WolfordGoblin
 from goblins.womens_secret import WomensSecretGoblin
@@ -186,7 +187,7 @@ goblins = {
     'getty': (r'gettyimages\.[a-z]+', GettyGoblin),
     'giphy': (r'giphy\.[a-z]+', GiphyGoblin),
     'gisela': (r'gisela\.[a-z]+', GiselaGoblin),
-    'guess': (r'guess(-img)?', GuessGoblin),
+    'guess': (r'guess\.[a-z]+', GuessGoblin),
     'handm': (r'hm\.[a-z]+', HMGoblin),
     'hannebloch': (r'hanne-bloch\.[a-z]+', HanneBlochGoblin),
     'honeybirdette': (r'honeybirdette\.[a-z]+', HoneyBirdetteGoblin),
@@ -268,6 +269,7 @@ goblins = {
     'victoriassecret': (r'victoriassecret\.[a-z]+', VictoriasSecretGoblin),
     'vila': (r'vila\.[a-z]+', VilaGoblin),
     'vitamina': (r'vitaminaswim\.[a-z]+', VitaminAGoblin),
+    'vsco': (r'vsco\.co', VSCOGoblin),
     'watercult': (r'watercult\.[a-z]+', WatercultGoblin),
     'wolford': (r'wolfordshop\.[a-z]+', WolfordGoblin),
     'womensecret': (r'womensecret\.[a-z]+', WomensSecretGoblin),

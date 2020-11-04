@@ -9,7 +9,7 @@ class LikeeGoblin(MetaGoblin):
 
     NAME = 'likee goblin'
     ID = 'likee'
-    MEDIA_URL = 'https://likee.video/bg_ci_index.php/live/share/getUserPost?u={}&count={}&last_postid={}'
+    API_URL = 'https://likee.com/official_website/VideoApi/getUserVideo'
 
     def __init__(self, args):
         super().__init__(args)
@@ -22,25 +22,26 @@ class LikeeGoblin(MetaGoblin):
         for target in self.args['targets'][self.ID]:
             self.logger.log(2, self.NAME, 'looting', target)
             self.logger.spin()
-            
+
             if '/s/' in target:
                 response = self.get(target).content
                 urls.append(self.parser.regex_search(r'(?<=video_url":")[^"]+', response))
-                urls.append(self.parser.regex_search(r'(?<=thumbnailUrl":\[")[^"]+', response))
+                # urls.append(self.parser.regex_search(r'(?<=thumbnailUrl":\[")[^"]+', response))
             else:
                 last_postid = ''
                 init_response = self.get(self.parser.dequery(target)).content
-                uid = self.parser.regex_search(r'(?<=uid=)\d+', init_response)
+                uid = self.parser.regex_search(r'(?<="uid":")\d+', init_response)
 
                 while True:
-                    response = self.parser.load_json(self.get(self.MEDIA_URL.format(uid, self.num_posts, last_postid)).content)
-                    if response['result'] == 200:
-                        if not response['post_list']:
+                    self.headers.update({'Content-Type': 'application/x-www-form-urlencoded'})
+                    response = self.parser.load_json(self.post(self.API_URL, {'uid': uid, 'count': self.num_posts, 'lastPostId': last_postid}).content)
+                    if response['msg'] == 'success':
+                        if not response['data']['videoList']:
                             break
-                        for post in response['post_list']:
-                            urls.append(post['thumbnailUrl'])
-                            urls.append(post['contentUrl'])
-                        last_postid = response['post_list'][-1]['post_id']
+                        for post in response['data']['videoList']:
+                            # urls.append(post['coverUrl'])
+                            urls.append(post['videoUrl'])
+                        last_postid = response['data']['videoList'][-1]['postId']
                     else:
                         # OPTIMIZE: two breaks, should be combined.
                         break
@@ -50,7 +51,7 @@ class LikeeGoblin(MetaGoblin):
                         break
 
                     self.delay()
-
+        del self.headers['Content-Type']
         for url in urls:
             self.collect(url)
 
