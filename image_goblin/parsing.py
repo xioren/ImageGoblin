@@ -20,15 +20,16 @@ class Parser:
         re.compile(r'(?<=/)([a-z]+_[\w\:\.]+(,|/))+(v\d/)?'), # cloudfront (probably too general and will catch false positives)
         re.compile(r'[@\-_/\.]\d{2,}x(\d{2,})?(?=\.|/)'), # 000x[000]
         re.compile(r'[@\-_/\.](\d{2,})?x\d{2,}(_crop)?(?=\.|/)'), # [000]x000
-        re.compile(r'styles/\w+/public/'), # styles/njal_scale_large_vertical/public
+        re.compile(r'styles/\w+/public/'), # styles/xxxx_xxxx_xxxx_xxxx/public
         re.compile(r'expanded_[a-z]+/'),
         re.compile(r'/v/\d/.+\.webp$'), # wix
-        re.compile(r'-e\d+(?=\.)'),
+        re.compile(r'-e\d+(?=\.)'), # (wordpress?) cropping
         re.compile(r'@\d+x')
     )
 
-    def __init__(self, origin_url, user_formatting, ext_filter, slug):
-        # NOTE: user set ext filters
+    def __init__(self, origin_url, user_formatting, ext_filter, slug, filter):
+        # NOTE: user input ext filters
+        self.url_filter = re.compile(filter, flags=re.IGNORECASE)
         self.ext_filter = [self.extension(f'null.{ext.lstrip(".")}') for ext in ext_filter.split(',')]
         self.origin_url = self.add_scheme(self.dequery(origin_url))
         self.ALPHA = ascii_letters + digits + '-_'
@@ -233,6 +234,10 @@ class Parser:
         if re.search(self.FILTER_PAT, url):
             return True
         elif self.ext_filter[0] and self.extension(url) not in self.ext_filter:
+            # TODO: auto handle jpg/jpeg (i.e. if user inputs filter jpg it
+            # should also catch jpeg images and vice versa)
+            return True
+        elif self.url_filter and not self.regex_search(self.url_filter, url, False):
             return True
         elif 'data:image/' in url or 'facebook.com/tr' in url:
             return True

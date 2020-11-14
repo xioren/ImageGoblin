@@ -13,15 +13,17 @@ parser.add_argument('-d', '--delay', help='delay ("-1" for randomized delay), de
 parser.add_argument('--dir', help='specify name or relative path of the download directory. \
                                    the directory will be created if it does not exist', type=str, default='')
 
+parser.add_argument('--ext', help='specify which extension(s) to download jpg,png[,...]', type=str, default='')
+
 parser.add_argument('--feed', help='input urls one at a time', action='store_true')
 
 parser.add_argument('--filename', help='specify filename to use', type=str, default='')
 
-parser.add_argument('--filter', help='specify which extension(s) to download jpg,png[,...]', type=str, default='')
+parser.add_argument('--filter', help='download only urls containing filter string; can handle regex patterns', type=str, default='')
 
 parser.add_argument('--force', help='force a specific goblin')
 
-parser.add_argument('-f', '--format', help='formatting modifier (action modifier[ modifier]). needs to be quoted.')
+parser.add_argument('-f', '--format', help='formatting modifier (action modifier[ modifier]) - needs to be quoted')
 
 parser.add_argument('--greedy', help='find urls based on regex instead of html tags (only applies to generic goblin)', action='store_true')
 

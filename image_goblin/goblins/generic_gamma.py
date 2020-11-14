@@ -1,7 +1,7 @@
 from meta import MetaGoblin
 
 # NOTE: scaling with q=100 does not affect quality of original image, only the
-# the quality of the re-encode --> images are still noisy
+# the quality of the re-encode --> images are still noisy and somewhat blurry
 # TODO: this could really use a better approach
 
 class GammaGoblin(MetaGoblin):

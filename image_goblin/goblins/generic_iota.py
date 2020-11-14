@@ -54,7 +54,7 @@ class IotaGoblin(MetaGoblin):
         for target in self.args['targets'][self.ID]:
             self.logger.log(2, self.NAME, 'looting', target)
             self.logger.spin()
-
+            target = target.replace('euimages.urbanoutfitters', 's7g10.scene7')
             if 'scene7' in target:
                 # NOTE: singapore uses different cdn
                 if 'i.localised' in target:

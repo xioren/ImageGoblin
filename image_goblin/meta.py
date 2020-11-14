@@ -47,7 +47,7 @@ class MetaGoblin:
         self.cookie_jar = CookieJar()
         self.logger = Logger(self.args['verbose'], self.args['silent'], self.args['nodl'])
         self.parser = Parser(self.args['targets'][self.ID][0], self.args['format'],
-                             self.args['filter'], self.args['slugify'])
+                             self.args['ext'], self.args['slugify'], self.args['filter'])
 
         self.logger.log(1, self.NAME, 'deployed')
 
@@ -97,10 +97,8 @@ class MetaGoblin:
             self.make_dirs(vid_dir)
 
             for file in os.listdir(path):
-                for ext in ('.mp4', '.webm', '.mkv', 'mov', 'wmv'):
-                    if ext in file:
-                        move(os.path.join(path, file), vid_dir)
-                        break
+                if self.parser.extension(file) in ('.mp4', '.webm', '.mkv', '.mov', '.wmv'):
+                    move(os.path.join(path, file), vid_dir)
 
     def make_dirs(self, *paths):
         '''creates directories'''
@@ -182,11 +180,12 @@ class MetaGoblin:
                 return method(response, url, *args, attempt=attempt, **kwargs)
         except HTTPError as e:
             if e.code in (500, 502, 503, 504):
-                # NOTE: servers sometimes return 502 when requesting large files, retrying usually works.
+                # NOTE: servers sometimes return 50X when requesting large files, retrying usually works.
                 kwargs['error'] = e
                 return self.retry(method, url, *args, attempt=attempt, **kwargs)
             self.logger.log(2, self.NAME, e, url)
         except (RemoteDisconnected, timeout, URLError) as e:
+            # QUESTION: should we really retry on url error?
             kwargs['error'] = e
             return self.retry(method, url, *args, attempt=attempt, **kwargs)
         except Exception as e:
@@ -303,7 +302,6 @@ class MetaGoblin:
 
     def check_ext(self, filepath, mimetype):
         '''compare guessed extension to header content type and change if necessary'''
-        # QUESTION: rationale of checking for '/'?
         if mimetype and '/' in mimetype and 'octet-stream' not in mimetype:
             header_ext = f'.{mimetype.split(";")[0].split("/")[1]}'.replace('svg+xml', 'svg')
             guessed_ext = self.parser.extension(filepath)
@@ -338,8 +336,7 @@ class MetaGoblin:
 
     def loot(self, save_loc=None, timeout=0):
         '''retrieve resources from collected urls'''
-        file = 1 # NOTE: tracking for progress bar
-        looted, failed = 0, 0
+        looted, failed, file = 0, 0, 1
         timed_out = False
         if not save_loc:
             save_loc = self.path_main
@@ -367,7 +364,7 @@ class MetaGoblin:
                     continue
 
             attempt = self.download(url, filepath)
-            # FIXME: sites that return data, such as html instead of 404 make iterator goblin run forever.
+            # FIXME: sites that always return data, such as html instead of 404 make iterator goblin run forever.
             if attempt:
                 self.logger.log(2, self.NAME, 'looted', filename)
                 failed = 0
