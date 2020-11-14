@@ -1,7 +1,7 @@
 # ImageGoblin
 
 #### changelog v0.5.2:
-+ added filter option. can not filter bye (regex) string or extension(s).
++ added filter option. can now filter by (regex) string or extension(s).
 + bug fixes
 + misc code clean up and improvements
 
