@@ -248,7 +248,7 @@ class MetaGoblin:
                 # WARNING: possible to erroneously remove legit files with same filename
                 # FIXME: lazy approach
                 os.remove(filepath)
-            else:
+            elif not self.args['force']:
                 self.logger.log(2, self.NAME, 'file exists', f'{filename}{ext}')
                 return None
 
@@ -359,7 +359,7 @@ class MetaGoblin:
             if os.path.exists(filepath):
                 if self.args['noskip'] or self.args['filename']:
                     filepath = self.parser.make_unique(filepath)
-                else:
+                elif not self.args['force']:
                     self.logger.log(2, self.NAME, 'file exists', filename)
                     continue
 

@@ -50,8 +50,8 @@ class Dispatcher:
                 self.logger.log(0, self.NAME, 'invalid url', url)
                 continue
 
-            if self.args['force']:
-                key = self.args['force']
+            if self.args['goblin']:
+                key = self.args['goblin']
             else:
                 key = self.identify(url)
 

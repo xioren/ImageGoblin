@@ -21,9 +21,11 @@ parser.add_argument('--filename', help='specify filename to use', type=str, defa
 
 parser.add_argument('--filter', help='download only urls containing filter string; can handle regex patterns', type=str, default='')
 
-parser.add_argument('--force', help='force a specific goblin')
+parser.add_argument('--force', help='force overwriting existing files', action='store_true')
 
 parser.add_argument('-f', '--format', help='formatting modifier (action modifier[ modifier]) - needs to be quoted')
+
+parser.add_argument('-g', '--goblin', help='use a specific goblin')
 
 parser.add_argument('--greedy', help='find urls based on regex instead of html tags (only applies to generic goblin)', action='store_true')
 

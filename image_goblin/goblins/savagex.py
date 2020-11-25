@@ -27,7 +27,7 @@ class SavageXGoblin(MetaGoblin):
         for target in self.args['targets'][self.ID]:
             self.logger.log(2, self.NAME, 'looting', target)
             self.logger.spin()
-            
+
             if 'cdn.savagex' in target:
                 urls.extend([self.parser.regex_sub(r'\d-\d+x\d+', f'{n}-1600x1600', target) for n in range(1, 7)])
             else:
@@ -42,13 +42,14 @@ class SavageXGoblin(MetaGoblin):
 
                 response = self.parser.load_json(self.get(f'{self.API_URL}/products/{self.product_id(target)}').content)
                 if response:
-                    # NOTE: doesnt return all images
+                    # BUG: doesnt return all images
                     urls.extend(response['image_view_list'])
 
         self.delay()
 
         for url in urls:
-            if 'laydown' in url or 'LAYDOWN' in url: # skip product images
+            # skip product images
+            if 'laydown' in url or 'LAYDOWN' in url:
                 continue
 
             self.collect(self.parser.regex_sub(r'\d+x\d+', '1600x1600', url).replace('-(XS-XL)', ''))
