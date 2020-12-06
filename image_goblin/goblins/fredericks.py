@@ -1,8 +1,7 @@
 from meta import MetaGoblin
 
 
-# NOTE: some images in form: image-cdn.symphonycommerce.com/images/sites/fredericks/product_images/filename-001.jpg
-# these are iterable
+# NOTE: now uses magento api but no conformity in urls
 
 
 class FredericksGoblin(MetaGoblin):
@@ -13,17 +12,18 @@ class FredericksGoblin(MetaGoblin):
 
     NAME = 'fredericks goblin'
     ID = 'fredericks'
-    API_URL = 'https://www.fredericks.com/api/'
-    QUERY = 'page_info?url=%2F{}&params=product'
-    # URL_PAT = r'//[^"\s\n]+\.jpe?g'
+    URL_PAT = r'https?:[^"\s\n]+media\\?/catalog\\?/product\\?/[^"\s\n]+\.jpe?g'
+    QUERY = '?quality=100'
+
 
     def __init__(self, args):
         super().__init__(args)
 
 
-    def extract_page_name(self, url):
-        '''return name of webpage'''
-        return self.parser.regex_search(r'(?<=com/).+', self.parser.dequery(url).rstrip('/')).replace('/', '%2F')
+    def trim(self, url):
+        '''remove scaling from url'''
+        return self.parser.regex_sub(r'/(custom_)?cache.*?(?=/\w/\w/)', '', url)
+
 
     def main(self):
         self.logger.log(1, self.NAME, 'collecting urls')
@@ -32,27 +32,16 @@ class FredericksGoblin(MetaGoblin):
         for target in self.args['targets'][self.ID]:
             self.logger.log(2, self.NAME, 'looting', target)
             self.logger.spin()
-            
-            if 'cloudfront' in target:
+
+            if 'media/catalog' in target:
                 self.logger.log(2, self.NAME, 'WARNING', 'image urls not fully supported', once=True)
-                urls.append(target)
+                urls.append(self.parser.dequery(target))
             else:
-                response = ''
-
-                for _ in range(10):
-                    # the api is VERY unreliable, usually takes multiple requests to get a proper response.
-                    response = self.parser.load_json(self.get(self.API_URL + self.QUERY.format(self.extract_page_name(target))).content)
-                    if response:
-                        break
-                    self.delay(3)
-
-                if 'product' in response:
-                    for image in response['product'][0].get('displayMedia', ''):
-                        urls.append(image['ref'])
+                urls.extend(self.parser.extract_by_regex(self.get(target).content, self.URL_PAT))
 
             self.delay()
 
         for url in urls:
-            self.collect(self.parser.regex_sub(r'\.\d+w', '', url))
+            self.collect(self.trim(url) + self.QUERY)
 
         self.loot()

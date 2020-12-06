@@ -1,8 +1,6 @@
 # ImageGoblin
 
-#### changelog v0.5.3:
-+ changed "--force" flag from forcing a specific goblin to force overwriting of files.
-+ now choose a specific goblin with "-g" or "--goblin"
+#### changelog v0.5.4:
 + bug fixes
 + misc code clean up and improvements
 

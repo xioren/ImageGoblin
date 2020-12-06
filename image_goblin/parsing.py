@@ -235,7 +235,7 @@ class Parser:
             return True
         elif self.ext_filter[0] and self.extension(url) not in self.ext_filter:
             # TODO: auto handle jpg/jpeg (i.e. if user inputs filter jpg it
-            # should also catch jpeg images and vice versa)
+            # should also catch jpeg and vice versa)
             return True
         elif self.url_filter and not self.regex_search(self.url_filter, url, False):
             return True

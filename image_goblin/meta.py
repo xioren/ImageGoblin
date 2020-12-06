@@ -366,7 +366,7 @@ class MetaGoblin:
             attempt = self.download(url, filepath)
             # FIXME: sites that always return data, such as html instead of 404 make iterator goblin run forever.
             if attempt:
-                self.logger.log(2, self.NAME, 'looted', filename)
+                self.logger.log(2, self.NAME, 'success', filename)
                 failed = 0
                 looted += 1
             else:

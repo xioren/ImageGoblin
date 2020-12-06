@@ -12,8 +12,8 @@ class TrendyolGoblin(MetaGoblin):
 
     NAME = 'trandyol goblin'
     ID = 'trendyol'
-    # API_URL = 'https://api.trendyol.com/webbrowsinggw/api/productDetails'
-    # IMG_BASE = 'https://cdn.dsmcdn.com'
+    API_URL = 'https://api.trendyol.com/webproductgw/api/productDetail'
+    IMG_BASE = 'https://cdn.dsmcdn.com'
 
     def __init__(self, args):
         super().__init__(args)
@@ -22,9 +22,9 @@ class TrendyolGoblin(MetaGoblin):
         '''extract base of url'''
         return self.parser.regex_sub(r'\d+/\d+_[a-z]+(_[a-z]+)?\.jpg', '', url)
 
-    # def extract_id(self, url):
-    #     '''extract product id'''
-    #     return self.parser.regex_search(r'(?<=p-)\d+', url)
+    def extract_id(self, url):
+        '''extract product id'''
+        return self.parser.regex_search(r'(?<=p-)\d+', url)
 
     def main(self):
         self.logger.log(1, self.NAME, 'collecting urls')
@@ -35,17 +35,25 @@ class TrendyolGoblin(MetaGoblin):
             self.logger.spin()
 
             if 'img-trendyol' in target or 'cdn.dsmcdn' in target:
-                urls.append(target)
+                url_base = self.extract_base(target)
+                ty_id = int(self.parser.regex_search(r'(?<=ty)\d+', target))
+
+                for i in (ty_id-1, ty_id, ty_id+1):
+                    new_base = self.parser.regex_sub(r'(?<=ty)\d+', str(i), url_base)
+                    for j in range(1, 5):
+                        urls.append(f'{new_base}{j}/{j}_org_zoom.jpg')
             else:
-                self.logger.log(2, self.NAME, 'WARNING', 'webpage urls not supported', once=True)
+                id = self.extract_id(target)
+                response = self.parser.load_json(self.get(f'{self.API_URL}/{id}').content)
+
+                if 'result' in response:
+                    for image in response['result'].get('images', ''):
+                        urls.append(f'{self.IMG_BASE}{image}')
 
             self.delay()
 
         for url in urls:
-            url_base = self.extract_base(url)
-
-            for n in range(1, 10):
-                # TODO: ty\d+ is not constant. find better approach
-                self.collect(f'{url_base}{n}/{n}_org_zoom.jpg', filename=f'{url_base.split("/")[-2]}_{n}_org_zoom')
+            parts = url.split('/')
+            self.collect(url, filename=f'{parts[-2]}_{parts[-1]}'[:-4])
 
         self.loot()
