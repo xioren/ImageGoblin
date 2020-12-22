@@ -1,6 +1,9 @@
 from meta import MetaGoblin
 
 
+# FIXME: data-original (and maybe others) seems to be the source of +filename+.html downloads
+
+
 class OmegaGoblin(MetaGoblin):
     '''handles: all urls that did not match a specific goblin
     accepts:

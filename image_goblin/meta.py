@@ -33,7 +33,6 @@ class MetaGoblin:
             self.path_main = os.path.join(os.getcwd(), self.args['dir'].replace(' ', '_'))
         else:
             self.path_main = os.path.join(os.getcwd(), 'goblin_loot', self.NAME.replace(' ', '_'))
-        self.make_dirs(self.path_main)
 
         if self.args['mask']:
             user_agent = 'Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101 Firefox/68.0'
@@ -47,10 +46,10 @@ class MetaGoblin:
         self.cookie_jar = CookieJar()
         self.logger = Logger(self.args['verbose'], self.args['silent'], self.args['nodl'])
         self.parser = Parser(self.args['targets'][self.ID][0], self.args['format'],
-                             self.args['ext'], self.args['slugify'], self.args['filter'])
+                             self.args['ext'], self.args['filter'])
 
+        self.make_dirs(self.path_main)
         self.logger.log(1, self.NAME, 'deployed')
-
     ####################################################################
     # sub classes
     ####################################################################
@@ -233,7 +232,7 @@ class MetaGoblin:
         '''download web content'''
         # NOTE: default buffer == 8192
         ext = self.parser.extension(url)
-        filename = self.parser.extract_filename(filepath)
+        filename = self.parser.extract_filename(filepath, self.args['slugify'])
         length = int(response.info().get('Content-Length', -1))
         read = 0
 
@@ -325,7 +324,7 @@ class MetaGoblin:
         if self.args['filename']:
             filename = self.args['filename']
         elif not filename:
-            filename = self.parser.extract_filename(url)
+            filename = self.parser.extract_filename(url, self.args['slugify'])
         ext = self.parser.extension(url)
 
         # NOTE: add url and filename to collection as hashable string

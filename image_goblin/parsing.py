@@ -18,7 +18,7 @@ class Parser:
         re.compile(r'[\-_]?((x+)?-?(?<![\w\-])l(arge)?(?!\w)|profile|square)(?![\w])[\-_/]?', flags=re.IGNORECASE),
         re.compile(r'[\.-_]\d+w(?=[-_\.])|[\.-_]w\d+(?=[-_\.])'), # -000w
         re.compile(r'(?<=/)([a-z]+_[\w\:\.]+(,|/))+(v\d/)?'), # cloudfront (probably too general and will catch false positives)
-        re.compile(r'[@\-_/\.]\d{2,}x(\d{2,})?(?=\.|/)'), # 000x[000]
+        re.compile(r'[@\-_/\.]\d{2,}x(\d{2,})?(@\dx)?(?=\.|/)'), # 000x[000]
         re.compile(r'[@\-_/\.](\d{2,})?x\d{2,}(_crop)?(?=\.|/)'), # [000]x000
         re.compile(r'styles/\w+/public/'), # styles/xxxx_xxxx_xxxx_xxxx/public
         re.compile(r'expanded_[a-z]+/'),
@@ -27,14 +27,13 @@ class Parser:
         re.compile(r'@\d+x')
     )
 
-    def __init__(self, origin_url, user_formatting, ext_filter, slug, filter):
+    def __init__(self, origin_url, user_formatting, ext_filter, filter):
         # NOTE: user input ext filters
         self.url_filter = re.compile(filter, flags=re.IGNORECASE)
         self.ext_filter = [self.extension(f'null.{ext.lstrip(".")}') for ext in ext_filter.split(',')]
         self.origin_url = self.add_scheme(self.dequery(origin_url))
         self.ALPHA = ascii_letters + digits + '-_'
         self.user_formatting = user_formatting
-        self.slug = slug
         mimetypes.add_type('image/webp', '.webp')
 
 ####################################################################
@@ -89,11 +88,11 @@ class Parser:
         # NOTE: left in for compatibility, regex_findall does the work.
         return self.regex_findall(pattern, html)
 
-    def extract_filename(self, url):
+    def extract_filename(self, url, slugify=False):
         '''extract filename from url'''
         url = self.unquote(self.dequery(url).rstrip('/'))
         filename = split(url)[-1].replace(splitext(url)[-1], '')
-        if self.slug:
+        if slugify:
             return self.slugify(filename)
         return filename
 
