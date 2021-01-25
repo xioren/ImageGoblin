@@ -1,6 +1,6 @@
 # ImageGoblin
 
-#### changelog v0.5.5:
+#### changelog v0.5.6:
 + bug fixes
 + misc code clean up and improvements
 

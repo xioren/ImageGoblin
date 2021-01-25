@@ -1,6 +1,9 @@
 from meta import MetaGoblin
 
 
+# NOTE: may work for modellink too --> investigate
+
+
 class SelectGoblin(MetaGoblin):
     '''accepts:
         - image
@@ -40,7 +43,7 @@ class SelectGoblin(MetaGoblin):
         for target in self.args['targets'][self.ID]:
             self.logger.log(2, self.NAME, 'looting', target)
             self.logger.spin()
-            
+
             if 'gallery' in target:
                 self.logger.log(2, self.NAME, 'WARNING', 'image urls not fully supported', once=True)
                 urls.append(target)

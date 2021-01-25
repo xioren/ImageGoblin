@@ -33,7 +33,7 @@ class BellazonGoblin(MetaGoblin):
         for target in self.args['targets'][self.ID]:
             self.logger.log(2, self.NAME, 'looting', target)
             self.logger.spin()
-            
+
             if 'main/uploads' in target:
                 self.logger.log(2, self.NAME, 'WARNING', 'image urls not fully supported', once=True)
                 urls.append(target)
@@ -54,8 +54,7 @@ class BellazonGoblin(MetaGoblin):
             self.delay()
 
         for url in urls:
-            if '.thumb' in url:
-                continue
-            self.collect(self.parser.auto_format(url), filename=self.extract_filename(url))
+            if '.thumb' not in url:
+                self.collect(self.parser.auto_format(url), filename=self.extract_filename(url))
 
         self.loot()

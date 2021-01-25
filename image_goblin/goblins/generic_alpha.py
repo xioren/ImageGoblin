@@ -34,7 +34,8 @@ class AlphaGoblin(MetaGoblin):
 
     def trim(self, url):
         '''remove scaling from url'''
-        return self.parser.regex_sub(r'/(custom_)?cache.*?(?=/\w/\w/)', '', url)
+        # NOTE: only hearts has escaped url, need to remove backslashes
+        return self.parser.regex_sub(r'/(custom_)?cache/\w+(?=/\w/\w/)', '', url.replace('\\', ''))
 
     def main(self):
         self.logger.log(1, self.NAME, 'collecting urls')

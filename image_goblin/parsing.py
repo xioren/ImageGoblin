@@ -17,7 +17,7 @@ class Parser:
     SCALING_PATS = (
         re.compile(r'[\-_]?((x+)?-?(?<![\w\-])l(arge)?(?!\w)|profile|square)(?![\w])[\-_/]?', flags=re.IGNORECASE),
         re.compile(r'[\.-_]\d+w(?=[-_\.])|[\.-_]w\d+(?=[-_\.])'), # -000w
-        re.compile(r'(?<=/)([a-z]+_[\w\:\.]+(,|/))+(v\d/)?'), # cloudfront (probably too general and will catch false positives)
+        re.compile(r'(?<=/)([a-z\d]+_[a-z\d\:\.]+,)+[a-z\d]+_[a-z\d\:\.]+(/v1)?/'), # cloudfront
         re.compile(r'[@\-_/\.]\d{2,}x(\d{2,})?(@\dx)?(?=\.|/)'), # 000x[000]
         re.compile(r'[@\-_/\.](\d{2,})?x\d{2,}(_crop)?(?=\.|/)'), # [000]x000
         re.compile(r'styles/\w+/public/'), # styles/xxxx_xxxx_xxxx_xxxx/public
